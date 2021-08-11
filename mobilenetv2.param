@@ -1,0 +1,170 @@
+7767517
+168 167
+Input                                                            pnnx_input_1                     0 1 input.2
+prim::Constant                                                   pnnx_0                           0 1 8
+prim::Constant                                                   pnnx_1                           0 1 12
+__torch__.torch.nn.modules.conv.Conv2d                           features.0.0                     1 1 input.2 71
+__torch__.torch.nn.modules.batchnorm.BatchNorm2d                 features.0.1                     1 1 71 72
+__torch__.torch.nn.modules.activation.ReLU6                      features.0.2                     1 1 72 73
+__torch__.torch.nn.modules.conv.Conv2d                           features.1.conv.0.0              1 1 73 271
+__torch__.torch.nn.modules.batchnorm.BatchNorm2d                 features.1.conv.0.1              1 1 271 272
+__torch__.torch.nn.modules.activation.ReLU6                      features.1.conv.0.2              1 1 272 273
+__torch__.torch.nn.modules.conv.Conv2d                           features.1.conv.1                1 1 273 138
+__torch__.torch.nn.modules.batchnorm.BatchNorm2d                 features.1.conv.2                1 1 138 139
+__torch__.torch.nn.modules.conv.Conv2d                           features.2.conv.0.0              1 1 139 277
+__torch__.torch.nn.modules.batchnorm.BatchNorm2d                 features.2.conv.0.1              1 1 277 278
+__torch__.torch.nn.modules.activation.ReLU6                      features.2.conv.0.2              1 1 278 279
+__torch__.torch.nn.modules.conv.Conv2d                           features.2.conv.1.0              1 1 279 283
+__torch__.torch.nn.modules.batchnorm.BatchNorm2d                 features.2.conv.1.1              1 1 283 284
+__torch__.torch.nn.modules.activation.ReLU6                      features.2.conv.1.2              1 1 284 285
+__torch__.torch.nn.modules.conv.Conv2d                           features.2.conv.2                1 1 285 146
+__torch__.torch.nn.modules.batchnorm.BatchNorm2d                 features.2.conv.3                1 1 146 147
+prim::Constant                                                   pnnx_2                           0 1 78
+__torch__.torch.nn.modules.conv.Conv2d                           features.3.conv.0.0              1 1 147 289
+__torch__.torch.nn.modules.batchnorm.BatchNorm2d                 features.3.conv.0.1              1 1 289 290
+__torch__.torch.nn.modules.activation.ReLU6                      features.3.conv.0.2              1 1 290 291
+__torch__.torch.nn.modules.conv.Conv2d                           features.3.conv.1.0              1 1 291 295
+__torch__.torch.nn.modules.batchnorm.BatchNorm2d                 features.3.conv.1.1              1 1 295 296
+__torch__.torch.nn.modules.activation.ReLU6                      features.3.conv.1.2              1 1 296 297
+__torch__.torch.nn.modules.conv.Conv2d                           features.3.conv.2                1 1 297 154
+__torch__.torch.nn.modules.batchnorm.BatchNorm2d                 features.3.conv.3                1 1 154 155
+aten::add                                                        pnnx_3                           3 1 147 155 78 input.3
+__torch__.torch.nn.modules.conv.Conv2d                           features.4.conv.0.0              1 1 input.3 301
+__torch__.torch.nn.modules.batchnorm.BatchNorm2d                 features.4.conv.0.1              1 1 301 302
+__torch__.torch.nn.modules.activation.ReLU6                      features.4.conv.0.2              1 1 302 303
+__torch__.torch.nn.modules.conv.Conv2d                           features.4.conv.1.0              1 1 303 307
+__torch__.torch.nn.modules.batchnorm.BatchNorm2d                 features.4.conv.1.1              1 1 307 308
+__torch__.torch.nn.modules.activation.ReLU6                      features.4.conv.1.2              1 1 308 309
+__torch__.torch.nn.modules.conv.Conv2d                           features.4.conv.2                1 1 309 162
+__torch__.torch.nn.modules.batchnorm.BatchNorm2d                 features.4.conv.3                1 1 162 163
+prim::Constant                                                   pnnx_4                           0 1 84
+__torch__.torch.nn.modules.conv.Conv2d                           features.5.conv.0.0              1 1 163 313
+__torch__.torch.nn.modules.batchnorm.BatchNorm2d                 features.5.conv.0.1              1 1 313 314
+__torch__.torch.nn.modules.activation.ReLU6                      features.5.conv.0.2              1 1 314 315
+__torch__.torch.nn.modules.conv.Conv2d                           features.5.conv.1.0              1 1 315 319
+__torch__.torch.nn.modules.batchnorm.BatchNorm2d                 features.5.conv.1.1              1 1 319 320
+__torch__.torch.nn.modules.activation.ReLU6                      features.5.conv.1.2              1 1 320 321
+__torch__.torch.nn.modules.conv.Conv2d                           features.5.conv.2                1 1 321 170
+__torch__.torch.nn.modules.batchnorm.BatchNorm2d                 features.5.conv.3                1 1 170 171
+aten::add                                                        pnnx_5                           3 1 163 171 84 input.4
+prim::Constant                                                   pnnx_6                           0 1 88
+__torch__.torch.nn.modules.conv.Conv2d                           features.6.conv.0.0              1 1 input.4 325
+__torch__.torch.nn.modules.batchnorm.BatchNorm2d                 features.6.conv.0.1              1 1 325 326
+__torch__.torch.nn.modules.activation.ReLU6                      features.6.conv.0.2              1 1 326 327
+__torch__.torch.nn.modules.conv.Conv2d                           features.6.conv.1.0              1 1 327 331
+__torch__.torch.nn.modules.batchnorm.BatchNorm2d                 features.6.conv.1.1              1 1 331 332
+__torch__.torch.nn.modules.activation.ReLU6                      features.6.conv.1.2              1 1 332 333
+__torch__.torch.nn.modules.conv.Conv2d                           features.6.conv.2                1 1 333 178
+__torch__.torch.nn.modules.batchnorm.BatchNorm2d                 features.6.conv.3                1 1 178 179
+aten::add                                                        pnnx_7                           3 1 input.4 179 88 input.5
+__torch__.torch.nn.modules.conv.Conv2d                           features.7.conv.0.0              1 1 input.5 337
+__torch__.torch.nn.modules.batchnorm.BatchNorm2d                 features.7.conv.0.1              1 1 337 338
+__torch__.torch.nn.modules.activation.ReLU6                      features.7.conv.0.2              1 1 338 339
+__torch__.torch.nn.modules.conv.Conv2d                           features.7.conv.1.0              1 1 339 343
+__torch__.torch.nn.modules.batchnorm.BatchNorm2d                 features.7.conv.1.1              1 1 343 344
+__torch__.torch.nn.modules.activation.ReLU6                      features.7.conv.1.2              1 1 344 345
+__torch__.torch.nn.modules.conv.Conv2d                           features.7.conv.2                1 1 345 186
+__torch__.torch.nn.modules.batchnorm.BatchNorm2d                 features.7.conv.3                1 1 186 187
+prim::Constant                                                   pnnx_8                           0 1 94
+__torch__.torch.nn.modules.conv.Conv2d                           features.8.conv.0.0              1 1 187 349
+__torch__.torch.nn.modules.batchnorm.BatchNorm2d                 features.8.conv.0.1              1 1 349 350
+__torch__.torch.nn.modules.activation.ReLU6                      features.8.conv.0.2              1 1 350 351
+__torch__.torch.nn.modules.conv.Conv2d                           features.8.conv.1.0              1 1 351 355
+__torch__.torch.nn.modules.batchnorm.BatchNorm2d                 features.8.conv.1.1              1 1 355 356
+__torch__.torch.nn.modules.activation.ReLU6                      features.8.conv.1.2              1 1 356 357
+__torch__.torch.nn.modules.conv.Conv2d                           features.8.conv.2                1 1 357 194
+__torch__.torch.nn.modules.batchnorm.BatchNorm2d                 features.8.conv.3                1 1 194 195
+aten::add                                                        pnnx_9                           3 1 187 195 94 input.6
+prim::Constant                                                   pnnx_10                          0 1 98
+__torch__.torch.nn.modules.conv.Conv2d                           features.9.conv.0.0              1 1 input.6 361
+__torch__.torch.nn.modules.batchnorm.BatchNorm2d                 features.9.conv.0.1              1 1 361 362
+__torch__.torch.nn.modules.activation.ReLU6                      features.9.conv.0.2              1 1 362 363
+__torch__.torch.nn.modules.conv.Conv2d                           features.9.conv.1.0              1 1 363 367
+__torch__.torch.nn.modules.batchnorm.BatchNorm2d                 features.9.conv.1.1              1 1 367 368
+__torch__.torch.nn.modules.activation.ReLU6                      features.9.conv.1.2              1 1 368 369
+__torch__.torch.nn.modules.conv.Conv2d                           features.9.conv.2                1 1 369 202
+__torch__.torch.nn.modules.batchnorm.BatchNorm2d                 features.9.conv.3                1 1 202 203
+aten::add                                                        pnnx_11                          3 1 input.6 203 98 input.7
+prim::Constant                                                   pnnx_12                          0 1 102
+__torch__.torch.nn.modules.conv.Conv2d                           features.10.conv.0.0             1 1 input.7 373
+__torch__.torch.nn.modules.batchnorm.BatchNorm2d                 features.10.conv.0.1             1 1 373 374
+__torch__.torch.nn.modules.activation.ReLU6                      features.10.conv.0.2             1 1 374 375
+__torch__.torch.nn.modules.conv.Conv2d                           features.10.conv.1.0             1 1 375 379
+__torch__.torch.nn.modules.batchnorm.BatchNorm2d                 features.10.conv.1.1             1 1 379 380
+__torch__.torch.nn.modules.activation.ReLU6                      features.10.conv.1.2             1 1 380 381
+__torch__.torch.nn.modules.conv.Conv2d                           features.10.conv.2               1 1 381 210
+__torch__.torch.nn.modules.batchnorm.BatchNorm2d                 features.10.conv.3               1 1 210 211
+aten::add                                                        pnnx_13                          3 1 input.7 211 102 input.8
+__torch__.torch.nn.modules.conv.Conv2d                           features.11.conv.0.0             1 1 input.8 385
+__torch__.torch.nn.modules.batchnorm.BatchNorm2d                 features.11.conv.0.1             1 1 385 386
+__torch__.torch.nn.modules.activation.ReLU6                      features.11.conv.0.2             1 1 386 387
+__torch__.torch.nn.modules.conv.Conv2d                           features.11.conv.1.0             1 1 387 391
+__torch__.torch.nn.modules.batchnorm.BatchNorm2d                 features.11.conv.1.1             1 1 391 392
+__torch__.torch.nn.modules.activation.ReLU6                      features.11.conv.1.2             1 1 392 393
+__torch__.torch.nn.modules.conv.Conv2d                           features.11.conv.2               1 1 393 218
+__torch__.torch.nn.modules.batchnorm.BatchNorm2d                 features.11.conv.3               1 1 218 219
+prim::Constant                                                   pnnx_14                          0 1 108
+__torch__.torch.nn.modules.conv.Conv2d                           features.12.conv.0.0             1 1 219 397
+__torch__.torch.nn.modules.batchnorm.BatchNorm2d                 features.12.conv.0.1             1 1 397 398
+__torch__.torch.nn.modules.activation.ReLU6                      features.12.conv.0.2             1 1 398 399
+__torch__.torch.nn.modules.conv.Conv2d                           features.12.conv.1.0             1 1 399 403
+__torch__.torch.nn.modules.batchnorm.BatchNorm2d                 features.12.conv.1.1             1 1 403 404
+__torch__.torch.nn.modules.activation.ReLU6                      features.12.conv.1.2             1 1 404 405
+__torch__.torch.nn.modules.conv.Conv2d                           features.12.conv.2               1 1 405 226
+__torch__.torch.nn.modules.batchnorm.BatchNorm2d                 features.12.conv.3               1 1 226 227
+aten::add                                                        pnnx_15                          3 1 219 227 108 input.9
+prim::Constant                                                   pnnx_16                          0 1 112
+__torch__.torch.nn.modules.conv.Conv2d                           features.13.conv.0.0             1 1 input.9 409
+__torch__.torch.nn.modules.batchnorm.BatchNorm2d                 features.13.conv.0.1             1 1 409 410
+__torch__.torch.nn.modules.activation.ReLU6                      features.13.conv.0.2             1 1 410 411
+__torch__.torch.nn.modules.conv.Conv2d                           features.13.conv.1.0             1 1 411 415
+__torch__.torch.nn.modules.batchnorm.BatchNorm2d                 features.13.conv.1.1             1 1 415 416
+__torch__.torch.nn.modules.activation.ReLU6                      features.13.conv.1.2             1 1 416 417
+__torch__.torch.nn.modules.conv.Conv2d                           features.13.conv.2               1 1 417 234
+__torch__.torch.nn.modules.batchnorm.BatchNorm2d                 features.13.conv.3               1 1 234 235
+aten::add                                                        pnnx_17                          3 1 input.9 235 112 input.10
+__torch__.torch.nn.modules.conv.Conv2d                           features.14.conv.0.0             1 1 input.10 421
+__torch__.torch.nn.modules.batchnorm.BatchNorm2d                 features.14.conv.0.1             1 1 421 422
+__torch__.torch.nn.modules.activation.ReLU6                      features.14.conv.0.2             1 1 422 423
+__torch__.torch.nn.modules.conv.Conv2d                           features.14.conv.1.0             1 1 423 427
+__torch__.torch.nn.modules.batchnorm.BatchNorm2d                 features.14.conv.1.1             1 1 427 428
+__torch__.torch.nn.modules.activation.ReLU6                      features.14.conv.1.2             1 1 428 429
+__torch__.torch.nn.modules.conv.Conv2d                           features.14.conv.2               1 1 429 242
+__torch__.torch.nn.modules.batchnorm.BatchNorm2d                 features.14.conv.3               1 1 242 243
+prim::Constant                                                   pnnx_18                          0 1 118
+__torch__.torch.nn.modules.conv.Conv2d                           features.15.conv.0.0             1 1 243 433
+__torch__.torch.nn.modules.batchnorm.BatchNorm2d                 features.15.conv.0.1             1 1 433 434
+__torch__.torch.nn.modules.activation.ReLU6                      features.15.conv.0.2             1 1 434 435
+__torch__.torch.nn.modules.conv.Conv2d                           features.15.conv.1.0             1 1 435 439
+__torch__.torch.nn.modules.batchnorm.BatchNorm2d                 features.15.conv.1.1             1 1 439 440
+__torch__.torch.nn.modules.activation.ReLU6                      features.15.conv.1.2             1 1 440 441
+__torch__.torch.nn.modules.conv.Conv2d                           features.15.conv.2               1 1 441 250
+__torch__.torch.nn.modules.batchnorm.BatchNorm2d                 features.15.conv.3               1 1 250 251
+aten::add                                                        pnnx_19                          3 1 243 251 118 input.11
+prim::Constant                                                   pnnx_20                          0 1 122
+__torch__.torch.nn.modules.conv.Conv2d                           features.16.conv.0.0             1 1 input.11 445
+__torch__.torch.nn.modules.batchnorm.BatchNorm2d                 features.16.conv.0.1             1 1 445 446
+__torch__.torch.nn.modules.activation.ReLU6                      features.16.conv.0.2             1 1 446 447
+__torch__.torch.nn.modules.conv.Conv2d                           features.16.conv.1.0             1 1 447 451
+__torch__.torch.nn.modules.batchnorm.BatchNorm2d                 features.16.conv.1.1             1 1 451 452
+__torch__.torch.nn.modules.activation.ReLU6                      features.16.conv.1.2             1 1 452 453
+__torch__.torch.nn.modules.conv.Conv2d                           features.16.conv.2               1 1 453 258
+__torch__.torch.nn.modules.batchnorm.BatchNorm2d                 features.16.conv.3               1 1 258 259
+aten::add                                                        pnnx_21                          3 1 input.11 259 122 input.1
+__torch__.torch.nn.modules.conv.Conv2d                           features.17.conv.0.0             1 1 input.1 457
+__torch__.torch.nn.modules.batchnorm.BatchNorm2d                 features.17.conv.0.1             1 1 457 458
+__torch__.torch.nn.modules.activation.ReLU6                      features.17.conv.0.2             1 1 458 459
+__torch__.torch.nn.modules.conv.Conv2d                           features.17.conv.1.0             1 1 459 463
+__torch__.torch.nn.modules.batchnorm.BatchNorm2d                 features.17.conv.1.1             1 1 463 464
+__torch__.torch.nn.modules.activation.ReLU6                      features.17.conv.1.2             1 1 464 465
+__torch__.torch.nn.modules.conv.Conv2d                           features.17.conv.2               1 1 465 266
+__torch__.torch.nn.modules.batchnorm.BatchNorm2d                 features.17.conv.3               1 1 266 267
+__torch__.torch.nn.modules.conv.Conv2d                           features.18.0                    1 1 267 131
+__torch__.torch.nn.modules.batchnorm.BatchNorm2d                 features.18.1                    1 1 131 132
+__torch__.torch.nn.modules.activation.ReLU6                      features.18.2                    1 1 132 133
+prim::ListConstruct                                              pnnx_22                          2 1 8 8 9
+aten::adaptive_avg_pool2d                                        pnnx_23                          2 1 133 9 x.1
+aten::flatten                                                    pnnx_24                          3 1 x.1 8 12 input0.1
+__torch__.torch.nn.modules.dropout.Dropout                       classifier.0                     1 1 input0.1 66
+__torch__.torch.nn.modules.linear.Linear                         classifier.1                     1 1 66 67
+Output                                                           pnnx_output_0                    1 0 67
