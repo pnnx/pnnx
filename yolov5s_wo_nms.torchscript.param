@@ -1,0 +1,170 @@
+7767517
+168 167
+Input                            pnnx_input_1                     0 1 x.1
+__torch__.models.common.Focus    0                                1 1 x.1 78
+Conv2d                           model.1.conv                     1 1 78 158 bias=1 dilation=(1,1) groups=1 in_channels=32 kernel_size=(3,3) out_channels=64 padding=(1,1) stride=(2,2) @bias=(64) @weight=(64,32,3,3)
+SiLU                             model.1.act                      1 1 158 159
+prim::Constant                   pnnx_0                           0 1 160 value=1
+Conv2d                           model.2.cv1.conv                 1 1 159 306 bias=1 dilation=(1,1) groups=1 in_channels=64 kernel_size=(1,1) out_channels=32 padding=(0,0) stride=(1,1) @bias=(32) @weight=(32,64,1,1)
+SiLU                             model.2.cv1.act                  1 1 306 307
+Conv2d                           model.2.m.0.cv1.conv             1 1 307 496 bias=1 dilation=(1,1) groups=1 in_channels=32 kernel_size=(1,1) out_channels=32 padding=(0,0) stride=(1,1) @bias=(32) @weight=(32,32,1,1)
+SiLU                             model.2.m.0.cv1.act              1 1 496 497
+Conv2d                           model.2.m.0.cv2.conv             1 1 497 500 bias=1 dilation=(1,1) groups=1 in_channels=32 kernel_size=(3,3) out_channels=32 padding=(1,1) stride=(1,1) @bias=(32) @weight=(32,32,3,3)
+SiLU                             model.2.m.0.cv2.act              1 1 500 501
+Conv2d                           model.2.cv2.conv                 1 1 159 312 bias=1 dilation=(1,1) groups=1 in_channels=64 kernel_size=(1,1) out_channels=32 padding=(0,0) stride=(1,1) @bias=(32) @weight=(32,64,1,1)
+SiLU                             model.2.cv2.act                  1 1 312 313
+Expression                       pnnx_expr_18                     3 1 307 501 313 168 expr=(add(@0,@1,1),@2)
+aten::cat                        pnnx_4                           2 1 168 160 input.2
+Conv2d                           model.2.cv3.conv                 1 1 input.2 316 bias=1 dilation=(1,1) groups=1 in_channels=64 kernel_size=(1,1) out_channels=64 padding=(0,0) stride=(1,1) @bias=(64) @weight=(64,64,1,1)
+SiLU                             model.2.cv3.act                  1 1 316 317
+Conv2d                           model.3.conv                     1 1 317 173 bias=1 dilation=(1,1) groups=1 in_channels=64 kernel_size=(3,3) out_channels=128 padding=(1,1) stride=(2,2) @bias=(128) @weight=(128,64,3,3)
+SiLU                             model.3.act                      1 1 173 174
+prim::Constant                   pnnx_5                           0 1 175 value=1
+Conv2d                           model.4.cv1.conv                 1 1 174 320 bias=1 dilation=(1,1) groups=1 in_channels=128 kernel_size=(1,1) out_channels=64 padding=(0,0) stride=(1,1) @bias=(64) @weight=(64,128,1,1)
+SiLU                             model.4.cv1.act                  1 1 320 321
+Conv2d                           model.4.m.0.cv1.conv             1 1 321 504 bias=1 dilation=(1,1) groups=1 in_channels=64 kernel_size=(1,1) out_channels=64 padding=(0,0) stride=(1,1) @bias=(64) @weight=(64,64,1,1)
+SiLU                             model.4.m.0.cv1.act              1 1 504 505
+Conv2d                           model.4.m.0.cv2.conv             1 1 505 508 bias=1 dilation=(1,1) groups=1 in_channels=64 kernel_size=(3,3) out_channels=64 padding=(1,1) stride=(1,1) @bias=(64) @weight=(64,64,3,3)
+SiLU                             model.4.m.0.cv2.act              1 1 508 509
+Expression                       pnnx_expr_17                     2 1 321 509 443 expr=add(@0,@1,1)
+Conv2d                           model.4.m.1.cv1.conv             1 1 443 512 bias=1 dilation=(1,1) groups=1 in_channels=64 kernel_size=(1,1) out_channels=64 padding=(0,0) stride=(1,1) @bias=(64) @weight=(64,64,1,1)
+SiLU                             model.4.m.1.cv1.act              1 1 512 513
+Conv2d                           model.4.m.1.cv2.conv             1 1 513 516 bias=1 dilation=(1,1) groups=1 in_channels=64 kernel_size=(3,3) out_channels=64 padding=(1,1) stride=(1,1) @bias=(64) @weight=(64,64,3,3)
+SiLU                             model.4.m.1.cv2.act              1 1 516 517
+Expression                       pnnx_expr_16                     3 1 321 509 517 449 expr=add(add(@0,@1,1),@2,1)
+Conv2d                           model.4.m.2.cv1.conv             1 1 449 520 bias=1 dilation=(1,1) groups=1 in_channels=64 kernel_size=(1,1) out_channels=64 padding=(0,0) stride=(1,1) @bias=(64) @weight=(64,64,1,1)
+SiLU                             model.4.m.2.cv1.act              1 1 520 521
+Conv2d                           model.4.m.2.cv2.conv             1 1 521 524 bias=1 dilation=(1,1) groups=1 in_channels=64 kernel_size=(3,3) out_channels=64 padding=(1,1) stride=(1,1) @bias=(64) @weight=(64,64,3,3)
+SiLU                             model.4.m.2.cv2.act              1 1 524 525
+Conv2d                           model.4.cv2.conv                 1 1 174 330 bias=1 dilation=(1,1) groups=1 in_channels=128 kernel_size=(1,1) out_channels=64 padding=(0,0) stride=(1,1) @bias=(64) @weight=(64,128,1,1)
+SiLU                             model.4.cv2.act                  1 1 330 331
+Expression                       pnnx_expr_14                     5 1 321 509 517 525 331 183 expr=(add(add(add(@0,@1,1),@2,1),@3,1),@4)
+aten::cat                        pnnx_13                          2 1 183 175 input.4
+Conv2d                           model.4.cv3.conv                 1 1 input.4 334 bias=1 dilation=(1,1) groups=1 in_channels=128 kernel_size=(1,1) out_channels=128 padding=(0,0) stride=(1,1) @bias=(128) @weight=(128,128,1,1)
+SiLU                             model.4.cv3.act                  1 1 334 335
+Conv2d                           model.5.conv                     1 1 335 188 bias=1 dilation=(1,1) groups=1 in_channels=128 kernel_size=(3,3) out_channels=256 padding=(1,1) stride=(2,2) @bias=(256) @weight=(256,128,3,3)
+SiLU                             model.5.act                      1 1 188 189
+prim::Constant                   pnnx_14                          0 1 190 value=1
+Conv2d                           model.6.cv1.conv                 1 1 189 338 bias=1 dilation=(1,1) groups=1 in_channels=256 kernel_size=(1,1) out_channels=128 padding=(0,0) stride=(1,1) @bias=(128) @weight=(128,256,1,1)
+SiLU                             model.6.cv1.act                  1 1 338 339
+Conv2d                           model.6.m.0.cv1.conv             1 1 339 528 bias=1 dilation=(1,1) groups=1 in_channels=128 kernel_size=(1,1) out_channels=128 padding=(0,0) stride=(1,1) @bias=(128) @weight=(128,128,1,1)
+SiLU                             model.6.m.0.cv1.act              1 1 528 529
+Conv2d                           model.6.m.0.cv2.conv             1 1 529 532 bias=1 dilation=(1,1) groups=1 in_channels=128 kernel_size=(3,3) out_channels=128 padding=(1,1) stride=(1,1) @bias=(128) @weight=(128,128,3,3)
+SiLU                             model.6.m.0.cv2.act              1 1 532 533
+Expression                       pnnx_expr_13                     2 1 339 533 461 expr=add(@0,@1,1)
+Conv2d                           model.6.m.1.cv1.conv             1 1 461 536 bias=1 dilation=(1,1) groups=1 in_channels=128 kernel_size=(1,1) out_channels=128 padding=(0,0) stride=(1,1) @bias=(128) @weight=(128,128,1,1)
+SiLU                             model.6.m.1.cv1.act              1 1 536 537
+Conv2d                           model.6.m.1.cv2.conv             1 1 537 540 bias=1 dilation=(1,1) groups=1 in_channels=128 kernel_size=(3,3) out_channels=128 padding=(1,1) stride=(1,1) @bias=(128) @weight=(128,128,3,3)
+SiLU                             model.6.m.1.cv2.act              1 1 540 541
+Expression                       pnnx_expr_12                     3 1 339 533 541 467 expr=add(add(@0,@1,1),@2,1)
+Conv2d                           model.6.m.2.cv1.conv             1 1 467 544 bias=1 dilation=(1,1) groups=1 in_channels=128 kernel_size=(1,1) out_channels=128 padding=(0,0) stride=(1,1) @bias=(128) @weight=(128,128,1,1)
+SiLU                             model.6.m.2.cv1.act              1 1 544 545
+Conv2d                           model.6.m.2.cv2.conv             1 1 545 548 bias=1 dilation=(1,1) groups=1 in_channels=128 kernel_size=(3,3) out_channels=128 padding=(1,1) stride=(1,1) @bias=(128) @weight=(128,128,3,3)
+SiLU                             model.6.m.2.cv2.act              1 1 548 549
+Conv2d                           model.6.cv2.conv                 1 1 189 348 bias=1 dilation=(1,1) groups=1 in_channels=256 kernel_size=(1,1) out_channels=128 padding=(0,0) stride=(1,1) @bias=(128) @weight=(128,256,1,1)
+SiLU                             model.6.cv2.act                  1 1 348 349
+Expression                       pnnx_expr_10                     5 1 339 533 541 549 349 198 expr=(add(add(add(@0,@1,1),@2,1),@3,1),@4)
+aten::cat                        pnnx_22                          2 1 198 190 input.6
+Conv2d                           model.6.cv3.conv                 1 1 input.6 352 bias=1 dilation=(1,1) groups=1 in_channels=256 kernel_size=(1,1) out_channels=256 padding=(0,0) stride=(1,1) @bias=(256) @weight=(256,256,1,1)
+SiLU                             model.6.cv3.act                  1 1 352 353
+Conv2d                           model.7.conv                     1 1 353 203 bias=1 dilation=(1,1) groups=1 in_channels=256 kernel_size=(3,3) out_channels=512 padding=(1,1) stride=(2,2) @bias=(512) @weight=(512,256,3,3)
+SiLU                             model.7.act                      1 1 203 204
+prim::Constant                   pnnx_23                          0 1 205 value=1
+Conv2d                           model.8.cv1.conv                 1 1 204 356 bias=1 dilation=(1,1) groups=1 in_channels=512 kernel_size=(1,1) out_channels=256 padding=(0,0) stride=(1,1) @bias=(256) @weight=(256,512,1,1)
+SiLU                             model.8.cv1.act                  1 1 356 357
+MaxPool2d                        model.8.m.0                      1 1 357 215 dilation=(1,1) kernel_size=(5,5) padding=(2,2) stride=(1,1)
+MaxPool2d                        model.8.m.1                      1 1 357 216 dilation=(1,1) kernel_size=(9,9) padding=(4,4) stride=(1,1)
+MaxPool2d                        model.8.m.2                      1 1 357 217 dilation=(1,1) kernel_size=(13,13) padding=(6,6) stride=(1,1)
+Expression                       pnnx_expr_9                      4 1 357 215 216 217 218 expr=(@0,@1,@2,@3)
+aten::cat                        pnnx_25                          2 1 218 205 input.8
+Conv2d                           model.8.cv2.conv                 1 1 input.8 360 bias=1 dilation=(1,1) groups=1 in_channels=1024 kernel_size=(1,1) out_channels=512 padding=(0,0) stride=(1,1) @bias=(512) @weight=(512,1024,1,1)
+SiLU                             model.8.cv2.act                  1 1 360 361
+prim::Constant                   pnnx_26                          0 1 221 value=1
+Conv2d                           model.9.cv1.conv                 1 1 361 364 bias=1 dilation=(1,1) groups=1 in_channels=512 kernel_size=(1,1) out_channels=256 padding=(0,0) stride=(1,1) @bias=(256) @weight=(256,512,1,1)
+SiLU                             model.9.cv1.act                  1 1 364 365
+Conv2d                           model.9.m.0.cv1.conv             1 1 365 552 bias=1 dilation=(1,1) groups=1 in_channels=256 kernel_size=(1,1) out_channels=256 padding=(0,0) stride=(1,1) @bias=(256) @weight=(256,256,1,1)
+SiLU                             model.9.m.0.cv1.act              1 1 552 553
+Conv2d                           model.9.m.0.cv2.conv             1 1 553 556 bias=1 dilation=(1,1) groups=1 in_channels=256 kernel_size=(3,3) out_channels=256 padding=(1,1) stride=(1,1) @bias=(256) @weight=(256,256,3,3)
+SiLU                             model.9.m.0.cv2.act              1 1 556 557
+Conv2d                           model.9.cv2.conv                 1 1 361 370 bias=1 dilation=(1,1) groups=1 in_channels=512 kernel_size=(1,1) out_channels=256 padding=(0,0) stride=(1,1) @bias=(256) @weight=(256,512,1,1)
+SiLU                             model.9.cv2.act                  1 1 370 371
+Expression                       pnnx_expr_8                      2 1 557 371 229 expr=(@0,@1)
+aten::cat                        pnnx_28                          2 1 229 221 input.10
+Conv2d                           model.9.cv3.conv                 1 1 input.10 374 bias=1 dilation=(1,1) groups=1 in_channels=512 kernel_size=(1,1) out_channels=512 padding=(0,0) stride=(1,1) @bias=(512) @weight=(512,512,1,1)
+SiLU                             model.9.cv3.act                  1 1 374 375
+Conv2d                           model.10.conv                    1 1 375 234 bias=1 dilation=(1,1) groups=1 in_channels=512 kernel_size=(1,1) out_channels=256 padding=(0,0) stride=(1,1) @bias=(256) @weight=(256,512,1,1)
+SiLU                             model.10.act                     1 1 234 235
+Upsample                         model.11                         1 1 235 107
+prim::Constant                   pnnx_29                          0 1 236 value=1
+Expression                       pnnx_expr_7                      2 1 107 353 237 expr=(@0,@1)
+aten::cat                        pnnx_31                          2 1 237 236 input.12
+prim::Constant                   pnnx_32                          0 1 239 value=1
+Conv2d                           model.13.cv1.conv                1 1 input.12 378 bias=1 dilation=(1,1) groups=1 in_channels=512 kernel_size=(1,1) out_channels=128 padding=(0,0) stride=(1,1) @bias=(128) @weight=(128,512,1,1)
+SiLU                             model.13.cv1.act                 1 1 378 379
+Conv2d                           model.13.m.0.cv1.conv            1 1 379 560 bias=1 dilation=(1,1) groups=1 in_channels=128 kernel_size=(1,1) out_channels=128 padding=(0,0) stride=(1,1) @bias=(128) @weight=(128,128,1,1)
+SiLU                             model.13.m.0.cv1.act             1 1 560 561
+Conv2d                           model.13.m.0.cv2.conv            1 1 561 564 bias=1 dilation=(1,1) groups=1 in_channels=128 kernel_size=(3,3) out_channels=128 padding=(1,1) stride=(1,1) @bias=(128) @weight=(128,128,3,3)
+SiLU                             model.13.m.0.cv2.act             1 1 564 565
+Conv2d                           model.13.cv2.conv                1 1 input.12 384 bias=1 dilation=(1,1) groups=1 in_channels=512 kernel_size=(1,1) out_channels=128 padding=(0,0) stride=(1,1) @bias=(128) @weight=(128,512,1,1)
+SiLU                             model.13.cv2.act                 1 1 384 385
+Expression                       pnnx_expr_6                      2 1 565 385 247 expr=(@0,@1)
+aten::cat                        pnnx_34                          2 1 247 239 input.14
+Conv2d                           model.13.cv3.conv                1 1 input.14 388 bias=1 dilation=(1,1) groups=1 in_channels=256 kernel_size=(1,1) out_channels=256 padding=(0,0) stride=(1,1) @bias=(256) @weight=(256,256,1,1)
+SiLU                             model.13.cv3.act                 1 1 388 389
+Conv2d                           model.14.conv                    1 1 389 252 bias=1 dilation=(1,1) groups=1 in_channels=256 kernel_size=(1,1) out_channels=128 padding=(0,0) stride=(1,1) @bias=(128) @weight=(128,256,1,1)
+SiLU                             model.14.act                     1 1 252 253
+Upsample                         model.15                         1 1 253 118
+prim::Constant                   pnnx_35                          0 1 254 value=1
+Expression                       pnnx_expr_5                      2 1 118 335 255 expr=(@0,@1)
+aten::cat                        pnnx_37                          2 1 255 254 input.16
+prim::Constant                   pnnx_38                          0 1 257 value=1
+Conv2d                           model.17.cv1.conv                1 1 input.16 392 bias=1 dilation=(1,1) groups=1 in_channels=256 kernel_size=(1,1) out_channels=64 padding=(0,0) stride=(1,1) @bias=(64) @weight=(64,256,1,1)
+SiLU                             model.17.cv1.act                 1 1 392 393
+Conv2d                           model.17.m.0.cv1.conv            1 1 393 568 bias=1 dilation=(1,1) groups=1 in_channels=64 kernel_size=(1,1) out_channels=64 padding=(0,0) stride=(1,1) @bias=(64) @weight=(64,64,1,1)
+SiLU                             model.17.m.0.cv1.act             1 1 568 569
+Conv2d                           model.17.m.0.cv2.conv            1 1 569 572 bias=1 dilation=(1,1) groups=1 in_channels=64 kernel_size=(3,3) out_channels=64 padding=(1,1) stride=(1,1) @bias=(64) @weight=(64,64,3,3)
+SiLU                             model.17.m.0.cv2.act             1 1 572 573
+Conv2d                           model.17.cv2.conv                1 1 input.16 398 bias=1 dilation=(1,1) groups=1 in_channels=256 kernel_size=(1,1) out_channels=64 padding=(0,0) stride=(1,1) @bias=(64) @weight=(64,256,1,1)
+SiLU                             model.17.cv2.act                 1 1 398 399
+Expression                       pnnx_expr_4                      2 1 573 399 265 expr=(@0,@1)
+aten::cat                        pnnx_40                          2 1 265 257 input.18
+Conv2d                           model.17.cv3.conv                1 1 input.18 402 bias=1 dilation=(1,1) groups=1 in_channels=128 kernel_size=(1,1) out_channels=128 padding=(0,0) stride=(1,1) @bias=(128) @weight=(128,128,1,1)
+SiLU                             model.17.cv3.act                 1 1 402 403
+Conv2d                           model.18.conv                    1 1 403 270 bias=1 dilation=(1,1) groups=1 in_channels=128 kernel_size=(3,3) out_channels=128 padding=(1,1) stride=(2,2) @bias=(128) @weight=(128,128,3,3)
+SiLU                             model.18.act                     1 1 270 271
+prim::Constant                   pnnx_41                          0 1 272 value=1
+Expression                       pnnx_expr_3                      2 1 271 253 273 expr=(@0,@1)
+aten::cat                        pnnx_43                          2 1 273 272 input.20
+prim::Constant                   pnnx_44                          0 1 275 value=1
+Conv2d                           model.20.cv1.conv                1 1 input.20 406 bias=1 dilation=(1,1) groups=1 in_channels=256 kernel_size=(1,1) out_channels=128 padding=(0,0) stride=(1,1) @bias=(128) @weight=(128,256,1,1)
+SiLU                             model.20.cv1.act                 1 1 406 407
+Conv2d                           model.20.m.0.cv1.conv            1 1 407 576 bias=1 dilation=(1,1) groups=1 in_channels=128 kernel_size=(1,1) out_channels=128 padding=(0,0) stride=(1,1) @bias=(128) @weight=(128,128,1,1)
+SiLU                             model.20.m.0.cv1.act             1 1 576 577
+Conv2d                           model.20.m.0.cv2.conv            1 1 577 580 bias=1 dilation=(1,1) groups=1 in_channels=128 kernel_size=(3,3) out_channels=128 padding=(1,1) stride=(1,1) @bias=(128) @weight=(128,128,3,3)
+SiLU                             model.20.m.0.cv2.act             1 1 580 581
+Conv2d                           model.20.cv2.conv                1 1 input.20 412 bias=1 dilation=(1,1) groups=1 in_channels=256 kernel_size=(1,1) out_channels=128 padding=(0,0) stride=(1,1) @bias=(128) @weight=(128,256,1,1)
+SiLU                             model.20.cv2.act                 1 1 412 413
+Expression                       pnnx_expr_2                      2 1 581 413 283 expr=(@0,@1)
+aten::cat                        pnnx_46                          2 1 283 275 input.22
+Conv2d                           model.20.cv3.conv                1 1 input.22 416 bias=1 dilation=(1,1) groups=1 in_channels=256 kernel_size=(1,1) out_channels=256 padding=(0,0) stride=(1,1) @bias=(256) @weight=(256,256,1,1)
+SiLU                             model.20.cv3.act                 1 1 416 417
+Conv2d                           model.21.conv                    1 1 417 288 bias=1 dilation=(1,1) groups=1 in_channels=256 kernel_size=(3,3) out_channels=256 padding=(1,1) stride=(2,2) @bias=(256) @weight=(256,256,3,3)
+SiLU                             model.21.act                     1 1 288 289
+prim::Constant                   pnnx_47                          0 1 290 value=1
+Expression                       pnnx_expr_1                      2 1 289 235 291 expr=(@0,@1)
+aten::cat                        pnnx_49                          2 1 291 290 input.24
+prim::Constant                   pnnx_50                          0 1 293 value=1
+Conv2d                           model.23.cv1.conv                1 1 input.24 420 bias=1 dilation=(1,1) groups=1 in_channels=512 kernel_size=(1,1) out_channels=256 padding=(0,0) stride=(1,1) @bias=(256) @weight=(256,512,1,1)
+SiLU                             model.23.cv1.act                 1 1 420 421
+Conv2d                           model.23.m.0.cv1.conv            1 1 421 584 bias=1 dilation=(1,1) groups=1 in_channels=256 kernel_size=(1,1) out_channels=256 padding=(0,0) stride=(1,1) @bias=(256) @weight=(256,256,1,1)
+SiLU                             model.23.m.0.cv1.act             1 1 584 585
+Conv2d                           model.23.m.0.cv2.conv            1 1 585 588 bias=1 dilation=(1,1) groups=1 in_channels=256 kernel_size=(3,3) out_channels=256 padding=(1,1) stride=(1,1) @bias=(256) @weight=(256,256,3,3)
+SiLU                             model.23.m.0.cv2.act             1 1 588 589
+Conv2d                           model.23.cv2.conv                1 1 input.24 426 bias=1 dilation=(1,1) groups=1 in_channels=512 kernel_size=(1,1) out_channels=256 padding=(0,0) stride=(1,1) @bias=(256) @weight=(256,512,1,1)
+SiLU                             model.23.cv2.act                 1 1 426 427
+Expression                       pnnx_expr_0                      2 1 589 427 301 expr=(@0,@1)
+aten::cat                        pnnx_52                          2 1 301 293 input.1
+Conv2d                           model.23.cv3.conv                1 1 input.1 430 bias=1 dilation=(1,1) groups=1 in_channels=512 kernel_size=(1,1) out_channels=512 padding=(0,0) stride=(1,1) @bias=(512) @weight=(512,512,1,1)
+SiLU                             model.23.cv3.act                 1 1 430 431
+__torch__.models.yolo.Detect     24                               3 1 403 417 431 145
+Output                           pnnx_output_0                    1 0 145
