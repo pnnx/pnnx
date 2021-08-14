@@ -1,0 +1,255 @@
+7767517
+253 289
+Input                            pnnx_input_1                     0 1 images.1
+prim::Constant                   pnnx_4                           0 1 26 value=0
+aten::unbind                     pnnx_8                           2 1 images.1 26 32
+prim::ListUnpack                 pnnx_9                           1 1 32 img.1
+__torch__.yolort.models.transform.YOLOTransform transform                        1 1 images.1 38
+prim::TupleUnpack                pnnx_14                          1 3 38 39 40 41
+__torch__.yolort.models.common.Focus 0                                1 1 39 129
+Conv2d                           model.model.backbone.body.1.conv 1 1 129 185 bias=0 dilation=(1,1) groups=1 in_channels=32 kernel_size=(3,3) out_channels=64 padding=(1,1) stride=(2,2) @weight=(64,32,3,3)
+BatchNorm2d                      model.model.backbone.body.1.bn   1 1 185 186 affine=1 eps=1.000000e-03 num_features=64 @bias=(64) @running_mean=(64) @running_var=(64) @weight=(64)
+SiLU                             model.model.backbone.body.1.act  1 1 186 187
+prim::Constant                   pnnx_15                          0 1 188 value=1
+Conv2d                           model.model.backbone.body.2.cv1.conv 1 1 187 337 bias=0 dilation=(1,1) groups=1 in_channels=64 kernel_size=(1,1) out_channels=32 padding=(0,0) stride=(1,1) @weight=(32,64,1,1)
+BatchNorm2d                      model.model.backbone.body.2.cv1.bn 1 1 337 338 affine=1 eps=1.000000e-03 num_features=32 @bias=(32) @running_mean=(32) @running_var=(32) @weight=(32)
+SiLU                             model.model.backbone.body.2.cv1.act 1 1 338 339
+Conv2d                           model.model.backbone.body.2.m.0.cv1.conv 1 1 339 579 bias=0 dilation=(1,1) groups=1 in_channels=32 kernel_size=(1,1) out_channels=32 padding=(0,0) stride=(1,1) @weight=(32,32,1,1)
+BatchNorm2d                      model.model.backbone.body.2.m.0.cv1.bn 1 1 579 580 affine=1 eps=1.000000e-03 num_features=32 @bias=(32) @running_mean=(32) @running_var=(32) @weight=(32)
+SiLU                             model.model.backbone.body.2.m.0.cv1.act 1 1 580 581
+Conv2d                           model.model.backbone.body.2.m.0.cv2.conv 1 1 581 585 bias=0 dilation=(1,1) groups=1 in_channels=32 kernel_size=(3,3) out_channels=32 padding=(1,1) stride=(1,1) @weight=(32,32,3,3)
+BatchNorm2d                      model.model.backbone.body.2.m.0.cv2.bn 1 1 585 586 affine=1 eps=1.000000e-03 num_features=32 @bias=(32) @running_mean=(32) @running_var=(32) @weight=(32)
+SiLU                             model.model.backbone.body.2.m.0.cv2.act 1 1 586 587
+Conv2d                           model.model.backbone.body.2.cv2.conv 1 1 187 345 bias=0 dilation=(1,1) groups=1 in_channels=64 kernel_size=(1,1) out_channels=32 padding=(0,0) stride=(1,1) @weight=(32,64,1,1)
+BatchNorm2d                      model.model.backbone.body.2.cv2.bn 1 1 345 346 affine=1 eps=1.000000e-03 num_features=32 @bias=(32) @running_mean=(32) @running_var=(32) @weight=(32)
+SiLU                             model.model.backbone.body.2.cv2.act 1 1 346 347
+Expression                       pnnx_expr_37                     3 1 339 587 347 196 expr=(add(@0,@1,1),@2)
+aten::cat                        pnnx_19                          2 1 196 188 input.4
+Conv2d                           model.model.backbone.body.2.cv3.conv 1 1 input.4 351 bias=0 dilation=(1,1) groups=1 in_channels=64 kernel_size=(1,1) out_channels=64 padding=(0,0) stride=(1,1) @weight=(64,64,1,1)
+BatchNorm2d                      model.model.backbone.body.2.cv3.bn 1 1 351 352 affine=1 eps=1.000000e-03 num_features=64 @bias=(64) @running_mean=(64) @running_var=(64) @weight=(64)
+SiLU                             model.model.backbone.body.2.cv3.act 1 1 352 353
+Conv2d                           model.model.backbone.body.3.conv 1 1 353 202 bias=0 dilation=(1,1) groups=1 in_channels=64 kernel_size=(3,3) out_channels=128 padding=(1,1) stride=(2,2) @weight=(128,64,3,3)
+BatchNorm2d                      model.model.backbone.body.3.bn   1 1 202 203 affine=1 eps=1.000000e-03 num_features=128 @bias=(128) @running_mean=(128) @running_var=(128) @weight=(128)
+SiLU                             model.model.backbone.body.3.act  1 1 203 204
+prim::Constant                   pnnx_20                          0 1 205 value=1
+Conv2d                           model.model.backbone.body.4.cv1.conv 1 1 204 357 bias=0 dilation=(1,1) groups=1 in_channels=128 kernel_size=(1,1) out_channels=64 padding=(0,0) stride=(1,1) @weight=(64,128,1,1)
+BatchNorm2d                      model.model.backbone.body.4.cv1.bn 1 1 357 358 affine=1 eps=1.000000e-03 num_features=64 @bias=(64) @running_mean=(64) @running_var=(64) @weight=(64)
+SiLU                             model.model.backbone.body.4.cv1.act 1 1 358 359
+Conv2d                           model.model.backbone.body.4.m.0.cv1.conv 1 1 359 591 bias=0 dilation=(1,1) groups=1 in_channels=64 kernel_size=(1,1) out_channels=64 padding=(0,0) stride=(1,1) @weight=(64,64,1,1)
+BatchNorm2d                      model.model.backbone.body.4.m.0.cv1.bn 1 1 591 592 affine=1 eps=1.000000e-03 num_features=64 @bias=(64) @running_mean=(64) @running_var=(64) @weight=(64)
+SiLU                             model.model.backbone.body.4.m.0.cv1.act 1 1 592 593
+Conv2d                           model.model.backbone.body.4.m.0.cv2.conv 1 1 593 597 bias=0 dilation=(1,1) groups=1 in_channels=64 kernel_size=(3,3) out_channels=64 padding=(1,1) stride=(1,1) @weight=(64,64,3,3)
+BatchNorm2d                      model.model.backbone.body.4.m.0.cv2.bn 1 1 597 598 affine=1 eps=1.000000e-03 num_features=64 @bias=(64) @running_mean=(64) @running_var=(64) @weight=(64)
+SiLU                             model.model.backbone.body.4.m.0.cv2.act 1 1 598 599
+Expression                       pnnx_expr_36                     2 1 359 599 525 expr=add(@0,@1,1)
+Conv2d                           model.model.backbone.body.4.m.1.cv1.conv 1 1 525 603 bias=0 dilation=(1,1) groups=1 in_channels=64 kernel_size=(1,1) out_channels=64 padding=(0,0) stride=(1,1) @weight=(64,64,1,1)
+BatchNorm2d                      model.model.backbone.body.4.m.1.cv1.bn 1 1 603 604 affine=1 eps=1.000000e-03 num_features=64 @bias=(64) @running_mean=(64) @running_var=(64) @weight=(64)
+SiLU                             model.model.backbone.body.4.m.1.cv1.act 1 1 604 605
+Conv2d                           model.model.backbone.body.4.m.1.cv2.conv 1 1 605 609 bias=0 dilation=(1,1) groups=1 in_channels=64 kernel_size=(3,3) out_channels=64 padding=(1,1) stride=(1,1) @weight=(64,64,3,3)
+BatchNorm2d                      model.model.backbone.body.4.m.1.cv2.bn 1 1 609 610 affine=1 eps=1.000000e-03 num_features=64 @bias=(64) @running_mean=(64) @running_var=(64) @weight=(64)
+SiLU                             model.model.backbone.body.4.m.1.cv2.act 1 1 610 611
+Expression                       pnnx_expr_35                     3 1 359 599 611 531 expr=add(add(@0,@1,1),@2,1)
+Conv2d                           model.model.backbone.body.4.m.2.cv1.conv 1 1 531 615 bias=0 dilation=(1,1) groups=1 in_channels=64 kernel_size=(1,1) out_channels=64 padding=(0,0) stride=(1,1) @weight=(64,64,1,1)
+BatchNorm2d                      model.model.backbone.body.4.m.2.cv1.bn 1 1 615 616 affine=1 eps=1.000000e-03 num_features=64 @bias=(64) @running_mean=(64) @running_var=(64) @weight=(64)
+SiLU                             model.model.backbone.body.4.m.2.cv1.act 1 1 616 617
+Conv2d                           model.model.backbone.body.4.m.2.cv2.conv 1 1 617 621 bias=0 dilation=(1,1) groups=1 in_channels=64 kernel_size=(3,3) out_channels=64 padding=(1,1) stride=(1,1) @weight=(64,64,3,3)
+BatchNorm2d                      model.model.backbone.body.4.m.2.cv2.bn 1 1 621 622 affine=1 eps=1.000000e-03 num_features=64 @bias=(64) @running_mean=(64) @running_var=(64) @weight=(64)
+SiLU                             model.model.backbone.body.4.m.2.cv2.act 1 1 622 623
+Conv2d                           model.model.backbone.body.4.cv2.conv 1 1 204 369 bias=0 dilation=(1,1) groups=1 in_channels=128 kernel_size=(1,1) out_channels=64 padding=(0,0) stride=(1,1) @weight=(64,128,1,1)
+BatchNorm2d                      model.model.backbone.body.4.cv2.bn 1 1 369 370 affine=1 eps=1.000000e-03 num_features=64 @bias=(64) @running_mean=(64) @running_var=(64) @weight=(64)
+SiLU                             model.model.backbone.body.4.cv2.act 1 1 370 371
+Expression                       pnnx_expr_33                     5 1 359 599 611 623 371 213 expr=(add(add(add(@0,@1,1),@2,1),@3,1),@4)
+aten::cat                        pnnx_28                          2 1 213 205 input.6
+Conv2d                           model.model.backbone.body.4.cv3.conv 1 1 input.6 375 bias=0 dilation=(1,1) groups=1 in_channels=128 kernel_size=(1,1) out_channels=128 padding=(0,0) stride=(1,1) @weight=(128,128,1,1)
+BatchNorm2d                      model.model.backbone.body.4.cv3.bn 1 1 375 376 affine=1 eps=1.000000e-03 num_features=128 @bias=(128) @running_mean=(128) @running_var=(128) @weight=(128)
+SiLU                             model.model.backbone.body.4.cv3.act 1 1 376 377
+Conv2d                           model.model.backbone.body.5.conv 1 1 377 219 bias=0 dilation=(1,1) groups=1 in_channels=128 kernel_size=(3,3) out_channels=256 padding=(1,1) stride=(2,2) @weight=(256,128,3,3)
+BatchNorm2d                      model.model.backbone.body.5.bn   1 1 219 220 affine=1 eps=1.000000e-03 num_features=256 @bias=(256) @running_mean=(256) @running_var=(256) @weight=(256)
+SiLU                             model.model.backbone.body.5.act  1 1 220 221
+prim::Constant                   pnnx_29                          0 1 222 value=1
+Conv2d                           model.model.backbone.body.6.cv1.conv 1 1 221 381 bias=0 dilation=(1,1) groups=1 in_channels=256 kernel_size=(1,1) out_channels=128 padding=(0,0) stride=(1,1) @weight=(128,256,1,1)
+BatchNorm2d                      model.model.backbone.body.6.cv1.bn 1 1 381 382 affine=1 eps=1.000000e-03 num_features=128 @bias=(128) @running_mean=(128) @running_var=(128) @weight=(128)
+SiLU                             model.model.backbone.body.6.cv1.act 1 1 382 383
+Conv2d                           model.model.backbone.body.6.m.0.cv1.conv 1 1 383 627 bias=0 dilation=(1,1) groups=1 in_channels=128 kernel_size=(1,1) out_channels=128 padding=(0,0) stride=(1,1) @weight=(128,128,1,1)
+BatchNorm2d                      model.model.backbone.body.6.m.0.cv1.bn 1 1 627 628 affine=1 eps=1.000000e-03 num_features=128 @bias=(128) @running_mean=(128) @running_var=(128) @weight=(128)
+SiLU                             model.model.backbone.body.6.m.0.cv1.act 1 1 628 629
+Conv2d                           model.model.backbone.body.6.m.0.cv2.conv 1 1 629 633 bias=0 dilation=(1,1) groups=1 in_channels=128 kernel_size=(3,3) out_channels=128 padding=(1,1) stride=(1,1) @weight=(128,128,3,3)
+BatchNorm2d                      model.model.backbone.body.6.m.0.cv2.bn 1 1 633 634 affine=1 eps=1.000000e-03 num_features=128 @bias=(128) @running_mean=(128) @running_var=(128) @weight=(128)
+SiLU                             model.model.backbone.body.6.m.0.cv2.act 1 1 634 635
+Expression                       pnnx_expr_32                     2 1 383 635 543 expr=add(@0,@1,1)
+Conv2d                           model.model.backbone.body.6.m.1.cv1.conv 1 1 543 639 bias=0 dilation=(1,1) groups=1 in_channels=128 kernel_size=(1,1) out_channels=128 padding=(0,0) stride=(1,1) @weight=(128,128,1,1)
+BatchNorm2d                      model.model.backbone.body.6.m.1.cv1.bn 1 1 639 640 affine=1 eps=1.000000e-03 num_features=128 @bias=(128) @running_mean=(128) @running_var=(128) @weight=(128)
+SiLU                             model.model.backbone.body.6.m.1.cv1.act 1 1 640 641
+Conv2d                           model.model.backbone.body.6.m.1.cv2.conv 1 1 641 645 bias=0 dilation=(1,1) groups=1 in_channels=128 kernel_size=(3,3) out_channels=128 padding=(1,1) stride=(1,1) @weight=(128,128,3,3)
+BatchNorm2d                      model.model.backbone.body.6.m.1.cv2.bn 1 1 645 646 affine=1 eps=1.000000e-03 num_features=128 @bias=(128) @running_mean=(128) @running_var=(128) @weight=(128)
+SiLU                             model.model.backbone.body.6.m.1.cv2.act 1 1 646 647
+Expression                       pnnx_expr_31                     3 1 383 635 647 549 expr=add(add(@0,@1,1),@2,1)
+Conv2d                           model.model.backbone.body.6.m.2.cv1.conv 1 1 549 651 bias=0 dilation=(1,1) groups=1 in_channels=128 kernel_size=(1,1) out_channels=128 padding=(0,0) stride=(1,1) @weight=(128,128,1,1)
+BatchNorm2d                      model.model.backbone.body.6.m.2.cv1.bn 1 1 651 652 affine=1 eps=1.000000e-03 num_features=128 @bias=(128) @running_mean=(128) @running_var=(128) @weight=(128)
+SiLU                             model.model.backbone.body.6.m.2.cv1.act 1 1 652 653
+Conv2d                           model.model.backbone.body.6.m.2.cv2.conv 1 1 653 657 bias=0 dilation=(1,1) groups=1 in_channels=128 kernel_size=(3,3) out_channels=128 padding=(1,1) stride=(1,1) @weight=(128,128,3,3)
+BatchNorm2d                      model.model.backbone.body.6.m.2.cv2.bn 1 1 657 658 affine=1 eps=1.000000e-03 num_features=128 @bias=(128) @running_mean=(128) @running_var=(128) @weight=(128)
+SiLU                             model.model.backbone.body.6.m.2.cv2.act 1 1 658 659
+Conv2d                           model.model.backbone.body.6.cv2.conv 1 1 221 393 bias=0 dilation=(1,1) groups=1 in_channels=256 kernel_size=(1,1) out_channels=128 padding=(0,0) stride=(1,1) @weight=(128,256,1,1)
+BatchNorm2d                      model.model.backbone.body.6.cv2.bn 1 1 393 394 affine=1 eps=1.000000e-03 num_features=128 @bias=(128) @running_mean=(128) @running_var=(128) @weight=(128)
+SiLU                             model.model.backbone.body.6.cv2.act 1 1 394 395
+Expression                       pnnx_expr_29                     5 1 383 635 647 659 395 230 expr=(add(add(add(@0,@1,1),@2,1),@3,1),@4)
+aten::cat                        pnnx_37                          2 1 230 222 input.8
+Conv2d                           model.model.backbone.body.6.cv3.conv 1 1 input.8 399 bias=0 dilation=(1,1) groups=1 in_channels=256 kernel_size=(1,1) out_channels=256 padding=(0,0) stride=(1,1) @weight=(256,256,1,1)
+BatchNorm2d                      model.model.backbone.body.6.cv3.bn 1 1 399 400 affine=1 eps=1.000000e-03 num_features=256 @bias=(256) @running_mean=(256) @running_var=(256) @weight=(256)
+SiLU                             model.model.backbone.body.6.cv3.act 1 1 400 401
+Conv2d                           model.model.backbone.body.7.conv 1 1 401 236 bias=0 dilation=(1,1) groups=1 in_channels=256 kernel_size=(3,3) out_channels=512 padding=(1,1) stride=(2,2) @weight=(512,256,3,3)
+BatchNorm2d                      model.model.backbone.body.7.bn   1 1 236 237 affine=1 eps=1.000000e-03 num_features=512 @bias=(512) @running_mean=(512) @running_var=(512) @weight=(512)
+SiLU                             model.model.backbone.body.7.act  1 1 237 238
+prim::Constant                   pnnx_38                          0 1 239 value=1
+Conv2d                           model.model.backbone.body.8.cv1.conv 1 1 238 405 bias=0 dilation=(1,1) groups=1 in_channels=512 kernel_size=(1,1) out_channels=256 padding=(0,0) stride=(1,1) @weight=(256,512,1,1)
+BatchNorm2d                      model.model.backbone.body.8.cv1.bn 1 1 405 406 affine=1 eps=1.000000e-03 num_features=256 @bias=(256) @running_mean=(256) @running_var=(256) @weight=(256)
+SiLU                             model.model.backbone.body.8.cv1.act 1 1 406 407
+MaxPool2d                        model.model.backbone.body.8.m.0  1 1 407 249 dilation=(1,1) kernel_size=(5,5) padding=(2,2) stride=(1,1)
+MaxPool2d                        model.model.backbone.body.8.m.1  1 1 407 250 dilation=(1,1) kernel_size=(9,9) padding=(4,4) stride=(1,1)
+MaxPool2d                        model.model.backbone.body.8.m.2  1 1 407 251 dilation=(1,1) kernel_size=(13,13) padding=(6,6) stride=(1,1)
+Expression                       pnnx_expr_28                     4 1 407 249 250 251 252 expr=(@0,@1,@2,@3)
+aten::cat                        pnnx_40                          2 1 252 239 input.10
+Conv2d                           model.model.backbone.body.8.cv2.conv 1 1 input.10 411 bias=0 dilation=(1,1) groups=1 in_channels=1024 kernel_size=(1,1) out_channels=512 padding=(0,0) stride=(1,1) @weight=(512,1024,1,1)
+BatchNorm2d                      model.model.backbone.body.8.cv2.bn 1 1 411 412 affine=1 eps=1.000000e-03 num_features=512 @bias=(512) @running_mean=(512) @running_var=(512) @weight=(512)
+SiLU                             model.model.backbone.body.8.cv2.act 1 1 412 413
+prim::TupleConstruct             pnnx_41                          3 1 413 401 377 138
+prim::TupleUnpack                pnnx_42                          1 3 138 104 105 106
+prim::Constant                   pnnx_43                          0 1 139 value=1
+prim::Constant                   pnnx_44                          0 1 255 value=1
+Conv2d                           model.model.backbone.pan.inner_blocks.0.cv1.conv 1 1 104 417 bias=0 dilation=(1,1) groups=1 in_channels=512 kernel_size=(1,1) out_channels=256 padding=(0,0) stride=(1,1) @weight=(256,512,1,1)
+BatchNorm2d                      model.model.backbone.pan.inner_blocks.0.cv1.bn 1 1 417 418 affine=1 eps=1.000000e-03 num_features=256 @bias=(256) @running_mean=(256) @running_var=(256) @weight=(256)
+SiLU                             model.model.backbone.pan.inner_blocks.0.cv1.act 1 1 418 419
+Conv2d                           model.model.backbone.pan.inner_blocks.0.m.0.cv1.conv 1 1 419 663 bias=0 dilation=(1,1) groups=1 in_channels=256 kernel_size=(1,1) out_channels=256 padding=(0,0) stride=(1,1) @weight=(256,256,1,1)
+BatchNorm2d                      model.model.backbone.pan.inner_blocks.0.m.0.cv1.bn 1 1 663 664 affine=1 eps=1.000000e-03 num_features=256 @bias=(256) @running_mean=(256) @running_var=(256) @weight=(256)
+SiLU                             model.model.backbone.pan.inner_blocks.0.m.0.cv1.act 1 1 664 665
+Conv2d                           model.model.backbone.pan.inner_blocks.0.m.0.cv2.conv 1 1 665 669 bias=0 dilation=(1,1) groups=1 in_channels=256 kernel_size=(3,3) out_channels=256 padding=(1,1) stride=(1,1) @weight=(256,256,3,3)
+BatchNorm2d                      model.model.backbone.pan.inner_blocks.0.m.0.cv2.bn 1 1 669 670 affine=1 eps=1.000000e-03 num_features=256 @bias=(256) @running_mean=(256) @running_var=(256) @weight=(256)
+SiLU                             model.model.backbone.pan.inner_blocks.0.m.0.cv2.act 1 1 670 671
+Conv2d                           model.model.backbone.pan.inner_blocks.0.cv2.conv 1 1 104 425 bias=0 dilation=(1,1) groups=1 in_channels=512 kernel_size=(1,1) out_channels=256 padding=(0,0) stride=(1,1) @weight=(256,512,1,1)
+BatchNorm2d                      model.model.backbone.pan.inner_blocks.0.cv2.bn 1 1 425 426 affine=1 eps=1.000000e-03 num_features=256 @bias=(256) @running_mean=(256) @running_var=(256) @weight=(256)
+SiLU                             model.model.backbone.pan.inner_blocks.0.cv2.act 1 1 426 427
+Expression                       pnnx_expr_27                     2 1 671 427 263 expr=(@0,@1)
+aten::cat                        pnnx_46                          2 1 263 255 input.1
+Conv2d                           model.model.backbone.pan.inner_blocks.0.cv3.conv 1 1 input.1 431 bias=0 dilation=(1,1) groups=1 in_channels=512 kernel_size=(1,1) out_channels=512 padding=(0,0) stride=(1,1) @weight=(512,512,1,1)
+BatchNorm2d                      model.model.backbone.pan.inner_blocks.0.cv3.bn 1 1 431 432 affine=1 eps=1.000000e-03 num_features=512 @bias=(512) @running_mean=(512) @running_var=(512) @weight=(512)
+SiLU                             model.model.backbone.pan.inner_blocks.0.cv3.act 1 1 432 433
+Conv2d                           model.model.backbone.pan.inner_blocks.1.conv 1 1 433 269 bias=0 dilation=(1,1) groups=1 in_channels=512 kernel_size=(1,1) out_channels=256 padding=(0,0) stride=(1,1) @weight=(256,512,1,1)
+BatchNorm2d                      model.model.backbone.pan.inner_blocks.1.bn 1 1 269 270 affine=1 eps=1.000000e-03 num_features=256 @bias=(256) @running_mean=(256) @running_var=(256) @weight=(256)
+SiLU                             model.model.backbone.pan.inner_blocks.1.act 1 1 270 271
+Upsample                         model.model.backbone.pan.inner_blocks.2 1 1 271 164
+Expression                       pnnx_expr_26                     2 1 164 105 165 expr=(@0,@1)
+aten::cat                        pnnx_48                          2 1 165 139 input.2
+prim::Constant                   pnnx_49                          0 1 272 value=1
+Conv2d                           model.model.backbone.pan.inner_blocks.3.cv1.conv 1 1 input.2 437 bias=0 dilation=(1,1) groups=1 in_channels=512 kernel_size=(1,1) out_channels=128 padding=(0,0) stride=(1,1) @weight=(128,512,1,1)
+BatchNorm2d                      model.model.backbone.pan.inner_blocks.3.cv1.bn 1 1 437 438 affine=1 eps=1.000000e-03 num_features=128 @bias=(128) @running_mean=(128) @running_var=(128) @weight=(128)
+SiLU                             model.model.backbone.pan.inner_blocks.3.cv1.act 1 1 438 439
+Conv2d                           model.model.backbone.pan.inner_blocks.3.m.0.cv1.conv 1 1 439 675 bias=0 dilation=(1,1) groups=1 in_channels=128 kernel_size=(1,1) out_channels=128 padding=(0,0) stride=(1,1) @weight=(128,128,1,1)
+BatchNorm2d                      model.model.backbone.pan.inner_blocks.3.m.0.cv1.bn 1 1 675 676 affine=1 eps=1.000000e-03 num_features=128 @bias=(128) @running_mean=(128) @running_var=(128) @weight=(128)
+SiLU                             model.model.backbone.pan.inner_blocks.3.m.0.cv1.act 1 1 676 677
+Conv2d                           model.model.backbone.pan.inner_blocks.3.m.0.cv2.conv 1 1 677 681 bias=0 dilation=(1,1) groups=1 in_channels=128 kernel_size=(3,3) out_channels=128 padding=(1,1) stride=(1,1) @weight=(128,128,3,3)
+BatchNorm2d                      model.model.backbone.pan.inner_blocks.3.m.0.cv2.bn 1 1 681 682 affine=1 eps=1.000000e-03 num_features=128 @bias=(128) @running_mean=(128) @running_var=(128) @weight=(128)
+SiLU                             model.model.backbone.pan.inner_blocks.3.m.0.cv2.act 1 1 682 683
+Conv2d                           model.model.backbone.pan.inner_blocks.3.cv2.conv 1 1 input.2 445 bias=0 dilation=(1,1) groups=1 in_channels=512 kernel_size=(1,1) out_channels=128 padding=(0,0) stride=(1,1) @weight=(128,512,1,1)
+BatchNorm2d                      model.model.backbone.pan.inner_blocks.3.cv2.bn 1 1 445 446 affine=1 eps=1.000000e-03 num_features=128 @bias=(128) @running_mean=(128) @running_var=(128) @weight=(128)
+SiLU                             model.model.backbone.pan.inner_blocks.3.cv2.act 1 1 446 447
+Expression                       pnnx_expr_25                     2 1 683 447 280 expr=(@0,@1)
+aten::cat                        pnnx_51                          2 1 280 272 input0.4
+Conv2d                           model.model.backbone.pan.inner_blocks.3.cv3.conv 1 1 input0.4 451 bias=0 dilation=(1,1) groups=1 in_channels=256 kernel_size=(1,1) out_channels=256 padding=(0,0) stride=(1,1) @weight=(256,256,1,1)
+BatchNorm2d                      model.model.backbone.pan.inner_blocks.3.cv3.bn 1 1 451 452 affine=1 eps=1.000000e-03 num_features=256 @bias=(256) @running_mean=(256) @running_var=(256) @weight=(256)
+SiLU                             model.model.backbone.pan.inner_blocks.3.cv3.act 1 1 452 453
+Conv2d                           model.model.backbone.pan.inner_blocks.4.conv 1 1 453 286 bias=0 dilation=(1,1) groups=1 in_channels=256 kernel_size=(1,1) out_channels=128 padding=(0,0) stride=(1,1) @weight=(128,256,1,1)
+BatchNorm2d                      model.model.backbone.pan.inner_blocks.4.bn 1 1 286 287 affine=1 eps=1.000000e-03 num_features=128 @bias=(128) @running_mean=(128) @running_var=(128) @weight=(128)
+SiLU                             model.model.backbone.pan.inner_blocks.4.act 1 1 287 288
+Upsample                         model.model.backbone.pan.inner_blocks.5 1 1 288 169
+Expression                       pnnx_expr_24                     2 1 169 106 170 expr=(@0,@1)
+prim::Constant                   pnnx_53                          0 1 720 value=1
+aten::cat                        pnnx_54                          2 1 170 720 input0.2
+prim::Constant                   pnnx_55                          0 1 289 value=1
+Conv2d                           model.model.backbone.pan.layer_blocks.0.cv1.conv 1 1 input0.2 457 bias=0 dilation=(1,1) groups=1 in_channels=256 kernel_size=(1,1) out_channels=64 padding=(0,0) stride=(1,1) @weight=(64,256,1,1)
+BatchNorm2d                      model.model.backbone.pan.layer_blocks.0.cv1.bn 1 1 457 458 affine=1 eps=1.000000e-03 num_features=64 @bias=(64) @running_mean=(64) @running_var=(64) @weight=(64)
+SiLU                             model.model.backbone.pan.layer_blocks.0.cv1.act 1 1 458 459
+Conv2d                           model.model.backbone.pan.layer_blocks.0.m.0.cv1.conv 1 1 459 687 bias=0 dilation=(1,1) groups=1 in_channels=64 kernel_size=(1,1) out_channels=64 padding=(0,0) stride=(1,1) @weight=(64,64,1,1)
+BatchNorm2d                      model.model.backbone.pan.layer_blocks.0.m.0.cv1.bn 1 1 687 688 affine=1 eps=1.000000e-03 num_features=64 @bias=(64) @running_mean=(64) @running_var=(64) @weight=(64)
+SiLU                             model.model.backbone.pan.layer_blocks.0.m.0.cv1.act 1 1 688 689
+Conv2d                           model.model.backbone.pan.layer_blocks.0.m.0.cv2.conv 1 1 689 693 bias=0 dilation=(1,1) groups=1 in_channels=64 kernel_size=(3,3) out_channels=64 padding=(1,1) stride=(1,1) @weight=(64,64,3,3)
+BatchNorm2d                      model.model.backbone.pan.layer_blocks.0.m.0.cv2.bn 1 1 693 694 affine=1 eps=1.000000e-03 num_features=64 @bias=(64) @running_mean=(64) @running_var=(64) @weight=(64)
+SiLU                             model.model.backbone.pan.layer_blocks.0.m.0.cv2.act 1 1 694 695
+Conv2d                           model.model.backbone.pan.layer_blocks.0.cv2.conv 1 1 input0.2 465 bias=0 dilation=(1,1) groups=1 in_channels=256 kernel_size=(1,1) out_channels=64 padding=(0,0) stride=(1,1) @weight=(64,256,1,1)
+BatchNorm2d                      model.model.backbone.pan.layer_blocks.0.cv2.bn 1 1 465 466 affine=1 eps=1.000000e-03 num_features=64 @bias=(64) @running_mean=(64) @running_var=(64) @weight=(64)
+SiLU                             model.model.backbone.pan.layer_blocks.0.cv2.act 1 1 466 467
+Expression                       pnnx_expr_23                     2 1 695 467 297 expr=(@0,@1)
+aten::cat                        pnnx_57                          2 1 297 289 input0.6
+Conv2d                           model.model.backbone.pan.layer_blocks.0.cv3.conv 1 1 input0.6 471 bias=0 dilation=(1,1) groups=1 in_channels=128 kernel_size=(1,1) out_channels=128 padding=(0,0) stride=(1,1) @weight=(128,128,1,1)
+BatchNorm2d                      model.model.backbone.pan.layer_blocks.0.cv3.bn 1 1 471 472 affine=1 eps=1.000000e-03 num_features=128 @bias=(128) @running_mean=(128) @running_var=(128) @weight=(128)
+SiLU                             model.model.backbone.pan.layer_blocks.0.cv3.act 1 1 472 473
+Conv2d                           model.model.backbone.pan.layer_blocks.1.conv 1 1 473 303 bias=0 dilation=(1,1) groups=1 in_channels=128 kernel_size=(3,3) out_channels=128 padding=(1,1) stride=(2,2) @weight=(128,128,3,3)
+BatchNorm2d                      model.model.backbone.pan.layer_blocks.1.bn 1 1 303 304 affine=1 eps=1.000000e-03 num_features=128 @bias=(128) @running_mean=(128) @running_var=(128) @weight=(128)
+SiLU                             model.model.backbone.pan.layer_blocks.1.act 1 1 304 305
+Expression                       pnnx_expr_22                     2 1 305 288 174 expr=(@0,@1)
+prim::Constant                   pnnx_59                          0 1 721 value=1
+aten::cat                        pnnx_60                          2 1 174 721 input1.1
+prim::Constant                   pnnx_61                          0 1 306 value=1
+Conv2d                           model.model.backbone.pan.layer_blocks.2.cv1.conv 1 1 input1.1 477 bias=0 dilation=(1,1) groups=1 in_channels=256 kernel_size=(1,1) out_channels=128 padding=(0,0) stride=(1,1) @weight=(128,256,1,1)
+BatchNorm2d                      model.model.backbone.pan.layer_blocks.2.cv1.bn 1 1 477 478 affine=1 eps=1.000000e-03 num_features=128 @bias=(128) @running_mean=(128) @running_var=(128) @weight=(128)
+SiLU                             model.model.backbone.pan.layer_blocks.2.cv1.act 1 1 478 479
+Conv2d                           model.model.backbone.pan.layer_blocks.2.m.0.cv1.conv 1 1 479 699 bias=0 dilation=(1,1) groups=1 in_channels=128 kernel_size=(1,1) out_channels=128 padding=(0,0) stride=(1,1) @weight=(128,128,1,1)
+BatchNorm2d                      model.model.backbone.pan.layer_blocks.2.m.0.cv1.bn 1 1 699 700 affine=1 eps=1.000000e-03 num_features=128 @bias=(128) @running_mean=(128) @running_var=(128) @weight=(128)
+SiLU                             model.model.backbone.pan.layer_blocks.2.m.0.cv1.act 1 1 700 701
+Conv2d                           model.model.backbone.pan.layer_blocks.2.m.0.cv2.conv 1 1 701 705 bias=0 dilation=(1,1) groups=1 in_channels=128 kernel_size=(3,3) out_channels=128 padding=(1,1) stride=(1,1) @weight=(128,128,3,3)
+BatchNorm2d                      model.model.backbone.pan.layer_blocks.2.m.0.cv2.bn 1 1 705 706 affine=1 eps=1.000000e-03 num_features=128 @bias=(128) @running_mean=(128) @running_var=(128) @weight=(128)
+SiLU                             model.model.backbone.pan.layer_blocks.2.m.0.cv2.act 1 1 706 707
+Conv2d                           model.model.backbone.pan.layer_blocks.2.cv2.conv 1 1 input1.1 485 bias=0 dilation=(1,1) groups=1 in_channels=256 kernel_size=(1,1) out_channels=128 padding=(0,0) stride=(1,1) @weight=(128,256,1,1)
+BatchNorm2d                      model.model.backbone.pan.layer_blocks.2.cv2.bn 1 1 485 486 affine=1 eps=1.000000e-03 num_features=128 @bias=(128) @running_mean=(128) @running_var=(128) @weight=(128)
+SiLU                             model.model.backbone.pan.layer_blocks.2.cv2.act 1 1 486 487
+Expression                       pnnx_expr_21                     2 1 707 487 314 expr=(@0,@1)
+aten::cat                        pnnx_63                          2 1 314 306 input0.8
+Conv2d                           model.model.backbone.pan.layer_blocks.2.cv3.conv 1 1 input0.8 491 bias=0 dilation=(1,1) groups=1 in_channels=256 kernel_size=(1,1) out_channels=256 padding=(0,0) stride=(1,1) @weight=(256,256,1,1)
+BatchNorm2d                      model.model.backbone.pan.layer_blocks.2.cv3.bn 1 1 491 492 affine=1 eps=1.000000e-03 num_features=256 @bias=(256) @running_mean=(256) @running_var=(256) @weight=(256)
+SiLU                             model.model.backbone.pan.layer_blocks.2.cv3.act 1 1 492 493
+Conv2d                           model.model.backbone.pan.layer_blocks.3.conv 1 1 493 320 bias=0 dilation=(1,1) groups=1 in_channels=256 kernel_size=(3,3) out_channels=256 padding=(1,1) stride=(2,2) @weight=(256,256,3,3)
+BatchNorm2d                      model.model.backbone.pan.layer_blocks.3.bn 1 1 320 321 affine=1 eps=1.000000e-03 num_features=256 @bias=(256) @running_mean=(256) @running_var=(256) @weight=(256)
+SiLU                             model.model.backbone.pan.layer_blocks.3.act 1 1 321 322
+Expression                       pnnx_expr_20                     2 1 322 271 178 expr=(@0,@1)
+prim::Constant                   pnnx_65                          0 1 722 value=1
+aten::cat                        pnnx_66                          2 1 178 722 input2.1
+prim::Constant                   pnnx_67                          0 1 323 value=1
+Conv2d                           model.model.backbone.pan.layer_blocks.4.cv1.conv 1 1 input2.1 497 bias=0 dilation=(1,1) groups=1 in_channels=512 kernel_size=(1,1) out_channels=256 padding=(0,0) stride=(1,1) @weight=(256,512,1,1)
+BatchNorm2d                      model.model.backbone.pan.layer_blocks.4.cv1.bn 1 1 497 498 affine=1 eps=1.000000e-03 num_features=256 @bias=(256) @running_mean=(256) @running_var=(256) @weight=(256)
+SiLU                             model.model.backbone.pan.layer_blocks.4.cv1.act 1 1 498 499
+Conv2d                           model.model.backbone.pan.layer_blocks.4.m.0.cv1.conv 1 1 499 711 bias=0 dilation=(1,1) groups=1 in_channels=256 kernel_size=(1,1) out_channels=256 padding=(0,0) stride=(1,1) @weight=(256,256,1,1)
+BatchNorm2d                      model.model.backbone.pan.layer_blocks.4.m.0.cv1.bn 1 1 711 712 affine=1 eps=1.000000e-03 num_features=256 @bias=(256) @running_mean=(256) @running_var=(256) @weight=(256)
+SiLU                             model.model.backbone.pan.layer_blocks.4.m.0.cv1.act 1 1 712 713
+Conv2d                           model.model.backbone.pan.layer_blocks.4.m.0.cv2.conv 1 1 713 717 bias=0 dilation=(1,1) groups=1 in_channels=256 kernel_size=(3,3) out_channels=256 padding=(1,1) stride=(1,1) @weight=(256,256,3,3)
+BatchNorm2d                      model.model.backbone.pan.layer_blocks.4.m.0.cv2.bn 1 1 717 718 affine=1 eps=1.000000e-03 num_features=256 @bias=(256) @running_mean=(256) @running_var=(256) @weight=(256)
+SiLU                             model.model.backbone.pan.layer_blocks.4.m.0.cv2.act 1 1 718 719
+Conv2d                           model.model.backbone.pan.layer_blocks.4.cv2.conv 1 1 input2.1 505 bias=0 dilation=(1,1) groups=1 in_channels=512 kernel_size=(1,1) out_channels=256 padding=(0,0) stride=(1,1) @weight=(256,512,1,1)
+BatchNorm2d                      model.model.backbone.pan.layer_blocks.4.cv2.bn 1 1 505 506 affine=1 eps=1.000000e-03 num_features=256 @bias=(256) @running_mean=(256) @running_var=(256) @weight=(256)
+SiLU                             model.model.backbone.pan.layer_blocks.4.cv2.act 1 1 506 507
+Expression                       pnnx_expr_19                     2 1 719 507 331 expr=(@0,@1)
+aten::cat                        pnnx_69                          2 1 331 323 input0.1
+Conv2d                           model.model.backbone.pan.layer_blocks.4.cv3.conv 1 1 input0.1 511 bias=0 dilation=(1,1) groups=1 in_channels=512 kernel_size=(1,1) out_channels=512 padding=(0,0) stride=(1,1) @weight=(512,512,1,1)
+BatchNorm2d                      model.model.backbone.pan.layer_blocks.4.cv3.bn 1 1 511 512 affine=1 eps=1.000000e-03 num_features=512 @bias=(512) @running_mean=(512) @running_var=(512) @weight=(512)
+SiLU                             model.model.backbone.pan.layer_blocks.4.cv3.act 1 1 512 513
+prim::TupleConstruct             pnnx_70                          11 1 473 493 513 473 473 473 473 493 493 493 493 181
+prim::TupleUnpack                pnnx_71                          1 11 181 108 109 110 111 112 113 114 115 116 117 118
+prim::TupleConstruct             pnnx_72                          11 1 108 109 110 111 112 113 114 115 116 117 118 119
+prim::TupleUnpack                pnnx_73                          1 11 119 77 78 79 80 81 82 83 84 85 86 87
+__torch__.yolort.models.box_head.YOLOHead head                             3 1 77 78 79 88
+prim::TupleUnpack                pnnx_74                          1 3 88 89 90 91
+__torch__.yolort.models.anchor_utils.AnchorGenerator anchor_generator                 9 1 80 81 82 83 84 85 86 87 79 92
+prim::TupleUnpack                pnnx_75                          1 3 92 93 94 95
+__torch__.yolort.models.box_head.PostProcess post_process                     6 1 89 90 91 93 94 95 96
+prim::TupleUnpack                pnnx_76                          1 3 96 97 98 99
+prim::TupleConstruct             pnnx_77                          3 1 97 98 99 100
+prim::TupleUnpack                pnnx_78                          1 3 100 43 44 45
+prim::Constant                   pnnx_108                         0 1 738 value=1
+aten::unbind                     pnnx_109                         2 1 43 738 60
+prim::ListUnpack                 pnnx_110                         1 4 60 xmin.1 ymin.1 xmax.1 ymax.1
+Expression                       pnnx_expr_0                      12 1 xmin.1 img.1 41 ymin.1 img.1 40 xmax.1 img.1 41 ymax.1 img.1 40 69 expr=(mul(@0,div(size(@1,2),@2)),mul(@3,div(size(@4,1),@5)),mul(@6,div(size(@7,2),@8)),mul(@9,div(size(@10,1),@11)))
+prim::Constant                   pnnx_116                         0 1 739 value=1
+aten::stack                      pnnx_117                         2 1 69 739 70
+prim::TupleConstruct             pnnx_118                         3 1 70 44 45 71
+prim::TupleUnpack                pnnx_119                         1 3 71 6 7 8
+prim::TupleConstruct             pnnx_120                         3 1 6 7 8 12
+Output                           pnnx_output_0                    1 0 12
