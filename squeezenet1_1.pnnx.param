@@ -1,0 +1,70 @@
+7767517
+68 67
+Input                    pnnx_input_1             0 1 x.1
+Conv2d                   features.0               1 1 x.1 35 bias=1 dilation=(1,1) groups=1 in_channels=3 kernel_size=(3,3) out_channels=64 padding=(0,0) stride=(2,2) @bias=(64) @weight=(64,3,3,3)
+ReLU                     features.1               1 1 35 36
+MaxPool2d                features.2               1 1 36 37 ceil_mode=1 dilation=(1,1) kernel_size=(3,3) padding=(0,0) stride=(2,2)
+Conv2d                   features.3.squeeze       1 1 37 63 bias=1 dilation=(1,1) groups=1 in_channels=64 kernel_size=(1,1) out_channels=16 padding=(0,0) stride=(1,1) @bias=(16) @weight=(16,64,1,1)
+ReLU                     features.3.squeeze_activation 1 1 63 64
+Conv2d                   features.3.expand1x1     1 1 64 65 bias=1 dilation=(1,1) groups=1 in_channels=16 kernel_size=(1,1) out_channels=64 padding=(0,0) stride=(1,1) @bias=(64) @weight=(64,16,1,1)
+ReLU                     features.3.expand1x1_activation 1 1 65 66
+Conv2d                   features.3.expand3x3     1 1 64 67 bias=1 dilation=(1,1) groups=1 in_channels=16 kernel_size=(3,3) out_channels=64 padding=(1,1) stride=(1,1) @bias=(64) @weight=(64,16,3,3)
+ReLU                     features.3.expand3x3_activation 1 1 67 68
+torch.cat                pnnx_3                   2 1 66 68 176 dim=1
+Conv2d                   features.4.squeeze       1 1 176 78 bias=1 dilation=(1,1) groups=1 in_channels=128 kernel_size=(1,1) out_channels=16 padding=(0,0) stride=(1,1) @bias=(16) @weight=(16,128,1,1)
+ReLU                     features.4.squeeze_activation 1 1 78 79
+Conv2d                   features.4.expand1x1     1 1 79 80 bias=1 dilation=(1,1) groups=1 in_channels=16 kernel_size=(1,1) out_channels=64 padding=(0,0) stride=(1,1) @bias=(64) @weight=(64,16,1,1)
+ReLU                     features.4.expand1x1_activation 1 1 80 81
+Conv2d                   features.4.expand3x3     1 1 79 82 bias=1 dilation=(1,1) groups=1 in_channels=16 kernel_size=(3,3) out_channels=64 padding=(1,1) stride=(1,1) @bias=(64) @weight=(64,16,3,3)
+ReLU                     features.4.expand3x3_activation 1 1 82 83
+torch.cat                pnnx_5                   2 1 81 83 177 dim=1
+MaxPool2d                features.5               1 1 177 40 ceil_mode=1 dilation=(1,1) kernel_size=(3,3) padding=(0,0) stride=(2,2)
+Conv2d                   features.6.squeeze       1 1 40 93 bias=1 dilation=(1,1) groups=1 in_channels=128 kernel_size=(1,1) out_channels=32 padding=(0,0) stride=(1,1) @bias=(32) @weight=(32,128,1,1)
+ReLU                     features.6.squeeze_activation 1 1 93 94
+Conv2d                   features.6.expand1x1     1 1 94 95 bias=1 dilation=(1,1) groups=1 in_channels=32 kernel_size=(1,1) out_channels=128 padding=(0,0) stride=(1,1) @bias=(128) @weight=(128,32,1,1)
+ReLU                     features.6.expand1x1_activation 1 1 95 96
+Conv2d                   features.6.expand3x3     1 1 94 97 bias=1 dilation=(1,1) groups=1 in_channels=32 kernel_size=(3,3) out_channels=128 padding=(1,1) stride=(1,1) @bias=(128) @weight=(128,32,3,3)
+ReLU                     features.6.expand3x3_activation 1 1 97 98
+torch.cat                pnnx_7                   2 1 96 98 178 dim=1
+Conv2d                   features.7.squeeze       1 1 178 108 bias=1 dilation=(1,1) groups=1 in_channels=256 kernel_size=(1,1) out_channels=32 padding=(0,0) stride=(1,1) @bias=(32) @weight=(32,256,1,1)
+ReLU                     features.7.squeeze_activation 1 1 108 109
+Conv2d                   features.7.expand1x1     1 1 109 110 bias=1 dilation=(1,1) groups=1 in_channels=32 kernel_size=(1,1) out_channels=128 padding=(0,0) stride=(1,1) @bias=(128) @weight=(128,32,1,1)
+ReLU                     features.7.expand1x1_activation 1 1 110 111
+Conv2d                   features.7.expand3x3     1 1 109 112 bias=1 dilation=(1,1) groups=1 in_channels=32 kernel_size=(3,3) out_channels=128 padding=(1,1) stride=(1,1) @bias=(128) @weight=(128,32,3,3)
+ReLU                     features.7.expand3x3_activation 1 1 112 113
+torch.cat                pnnx_9                   2 1 111 113 179 dim=1
+MaxPool2d                features.8               1 1 179 43 ceil_mode=1 dilation=(1,1) kernel_size=(3,3) padding=(0,0) stride=(2,2)
+Conv2d                   features.9.squeeze       1 1 43 123 bias=1 dilation=(1,1) groups=1 in_channels=256 kernel_size=(1,1) out_channels=48 padding=(0,0) stride=(1,1) @bias=(48) @weight=(48,256,1,1)
+ReLU                     features.9.squeeze_activation 1 1 123 124
+Conv2d                   features.9.expand1x1     1 1 124 125 bias=1 dilation=(1,1) groups=1 in_channels=48 kernel_size=(1,1) out_channels=192 padding=(0,0) stride=(1,1) @bias=(192) @weight=(192,48,1,1)
+ReLU                     features.9.expand1x1_activation 1 1 125 126
+Conv2d                   features.9.expand3x3     1 1 124 127 bias=1 dilation=(1,1) groups=1 in_channels=48 kernel_size=(3,3) out_channels=192 padding=(1,1) stride=(1,1) @bias=(192) @weight=(192,48,3,3)
+ReLU                     features.9.expand3x3_activation 1 1 127 128
+torch.cat                pnnx_11                  2 1 126 128 180 dim=1
+Conv2d                   features.10.squeeze      1 1 180 138 bias=1 dilation=(1,1) groups=1 in_channels=384 kernel_size=(1,1) out_channels=48 padding=(0,0) stride=(1,1) @bias=(48) @weight=(48,384,1,1)
+ReLU                     features.10.squeeze_activation 1 1 138 139
+Conv2d                   features.10.expand1x1    1 1 139 140 bias=1 dilation=(1,1) groups=1 in_channels=48 kernel_size=(1,1) out_channels=192 padding=(0,0) stride=(1,1) @bias=(192) @weight=(192,48,1,1)
+ReLU                     features.10.expand1x1_activation 1 1 140 141
+Conv2d                   features.10.expand3x3    1 1 139 142 bias=1 dilation=(1,1) groups=1 in_channels=48 kernel_size=(3,3) out_channels=192 padding=(1,1) stride=(1,1) @bias=(192) @weight=(192,48,3,3)
+ReLU                     features.10.expand3x3_activation 1 1 142 143
+torch.cat                pnnx_13                  2 1 141 143 181 dim=1
+Conv2d                   features.11.squeeze      1 1 181 153 bias=1 dilation=(1,1) groups=1 in_channels=384 kernel_size=(1,1) out_channels=64 padding=(0,0) stride=(1,1) @bias=(64) @weight=(64,384,1,1)
+ReLU                     features.11.squeeze_activation 1 1 153 154
+Conv2d                   features.11.expand1x1    1 1 154 155 bias=1 dilation=(1,1) groups=1 in_channels=64 kernel_size=(1,1) out_channels=256 padding=(0,0) stride=(1,1) @bias=(256) @weight=(256,64,1,1)
+ReLU                     features.11.expand1x1_activation 1 1 155 156
+Conv2d                   features.11.expand3x3    1 1 154 157 bias=1 dilation=(1,1) groups=1 in_channels=64 kernel_size=(3,3) out_channels=256 padding=(1,1) stride=(1,1) @bias=(256) @weight=(256,64,3,3)
+ReLU                     features.11.expand3x3_activation 1 1 157 158
+torch.cat                pnnx_15                  2 1 156 158 182 dim=1
+Conv2d                   features.12.squeeze      1 1 182 168 bias=1 dilation=(1,1) groups=1 in_channels=512 kernel_size=(1,1) out_channels=64 padding=(0,0) stride=(1,1) @bias=(64) @weight=(64,512,1,1)
+ReLU                     features.12.squeeze_activation 1 1 168 169
+Conv2d                   features.12.expand1x1    1 1 169 170 bias=1 dilation=(1,1) groups=1 in_channels=64 kernel_size=(1,1) out_channels=256 padding=(0,0) stride=(1,1) @bias=(256) @weight=(256,64,1,1)
+ReLU                     features.12.expand1x1_activation 1 1 170 171
+Conv2d                   features.12.expand3x3    1 1 169 172 bias=1 dilation=(1,1) groups=1 in_channels=64 kernel_size=(3,3) out_channels=256 padding=(1,1) stride=(1,1) @bias=(256) @weight=(256,64,3,3)
+ReLU                     features.12.expand3x3_activation 1 1 172 173
+torch.cat                pnnx_17                  2 1 171 173 183 dim=1
+Dropout                  classifier.0             1 1 183 52
+Conv2d                   classifier.1             1 1 52 53 bias=1 dilation=(1,1) groups=1 in_channels=512 kernel_size=(1,1) out_channels=1000 padding=(0,0) stride=(1,1) @bias=(1000) @weight=(1000,512,1,1)
+ReLU                     classifier.2             1 1 53 54
+AdaptiveAvgPool2d        classifier.3             1 1 54 55 output_size=(1,1)
+torch.flatten            pnnx_18                  1 1 55 12 end_dim=-1 start_dim=1
+Output                   pnnx_output_0            1 0 12
