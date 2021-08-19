@@ -1,160 +1,158 @@
 7767517
-158 157
-Input                    pnnx_input_1             0 1 x.1
-prim::Constant           pnnx_0                   0 1 12 value=-1
-Conv2d                   features.0.0             1 1 x.1 71 bias=0 dilation=(1,1) groups=1 in_channels=3 kernel_size=(3,3) out_channels=32 padding=(1,1) stride=(2,2) @weight=(32,3,3,3)
-BatchNorm2d              features.0.1             1 1 71 72 affine=1 eps=1.000000e-05 num_features=32 @bias=(32) @running_mean=(32) @running_var=(32) @weight=(32)
-ReLU6                    features.0.2             1 1 72 73
-Conv2d                   features.1.conv.0.0      1 1 73 271 bias=0 dilation=(1,1) groups=32 in_channels=32 kernel_size=(3,3) out_channels=32 padding=(1,1) stride=(1,1) @weight=(32,1,3,3)
-BatchNorm2d              features.1.conv.0.1      1 1 271 272 affine=1 eps=1.000000e-05 num_features=32 @bias=(32) @running_mean=(32) @running_var=(32) @weight=(32)
-ReLU6                    features.1.conv.0.2      1 1 272 273
-Conv2d                   features.1.conv.1        1 1 273 138 bias=0 dilation=(1,1) groups=1 in_channels=32 kernel_size=(1,1) out_channels=16 padding=(0,0) stride=(1,1) @weight=(16,32,1,1)
-BatchNorm2d              features.1.conv.2        1 1 138 139 affine=1 eps=1.000000e-05 num_features=16 @bias=(16) @running_mean=(16) @running_var=(16) @weight=(16)
-Conv2d                   features.2.conv.0.0      1 1 139 277 bias=0 dilation=(1,1) groups=1 in_channels=16 kernel_size=(1,1) out_channels=96 padding=(0,0) stride=(1,1) @weight=(96,16,1,1)
-BatchNorm2d              features.2.conv.0.1      1 1 277 278 affine=1 eps=1.000000e-05 num_features=96 @bias=(96) @running_mean=(96) @running_var=(96) @weight=(96)
-ReLU6                    features.2.conv.0.2      1 1 278 279
-Conv2d                   features.2.conv.1.0      1 1 279 283 bias=0 dilation=(1,1) groups=96 in_channels=96 kernel_size=(3,3) out_channels=96 padding=(1,1) stride=(2,2) @weight=(96,1,3,3)
-BatchNorm2d              features.2.conv.1.1      1 1 283 284 affine=1 eps=1.000000e-05 num_features=96 @bias=(96) @running_mean=(96) @running_var=(96) @weight=(96)
-ReLU6                    features.2.conv.1.2      1 1 284 285
-Conv2d                   features.2.conv.2        1 1 285 146 bias=0 dilation=(1,1) groups=1 in_channels=96 kernel_size=(1,1) out_channels=24 padding=(0,0) stride=(1,1) @weight=(24,96,1,1)
-BatchNorm2d              features.2.conv.3        1 1 146 147 affine=1 eps=1.000000e-05 num_features=24 @bias=(24) @running_mean=(24) @running_var=(24) @weight=(24)
-Conv2d                   features.3.conv.0.0      1 1 147 289 bias=0 dilation=(1,1) groups=1 in_channels=24 kernel_size=(1,1) out_channels=144 padding=(0,0) stride=(1,1) @weight=(144,24,1,1)
-BatchNorm2d              features.3.conv.0.1      1 1 289 290 affine=1 eps=1.000000e-05 num_features=144 @bias=(144) @running_mean=(144) @running_var=(144) @weight=(144)
-ReLU6                    features.3.conv.0.2      1 1 290 291
-Conv2d                   features.3.conv.1.0      1 1 291 295 bias=0 dilation=(1,1) groups=144 in_channels=144 kernel_size=(3,3) out_channels=144 padding=(1,1) stride=(1,1) @weight=(144,1,3,3)
-BatchNorm2d              features.3.conv.1.1      1 1 295 296 affine=1 eps=1.000000e-05 num_features=144 @bias=(144) @running_mean=(144) @running_var=(144) @weight=(144)
-ReLU6                    features.3.conv.1.2      1 1 296 297
-Conv2d                   features.3.conv.2        1 1 297 154 bias=0 dilation=(1,1) groups=1 in_channels=144 kernel_size=(1,1) out_channels=24 padding=(0,0) stride=(1,1) @weight=(24,144,1,1)
-BatchNorm2d              features.3.conv.3        1 1 154 155 affine=1 eps=1.000000e-05 num_features=24 @bias=(24) @running_mean=(24) @running_var=(24) @weight=(24)
-Expression               pnnx_expr_10             2 1 147 155 input.5 expr=add(@0,@1)
-Conv2d                   features.4.conv.0.0      1 1 input.5 301 bias=0 dilation=(1,1) groups=1 in_channels=24 kernel_size=(1,1) out_channels=144 padding=(0,0) stride=(1,1) @weight=(144,24,1,1)
-BatchNorm2d              features.4.conv.0.1      1 1 301 302 affine=1 eps=1.000000e-05 num_features=144 @bias=(144) @running_mean=(144) @running_var=(144) @weight=(144)
-ReLU6                    features.4.conv.0.2      1 1 302 303
-Conv2d                   features.4.conv.1.0      1 1 303 307 bias=0 dilation=(1,1) groups=144 in_channels=144 kernel_size=(3,3) out_channels=144 padding=(1,1) stride=(2,2) @weight=(144,1,3,3)
-BatchNorm2d              features.4.conv.1.1      1 1 307 308 affine=1 eps=1.000000e-05 num_features=144 @bias=(144) @running_mean=(144) @running_var=(144) @weight=(144)
-ReLU6                    features.4.conv.1.2      1 1 308 309
-Conv2d                   features.4.conv.2        1 1 309 162 bias=0 dilation=(1,1) groups=1 in_channels=144 kernel_size=(1,1) out_channels=32 padding=(0,0) stride=(1,1) @weight=(32,144,1,1)
-BatchNorm2d              features.4.conv.3        1 1 162 163 affine=1 eps=1.000000e-05 num_features=32 @bias=(32) @running_mean=(32) @running_var=(32) @weight=(32)
-Conv2d                   features.5.conv.0.0      1 1 163 313 bias=0 dilation=(1,1) groups=1 in_channels=32 kernel_size=(1,1) out_channels=192 padding=(0,0) stride=(1,1) @weight=(192,32,1,1)
-BatchNorm2d              features.5.conv.0.1      1 1 313 314 affine=1 eps=1.000000e-05 num_features=192 @bias=(192) @running_mean=(192) @running_var=(192) @weight=(192)
-ReLU6                    features.5.conv.0.2      1 1 314 315
-Conv2d                   features.5.conv.1.0      1 1 315 319 bias=0 dilation=(1,1) groups=192 in_channels=192 kernel_size=(3,3) out_channels=192 padding=(1,1) stride=(1,1) @weight=(192,1,3,3)
-BatchNorm2d              features.5.conv.1.1      1 1 319 320 affine=1 eps=1.000000e-05 num_features=192 @bias=(192) @running_mean=(192) @running_var=(192) @weight=(192)
-ReLU6                    features.5.conv.1.2      1 1 320 321
-Conv2d                   features.5.conv.2        1 1 321 170 bias=0 dilation=(1,1) groups=1 in_channels=192 kernel_size=(1,1) out_channels=32 padding=(0,0) stride=(1,1) @weight=(32,192,1,1)
-BatchNorm2d              features.5.conv.3        1 1 170 171 affine=1 eps=1.000000e-05 num_features=32 @bias=(32) @running_mean=(32) @running_var=(32) @weight=(32)
-Expression               pnnx_expr_9              2 1 163 171 input.7 expr=add(@0,@1)
-Conv2d                   features.6.conv.0.0      1 1 input.7 325 bias=0 dilation=(1,1) groups=1 in_channels=32 kernel_size=(1,1) out_channels=192 padding=(0,0) stride=(1,1) @weight=(192,32,1,1)
-BatchNorm2d              features.6.conv.0.1      1 1 325 326 affine=1 eps=1.000000e-05 num_features=192 @bias=(192) @running_mean=(192) @running_var=(192) @weight=(192)
-ReLU6                    features.6.conv.0.2      1 1 326 327
-Conv2d                   features.6.conv.1.0      1 1 327 331 bias=0 dilation=(1,1) groups=192 in_channels=192 kernel_size=(3,3) out_channels=192 padding=(1,1) stride=(1,1) @weight=(192,1,3,3)
-BatchNorm2d              features.6.conv.1.1      1 1 331 332 affine=1 eps=1.000000e-05 num_features=192 @bias=(192) @running_mean=(192) @running_var=(192) @weight=(192)
-ReLU6                    features.6.conv.1.2      1 1 332 333
-Conv2d                   features.6.conv.2        1 1 333 178 bias=0 dilation=(1,1) groups=1 in_channels=192 kernel_size=(1,1) out_channels=32 padding=(0,0) stride=(1,1) @weight=(32,192,1,1)
-BatchNorm2d              features.6.conv.3        1 1 178 179 affine=1 eps=1.000000e-05 num_features=32 @bias=(32) @running_mean=(32) @running_var=(32) @weight=(32)
-Expression               pnnx_expr_8              3 1 163 171 179 input.9 expr=add(add(@0,@1),@2)
-Conv2d                   features.7.conv.0.0      1 1 input.9 337 bias=0 dilation=(1,1) groups=1 in_channels=32 kernel_size=(1,1) out_channels=192 padding=(0,0) stride=(1,1) @weight=(192,32,1,1)
-BatchNorm2d              features.7.conv.0.1      1 1 337 338 affine=1 eps=1.000000e-05 num_features=192 @bias=(192) @running_mean=(192) @running_var=(192) @weight=(192)
-ReLU6                    features.7.conv.0.2      1 1 338 339
-Conv2d                   features.7.conv.1.0      1 1 339 343 bias=0 dilation=(1,1) groups=192 in_channels=192 kernel_size=(3,3) out_channels=192 padding=(1,1) stride=(2,2) @weight=(192,1,3,3)
-BatchNorm2d              features.7.conv.1.1      1 1 343 344 affine=1 eps=1.000000e-05 num_features=192 @bias=(192) @running_mean=(192) @running_var=(192) @weight=(192)
-ReLU6                    features.7.conv.1.2      1 1 344 345
-Conv2d                   features.7.conv.2        1 1 345 186 bias=0 dilation=(1,1) groups=1 in_channels=192 kernel_size=(1,1) out_channels=64 padding=(0,0) stride=(1,1) @weight=(64,192,1,1)
-BatchNorm2d              features.7.conv.3        1 1 186 187 affine=1 eps=1.000000e-05 num_features=64 @bias=(64) @running_mean=(64) @running_var=(64) @weight=(64)
-Conv2d                   features.8.conv.0.0      1 1 187 349 bias=0 dilation=(1,1) groups=1 in_channels=64 kernel_size=(1,1) out_channels=384 padding=(0,0) stride=(1,1) @weight=(384,64,1,1)
-BatchNorm2d              features.8.conv.0.1      1 1 349 350 affine=1 eps=1.000000e-05 num_features=384 @bias=(384) @running_mean=(384) @running_var=(384) @weight=(384)
-ReLU6                    features.8.conv.0.2      1 1 350 351
-Conv2d                   features.8.conv.1.0      1 1 351 355 bias=0 dilation=(1,1) groups=384 in_channels=384 kernel_size=(3,3) out_channels=384 padding=(1,1) stride=(1,1) @weight=(384,1,3,3)
-BatchNorm2d              features.8.conv.1.1      1 1 355 356 affine=1 eps=1.000000e-05 num_features=384 @bias=(384) @running_mean=(384) @running_var=(384) @weight=(384)
-ReLU6                    features.8.conv.1.2      1 1 356 357
-Conv2d                   features.8.conv.2        1 1 357 194 bias=0 dilation=(1,1) groups=1 in_channels=384 kernel_size=(1,1) out_channels=64 padding=(0,0) stride=(1,1) @weight=(64,384,1,1)
-BatchNorm2d              features.8.conv.3        1 1 194 195 affine=1 eps=1.000000e-05 num_features=64 @bias=(64) @running_mean=(64) @running_var=(64) @weight=(64)
-Expression               pnnx_expr_7              2 1 187 195 input.11 expr=add(@0,@1)
-Conv2d                   features.9.conv.0.0      1 1 input.11 361 bias=0 dilation=(1,1) groups=1 in_channels=64 kernel_size=(1,1) out_channels=384 padding=(0,0) stride=(1,1) @weight=(384,64,1,1)
-BatchNorm2d              features.9.conv.0.1      1 1 361 362 affine=1 eps=1.000000e-05 num_features=384 @bias=(384) @running_mean=(384) @running_var=(384) @weight=(384)
-ReLU6                    features.9.conv.0.2      1 1 362 363
-Conv2d                   features.9.conv.1.0      1 1 363 367 bias=0 dilation=(1,1) groups=384 in_channels=384 kernel_size=(3,3) out_channels=384 padding=(1,1) stride=(1,1) @weight=(384,1,3,3)
-BatchNorm2d              features.9.conv.1.1      1 1 367 368 affine=1 eps=1.000000e-05 num_features=384 @bias=(384) @running_mean=(384) @running_var=(384) @weight=(384)
-ReLU6                    features.9.conv.1.2      1 1 368 369
-Conv2d                   features.9.conv.2        1 1 369 202 bias=0 dilation=(1,1) groups=1 in_channels=384 kernel_size=(1,1) out_channels=64 padding=(0,0) stride=(1,1) @weight=(64,384,1,1)
-BatchNorm2d              features.9.conv.3        1 1 202 203 affine=1 eps=1.000000e-05 num_features=64 @bias=(64) @running_mean=(64) @running_var=(64) @weight=(64)
-Expression               pnnx_expr_6              3 1 187 195 203 input.13 expr=add(add(@0,@1),@2)
-Conv2d                   features.10.conv.0.0     1 1 input.13 373 bias=0 dilation=(1,1) groups=1 in_channels=64 kernel_size=(1,1) out_channels=384 padding=(0,0) stride=(1,1) @weight=(384,64,1,1)
-BatchNorm2d              features.10.conv.0.1     1 1 373 374 affine=1 eps=1.000000e-05 num_features=384 @bias=(384) @running_mean=(384) @running_var=(384) @weight=(384)
-ReLU6                    features.10.conv.0.2     1 1 374 375
-Conv2d                   features.10.conv.1.0     1 1 375 379 bias=0 dilation=(1,1) groups=384 in_channels=384 kernel_size=(3,3) out_channels=384 padding=(1,1) stride=(1,1) @weight=(384,1,3,3)
-BatchNorm2d              features.10.conv.1.1     1 1 379 380 affine=1 eps=1.000000e-05 num_features=384 @bias=(384) @running_mean=(384) @running_var=(384) @weight=(384)
-ReLU6                    features.10.conv.1.2     1 1 380 381
-Conv2d                   features.10.conv.2       1 1 381 210 bias=0 dilation=(1,1) groups=1 in_channels=384 kernel_size=(1,1) out_channels=64 padding=(0,0) stride=(1,1) @weight=(64,384,1,1)
-BatchNorm2d              features.10.conv.3       1 1 210 211 affine=1 eps=1.000000e-05 num_features=64 @bias=(64) @running_mean=(64) @running_var=(64) @weight=(64)
-Expression               pnnx_expr_5              4 1 187 195 203 211 input.15 expr=add(add(add(@0,@1),@2),@3)
-Conv2d                   features.11.conv.0.0     1 1 input.15 385 bias=0 dilation=(1,1) groups=1 in_channels=64 kernel_size=(1,1) out_channels=384 padding=(0,0) stride=(1,1) @weight=(384,64,1,1)
-BatchNorm2d              features.11.conv.0.1     1 1 385 386 affine=1 eps=1.000000e-05 num_features=384 @bias=(384) @running_mean=(384) @running_var=(384) @weight=(384)
-ReLU6                    features.11.conv.0.2     1 1 386 387
-Conv2d                   features.11.conv.1.0     1 1 387 391 bias=0 dilation=(1,1) groups=384 in_channels=384 kernel_size=(3,3) out_channels=384 padding=(1,1) stride=(1,1) @weight=(384,1,3,3)
-BatchNorm2d              features.11.conv.1.1     1 1 391 392 affine=1 eps=1.000000e-05 num_features=384 @bias=(384) @running_mean=(384) @running_var=(384) @weight=(384)
-ReLU6                    features.11.conv.1.2     1 1 392 393
-Conv2d                   features.11.conv.2       1 1 393 218 bias=0 dilation=(1,1) groups=1 in_channels=384 kernel_size=(1,1) out_channels=96 padding=(0,0) stride=(1,1) @weight=(96,384,1,1)
-BatchNorm2d              features.11.conv.3       1 1 218 219 affine=1 eps=1.000000e-05 num_features=96 @bias=(96) @running_mean=(96) @running_var=(96) @weight=(96)
-Conv2d                   features.12.conv.0.0     1 1 219 397 bias=0 dilation=(1,1) groups=1 in_channels=96 kernel_size=(1,1) out_channels=576 padding=(0,0) stride=(1,1) @weight=(576,96,1,1)
-BatchNorm2d              features.12.conv.0.1     1 1 397 398 affine=1 eps=1.000000e-05 num_features=576 @bias=(576) @running_mean=(576) @running_var=(576) @weight=(576)
-ReLU6                    features.12.conv.0.2     1 1 398 399
-Conv2d                   features.12.conv.1.0     1 1 399 403 bias=0 dilation=(1,1) groups=576 in_channels=576 kernel_size=(3,3) out_channels=576 padding=(1,1) stride=(1,1) @weight=(576,1,3,3)
-BatchNorm2d              features.12.conv.1.1     1 1 403 404 affine=1 eps=1.000000e-05 num_features=576 @bias=(576) @running_mean=(576) @running_var=(576) @weight=(576)
-ReLU6                    features.12.conv.1.2     1 1 404 405
-Conv2d                   features.12.conv.2       1 1 405 226 bias=0 dilation=(1,1) groups=1 in_channels=576 kernel_size=(1,1) out_channels=96 padding=(0,0) stride=(1,1) @weight=(96,576,1,1)
-BatchNorm2d              features.12.conv.3       1 1 226 227 affine=1 eps=1.000000e-05 num_features=96 @bias=(96) @running_mean=(96) @running_var=(96) @weight=(96)
-Expression               pnnx_expr_4              2 1 219 227 input.17 expr=add(@0,@1)
-Conv2d                   features.13.conv.0.0     1 1 input.17 409 bias=0 dilation=(1,1) groups=1 in_channels=96 kernel_size=(1,1) out_channels=576 padding=(0,0) stride=(1,1) @weight=(576,96,1,1)
-BatchNorm2d              features.13.conv.0.1     1 1 409 410 affine=1 eps=1.000000e-05 num_features=576 @bias=(576) @running_mean=(576) @running_var=(576) @weight=(576)
-ReLU6                    features.13.conv.0.2     1 1 410 411
-Conv2d                   features.13.conv.1.0     1 1 411 415 bias=0 dilation=(1,1) groups=576 in_channels=576 kernel_size=(3,3) out_channels=576 padding=(1,1) stride=(1,1) @weight=(576,1,3,3)
-BatchNorm2d              features.13.conv.1.1     1 1 415 416 affine=1 eps=1.000000e-05 num_features=576 @bias=(576) @running_mean=(576) @running_var=(576) @weight=(576)
-ReLU6                    features.13.conv.1.2     1 1 416 417
-Conv2d                   features.13.conv.2       1 1 417 234 bias=0 dilation=(1,1) groups=1 in_channels=576 kernel_size=(1,1) out_channels=96 padding=(0,0) stride=(1,1) @weight=(96,576,1,1)
-BatchNorm2d              features.13.conv.3       1 1 234 235 affine=1 eps=1.000000e-05 num_features=96 @bias=(96) @running_mean=(96) @running_var=(96) @weight=(96)
-Expression               pnnx_expr_3              3 1 219 227 235 input.19 expr=add(add(@0,@1),@2)
-Conv2d                   features.14.conv.0.0     1 1 input.19 421 bias=0 dilation=(1,1) groups=1 in_channels=96 kernel_size=(1,1) out_channels=576 padding=(0,0) stride=(1,1) @weight=(576,96,1,1)
-BatchNorm2d              features.14.conv.0.1     1 1 421 422 affine=1 eps=1.000000e-05 num_features=576 @bias=(576) @running_mean=(576) @running_var=(576) @weight=(576)
-ReLU6                    features.14.conv.0.2     1 1 422 423
-Conv2d                   features.14.conv.1.0     1 1 423 427 bias=0 dilation=(1,1) groups=576 in_channels=576 kernel_size=(3,3) out_channels=576 padding=(1,1) stride=(2,2) @weight=(576,1,3,3)
-BatchNorm2d              features.14.conv.1.1     1 1 427 428 affine=1 eps=1.000000e-05 num_features=576 @bias=(576) @running_mean=(576) @running_var=(576) @weight=(576)
-ReLU6                    features.14.conv.1.2     1 1 428 429
-Conv2d                   features.14.conv.2       1 1 429 242 bias=0 dilation=(1,1) groups=1 in_channels=576 kernel_size=(1,1) out_channels=160 padding=(0,0) stride=(1,1) @weight=(160,576,1,1)
-BatchNorm2d              features.14.conv.3       1 1 242 243 affine=1 eps=1.000000e-05 num_features=160 @bias=(160) @running_mean=(160) @running_var=(160) @weight=(160)
-Conv2d                   features.15.conv.0.0     1 1 243 433 bias=0 dilation=(1,1) groups=1 in_channels=160 kernel_size=(1,1) out_channels=960 padding=(0,0) stride=(1,1) @weight=(960,160,1,1)
-BatchNorm2d              features.15.conv.0.1     1 1 433 434 affine=1 eps=1.000000e-05 num_features=960 @bias=(960) @running_mean=(960) @running_var=(960) @weight=(960)
-ReLU6                    features.15.conv.0.2     1 1 434 435
-Conv2d                   features.15.conv.1.0     1 1 435 439 bias=0 dilation=(1,1) groups=960 in_channels=960 kernel_size=(3,3) out_channels=960 padding=(1,1) stride=(1,1) @weight=(960,1,3,3)
-BatchNorm2d              features.15.conv.1.1     1 1 439 440 affine=1 eps=1.000000e-05 num_features=960 @bias=(960) @running_mean=(960) @running_var=(960) @weight=(960)
-ReLU6                    features.15.conv.1.2     1 1 440 441
-Conv2d                   features.15.conv.2       1 1 441 250 bias=0 dilation=(1,1) groups=1 in_channels=960 kernel_size=(1,1) out_channels=160 padding=(0,0) stride=(1,1) @weight=(160,960,1,1)
-BatchNorm2d              features.15.conv.3       1 1 250 251 affine=1 eps=1.000000e-05 num_features=160 @bias=(160) @running_mean=(160) @running_var=(160) @weight=(160)
-Expression               pnnx_expr_2              2 1 243 251 input.21 expr=add(@0,@1)
-Conv2d                   features.16.conv.0.0     1 1 input.21 445 bias=0 dilation=(1,1) groups=1 in_channels=160 kernel_size=(1,1) out_channels=960 padding=(0,0) stride=(1,1) @weight=(960,160,1,1)
-BatchNorm2d              features.16.conv.0.1     1 1 445 446 affine=1 eps=1.000000e-05 num_features=960 @bias=(960) @running_mean=(960) @running_var=(960) @weight=(960)
-ReLU6                    features.16.conv.0.2     1 1 446 447
-Conv2d                   features.16.conv.1.0     1 1 447 451 bias=0 dilation=(1,1) groups=960 in_channels=960 kernel_size=(3,3) out_channels=960 padding=(1,1) stride=(1,1) @weight=(960,1,3,3)
-BatchNorm2d              features.16.conv.1.1     1 1 451 452 affine=1 eps=1.000000e-05 num_features=960 @bias=(960) @running_mean=(960) @running_var=(960) @weight=(960)
-ReLU6                    features.16.conv.1.2     1 1 452 453
-Conv2d                   features.16.conv.2       1 1 453 258 bias=0 dilation=(1,1) groups=1 in_channels=960 kernel_size=(1,1) out_channels=160 padding=(0,0) stride=(1,1) @weight=(160,960,1,1)
-BatchNorm2d              features.16.conv.3       1 1 258 259 affine=1 eps=1.000000e-05 num_features=160 @bias=(160) @running_mean=(160) @running_var=(160) @weight=(160)
-Expression               pnnx_expr_1              3 1 243 251 259 input.1 expr=add(add(@0,@1),@2)
-Conv2d                   features.17.conv.0.0     1 1 input.1 457 bias=0 dilation=(1,1) groups=1 in_channels=160 kernel_size=(1,1) out_channels=960 padding=(0,0) stride=(1,1) @weight=(960,160,1,1)
-BatchNorm2d              features.17.conv.0.1     1 1 457 458 affine=1 eps=1.000000e-05 num_features=960 @bias=(960) @running_mean=(960) @running_var=(960) @weight=(960)
-ReLU6                    features.17.conv.0.2     1 1 458 459
-Conv2d                   features.17.conv.1.0     1 1 459 463 bias=0 dilation=(1,1) groups=960 in_channels=960 kernel_size=(3,3) out_channels=960 padding=(1,1) stride=(1,1) @weight=(960,1,3,3)
-BatchNorm2d              features.17.conv.1.1     1 1 463 464 affine=1 eps=1.000000e-05 num_features=960 @bias=(960) @running_mean=(960) @running_var=(960) @weight=(960)
-ReLU6                    features.17.conv.1.2     1 1 464 465
-Conv2d                   features.17.conv.2       1 1 465 266 bias=0 dilation=(1,1) groups=1 in_channels=960 kernel_size=(1,1) out_channels=320 padding=(0,0) stride=(1,1) @weight=(320,960,1,1)
-BatchNorm2d              features.17.conv.3       1 1 266 267 affine=1 eps=1.000000e-05 num_features=320 @bias=(320) @running_mean=(320) @running_var=(320) @weight=(320)
-Conv2d                   features.18.0            1 1 267 131 bias=0 dilation=(1,1) groups=1 in_channels=320 kernel_size=(1,1) out_channels=1280 padding=(0,0) stride=(1,1) @weight=(1280,320,1,1)
-BatchNorm2d              features.18.1            1 1 131 132 affine=1 eps=1.000000e-05 num_features=1280 @bias=(1280) @running_mean=(1280) @running_var=(1280) @weight=(1280)
-ReLU6                    features.18.2            1 1 132 133
-Expression               pnnx_expr_0              0 1 9 expr=(1,1)
-aten::adaptive_avg_pool2d pnnx_24                  2 1 133 9 x0.1
-prim::Constant           pnnx_25                  0 1 467 value=1
-aten::flatten            pnnx_26                  3 1 x0.1 467 12 input.3
-Dropout                  classifier.0             1 1 input.3 66
-Linear                   classifier.1             1 1 66 67 bias=1 in_channels=1280 out_channels=1000 @bias=(1000) @weight=(1000,1280)
-Output                   pnnx_output_0            1 0 67
+156 155
+Input                    pnnx_input_1             0 1 input.3
+Conv2d                   features.0.0             1 1 input.3 80 bias=0 dilation=(1,1) groups=1 in_channels=3 kernel_size=(3,3) out_channels=32 padding=(1,1) stride=(2,2) @weight=(32,3,3,3)
+BatchNorm2d              features.0.1             1 1 80 81 affine=1 eps=1.000000e-05 num_features=32 @bias=(32) @running_mean=(32) @running_var=(32) @weight=(32)
+ReLU6                    features.0.2             1 1 81 82
+Conv2d                   features.1.conv.0.0      1 1 82 280 bias=0 dilation=(1,1) groups=32 in_channels=32 kernel_size=(3,3) out_channels=32 padding=(1,1) stride=(1,1) @weight=(32,1,3,3)
+BatchNorm2d              features.1.conv.0.1      1 1 280 281 affine=1 eps=1.000000e-05 num_features=32 @bias=(32) @running_mean=(32) @running_var=(32) @weight=(32)
+ReLU6                    features.1.conv.0.2      1 1 281 282
+Conv2d                   features.1.conv.1        1 1 282 147 bias=0 dilation=(1,1) groups=1 in_channels=32 kernel_size=(1,1) out_channels=16 padding=(0,0) stride=(1,1) @weight=(16,32,1,1)
+BatchNorm2d              features.1.conv.2        1 1 147 148 affine=1 eps=1.000000e-05 num_features=16 @bias=(16) @running_mean=(16) @running_var=(16) @weight=(16)
+Conv2d                   features.2.conv.0.0      1 1 148 286 bias=0 dilation=(1,1) groups=1 in_channels=16 kernel_size=(1,1) out_channels=96 padding=(0,0) stride=(1,1) @weight=(96,16,1,1)
+BatchNorm2d              features.2.conv.0.1      1 1 286 287 affine=1 eps=1.000000e-05 num_features=96 @bias=(96) @running_mean=(96) @running_var=(96) @weight=(96)
+ReLU6                    features.2.conv.0.2      1 1 287 288
+Conv2d                   features.2.conv.1.0      1 1 288 292 bias=0 dilation=(1,1) groups=96 in_channels=96 kernel_size=(3,3) out_channels=96 padding=(1,1) stride=(2,2) @weight=(96,1,3,3)
+BatchNorm2d              features.2.conv.1.1      1 1 292 293 affine=1 eps=1.000000e-05 num_features=96 @bias=(96) @running_mean=(96) @running_var=(96) @weight=(96)
+ReLU6                    features.2.conv.1.2      1 1 293 294
+Conv2d                   features.2.conv.2        1 1 294 155 bias=0 dilation=(1,1) groups=1 in_channels=96 kernel_size=(1,1) out_channels=24 padding=(0,0) stride=(1,1) @weight=(24,96,1,1)
+BatchNorm2d              features.2.conv.3        1 1 155 156 affine=1 eps=1.000000e-05 num_features=24 @bias=(24) @running_mean=(24) @running_var=(24) @weight=(24)
+Conv2d                   features.3.conv.0.0      1 1 156 298 bias=0 dilation=(1,1) groups=1 in_channels=24 kernel_size=(1,1) out_channels=144 padding=(0,0) stride=(1,1) @weight=(144,24,1,1)
+BatchNorm2d              features.3.conv.0.1      1 1 298 299 affine=1 eps=1.000000e-05 num_features=144 @bias=(144) @running_mean=(144) @running_var=(144) @weight=(144)
+ReLU6                    features.3.conv.0.2      1 1 299 300
+Conv2d                   features.3.conv.1.0      1 1 300 304 bias=0 dilation=(1,1) groups=144 in_channels=144 kernel_size=(3,3) out_channels=144 padding=(1,1) stride=(1,1) @weight=(144,1,3,3)
+BatchNorm2d              features.3.conv.1.1      1 1 304 305 affine=1 eps=1.000000e-05 num_features=144 @bias=(144) @running_mean=(144) @running_var=(144) @weight=(144)
+ReLU6                    features.3.conv.1.2      1 1 305 306
+Conv2d                   features.3.conv.2        1 1 306 163 bias=0 dilation=(1,1) groups=1 in_channels=144 kernel_size=(1,1) out_channels=24 padding=(0,0) stride=(1,1) @weight=(24,144,1,1)
+BatchNorm2d              features.3.conv.3        1 1 163 164 affine=1 eps=1.000000e-05 num_features=24 @bias=(24) @running_mean=(24) @running_var=(24) @weight=(24)
+Expression               pnnx_expr_14             2 1 156 164 input.5 expr=add(@0,@1)
+Conv2d                   features.4.conv.0.0      1 1 input.5 310 bias=0 dilation=(1,1) groups=1 in_channels=24 kernel_size=(1,1) out_channels=144 padding=(0,0) stride=(1,1) @weight=(144,24,1,1)
+BatchNorm2d              features.4.conv.0.1      1 1 310 311 affine=1 eps=1.000000e-05 num_features=144 @bias=(144) @running_mean=(144) @running_var=(144) @weight=(144)
+ReLU6                    features.4.conv.0.2      1 1 311 312
+Conv2d                   features.4.conv.1.0      1 1 312 316 bias=0 dilation=(1,1) groups=144 in_channels=144 kernel_size=(3,3) out_channels=144 padding=(1,1) stride=(2,2) @weight=(144,1,3,3)
+BatchNorm2d              features.4.conv.1.1      1 1 316 317 affine=1 eps=1.000000e-05 num_features=144 @bias=(144) @running_mean=(144) @running_var=(144) @weight=(144)
+ReLU6                    features.4.conv.1.2      1 1 317 318
+Conv2d                   features.4.conv.2        1 1 318 171 bias=0 dilation=(1,1) groups=1 in_channels=144 kernel_size=(1,1) out_channels=32 padding=(0,0) stride=(1,1) @weight=(32,144,1,1)
+BatchNorm2d              features.4.conv.3        1 1 171 172 affine=1 eps=1.000000e-05 num_features=32 @bias=(32) @running_mean=(32) @running_var=(32) @weight=(32)
+Conv2d                   features.5.conv.0.0      1 1 172 322 bias=0 dilation=(1,1) groups=1 in_channels=32 kernel_size=(1,1) out_channels=192 padding=(0,0) stride=(1,1) @weight=(192,32,1,1)
+BatchNorm2d              features.5.conv.0.1      1 1 322 323 affine=1 eps=1.000000e-05 num_features=192 @bias=(192) @running_mean=(192) @running_var=(192) @weight=(192)
+ReLU6                    features.5.conv.0.2      1 1 323 324
+Conv2d                   features.5.conv.1.0      1 1 324 328 bias=0 dilation=(1,1) groups=192 in_channels=192 kernel_size=(3,3) out_channels=192 padding=(1,1) stride=(1,1) @weight=(192,1,3,3)
+BatchNorm2d              features.5.conv.1.1      1 1 328 329 affine=1 eps=1.000000e-05 num_features=192 @bias=(192) @running_mean=(192) @running_var=(192) @weight=(192)
+ReLU6                    features.5.conv.1.2      1 1 329 330
+Conv2d                   features.5.conv.2        1 1 330 179 bias=0 dilation=(1,1) groups=1 in_channels=192 kernel_size=(1,1) out_channels=32 padding=(0,0) stride=(1,1) @weight=(32,192,1,1)
+BatchNorm2d              features.5.conv.3        1 1 179 180 affine=1 eps=1.000000e-05 num_features=32 @bias=(32) @running_mean=(32) @running_var=(32) @weight=(32)
+Expression               pnnx_expr_13             2 1 172 180 input.7 expr=add(@0,@1)
+Conv2d                   features.6.conv.0.0      1 1 input.7 334 bias=0 dilation=(1,1) groups=1 in_channels=32 kernel_size=(1,1) out_channels=192 padding=(0,0) stride=(1,1) @weight=(192,32,1,1)
+BatchNorm2d              features.6.conv.0.1      1 1 334 335 affine=1 eps=1.000000e-05 num_features=192 @bias=(192) @running_mean=(192) @running_var=(192) @weight=(192)
+ReLU6                    features.6.conv.0.2      1 1 335 336
+Conv2d                   features.6.conv.1.0      1 1 336 340 bias=0 dilation=(1,1) groups=192 in_channels=192 kernel_size=(3,3) out_channels=192 padding=(1,1) stride=(1,1) @weight=(192,1,3,3)
+BatchNorm2d              features.6.conv.1.1      1 1 340 341 affine=1 eps=1.000000e-05 num_features=192 @bias=(192) @running_mean=(192) @running_var=(192) @weight=(192)
+ReLU6                    features.6.conv.1.2      1 1 341 342
+Conv2d                   features.6.conv.2        1 1 342 187 bias=0 dilation=(1,1) groups=1 in_channels=192 kernel_size=(1,1) out_channels=32 padding=(0,0) stride=(1,1) @weight=(32,192,1,1)
+BatchNorm2d              features.6.conv.3        1 1 187 188 affine=1 eps=1.000000e-05 num_features=32 @bias=(32) @running_mean=(32) @running_var=(32) @weight=(32)
+Expression               pnnx_expr_12             3 1 172 180 188 input.9 expr=add(add(@0,@1),@2)
+Conv2d                   features.7.conv.0.0      1 1 input.9 346 bias=0 dilation=(1,1) groups=1 in_channels=32 kernel_size=(1,1) out_channels=192 padding=(0,0) stride=(1,1) @weight=(192,32,1,1)
+BatchNorm2d              features.7.conv.0.1      1 1 346 347 affine=1 eps=1.000000e-05 num_features=192 @bias=(192) @running_mean=(192) @running_var=(192) @weight=(192)
+ReLU6                    features.7.conv.0.2      1 1 347 348
+Conv2d                   features.7.conv.1.0      1 1 348 352 bias=0 dilation=(1,1) groups=192 in_channels=192 kernel_size=(3,3) out_channels=192 padding=(1,1) stride=(2,2) @weight=(192,1,3,3)
+BatchNorm2d              features.7.conv.1.1      1 1 352 353 affine=1 eps=1.000000e-05 num_features=192 @bias=(192) @running_mean=(192) @running_var=(192) @weight=(192)
+ReLU6                    features.7.conv.1.2      1 1 353 354
+Conv2d                   features.7.conv.2        1 1 354 195 bias=0 dilation=(1,1) groups=1 in_channels=192 kernel_size=(1,1) out_channels=64 padding=(0,0) stride=(1,1) @weight=(64,192,1,1)
+BatchNorm2d              features.7.conv.3        1 1 195 196 affine=1 eps=1.000000e-05 num_features=64 @bias=(64) @running_mean=(64) @running_var=(64) @weight=(64)
+Conv2d                   features.8.conv.0.0      1 1 196 358 bias=0 dilation=(1,1) groups=1 in_channels=64 kernel_size=(1,1) out_channels=384 padding=(0,0) stride=(1,1) @weight=(384,64,1,1)
+BatchNorm2d              features.8.conv.0.1      1 1 358 359 affine=1 eps=1.000000e-05 num_features=384 @bias=(384) @running_mean=(384) @running_var=(384) @weight=(384)
+ReLU6                    features.8.conv.0.2      1 1 359 360
+Conv2d                   features.8.conv.1.0      1 1 360 364 bias=0 dilation=(1,1) groups=384 in_channels=384 kernel_size=(3,3) out_channels=384 padding=(1,1) stride=(1,1) @weight=(384,1,3,3)
+BatchNorm2d              features.8.conv.1.1      1 1 364 365 affine=1 eps=1.000000e-05 num_features=384 @bias=(384) @running_mean=(384) @running_var=(384) @weight=(384)
+ReLU6                    features.8.conv.1.2      1 1 365 366
+Conv2d                   features.8.conv.2        1 1 366 203 bias=0 dilation=(1,1) groups=1 in_channels=384 kernel_size=(1,1) out_channels=64 padding=(0,0) stride=(1,1) @weight=(64,384,1,1)
+BatchNorm2d              features.8.conv.3        1 1 203 204 affine=1 eps=1.000000e-05 num_features=64 @bias=(64) @running_mean=(64) @running_var=(64) @weight=(64)
+Expression               pnnx_expr_11             2 1 196 204 input.11 expr=add(@0,@1)
+Conv2d                   features.9.conv.0.0      1 1 input.11 370 bias=0 dilation=(1,1) groups=1 in_channels=64 kernel_size=(1,1) out_channels=384 padding=(0,0) stride=(1,1) @weight=(384,64,1,1)
+BatchNorm2d              features.9.conv.0.1      1 1 370 371 affine=1 eps=1.000000e-05 num_features=384 @bias=(384) @running_mean=(384) @running_var=(384) @weight=(384)
+ReLU6                    features.9.conv.0.2      1 1 371 372
+Conv2d                   features.9.conv.1.0      1 1 372 376 bias=0 dilation=(1,1) groups=384 in_channels=384 kernel_size=(3,3) out_channels=384 padding=(1,1) stride=(1,1) @weight=(384,1,3,3)
+BatchNorm2d              features.9.conv.1.1      1 1 376 377 affine=1 eps=1.000000e-05 num_features=384 @bias=(384) @running_mean=(384) @running_var=(384) @weight=(384)
+ReLU6                    features.9.conv.1.2      1 1 377 378
+Conv2d                   features.9.conv.2        1 1 378 211 bias=0 dilation=(1,1) groups=1 in_channels=384 kernel_size=(1,1) out_channels=64 padding=(0,0) stride=(1,1) @weight=(64,384,1,1)
+BatchNorm2d              features.9.conv.3        1 1 211 212 affine=1 eps=1.000000e-05 num_features=64 @bias=(64) @running_mean=(64) @running_var=(64) @weight=(64)
+Expression               pnnx_expr_10             3 1 196 204 212 input.13 expr=add(add(@0,@1),@2)
+Conv2d                   features.10.conv.0.0     1 1 input.13 382 bias=0 dilation=(1,1) groups=1 in_channels=64 kernel_size=(1,1) out_channels=384 padding=(0,0) stride=(1,1) @weight=(384,64,1,1)
+BatchNorm2d              features.10.conv.0.1     1 1 382 383 affine=1 eps=1.000000e-05 num_features=384 @bias=(384) @running_mean=(384) @running_var=(384) @weight=(384)
+ReLU6                    features.10.conv.0.2     1 1 383 384
+Conv2d                   features.10.conv.1.0     1 1 384 388 bias=0 dilation=(1,1) groups=384 in_channels=384 kernel_size=(3,3) out_channels=384 padding=(1,1) stride=(1,1) @weight=(384,1,3,3)
+BatchNorm2d              features.10.conv.1.1     1 1 388 389 affine=1 eps=1.000000e-05 num_features=384 @bias=(384) @running_mean=(384) @running_var=(384) @weight=(384)
+ReLU6                    features.10.conv.1.2     1 1 389 390
+Conv2d                   features.10.conv.2       1 1 390 219 bias=0 dilation=(1,1) groups=1 in_channels=384 kernel_size=(1,1) out_channels=64 padding=(0,0) stride=(1,1) @weight=(64,384,1,1)
+BatchNorm2d              features.10.conv.3       1 1 219 220 affine=1 eps=1.000000e-05 num_features=64 @bias=(64) @running_mean=(64) @running_var=(64) @weight=(64)
+Expression               pnnx_expr_9              4 1 196 204 212 220 input.15 expr=add(add(add(@0,@1),@2),@3)
+Conv2d                   features.11.conv.0.0     1 1 input.15 394 bias=0 dilation=(1,1) groups=1 in_channels=64 kernel_size=(1,1) out_channels=384 padding=(0,0) stride=(1,1) @weight=(384,64,1,1)
+BatchNorm2d              features.11.conv.0.1     1 1 394 395 affine=1 eps=1.000000e-05 num_features=384 @bias=(384) @running_mean=(384) @running_var=(384) @weight=(384)
+ReLU6                    features.11.conv.0.2     1 1 395 396
+Conv2d                   features.11.conv.1.0     1 1 396 400 bias=0 dilation=(1,1) groups=384 in_channels=384 kernel_size=(3,3) out_channels=384 padding=(1,1) stride=(1,1) @weight=(384,1,3,3)
+BatchNorm2d              features.11.conv.1.1     1 1 400 401 affine=1 eps=1.000000e-05 num_features=384 @bias=(384) @running_mean=(384) @running_var=(384) @weight=(384)
+ReLU6                    features.11.conv.1.2     1 1 401 402
+Conv2d                   features.11.conv.2       1 1 402 227 bias=0 dilation=(1,1) groups=1 in_channels=384 kernel_size=(1,1) out_channels=96 padding=(0,0) stride=(1,1) @weight=(96,384,1,1)
+BatchNorm2d              features.11.conv.3       1 1 227 228 affine=1 eps=1.000000e-05 num_features=96 @bias=(96) @running_mean=(96) @running_var=(96) @weight=(96)
+Conv2d                   features.12.conv.0.0     1 1 228 406 bias=0 dilation=(1,1) groups=1 in_channels=96 kernel_size=(1,1) out_channels=576 padding=(0,0) stride=(1,1) @weight=(576,96,1,1)
+BatchNorm2d              features.12.conv.0.1     1 1 406 407 affine=1 eps=1.000000e-05 num_features=576 @bias=(576) @running_mean=(576) @running_var=(576) @weight=(576)
+ReLU6                    features.12.conv.0.2     1 1 407 408
+Conv2d                   features.12.conv.1.0     1 1 408 412 bias=0 dilation=(1,1) groups=576 in_channels=576 kernel_size=(3,3) out_channels=576 padding=(1,1) stride=(1,1) @weight=(576,1,3,3)
+BatchNorm2d              features.12.conv.1.1     1 1 412 413 affine=1 eps=1.000000e-05 num_features=576 @bias=(576) @running_mean=(576) @running_var=(576) @weight=(576)
+ReLU6                    features.12.conv.1.2     1 1 413 414
+Conv2d                   features.12.conv.2       1 1 414 235 bias=0 dilation=(1,1) groups=1 in_channels=576 kernel_size=(1,1) out_channels=96 padding=(0,0) stride=(1,1) @weight=(96,576,1,1)
+BatchNorm2d              features.12.conv.3       1 1 235 236 affine=1 eps=1.000000e-05 num_features=96 @bias=(96) @running_mean=(96) @running_var=(96) @weight=(96)
+Expression               pnnx_expr_8              2 1 228 236 input.17 expr=add(@0,@1)
+Conv2d                   features.13.conv.0.0     1 1 input.17 418 bias=0 dilation=(1,1) groups=1 in_channels=96 kernel_size=(1,1) out_channels=576 padding=(0,0) stride=(1,1) @weight=(576,96,1,1)
+BatchNorm2d              features.13.conv.0.1     1 1 418 419 affine=1 eps=1.000000e-05 num_features=576 @bias=(576) @running_mean=(576) @running_var=(576) @weight=(576)
+ReLU6                    features.13.conv.0.2     1 1 419 420
+Conv2d                   features.13.conv.1.0     1 1 420 424 bias=0 dilation=(1,1) groups=576 in_channels=576 kernel_size=(3,3) out_channels=576 padding=(1,1) stride=(1,1) @weight=(576,1,3,3)
+BatchNorm2d              features.13.conv.1.1     1 1 424 425 affine=1 eps=1.000000e-05 num_features=576 @bias=(576) @running_mean=(576) @running_var=(576) @weight=(576)
+ReLU6                    features.13.conv.1.2     1 1 425 426
+Conv2d                   features.13.conv.2       1 1 426 243 bias=0 dilation=(1,1) groups=1 in_channels=576 kernel_size=(1,1) out_channels=96 padding=(0,0) stride=(1,1) @weight=(96,576,1,1)
+BatchNorm2d              features.13.conv.3       1 1 243 244 affine=1 eps=1.000000e-05 num_features=96 @bias=(96) @running_mean=(96) @running_var=(96) @weight=(96)
+Expression               pnnx_expr_7              3 1 228 236 244 input.19 expr=add(add(@0,@1),@2)
+Conv2d                   features.14.conv.0.0     1 1 input.19 430 bias=0 dilation=(1,1) groups=1 in_channels=96 kernel_size=(1,1) out_channels=576 padding=(0,0) stride=(1,1) @weight=(576,96,1,1)
+BatchNorm2d              features.14.conv.0.1     1 1 430 431 affine=1 eps=1.000000e-05 num_features=576 @bias=(576) @running_mean=(576) @running_var=(576) @weight=(576)
+ReLU6                    features.14.conv.0.2     1 1 431 432
+Conv2d                   features.14.conv.1.0     1 1 432 436 bias=0 dilation=(1,1) groups=576 in_channels=576 kernel_size=(3,3) out_channels=576 padding=(1,1) stride=(2,2) @weight=(576,1,3,3)
+BatchNorm2d              features.14.conv.1.1     1 1 436 437 affine=1 eps=1.000000e-05 num_features=576 @bias=(576) @running_mean=(576) @running_var=(576) @weight=(576)
+ReLU6                    features.14.conv.1.2     1 1 437 438
+Conv2d                   features.14.conv.2       1 1 438 251 bias=0 dilation=(1,1) groups=1 in_channels=576 kernel_size=(1,1) out_channels=160 padding=(0,0) stride=(1,1) @weight=(160,576,1,1)
+BatchNorm2d              features.14.conv.3       1 1 251 252 affine=1 eps=1.000000e-05 num_features=160 @bias=(160) @running_mean=(160) @running_var=(160) @weight=(160)
+Conv2d                   features.15.conv.0.0     1 1 252 442 bias=0 dilation=(1,1) groups=1 in_channels=160 kernel_size=(1,1) out_channels=960 padding=(0,0) stride=(1,1) @weight=(960,160,1,1)
+BatchNorm2d              features.15.conv.0.1     1 1 442 443 affine=1 eps=1.000000e-05 num_features=960 @bias=(960) @running_mean=(960) @running_var=(960) @weight=(960)
+ReLU6                    features.15.conv.0.2     1 1 443 444
+Conv2d                   features.15.conv.1.0     1 1 444 448 bias=0 dilation=(1,1) groups=960 in_channels=960 kernel_size=(3,3) out_channels=960 padding=(1,1) stride=(1,1) @weight=(960,1,3,3)
+BatchNorm2d              features.15.conv.1.1     1 1 448 449 affine=1 eps=1.000000e-05 num_features=960 @bias=(960) @running_mean=(960) @running_var=(960) @weight=(960)
+ReLU6                    features.15.conv.1.2     1 1 449 450
+Conv2d                   features.15.conv.2       1 1 450 259 bias=0 dilation=(1,1) groups=1 in_channels=960 kernel_size=(1,1) out_channels=160 padding=(0,0) stride=(1,1) @weight=(160,960,1,1)
+BatchNorm2d              features.15.conv.3       1 1 259 260 affine=1 eps=1.000000e-05 num_features=160 @bias=(160) @running_mean=(160) @running_var=(160) @weight=(160)
+Expression               pnnx_expr_6              2 1 252 260 input.21 expr=add(@0,@1)
+Conv2d                   features.16.conv.0.0     1 1 input.21 454 bias=0 dilation=(1,1) groups=1 in_channels=160 kernel_size=(1,1) out_channels=960 padding=(0,0) stride=(1,1) @weight=(960,160,1,1)
+BatchNorm2d              features.16.conv.0.1     1 1 454 455 affine=1 eps=1.000000e-05 num_features=960 @bias=(960) @running_mean=(960) @running_var=(960) @weight=(960)
+ReLU6                    features.16.conv.0.2     1 1 455 456
+Conv2d                   features.16.conv.1.0     1 1 456 460 bias=0 dilation=(1,1) groups=960 in_channels=960 kernel_size=(3,3) out_channels=960 padding=(1,1) stride=(1,1) @weight=(960,1,3,3)
+BatchNorm2d              features.16.conv.1.1     1 1 460 461 affine=1 eps=1.000000e-05 num_features=960 @bias=(960) @running_mean=(960) @running_var=(960) @weight=(960)
+ReLU6                    features.16.conv.1.2     1 1 461 462
+Conv2d                   features.16.conv.2       1 1 462 267 bias=0 dilation=(1,1) groups=1 in_channels=960 kernel_size=(1,1) out_channels=160 padding=(0,0) stride=(1,1) @weight=(160,960,1,1)
+BatchNorm2d              features.16.conv.3       1 1 267 268 affine=1 eps=1.000000e-05 num_features=160 @bias=(160) @running_mean=(160) @running_var=(160) @weight=(160)
+Expression               pnnx_expr_5              3 1 252 260 268 input.1 expr=add(add(@0,@1),@2)
+Conv2d                   features.17.conv.0.0     1 1 input.1 466 bias=0 dilation=(1,1) groups=1 in_channels=160 kernel_size=(1,1) out_channels=960 padding=(0,0) stride=(1,1) @weight=(960,160,1,1)
+BatchNorm2d              features.17.conv.0.1     1 1 466 467 affine=1 eps=1.000000e-05 num_features=960 @bias=(960) @running_mean=(960) @running_var=(960) @weight=(960)
+ReLU6                    features.17.conv.0.2     1 1 467 468
+Conv2d                   features.17.conv.1.0     1 1 468 472 bias=0 dilation=(1,1) groups=960 in_channels=960 kernel_size=(3,3) out_channels=960 padding=(1,1) stride=(1,1) @weight=(960,1,3,3)
+BatchNorm2d              features.17.conv.1.1     1 1 472 473 affine=1 eps=1.000000e-05 num_features=960 @bias=(960) @running_mean=(960) @running_var=(960) @weight=(960)
+ReLU6                    features.17.conv.1.2     1 1 473 474
+Conv2d                   features.17.conv.2       1 1 474 275 bias=0 dilation=(1,1) groups=1 in_channels=960 kernel_size=(1,1) out_channels=320 padding=(0,0) stride=(1,1) @weight=(320,960,1,1)
+BatchNorm2d              features.17.conv.3       1 1 275 276 affine=1 eps=1.000000e-05 num_features=320 @bias=(320) @running_mean=(320) @running_var=(320) @weight=(320)
+Conv2d                   features.18.0            1 1 276 140 bias=0 dilation=(1,1) groups=1 in_channels=320 kernel_size=(1,1) out_channels=1280 padding=(0,0) stride=(1,1) @weight=(1280,320,1,1)
+BatchNorm2d              features.18.1            1 1 140 141 affine=1 eps=1.000000e-05 num_features=1280 @bias=(1280) @running_mean=(1280) @running_var=(1280) @weight=(1280)
+ReLU6                    features.18.2            1 1 141 142
+F.adaptive_avg_pool2d    pnnx_25                  1 1 142 11 output_size=(1,1)
+Expression               pnnx_expr_0              1 1 142 21 expr=(int(size(@0,0)),-1)
+torch.reshape            pnnx_30                  2 1 11 21 input0.1
+Dropout                  classifier.0             1 1 input0.1 75
+Linear                   classifier.1             1 1 75 76 bias=1 in_channels=1280 out_channels=1000 @bias=(1000) @weight=(1000,1280)
+Output                   pnnx_output_0            1 0 76
