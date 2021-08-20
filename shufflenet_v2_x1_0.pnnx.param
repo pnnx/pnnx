@@ -1,0 +1,265 @@
+7767517
+263 275
+Input                    pnnx_input_1             0 1 input.3
+Conv2d                   conv1.0                  1 1 input.3 50 bias=0 dilation=(1,1) groups=1 in_channels=3 kernel_size=(3,3) out_channels=24 padding=(1,1) stride=(2,2) @weight=(24,3,3,3)
+BatchNorm2d              conv1.1                  1 1 50 51 affine=1 eps=1.000000e-05 num_features=24 @bias=(24) @running_mean=(24) @running_var=(24) @weight=(24)
+ReLU                     conv1.2                  1 1 51 52
+MaxPool2d                maxpool                  1 1 52 18 ceil_mode=0 dilation=(1,1) kernel_size=(3,3) padding=(1,1) stride=(2,2)
+Conv2d                   stage2.0.branch1.0       1 1 18 653 bias=0 dilation=(1,1) groups=24 in_channels=24 kernel_size=(3,3) out_channels=24 padding=(1,1) stride=(2,2) @weight=(24,1,3,3)
+BatchNorm2d              stage2.0.branch1.1       1 1 653 654 affine=1 eps=1.000000e-05 num_features=24 @bias=(24) @running_mean=(24) @running_var=(24) @weight=(24)
+Conv2d                   stage2.0.branch1.2       1 1 654 655 bias=0 dilation=(1,1) groups=1 in_channels=24 kernel_size=(1,1) out_channels=58 padding=(0,0) stride=(1,1) @weight=(58,24,1,1)
+BatchNorm2d              stage2.0.branch1.3       1 1 655 656 affine=1 eps=1.000000e-05 num_features=58 @bias=(58) @running_mean=(58) @running_var=(58) @weight=(58)
+ReLU                     stage2.0.branch1.4       1 1 656 657
+Conv2d                   stage2.0.branch2.0       1 1 18 666 bias=0 dilation=(1,1) groups=1 in_channels=24 kernel_size=(1,1) out_channels=58 padding=(0,0) stride=(1,1) @weight=(58,24,1,1)
+BatchNorm2d              stage2.0.branch2.1       1 1 666 667 affine=1 eps=1.000000e-05 num_features=58 @bias=(58) @running_mean=(58) @running_var=(58) @weight=(58)
+ReLU                     stage2.0.branch2.2       1 1 667 668
+Conv2d                   stage2.0.branch2.3       1 1 668 669 bias=0 dilation=(1,1) groups=58 in_channels=58 kernel_size=(3,3) out_channels=58 padding=(1,1) stride=(2,2) @weight=(58,1,3,3)
+BatchNorm2d              stage2.0.branch2.4       1 1 669 670 affine=1 eps=1.000000e-05 num_features=58 @bias=(58) @running_mean=(58) @running_var=(58) @weight=(58)
+Conv2d                   stage2.0.branch2.5       1 1 670 671 bias=0 dilation=(1,1) groups=1 in_channels=58 kernel_size=(1,1) out_channels=58 padding=(0,0) stride=(1,1) @weight=(58,58,1,1)
+BatchNorm2d              stage2.0.branch2.6       1 1 671 672 affine=1 eps=1.000000e-05 num_features=58 @bias=(58) @running_mean=(58) @running_var=(58) @weight=(58)
+ReLU                     stage2.0.branch2.7       1 1 672 673
+torch.cat                pnnx_9                   2 1 657 673 1040 dim=1
+Expression               pnnx_expr_272            1 1 1040 119 expr=(int(size(@0,0)),2,int(floor_divide(size(@0,1),2)),int(size(@0,2)),int(size(@0,3)))
+aten::view               pnnx_29                  2 1 1040 119 x0.2
+torch.transpose          pnnx_32                  1 1 x0.2 121 dim0=1 dim1=2
+Expression               pnnx_expr_271            1 1 1040 123 expr=(int(size(@0,0)),-1,int(size(@0,2)),int(size(@0,3)))
+aten::view               pnnx_34                  2 1 121 123 124
+torch.chunk              pnnx_38                  1 2 124 1056 1057 chunks=2 dim=1
+Conv2d                   stage2.1.branch2.0       1 1 1057 682 bias=0 dilation=(1,1) groups=1 in_channels=58 kernel_size=(1,1) out_channels=58 padding=(0,0) stride=(1,1) @weight=(58,58,1,1)
+BatchNorm2d              stage2.1.branch2.1       1 1 682 683 affine=1 eps=1.000000e-05 num_features=58 @bias=(58) @running_mean=(58) @running_var=(58) @weight=(58)
+ReLU                     stage2.1.branch2.2       1 1 683 684
+Conv2d                   stage2.1.branch2.3       1 1 684 685 bias=0 dilation=(1,1) groups=58 in_channels=58 kernel_size=(3,3) out_channels=58 padding=(1,1) stride=(1,1) @weight=(58,1,3,3)
+BatchNorm2d              stage2.1.branch2.4       1 1 685 686 affine=1 eps=1.000000e-05 num_features=58 @bias=(58) @running_mean=(58) @running_var=(58) @weight=(58)
+Conv2d                   stage2.1.branch2.5       1 1 686 687 bias=0 dilation=(1,1) groups=1 in_channels=58 kernel_size=(1,1) out_channels=58 padding=(0,0) stride=(1,1) @weight=(58,58,1,1)
+BatchNorm2d              stage2.1.branch2.6       1 1 687 688 affine=1 eps=1.000000e-05 num_features=58 @bias=(58) @running_mean=(58) @running_var=(58) @weight=(58)
+ReLU                     stage2.1.branch2.7       1 1 688 689
+torch.cat                pnnx_43                  2 1 1056 689 1041 dim=1
+Expression               pnnx_expr_254            1 1 1041 154 expr=(int(size(@0,0)),2,int(floor_divide(size(@0,1),2)),int(size(@0,2)),int(size(@0,3)))
+aten::view               pnnx_64                  2 1 1041 154 x0.4
+torch.transpose          pnnx_67                  1 1 x0.4 156 dim0=1 dim1=2
+Expression               pnnx_expr_253            1 1 1041 158 expr=(int(size(@0,0)),-1,int(size(@0,2)),int(size(@0,3)))
+aten::view               pnnx_69                  2 1 156 158 159
+torch.chunk              pnnx_73                  1 2 159 1058 1059 chunks=2 dim=1
+Conv2d                   stage2.2.branch2.0       1 1 1059 698 bias=0 dilation=(1,1) groups=1 in_channels=58 kernel_size=(1,1) out_channels=58 padding=(0,0) stride=(1,1) @weight=(58,58,1,1)
+BatchNorm2d              stage2.2.branch2.1       1 1 698 699 affine=1 eps=1.000000e-05 num_features=58 @bias=(58) @running_mean=(58) @running_var=(58) @weight=(58)
+ReLU                     stage2.2.branch2.2       1 1 699 700
+Conv2d                   stage2.2.branch2.3       1 1 700 701 bias=0 dilation=(1,1) groups=58 in_channels=58 kernel_size=(3,3) out_channels=58 padding=(1,1) stride=(1,1) @weight=(58,1,3,3)
+BatchNorm2d              stage2.2.branch2.4       1 1 701 702 affine=1 eps=1.000000e-05 num_features=58 @bias=(58) @running_mean=(58) @running_var=(58) @weight=(58)
+Conv2d                   stage2.2.branch2.5       1 1 702 703 bias=0 dilation=(1,1) groups=1 in_channels=58 kernel_size=(1,1) out_channels=58 padding=(0,0) stride=(1,1) @weight=(58,58,1,1)
+BatchNorm2d              stage2.2.branch2.6       1 1 703 704 affine=1 eps=1.000000e-05 num_features=58 @bias=(58) @running_mean=(58) @running_var=(58) @weight=(58)
+ReLU                     stage2.2.branch2.7       1 1 704 705
+torch.cat                pnnx_78                  2 1 1058 705 1042 dim=1
+Expression               pnnx_expr_236            1 1 1042 189 expr=(int(size(@0,0)),2,int(floor_divide(size(@0,1),2)),int(size(@0,2)),int(size(@0,3)))
+aten::view               pnnx_99                  2 1 1042 189 x0.6
+torch.transpose          pnnx_102                 1 1 x0.6 191 dim0=1 dim1=2
+Expression               pnnx_expr_235            1 1 1042 193 expr=(int(size(@0,0)),-1,int(size(@0,2)),int(size(@0,3)))
+aten::view               pnnx_104                 2 1 191 193 194
+torch.chunk              pnnx_108                 1 2 194 1060 1061 chunks=2 dim=1
+Conv2d                   stage2.3.branch2.0       1 1 1061 714 bias=0 dilation=(1,1) groups=1 in_channels=58 kernel_size=(1,1) out_channels=58 padding=(0,0) stride=(1,1) @weight=(58,58,1,1)
+BatchNorm2d              stage2.3.branch2.1       1 1 714 715 affine=1 eps=1.000000e-05 num_features=58 @bias=(58) @running_mean=(58) @running_var=(58) @weight=(58)
+ReLU                     stage2.3.branch2.2       1 1 715 716
+Conv2d                   stage2.3.branch2.3       1 1 716 717 bias=0 dilation=(1,1) groups=58 in_channels=58 kernel_size=(3,3) out_channels=58 padding=(1,1) stride=(1,1) @weight=(58,1,3,3)
+BatchNorm2d              stage2.3.branch2.4       1 1 717 718 affine=1 eps=1.000000e-05 num_features=58 @bias=(58) @running_mean=(58) @running_var=(58) @weight=(58)
+Conv2d                   stage2.3.branch2.5       1 1 718 719 bias=0 dilation=(1,1) groups=1 in_channels=58 kernel_size=(1,1) out_channels=58 padding=(0,0) stride=(1,1) @weight=(58,58,1,1)
+BatchNorm2d              stage2.3.branch2.6       1 1 719 720 affine=1 eps=1.000000e-05 num_features=58 @bias=(58) @running_mean=(58) @running_var=(58) @weight=(58)
+ReLU                     stage2.3.branch2.7       1 1 720 721
+torch.cat                pnnx_113                 2 1 1060 721 1043 dim=1
+Expression               pnnx_expr_218            1 1 1043 224 expr=(int(size(@0,0)),2,int(floor_divide(size(@0,1),2)),int(size(@0,2)),int(size(@0,3)))
+aten::view               pnnx_134                 2 1 1043 224 x0.8
+torch.transpose          pnnx_137                 1 1 x0.8 226 dim0=1 dim1=2
+Expression               pnnx_expr_217            1 1 1043 228 expr=(int(size(@0,0)),-1,int(size(@0,2)),int(size(@0,3)))
+aten::view               pnnx_139                 2 1 226 228 229
+Conv2d                   stage3.0.branch1.0       1 1 229 727 bias=0 dilation=(1,1) groups=116 in_channels=116 kernel_size=(3,3) out_channels=116 padding=(1,1) stride=(2,2) @weight=(116,1,3,3)
+BatchNorm2d              stage3.0.branch1.1       1 1 727 728 affine=1 eps=1.000000e-05 num_features=116 @bias=(116) @running_mean=(116) @running_var=(116) @weight=(116)
+Conv2d                   stage3.0.branch1.2       1 1 728 729 bias=0 dilation=(1,1) groups=1 in_channels=116 kernel_size=(1,1) out_channels=116 padding=(0,0) stride=(1,1) @weight=(116,116,1,1)
+BatchNorm2d              stage3.0.branch1.3       1 1 729 730 affine=1 eps=1.000000e-05 num_features=116 @bias=(116) @running_mean=(116) @running_var=(116) @weight=(116)
+ReLU                     stage3.0.branch1.4       1 1 730 731
+Conv2d                   stage3.0.branch2.0       1 1 229 740 bias=0 dilation=(1,1) groups=1 in_channels=116 kernel_size=(1,1) out_channels=116 padding=(0,0) stride=(1,1) @weight=(116,116,1,1)
+BatchNorm2d              stage3.0.branch2.1       1 1 740 741 affine=1 eps=1.000000e-05 num_features=116 @bias=(116) @running_mean=(116) @running_var=(116) @weight=(116)
+ReLU                     stage3.0.branch2.2       1 1 741 742
+Conv2d                   stage3.0.branch2.3       1 1 742 743 bias=0 dilation=(1,1) groups=116 in_channels=116 kernel_size=(3,3) out_channels=116 padding=(1,1) stride=(2,2) @weight=(116,1,3,3)
+BatchNorm2d              stage3.0.branch2.4       1 1 743 744 affine=1 eps=1.000000e-05 num_features=116 @bias=(116) @running_mean=(116) @running_var=(116) @weight=(116)
+Conv2d                   stage3.0.branch2.5       1 1 744 745 bias=0 dilation=(1,1) groups=1 in_channels=116 kernel_size=(1,1) out_channels=116 padding=(0,0) stride=(1,1) @weight=(116,116,1,1)
+BatchNorm2d              stage3.0.branch2.6       1 1 745 746 affine=1 eps=1.000000e-05 num_features=116 @bias=(116) @running_mean=(116) @running_var=(116) @weight=(116)
+ReLU                     stage3.0.branch2.7       1 1 746 747
+torch.cat                pnnx_146                 2 1 731 747 1044 dim=1
+Expression               pnnx_expr_200            1 1 1044 258 expr=(int(size(@0,0)),2,int(floor_divide(size(@0,1),2)),int(size(@0,2)),int(size(@0,3)))
+aten::view               pnnx_166                 2 1 1044 258 x0.10
+torch.transpose          pnnx_169                 1 1 x0.10 260 dim0=1 dim1=2
+Expression               pnnx_expr_199            1 1 1044 262 expr=(int(size(@0,0)),-1,int(size(@0,2)),int(size(@0,3)))
+aten::view               pnnx_171                 2 1 260 262 263
+torch.chunk              pnnx_175                 1 2 263 1062 1063 chunks=2 dim=1
+Conv2d                   stage3.1.branch2.0       1 1 1063 756 bias=0 dilation=(1,1) groups=1 in_channels=116 kernel_size=(1,1) out_channels=116 padding=(0,0) stride=(1,1) @weight=(116,116,1,1)
+BatchNorm2d              stage3.1.branch2.1       1 1 756 757 affine=1 eps=1.000000e-05 num_features=116 @bias=(116) @running_mean=(116) @running_var=(116) @weight=(116)
+ReLU                     stage3.1.branch2.2       1 1 757 758
+Conv2d                   stage3.1.branch2.3       1 1 758 759 bias=0 dilation=(1,1) groups=116 in_channels=116 kernel_size=(3,3) out_channels=116 padding=(1,1) stride=(1,1) @weight=(116,1,3,3)
+BatchNorm2d              stage3.1.branch2.4       1 1 759 760 affine=1 eps=1.000000e-05 num_features=116 @bias=(116) @running_mean=(116) @running_var=(116) @weight=(116)
+Conv2d                   stage3.1.branch2.5       1 1 760 761 bias=0 dilation=(1,1) groups=1 in_channels=116 kernel_size=(1,1) out_channels=116 padding=(0,0) stride=(1,1) @weight=(116,116,1,1)
+BatchNorm2d              stage3.1.branch2.6       1 1 761 762 affine=1 eps=1.000000e-05 num_features=116 @bias=(116) @running_mean=(116) @running_var=(116) @weight=(116)
+ReLU                     stage3.1.branch2.7       1 1 762 763
+torch.cat                pnnx_180                 2 1 1062 763 1045 dim=1
+Expression               pnnx_expr_182            1 1 1045 293 expr=(int(size(@0,0)),2,int(floor_divide(size(@0,1),2)),int(size(@0,2)),int(size(@0,3)))
+aten::view               pnnx_201                 2 1 1045 293 x0.12
+torch.transpose          pnnx_204                 1 1 x0.12 295 dim0=1 dim1=2
+Expression               pnnx_expr_181            1 1 1045 297 expr=(int(size(@0,0)),-1,int(size(@0,2)),int(size(@0,3)))
+aten::view               pnnx_206                 2 1 295 297 298
+torch.chunk              pnnx_210                 1 2 298 1064 1065 chunks=2 dim=1
+Conv2d                   stage3.2.branch2.0       1 1 1065 772 bias=0 dilation=(1,1) groups=1 in_channels=116 kernel_size=(1,1) out_channels=116 padding=(0,0) stride=(1,1) @weight=(116,116,1,1)
+BatchNorm2d              stage3.2.branch2.1       1 1 772 773 affine=1 eps=1.000000e-05 num_features=116 @bias=(116) @running_mean=(116) @running_var=(116) @weight=(116)
+ReLU                     stage3.2.branch2.2       1 1 773 774
+Conv2d                   stage3.2.branch2.3       1 1 774 775 bias=0 dilation=(1,1) groups=116 in_channels=116 kernel_size=(3,3) out_channels=116 padding=(1,1) stride=(1,1) @weight=(116,1,3,3)
+BatchNorm2d              stage3.2.branch2.4       1 1 775 776 affine=1 eps=1.000000e-05 num_features=116 @bias=(116) @running_mean=(116) @running_var=(116) @weight=(116)
+Conv2d                   stage3.2.branch2.5       1 1 776 777 bias=0 dilation=(1,1) groups=1 in_channels=116 kernel_size=(1,1) out_channels=116 padding=(0,0) stride=(1,1) @weight=(116,116,1,1)
+BatchNorm2d              stage3.2.branch2.6       1 1 777 778 affine=1 eps=1.000000e-05 num_features=116 @bias=(116) @running_mean=(116) @running_var=(116) @weight=(116)
+ReLU                     stage3.2.branch2.7       1 1 778 779
+torch.cat                pnnx_215                 2 1 1064 779 1046 dim=1
+Expression               pnnx_expr_164            1 1 1046 328 expr=(int(size(@0,0)),2,int(floor_divide(size(@0,1),2)),int(size(@0,2)),int(size(@0,3)))
+aten::view               pnnx_236                 2 1 1046 328 x0.14
+torch.transpose          pnnx_239                 1 1 x0.14 330 dim0=1 dim1=2
+Expression               pnnx_expr_163            1 1 1046 332 expr=(int(size(@0,0)),-1,int(size(@0,2)),int(size(@0,3)))
+aten::view               pnnx_241                 2 1 330 332 333
+torch.chunk              pnnx_245                 1 2 333 1066 1067 chunks=2 dim=1
+Conv2d                   stage3.3.branch2.0       1 1 1067 788 bias=0 dilation=(1,1) groups=1 in_channels=116 kernel_size=(1,1) out_channels=116 padding=(0,0) stride=(1,1) @weight=(116,116,1,1)
+BatchNorm2d              stage3.3.branch2.1       1 1 788 789 affine=1 eps=1.000000e-05 num_features=116 @bias=(116) @running_mean=(116) @running_var=(116) @weight=(116)
+ReLU                     stage3.3.branch2.2       1 1 789 790
+Conv2d                   stage3.3.branch2.3       1 1 790 791 bias=0 dilation=(1,1) groups=116 in_channels=116 kernel_size=(3,3) out_channels=116 padding=(1,1) stride=(1,1) @weight=(116,1,3,3)
+BatchNorm2d              stage3.3.branch2.4       1 1 791 792 affine=1 eps=1.000000e-05 num_features=116 @bias=(116) @running_mean=(116) @running_var=(116) @weight=(116)
+Conv2d                   stage3.3.branch2.5       1 1 792 793 bias=0 dilation=(1,1) groups=1 in_channels=116 kernel_size=(1,1) out_channels=116 padding=(0,0) stride=(1,1) @weight=(116,116,1,1)
+BatchNorm2d              stage3.3.branch2.6       1 1 793 794 affine=1 eps=1.000000e-05 num_features=116 @bias=(116) @running_mean=(116) @running_var=(116) @weight=(116)
+ReLU                     stage3.3.branch2.7       1 1 794 795
+torch.cat                pnnx_250                 2 1 1066 795 1047 dim=1
+Expression               pnnx_expr_146            1 1 1047 363 expr=(int(size(@0,0)),2,int(floor_divide(size(@0,1),2)),int(size(@0,2)),int(size(@0,3)))
+aten::view               pnnx_271                 2 1 1047 363 x0.16
+torch.transpose          pnnx_274                 1 1 x0.16 365 dim0=1 dim1=2
+Expression               pnnx_expr_145            1 1 1047 367 expr=(int(size(@0,0)),-1,int(size(@0,2)),int(size(@0,3)))
+aten::view               pnnx_276                 2 1 365 367 368
+torch.chunk              pnnx_280                 1 2 368 1068 1069 chunks=2 dim=1
+Conv2d                   stage3.4.branch2.0       1 1 1069 804 bias=0 dilation=(1,1) groups=1 in_channels=116 kernel_size=(1,1) out_channels=116 padding=(0,0) stride=(1,1) @weight=(116,116,1,1)
+BatchNorm2d              stage3.4.branch2.1       1 1 804 805 affine=1 eps=1.000000e-05 num_features=116 @bias=(116) @running_mean=(116) @running_var=(116) @weight=(116)
+ReLU                     stage3.4.branch2.2       1 1 805 806
+Conv2d                   stage3.4.branch2.3       1 1 806 807 bias=0 dilation=(1,1) groups=116 in_channels=116 kernel_size=(3,3) out_channels=116 padding=(1,1) stride=(1,1) @weight=(116,1,3,3)
+BatchNorm2d              stage3.4.branch2.4       1 1 807 808 affine=1 eps=1.000000e-05 num_features=116 @bias=(116) @running_mean=(116) @running_var=(116) @weight=(116)
+Conv2d                   stage3.4.branch2.5       1 1 808 809 bias=0 dilation=(1,1) groups=1 in_channels=116 kernel_size=(1,1) out_channels=116 padding=(0,0) stride=(1,1) @weight=(116,116,1,1)
+BatchNorm2d              stage3.4.branch2.6       1 1 809 810 affine=1 eps=1.000000e-05 num_features=116 @bias=(116) @running_mean=(116) @running_var=(116) @weight=(116)
+ReLU                     stage3.4.branch2.7       1 1 810 811
+torch.cat                pnnx_285                 2 1 1068 811 1048 dim=1
+Expression               pnnx_expr_128            1 1 1048 398 expr=(int(size(@0,0)),2,int(floor_divide(size(@0,1),2)),int(size(@0,2)),int(size(@0,3)))
+aten::view               pnnx_306                 2 1 1048 398 x0.18
+torch.transpose          pnnx_309                 1 1 x0.18 400 dim0=1 dim1=2
+Expression               pnnx_expr_127            1 1 1048 402 expr=(int(size(@0,0)),-1,int(size(@0,2)),int(size(@0,3)))
+aten::view               pnnx_311                 2 1 400 402 403
+torch.chunk              pnnx_315                 1 2 403 1070 1071 chunks=2 dim=1
+Conv2d                   stage3.5.branch2.0       1 1 1071 820 bias=0 dilation=(1,1) groups=1 in_channels=116 kernel_size=(1,1) out_channels=116 padding=(0,0) stride=(1,1) @weight=(116,116,1,1)
+BatchNorm2d              stage3.5.branch2.1       1 1 820 821 affine=1 eps=1.000000e-05 num_features=116 @bias=(116) @running_mean=(116) @running_var=(116) @weight=(116)
+ReLU                     stage3.5.branch2.2       1 1 821 822
+Conv2d                   stage3.5.branch2.3       1 1 822 823 bias=0 dilation=(1,1) groups=116 in_channels=116 kernel_size=(3,3) out_channels=116 padding=(1,1) stride=(1,1) @weight=(116,1,3,3)
+BatchNorm2d              stage3.5.branch2.4       1 1 823 824 affine=1 eps=1.000000e-05 num_features=116 @bias=(116) @running_mean=(116) @running_var=(116) @weight=(116)
+Conv2d                   stage3.5.branch2.5       1 1 824 825 bias=0 dilation=(1,1) groups=1 in_channels=116 kernel_size=(1,1) out_channels=116 padding=(0,0) stride=(1,1) @weight=(116,116,1,1)
+BatchNorm2d              stage3.5.branch2.6       1 1 825 826 affine=1 eps=1.000000e-05 num_features=116 @bias=(116) @running_mean=(116) @running_var=(116) @weight=(116)
+ReLU                     stage3.5.branch2.7       1 1 826 827
+torch.cat                pnnx_320                 2 1 1070 827 1049 dim=1
+Expression               pnnx_expr_110            1 1 1049 433 expr=(int(size(@0,0)),2,int(floor_divide(size(@0,1),2)),int(size(@0,2)),int(size(@0,3)))
+aten::view               pnnx_341                 2 1 1049 433 x0.20
+torch.transpose          pnnx_344                 1 1 x0.20 435 dim0=1 dim1=2
+Expression               pnnx_expr_109            1 1 1049 437 expr=(int(size(@0,0)),-1,int(size(@0,2)),int(size(@0,3)))
+aten::view               pnnx_346                 2 1 435 437 438
+torch.chunk              pnnx_350                 1 2 438 1072 1073 chunks=2 dim=1
+Conv2d                   stage3.6.branch2.0       1 1 1073 836 bias=0 dilation=(1,1) groups=1 in_channels=116 kernel_size=(1,1) out_channels=116 padding=(0,0) stride=(1,1) @weight=(116,116,1,1)
+BatchNorm2d              stage3.6.branch2.1       1 1 836 837 affine=1 eps=1.000000e-05 num_features=116 @bias=(116) @running_mean=(116) @running_var=(116) @weight=(116)
+ReLU                     stage3.6.branch2.2       1 1 837 838
+Conv2d                   stage3.6.branch2.3       1 1 838 839 bias=0 dilation=(1,1) groups=116 in_channels=116 kernel_size=(3,3) out_channels=116 padding=(1,1) stride=(1,1) @weight=(116,1,3,3)
+BatchNorm2d              stage3.6.branch2.4       1 1 839 840 affine=1 eps=1.000000e-05 num_features=116 @bias=(116) @running_mean=(116) @running_var=(116) @weight=(116)
+Conv2d                   stage3.6.branch2.5       1 1 840 841 bias=0 dilation=(1,1) groups=1 in_channels=116 kernel_size=(1,1) out_channels=116 padding=(0,0) stride=(1,1) @weight=(116,116,1,1)
+BatchNorm2d              stage3.6.branch2.6       1 1 841 842 affine=1 eps=1.000000e-05 num_features=116 @bias=(116) @running_mean=(116) @running_var=(116) @weight=(116)
+ReLU                     stage3.6.branch2.7       1 1 842 843
+torch.cat                pnnx_355                 2 1 1072 843 1050 dim=1
+Expression               pnnx_expr_92             1 1 1050 468 expr=(int(size(@0,0)),2,int(floor_divide(size(@0,1),2)),int(size(@0,2)),int(size(@0,3)))
+aten::view               pnnx_376                 2 1 1050 468 x0.22
+torch.transpose          pnnx_379                 1 1 x0.22 470 dim0=1 dim1=2
+Expression               pnnx_expr_91             1 1 1050 472 expr=(int(size(@0,0)),-1,int(size(@0,2)),int(size(@0,3)))
+aten::view               pnnx_381                 2 1 470 472 473
+torch.chunk              pnnx_385                 1 2 473 1074 1075 chunks=2 dim=1
+Conv2d                   stage3.7.branch2.0       1 1 1075 852 bias=0 dilation=(1,1) groups=1 in_channels=116 kernel_size=(1,1) out_channels=116 padding=(0,0) stride=(1,1) @weight=(116,116,1,1)
+BatchNorm2d              stage3.7.branch2.1       1 1 852 853 affine=1 eps=1.000000e-05 num_features=116 @bias=(116) @running_mean=(116) @running_var=(116) @weight=(116)
+ReLU                     stage3.7.branch2.2       1 1 853 854
+Conv2d                   stage3.7.branch2.3       1 1 854 855 bias=0 dilation=(1,1) groups=116 in_channels=116 kernel_size=(3,3) out_channels=116 padding=(1,1) stride=(1,1) @weight=(116,1,3,3)
+BatchNorm2d              stage3.7.branch2.4       1 1 855 856 affine=1 eps=1.000000e-05 num_features=116 @bias=(116) @running_mean=(116) @running_var=(116) @weight=(116)
+Conv2d                   stage3.7.branch2.5       1 1 856 857 bias=0 dilation=(1,1) groups=1 in_channels=116 kernel_size=(1,1) out_channels=116 padding=(0,0) stride=(1,1) @weight=(116,116,1,1)
+BatchNorm2d              stage3.7.branch2.6       1 1 857 858 affine=1 eps=1.000000e-05 num_features=116 @bias=(116) @running_mean=(116) @running_var=(116) @weight=(116)
+ReLU                     stage3.7.branch2.7       1 1 858 859
+torch.cat                pnnx_390                 2 1 1074 859 1051 dim=1
+Expression               pnnx_expr_74             1 1 1051 503 expr=(int(size(@0,0)),2,int(floor_divide(size(@0,1),2)),int(size(@0,2)),int(size(@0,3)))
+aten::view               pnnx_411                 2 1 1051 503 x0.24
+torch.transpose          pnnx_414                 1 1 x0.24 505 dim0=1 dim1=2
+Expression               pnnx_expr_73             1 1 1051 507 expr=(int(size(@0,0)),-1,int(size(@0,2)),int(size(@0,3)))
+aten::view               pnnx_416                 2 1 505 507 508
+Conv2d                   stage4.0.branch1.0       1 1 508 865 bias=0 dilation=(1,1) groups=232 in_channels=232 kernel_size=(3,3) out_channels=232 padding=(1,1) stride=(2,2) @weight=(232,1,3,3)
+BatchNorm2d              stage4.0.branch1.1       1 1 865 866 affine=1 eps=1.000000e-05 num_features=232 @bias=(232) @running_mean=(232) @running_var=(232) @weight=(232)
+Conv2d                   stage4.0.branch1.2       1 1 866 867 bias=0 dilation=(1,1) groups=1 in_channels=232 kernel_size=(1,1) out_channels=232 padding=(0,0) stride=(1,1) @weight=(232,232,1,1)
+BatchNorm2d              stage4.0.branch1.3       1 1 867 868 affine=1 eps=1.000000e-05 num_features=232 @bias=(232) @running_mean=(232) @running_var=(232) @weight=(232)
+ReLU                     stage4.0.branch1.4       1 1 868 869
+Conv2d                   stage4.0.branch2.0       1 1 508 878 bias=0 dilation=(1,1) groups=1 in_channels=232 kernel_size=(1,1) out_channels=232 padding=(0,0) stride=(1,1) @weight=(232,232,1,1)
+BatchNorm2d              stage4.0.branch2.1       1 1 878 879 affine=1 eps=1.000000e-05 num_features=232 @bias=(232) @running_mean=(232) @running_var=(232) @weight=(232)
+ReLU                     stage4.0.branch2.2       1 1 879 880
+Conv2d                   stage4.0.branch2.3       1 1 880 881 bias=0 dilation=(1,1) groups=232 in_channels=232 kernel_size=(3,3) out_channels=232 padding=(1,1) stride=(2,2) @weight=(232,1,3,3)
+BatchNorm2d              stage4.0.branch2.4       1 1 881 882 affine=1 eps=1.000000e-05 num_features=232 @bias=(232) @running_mean=(232) @running_var=(232) @weight=(232)
+Conv2d                   stage4.0.branch2.5       1 1 882 883 bias=0 dilation=(1,1) groups=1 in_channels=232 kernel_size=(1,1) out_channels=232 padding=(0,0) stride=(1,1) @weight=(232,232,1,1)
+BatchNorm2d              stage4.0.branch2.6       1 1 883 884 affine=1 eps=1.000000e-05 num_features=232 @bias=(232) @running_mean=(232) @running_var=(232) @weight=(232)
+ReLU                     stage4.0.branch2.7       1 1 884 885
+torch.cat                pnnx_423                 2 1 869 885 1052 dim=1
+Expression               pnnx_expr_56             1 1 1052 537 expr=(int(size(@0,0)),2,int(floor_divide(size(@0,1),2)),int(size(@0,2)),int(size(@0,3)))
+aten::view               pnnx_443                 2 1 1052 537 x0.26
+torch.transpose          pnnx_446                 1 1 x0.26 539 dim0=1 dim1=2
+Expression               pnnx_expr_55             1 1 1052 541 expr=(int(size(@0,0)),-1,int(size(@0,2)),int(size(@0,3)))
+aten::view               pnnx_448                 2 1 539 541 542
+torch.chunk              pnnx_452                 1 2 542 1076 1077 chunks=2 dim=1
+Conv2d                   stage4.1.branch2.0       1 1 1077 894 bias=0 dilation=(1,1) groups=1 in_channels=232 kernel_size=(1,1) out_channels=232 padding=(0,0) stride=(1,1) @weight=(232,232,1,1)
+BatchNorm2d              stage4.1.branch2.1       1 1 894 895 affine=1 eps=1.000000e-05 num_features=232 @bias=(232) @running_mean=(232) @running_var=(232) @weight=(232)
+ReLU                     stage4.1.branch2.2       1 1 895 896
+Conv2d                   stage4.1.branch2.3       1 1 896 897 bias=0 dilation=(1,1) groups=232 in_channels=232 kernel_size=(3,3) out_channels=232 padding=(1,1) stride=(1,1) @weight=(232,1,3,3)
+BatchNorm2d              stage4.1.branch2.4       1 1 897 898 affine=1 eps=1.000000e-05 num_features=232 @bias=(232) @running_mean=(232) @running_var=(232) @weight=(232)
+Conv2d                   stage4.1.branch2.5       1 1 898 899 bias=0 dilation=(1,1) groups=1 in_channels=232 kernel_size=(1,1) out_channels=232 padding=(0,0) stride=(1,1) @weight=(232,232,1,1)
+BatchNorm2d              stage4.1.branch2.6       1 1 899 900 affine=1 eps=1.000000e-05 num_features=232 @bias=(232) @running_mean=(232) @running_var=(232) @weight=(232)
+ReLU                     stage4.1.branch2.7       1 1 900 901
+torch.cat                pnnx_457                 2 1 1076 901 1053 dim=1
+Expression               pnnx_expr_38             1 1 1053 572 expr=(int(size(@0,0)),2,int(floor_divide(size(@0,1),2)),int(size(@0,2)),int(size(@0,3)))
+aten::view               pnnx_478                 2 1 1053 572 x0.28
+torch.transpose          pnnx_481                 1 1 x0.28 574 dim0=1 dim1=2
+Expression               pnnx_expr_37             1 1 1053 576 expr=(int(size(@0,0)),-1,int(size(@0,2)),int(size(@0,3)))
+aten::view               pnnx_483                 2 1 574 576 577
+torch.chunk              pnnx_487                 1 2 577 1078 1079 chunks=2 dim=1
+Conv2d                   stage4.2.branch2.0       1 1 1079 910 bias=0 dilation=(1,1) groups=1 in_channels=232 kernel_size=(1,1) out_channels=232 padding=(0,0) stride=(1,1) @weight=(232,232,1,1)
+BatchNorm2d              stage4.2.branch2.1       1 1 910 911 affine=1 eps=1.000000e-05 num_features=232 @bias=(232) @running_mean=(232) @running_var=(232) @weight=(232)
+ReLU                     stage4.2.branch2.2       1 1 911 912
+Conv2d                   stage4.2.branch2.3       1 1 912 913 bias=0 dilation=(1,1) groups=232 in_channels=232 kernel_size=(3,3) out_channels=232 padding=(1,1) stride=(1,1) @weight=(232,1,3,3)
+BatchNorm2d              stage4.2.branch2.4       1 1 913 914 affine=1 eps=1.000000e-05 num_features=232 @bias=(232) @running_mean=(232) @running_var=(232) @weight=(232)
+Conv2d                   stage4.2.branch2.5       1 1 914 915 bias=0 dilation=(1,1) groups=1 in_channels=232 kernel_size=(1,1) out_channels=232 padding=(0,0) stride=(1,1) @weight=(232,232,1,1)
+BatchNorm2d              stage4.2.branch2.6       1 1 915 916 affine=1 eps=1.000000e-05 num_features=232 @bias=(232) @running_mean=(232) @running_var=(232) @weight=(232)
+ReLU                     stage4.2.branch2.7       1 1 916 917
+torch.cat                pnnx_492                 2 1 1078 917 1054 dim=1
+Expression               pnnx_expr_20             1 1 1054 607 expr=(int(size(@0,0)),2,int(floor_divide(size(@0,1),2)),int(size(@0,2)),int(size(@0,3)))
+aten::view               pnnx_513                 2 1 1054 607 x0.30
+torch.transpose          pnnx_516                 1 1 x0.30 609 dim0=1 dim1=2
+Expression               pnnx_expr_19             1 1 1054 611 expr=(int(size(@0,0)),-1,int(size(@0,2)),int(size(@0,3)))
+aten::view               pnnx_518                 2 1 609 611 612
+torch.chunk              pnnx_522                 1 2 612 1080 1081 chunks=2 dim=1
+Conv2d                   stage4.3.branch2.0       1 1 1081 926 bias=0 dilation=(1,1) groups=1 in_channels=232 kernel_size=(1,1) out_channels=232 padding=(0,0) stride=(1,1) @weight=(232,232,1,1)
+BatchNorm2d              stage4.3.branch2.1       1 1 926 927 affine=1 eps=1.000000e-05 num_features=232 @bias=(232) @running_mean=(232) @running_var=(232) @weight=(232)
+ReLU                     stage4.3.branch2.2       1 1 927 928
+Conv2d                   stage4.3.branch2.3       1 1 928 929 bias=0 dilation=(1,1) groups=232 in_channels=232 kernel_size=(3,3) out_channels=232 padding=(1,1) stride=(1,1) @weight=(232,1,3,3)
+BatchNorm2d              stage4.3.branch2.4       1 1 929 930 affine=1 eps=1.000000e-05 num_features=232 @bias=(232) @running_mean=(232) @running_var=(232) @weight=(232)
+Conv2d                   stage4.3.branch2.5       1 1 930 931 bias=0 dilation=(1,1) groups=1 in_channels=232 kernel_size=(1,1) out_channels=232 padding=(0,0) stride=(1,1) @weight=(232,232,1,1)
+BatchNorm2d              stage4.3.branch2.6       1 1 931 932 affine=1 eps=1.000000e-05 num_features=232 @bias=(232) @running_mean=(232) @running_var=(232) @weight=(232)
+ReLU                     stage4.3.branch2.7       1 1 932 933
+torch.cat                pnnx_527                 2 1 1080 933 1055 dim=1
+Expression               pnnx_expr_2              1 1 1055 642 expr=(int(size(@0,0)),2,int(floor_divide(size(@0,1),2)),int(size(@0,2)),int(size(@0,3)))
+aten::view               pnnx_548                 2 1 1055 642 x0.1
+torch.transpose          pnnx_551                 1 1 x0.1 644 dim0=1 dim1=2
+Expression               pnnx_expr_1              1 1 1055 646 expr=(int(size(@0,0)),-1,int(size(@0,2)),int(size(@0,3)))
+aten::view               pnnx_553                 2 1 644 646 647
+Conv2d                   conv5.0                  1 1 647 88 bias=0 dilation=(1,1) groups=1 in_channels=464 kernel_size=(1,1) out_channels=1024 padding=(0,0) stride=(1,1) @weight=(1024,464,1,1)
+BatchNorm2d              conv5.1                  1 1 88 89 affine=1 eps=1.000000e-05 num_features=1024 @bias=(1024) @running_mean=(1024) @running_var=(1024) @weight=(1024)
+ReLU                     conv5.2                  1 1 89 90
+torch.mean               pnnx_555                 1 1 90 1082 dim=(2,3) keepdim=0
+Linear                   fc                       1 1 1082 37 bias=1 in_channels=1024 out_channels=1000 @bias=(1000) @weight=(1000,1024)
+Output                   pnnx_output_0            1 0 37
