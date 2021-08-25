@@ -1,69 +1,69 @@
 7767517
 68 67
 Input                    pnnx_input_1             0 1 x.1 #x.1=(1,3,224,224)f32
-Conv2d                   features.0               1 1 x.1 35 bias=1 dilation=(1,1) groups=1 in_channels=3 kernel_size=(3,3) out_channels=64 padding=(0,0) stride=(2,2) @bias=(64)f32 @weight=(64,3,3,3)f32 #x.1=(1,3,224,224)f32 #35=(1,64,111,111)f32
+Conv2d                   features.0               1 1 x.1 35 bias=True dilation=(1,1) groups=1 in_channels=3 kernel_size=(3,3) out_channels=64 padding=(0,0) stride=(2,2) @bias=(64)f32 @weight=(64,3,3,3)f32 #x.1=(1,3,224,224)f32 #35=(1,64,111,111)f32
 ReLU                     features.1               1 1 35 36 #35=(1,64,111,111)f32 #36=(1,64,111,111)f32
-MaxPool2d                features.2               1 1 36 37 ceil_mode=1 dilation=(1,1) kernel_size=(3,3) padding=(0,0) stride=(2,2) #36=(1,64,111,111)f32 #37=(1,64,55,55)f32
-Conv2d                   features.3.squeeze       1 1 37 63 bias=1 dilation=(1,1) groups=1 in_channels=64 kernel_size=(1,1) out_channels=16 padding=(0,0) stride=(1,1) @bias=(16)f32 @weight=(16,64,1,1)f32 #37=(1,64,55,55)f32 #63=(1,16,55,55)f32
+MaxPool2d                features.2               1 1 36 37 ceil_mode=True dilation=(1,1) kernel_size=(3,3) padding=(0,0) stride=(2,2) #36=(1,64,111,111)f32 #37=(1,64,55,55)f32
+Conv2d                   features.3.squeeze       1 1 37 63 bias=True dilation=(1,1) groups=1 in_channels=64 kernel_size=(1,1) out_channels=16 padding=(0,0) stride=(1,1) @bias=(16)f32 @weight=(16,64,1,1)f32 #37=(1,64,55,55)f32 #63=(1,16,55,55)f32
 ReLU                     features.3.squeeze_activation 1 1 63 64 #63=(1,16,55,55)f32 #64=(1,16,55,55)f32
-Conv2d                   features.3.expand1x1     1 1 64 65 bias=1 dilation=(1,1) groups=1 in_channels=16 kernel_size=(1,1) out_channels=64 padding=(0,0) stride=(1,1) @bias=(64)f32 @weight=(64,16,1,1)f32 #64=(1,16,55,55)f32 #65=(1,64,55,55)f32
+Conv2d                   features.3.expand1x1     1 1 64 65 bias=True dilation=(1,1) groups=1 in_channels=16 kernel_size=(1,1) out_channels=64 padding=(0,0) stride=(1,1) @bias=(64)f32 @weight=(64,16,1,1)f32 #64=(1,16,55,55)f32 #65=(1,64,55,55)f32
 ReLU                     features.3.expand1x1_activation 1 1 65 66 #65=(1,64,55,55)f32 #66=(1,64,55,55)f32
-Conv2d                   features.3.expand3x3     1 1 64 67 bias=1 dilation=(1,1) groups=1 in_channels=16 kernel_size=(3,3) out_channels=64 padding=(1,1) stride=(1,1) @bias=(64)f32 @weight=(64,16,3,3)f32 #64=(1,16,55,55)f32 #67=(1,64,55,55)f32
+Conv2d                   features.3.expand3x3     1 1 64 67 bias=True dilation=(1,1) groups=1 in_channels=16 kernel_size=(3,3) out_channels=64 padding=(1,1) stride=(1,1) @bias=(64)f32 @weight=(64,16,3,3)f32 #64=(1,16,55,55)f32 #67=(1,64,55,55)f32
 ReLU                     features.3.expand3x3_activation 1 1 67 68 #67=(1,64,55,55)f32 #68=(1,64,55,55)f32
-torch.cat                pnnx_3                   2 1 66 68 177 dim=1 #66=(1,64,55,55)f32 #68=(1,64,55,55)f32
-Conv2d                   features.4.squeeze       1 1 177 78 bias=1 dilation=(1,1) groups=1 in_channels=128 kernel_size=(1,1) out_channels=16 padding=(0,0) stride=(1,1) @bias=(16)f32 @weight=(16,128,1,1)f32 #78=(1,16,55,55)f32
+torch.cat                pnnx_3                   2 1 66 68 177 dim=1 #66=(1,64,55,55)f32 #68=(1,64,55,55)f32 #177=(1,128,55,55)f32
+Conv2d                   features.4.squeeze       1 1 177 78 bias=True dilation=(1,1) groups=1 in_channels=128 kernel_size=(1,1) out_channels=16 padding=(0,0) stride=(1,1) @bias=(16)f32 @weight=(16,128,1,1)f32 #177=(1,128,55,55)f32 #78=(1,16,55,55)f32
 ReLU                     features.4.squeeze_activation 1 1 78 79 #78=(1,16,55,55)f32 #79=(1,16,55,55)f32
-Conv2d                   features.4.expand1x1     1 1 79 80 bias=1 dilation=(1,1) groups=1 in_channels=16 kernel_size=(1,1) out_channels=64 padding=(0,0) stride=(1,1) @bias=(64)f32 @weight=(64,16,1,1)f32 #79=(1,16,55,55)f32 #80=(1,64,55,55)f32
+Conv2d                   features.4.expand1x1     1 1 79 80 bias=True dilation=(1,1) groups=1 in_channels=16 kernel_size=(1,1) out_channels=64 padding=(0,0) stride=(1,1) @bias=(64)f32 @weight=(64,16,1,1)f32 #79=(1,16,55,55)f32 #80=(1,64,55,55)f32
 ReLU                     features.4.expand1x1_activation 1 1 80 81 #80=(1,64,55,55)f32 #81=(1,64,55,55)f32
-Conv2d                   features.4.expand3x3     1 1 79 82 bias=1 dilation=(1,1) groups=1 in_channels=16 kernel_size=(3,3) out_channels=64 padding=(1,1) stride=(1,1) @bias=(64)f32 @weight=(64,16,3,3)f32 #79=(1,16,55,55)f32 #82=(1,64,55,55)f32
+Conv2d                   features.4.expand3x3     1 1 79 82 bias=True dilation=(1,1) groups=1 in_channels=16 kernel_size=(3,3) out_channels=64 padding=(1,1) stride=(1,1) @bias=(64)f32 @weight=(64,16,3,3)f32 #79=(1,16,55,55)f32 #82=(1,64,55,55)f32
 ReLU                     features.4.expand3x3_activation 1 1 82 83 #82=(1,64,55,55)f32 #83=(1,64,55,55)f32
-torch.cat                pnnx_5                   2 1 81 83 178 dim=1 #81=(1,64,55,55)f32 #83=(1,64,55,55)f32
-MaxPool2d                features.5               1 1 178 40 ceil_mode=1 dilation=(1,1) kernel_size=(3,3) padding=(0,0) stride=(2,2) #40=(1,128,27,27)f32
-Conv2d                   features.6.squeeze       1 1 40 93 bias=1 dilation=(1,1) groups=1 in_channels=128 kernel_size=(1,1) out_channels=32 padding=(0,0) stride=(1,1) @bias=(32)f32 @weight=(32,128,1,1)f32 #40=(1,128,27,27)f32 #93=(1,32,27,27)f32
+torch.cat                pnnx_5                   2 1 81 83 178 dim=1 #81=(1,64,55,55)f32 #83=(1,64,55,55)f32 #178=(1,128,55,55)f32
+MaxPool2d                features.5               1 1 178 40 ceil_mode=True dilation=(1,1) kernel_size=(3,3) padding=(0,0) stride=(2,2) #178=(1,128,55,55)f32 #40=(1,128,27,27)f32
+Conv2d                   features.6.squeeze       1 1 40 93 bias=True dilation=(1,1) groups=1 in_channels=128 kernel_size=(1,1) out_channels=32 padding=(0,0) stride=(1,1) @bias=(32)f32 @weight=(32,128,1,1)f32 #40=(1,128,27,27)f32 #93=(1,32,27,27)f32
 ReLU                     features.6.squeeze_activation 1 1 93 94 #93=(1,32,27,27)f32 #94=(1,32,27,27)f32
-Conv2d                   features.6.expand1x1     1 1 94 95 bias=1 dilation=(1,1) groups=1 in_channels=32 kernel_size=(1,1) out_channels=128 padding=(0,0) stride=(1,1) @bias=(128)f32 @weight=(128,32,1,1)f32 #94=(1,32,27,27)f32 #95=(1,128,27,27)f32
+Conv2d                   features.6.expand1x1     1 1 94 95 bias=True dilation=(1,1) groups=1 in_channels=32 kernel_size=(1,1) out_channels=128 padding=(0,0) stride=(1,1) @bias=(128)f32 @weight=(128,32,1,1)f32 #94=(1,32,27,27)f32 #95=(1,128,27,27)f32
 ReLU                     features.6.expand1x1_activation 1 1 95 96 #95=(1,128,27,27)f32 #96=(1,128,27,27)f32
-Conv2d                   features.6.expand3x3     1 1 94 97 bias=1 dilation=(1,1) groups=1 in_channels=32 kernel_size=(3,3) out_channels=128 padding=(1,1) stride=(1,1) @bias=(128)f32 @weight=(128,32,3,3)f32 #94=(1,32,27,27)f32 #97=(1,128,27,27)f32
+Conv2d                   features.6.expand3x3     1 1 94 97 bias=True dilation=(1,1) groups=1 in_channels=32 kernel_size=(3,3) out_channels=128 padding=(1,1) stride=(1,1) @bias=(128)f32 @weight=(128,32,3,3)f32 #94=(1,32,27,27)f32 #97=(1,128,27,27)f32
 ReLU                     features.6.expand3x3_activation 1 1 97 98 #97=(1,128,27,27)f32 #98=(1,128,27,27)f32
-torch.cat                pnnx_7                   2 1 96 98 179 dim=1 #96=(1,128,27,27)f32 #98=(1,128,27,27)f32
-Conv2d                   features.7.squeeze       1 1 179 108 bias=1 dilation=(1,1) groups=1 in_channels=256 kernel_size=(1,1) out_channels=32 padding=(0,0) stride=(1,1) @bias=(32)f32 @weight=(32,256,1,1)f32 #108=(1,32,27,27)f32
+torch.cat                pnnx_7                   2 1 96 98 179 dim=1 #96=(1,128,27,27)f32 #98=(1,128,27,27)f32 #179=(1,256,27,27)f32
+Conv2d                   features.7.squeeze       1 1 179 108 bias=True dilation=(1,1) groups=1 in_channels=256 kernel_size=(1,1) out_channels=32 padding=(0,0) stride=(1,1) @bias=(32)f32 @weight=(32,256,1,1)f32 #179=(1,256,27,27)f32 #108=(1,32,27,27)f32
 ReLU                     features.7.squeeze_activation 1 1 108 109 #108=(1,32,27,27)f32 #109=(1,32,27,27)f32
-Conv2d                   features.7.expand1x1     1 1 109 110 bias=1 dilation=(1,1) groups=1 in_channels=32 kernel_size=(1,1) out_channels=128 padding=(0,0) stride=(1,1) @bias=(128)f32 @weight=(128,32,1,1)f32 #109=(1,32,27,27)f32 #110=(1,128,27,27)f32
+Conv2d                   features.7.expand1x1     1 1 109 110 bias=True dilation=(1,1) groups=1 in_channels=32 kernel_size=(1,1) out_channels=128 padding=(0,0) stride=(1,1) @bias=(128)f32 @weight=(128,32,1,1)f32 #109=(1,32,27,27)f32 #110=(1,128,27,27)f32
 ReLU                     features.7.expand1x1_activation 1 1 110 111 #110=(1,128,27,27)f32 #111=(1,128,27,27)f32
-Conv2d                   features.7.expand3x3     1 1 109 112 bias=1 dilation=(1,1) groups=1 in_channels=32 kernel_size=(3,3) out_channels=128 padding=(1,1) stride=(1,1) @bias=(128)f32 @weight=(128,32,3,3)f32 #109=(1,32,27,27)f32 #112=(1,128,27,27)f32
+Conv2d                   features.7.expand3x3     1 1 109 112 bias=True dilation=(1,1) groups=1 in_channels=32 kernel_size=(3,3) out_channels=128 padding=(1,1) stride=(1,1) @bias=(128)f32 @weight=(128,32,3,3)f32 #109=(1,32,27,27)f32 #112=(1,128,27,27)f32
 ReLU                     features.7.expand3x3_activation 1 1 112 113 #112=(1,128,27,27)f32 #113=(1,128,27,27)f32
-torch.cat                pnnx_9                   2 1 111 113 180 dim=1 #111=(1,128,27,27)f32 #113=(1,128,27,27)f32
-MaxPool2d                features.8               1 1 180 43 ceil_mode=1 dilation=(1,1) kernel_size=(3,3) padding=(0,0) stride=(2,2) #43=(1,256,13,13)f32
-Conv2d                   features.9.squeeze       1 1 43 123 bias=1 dilation=(1,1) groups=1 in_channels=256 kernel_size=(1,1) out_channels=48 padding=(0,0) stride=(1,1) @bias=(48)f32 @weight=(48,256,1,1)f32 #43=(1,256,13,13)f32 #123=(1,48,13,13)f32
+torch.cat                pnnx_9                   2 1 111 113 180 dim=1 #111=(1,128,27,27)f32 #113=(1,128,27,27)f32 #180=(1,256,27,27)f32
+MaxPool2d                features.8               1 1 180 43 ceil_mode=True dilation=(1,1) kernel_size=(3,3) padding=(0,0) stride=(2,2) #180=(1,256,27,27)f32 #43=(1,256,13,13)f32
+Conv2d                   features.9.squeeze       1 1 43 123 bias=True dilation=(1,1) groups=1 in_channels=256 kernel_size=(1,1) out_channels=48 padding=(0,0) stride=(1,1) @bias=(48)f32 @weight=(48,256,1,1)f32 #43=(1,256,13,13)f32 #123=(1,48,13,13)f32
 ReLU                     features.9.squeeze_activation 1 1 123 124 #123=(1,48,13,13)f32 #124=(1,48,13,13)f32
-Conv2d                   features.9.expand1x1     1 1 124 125 bias=1 dilation=(1,1) groups=1 in_channels=48 kernel_size=(1,1) out_channels=192 padding=(0,0) stride=(1,1) @bias=(192)f32 @weight=(192,48,1,1)f32 #124=(1,48,13,13)f32 #125=(1,192,13,13)f32
+Conv2d                   features.9.expand1x1     1 1 124 125 bias=True dilation=(1,1) groups=1 in_channels=48 kernel_size=(1,1) out_channels=192 padding=(0,0) stride=(1,1) @bias=(192)f32 @weight=(192,48,1,1)f32 #124=(1,48,13,13)f32 #125=(1,192,13,13)f32
 ReLU                     features.9.expand1x1_activation 1 1 125 126 #125=(1,192,13,13)f32 #126=(1,192,13,13)f32
-Conv2d                   features.9.expand3x3     1 1 124 127 bias=1 dilation=(1,1) groups=1 in_channels=48 kernel_size=(3,3) out_channels=192 padding=(1,1) stride=(1,1) @bias=(192)f32 @weight=(192,48,3,3)f32 #124=(1,48,13,13)f32 #127=(1,192,13,13)f32
+Conv2d                   features.9.expand3x3     1 1 124 127 bias=True dilation=(1,1) groups=1 in_channels=48 kernel_size=(3,3) out_channels=192 padding=(1,1) stride=(1,1) @bias=(192)f32 @weight=(192,48,3,3)f32 #124=(1,48,13,13)f32 #127=(1,192,13,13)f32
 ReLU                     features.9.expand3x3_activation 1 1 127 128 #127=(1,192,13,13)f32 #128=(1,192,13,13)f32
-torch.cat                pnnx_11                  2 1 126 128 181 dim=1 #126=(1,192,13,13)f32 #128=(1,192,13,13)f32
-Conv2d                   features.10.squeeze      1 1 181 138 bias=1 dilation=(1,1) groups=1 in_channels=384 kernel_size=(1,1) out_channels=48 padding=(0,0) stride=(1,1) @bias=(48)f32 @weight=(48,384,1,1)f32 #138=(1,48,13,13)f32
+torch.cat                pnnx_11                  2 1 126 128 181 dim=1 #126=(1,192,13,13)f32 #128=(1,192,13,13)f32 #181=(1,384,13,13)f32
+Conv2d                   features.10.squeeze      1 1 181 138 bias=True dilation=(1,1) groups=1 in_channels=384 kernel_size=(1,1) out_channels=48 padding=(0,0) stride=(1,1) @bias=(48)f32 @weight=(48,384,1,1)f32 #181=(1,384,13,13)f32 #138=(1,48,13,13)f32
 ReLU                     features.10.squeeze_activation 1 1 138 139 #138=(1,48,13,13)f32 #139=(1,48,13,13)f32
-Conv2d                   features.10.expand1x1    1 1 139 140 bias=1 dilation=(1,1) groups=1 in_channels=48 kernel_size=(1,1) out_channels=192 padding=(0,0) stride=(1,1) @bias=(192)f32 @weight=(192,48,1,1)f32 #139=(1,48,13,13)f32 #140=(1,192,13,13)f32
+Conv2d                   features.10.expand1x1    1 1 139 140 bias=True dilation=(1,1) groups=1 in_channels=48 kernel_size=(1,1) out_channels=192 padding=(0,0) stride=(1,1) @bias=(192)f32 @weight=(192,48,1,1)f32 #139=(1,48,13,13)f32 #140=(1,192,13,13)f32
 ReLU                     features.10.expand1x1_activation 1 1 140 141 #140=(1,192,13,13)f32 #141=(1,192,13,13)f32
-Conv2d                   features.10.expand3x3    1 1 139 142 bias=1 dilation=(1,1) groups=1 in_channels=48 kernel_size=(3,3) out_channels=192 padding=(1,1) stride=(1,1) @bias=(192)f32 @weight=(192,48,3,3)f32 #139=(1,48,13,13)f32 #142=(1,192,13,13)f32
+Conv2d                   features.10.expand3x3    1 1 139 142 bias=True dilation=(1,1) groups=1 in_channels=48 kernel_size=(3,3) out_channels=192 padding=(1,1) stride=(1,1) @bias=(192)f32 @weight=(192,48,3,3)f32 #139=(1,48,13,13)f32 #142=(1,192,13,13)f32
 ReLU                     features.10.expand3x3_activation 1 1 142 143 #142=(1,192,13,13)f32 #143=(1,192,13,13)f32
-torch.cat                pnnx_13                  2 1 141 143 182 dim=1 #141=(1,192,13,13)f32 #143=(1,192,13,13)f32
-Conv2d                   features.11.squeeze      1 1 182 153 bias=1 dilation=(1,1) groups=1 in_channels=384 kernel_size=(1,1) out_channels=64 padding=(0,0) stride=(1,1) @bias=(64)f32 @weight=(64,384,1,1)f32 #153=(1,64,13,13)f32
+torch.cat                pnnx_13                  2 1 141 143 182 dim=1 #141=(1,192,13,13)f32 #143=(1,192,13,13)f32 #182=(1,384,13,13)f32
+Conv2d                   features.11.squeeze      1 1 182 153 bias=True dilation=(1,1) groups=1 in_channels=384 kernel_size=(1,1) out_channels=64 padding=(0,0) stride=(1,1) @bias=(64)f32 @weight=(64,384,1,1)f32 #182=(1,384,13,13)f32 #153=(1,64,13,13)f32
 ReLU                     features.11.squeeze_activation 1 1 153 154 #153=(1,64,13,13)f32 #154=(1,64,13,13)f32
-Conv2d                   features.11.expand1x1    1 1 154 155 bias=1 dilation=(1,1) groups=1 in_channels=64 kernel_size=(1,1) out_channels=256 padding=(0,0) stride=(1,1) @bias=(256)f32 @weight=(256,64,1,1)f32 #154=(1,64,13,13)f32 #155=(1,256,13,13)f32
+Conv2d                   features.11.expand1x1    1 1 154 155 bias=True dilation=(1,1) groups=1 in_channels=64 kernel_size=(1,1) out_channels=256 padding=(0,0) stride=(1,1) @bias=(256)f32 @weight=(256,64,1,1)f32 #154=(1,64,13,13)f32 #155=(1,256,13,13)f32
 ReLU                     features.11.expand1x1_activation 1 1 155 156 #155=(1,256,13,13)f32 #156=(1,256,13,13)f32
-Conv2d                   features.11.expand3x3    1 1 154 157 bias=1 dilation=(1,1) groups=1 in_channels=64 kernel_size=(3,3) out_channels=256 padding=(1,1) stride=(1,1) @bias=(256)f32 @weight=(256,64,3,3)f32 #154=(1,64,13,13)f32 #157=(1,256,13,13)f32
+Conv2d                   features.11.expand3x3    1 1 154 157 bias=True dilation=(1,1) groups=1 in_channels=64 kernel_size=(3,3) out_channels=256 padding=(1,1) stride=(1,1) @bias=(256)f32 @weight=(256,64,3,3)f32 #154=(1,64,13,13)f32 #157=(1,256,13,13)f32
 ReLU                     features.11.expand3x3_activation 1 1 157 158 #157=(1,256,13,13)f32 #158=(1,256,13,13)f32
-torch.cat                pnnx_15                  2 1 156 158 183 dim=1 #156=(1,256,13,13)f32 #158=(1,256,13,13)f32
-Conv2d                   features.12.squeeze      1 1 183 168 bias=1 dilation=(1,1) groups=1 in_channels=512 kernel_size=(1,1) out_channels=64 padding=(0,0) stride=(1,1) @bias=(64)f32 @weight=(64,512,1,1)f32 #168=(1,64,13,13)f32
+torch.cat                pnnx_15                  2 1 156 158 183 dim=1 #156=(1,256,13,13)f32 #158=(1,256,13,13)f32 #183=(1,512,13,13)f32
+Conv2d                   features.12.squeeze      1 1 183 168 bias=True dilation=(1,1) groups=1 in_channels=512 kernel_size=(1,1) out_channels=64 padding=(0,0) stride=(1,1) @bias=(64)f32 @weight=(64,512,1,1)f32 #183=(1,512,13,13)f32 #168=(1,64,13,13)f32
 ReLU                     features.12.squeeze_activation 1 1 168 169 #168=(1,64,13,13)f32 #169=(1,64,13,13)f32
-Conv2d                   features.12.expand1x1    1 1 169 170 bias=1 dilation=(1,1) groups=1 in_channels=64 kernel_size=(1,1) out_channels=256 padding=(0,0) stride=(1,1) @bias=(256)f32 @weight=(256,64,1,1)f32 #169=(1,64,13,13)f32 #170=(1,256,13,13)f32
+Conv2d                   features.12.expand1x1    1 1 169 170 bias=True dilation=(1,1) groups=1 in_channels=64 kernel_size=(1,1) out_channels=256 padding=(0,0) stride=(1,1) @bias=(256)f32 @weight=(256,64,1,1)f32 #169=(1,64,13,13)f32 #170=(1,256,13,13)f32
 ReLU                     features.12.expand1x1_activation 1 1 170 171 #170=(1,256,13,13)f32 #171=(1,256,13,13)f32
-Conv2d                   features.12.expand3x3    1 1 169 172 bias=1 dilation=(1,1) groups=1 in_channels=64 kernel_size=(3,3) out_channels=256 padding=(1,1) stride=(1,1) @bias=(256)f32 @weight=(256,64,3,3)f32 #169=(1,64,13,13)f32 #172=(1,256,13,13)f32
+Conv2d                   features.12.expand3x3    1 1 169 172 bias=True dilation=(1,1) groups=1 in_channels=64 kernel_size=(3,3) out_channels=256 padding=(1,1) stride=(1,1) @bias=(256)f32 @weight=(256,64,3,3)f32 #169=(1,64,13,13)f32 #172=(1,256,13,13)f32
 ReLU                     features.12.expand3x3_activation 1 1 172 173 #172=(1,256,13,13)f32 #173=(1,256,13,13)f32
-torch.cat                pnnx_17                  2 1 171 173 184 dim=1 #171=(1,256,13,13)f32 #173=(1,256,13,13)f32
-Dropout                  classifier.0             1 1 184 52 #52=(1,512,13,13)f32
-Conv2d                   classifier.1             1 1 52 53 bias=1 dilation=(1,1) groups=1 in_channels=512 kernel_size=(1,1) out_channels=1000 padding=(0,0) stride=(1,1) @bias=(1000)f32 @weight=(1000,512,1,1)f32 #52=(1,512,13,13)f32 #53=(1,1000,13,13)f32
+torch.cat                pnnx_17                  2 1 171 173 184 dim=1 #171=(1,256,13,13)f32 #173=(1,256,13,13)f32 #184=(1,512,13,13)f32
+Dropout                  classifier.0             1 1 184 52 #184=(1,512,13,13)f32 #52=(1,512,13,13)f32
+Conv2d                   classifier.1             1 1 52 53 bias=True dilation=(1,1) groups=1 in_channels=512 kernel_size=(1,1) out_channels=1000 padding=(0,0) stride=(1,1) @bias=(1000)f32 @weight=(1000,512,1,1)f32 #52=(1,512,13,13)f32 #53=(1,1000,13,13)f32
 ReLU                     classifier.2             1 1 53 54 #53=(1,1000,13,13)f32 #54=(1,1000,13,13)f32
 AdaptiveAvgPool2d        classifier.3             1 1 54 55 output_size=(1,1) #54=(1,1000,13,13)f32 #55=(1,1000,1,1)f32
 torch.flatten            pnnx_18                  1 1 55 12 end_dim=-1 start_dim=1 #55=(1,1000,1,1)f32 #12=(1,1000)f32
