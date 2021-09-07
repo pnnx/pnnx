@@ -1,233 +1,161 @@
 7767517
-231 243
-Input                    pnnx_input_1             0 1 x.3 #x.3=(1,3,224,224)f32
-Conv2d                   conv1.0                  1 1 x.3 51 bias=0 dilation=(1,1) groups=1 in_channels=3 kernel_size=(3,3) out_channels=24 padding=(1,1) stride=(2,2) @weight=(24,3,3,3)f32 #x.3=(1,3,224,224)f32 #51=(1,24,112,112)f32
-BatchNorm2d              conv1.1                  1 1 51 52 affine=1 eps=1.000000e-05 num_features=24 @bias=(24)f32 @running_mean=(24)f32 @running_var=(24)f32 @weight=(24)f32 #51=(1,24,112,112)f32 #52=(1,24,112,112)f32
-ReLU                     conv1.2                  1 1 52 53 #52=(1,24,112,112)f32 #53=(1,24,112,112)f32
-MaxPool2d                maxpool                  1 1 53 18 ceil_mode=0 dilation=(1,1) kernel_size=(3,3) padding=(1,1) stride=(2,2) #53=(1,24,112,112)f32 #18=(1,24,56,56)f32
-Conv2d                   stage2.0.branch1.0       1 1 18 654 bias=0 dilation=(1,1) groups=24 in_channels=24 kernel_size=(3,3) out_channels=24 padding=(1,1) stride=(2,2) @weight=(24,1,3,3)f32 #18=(1,24,56,56)f32 #654=(1,24,28,28)f32
-BatchNorm2d              stage2.0.branch1.1       1 1 654 655 affine=1 eps=1.000000e-05 num_features=24 @bias=(24)f32 @running_mean=(24)f32 @running_var=(24)f32 @weight=(24)f32 #654=(1,24,28,28)f32 #655=(1,24,28,28)f32
-Conv2d                   stage2.0.branch1.2       1 1 655 656 bias=0 dilation=(1,1) groups=1 in_channels=24 kernel_size=(1,1) out_channels=58 padding=(0,0) stride=(1,1) @weight=(58,24,1,1)f32 #655=(1,24,28,28)f32 #656=(1,58,28,28)f32
-BatchNorm2d              stage2.0.branch1.3       1 1 656 657 affine=1 eps=1.000000e-05 num_features=58 @bias=(58)f32 @running_mean=(58)f32 @running_var=(58)f32 @weight=(58)f32 #656=(1,58,28,28)f32 #657=(1,58,28,28)f32
-ReLU                     stage2.0.branch1.4       1 1 657 658 #657=(1,58,28,28)f32 #658=(1,58,28,28)f32
-Conv2d                   stage2.0.branch2.0       1 1 18 667 bias=0 dilation=(1,1) groups=1 in_channels=24 kernel_size=(1,1) out_channels=58 padding=(0,0) stride=(1,1) @weight=(58,24,1,1)f32 #18=(1,24,56,56)f32 #667=(1,58,56,56)f32
-BatchNorm2d              stage2.0.branch2.1       1 1 667 668 affine=1 eps=1.000000e-05 num_features=58 @bias=(58)f32 @running_mean=(58)f32 @running_var=(58)f32 @weight=(58)f32 #667=(1,58,56,56)f32 #668=(1,58,56,56)f32
-ReLU                     stage2.0.branch2.2       1 1 668 669 #668=(1,58,56,56)f32 #669=(1,58,56,56)f32
-Conv2d                   stage2.0.branch2.3       1 1 669 670 bias=0 dilation=(1,1) groups=58 in_channels=58 kernel_size=(3,3) out_channels=58 padding=(1,1) stride=(2,2) @weight=(58,1,3,3)f32 #669=(1,58,56,56)f32 #670=(1,58,28,28)f32
-BatchNorm2d              stage2.0.branch2.4       1 1 670 671 affine=1 eps=1.000000e-05 num_features=58 @bias=(58)f32 @running_mean=(58)f32 @running_var=(58)f32 @weight=(58)f32 #670=(1,58,28,28)f32 #671=(1,58,28,28)f32
-Conv2d                   stage2.0.branch2.5       1 1 671 672 bias=0 dilation=(1,1) groups=1 in_channels=58 kernel_size=(1,1) out_channels=58 padding=(0,0) stride=(1,1) @weight=(58,58,1,1)f32 #671=(1,58,28,28)f32 #672=(1,58,28,28)f32
-BatchNorm2d              stage2.0.branch2.6       1 1 672 673 affine=1 eps=1.000000e-05 num_features=58 @bias=(58)f32 @running_mean=(58)f32 @running_var=(58)f32 @weight=(58)f32 #672=(1,58,28,28)f32 #673=(1,58,28,28)f32
-ReLU                     stage2.0.branch2.7       1 1 673 674 #673=(1,58,28,28)f32 #674=(1,58,28,28)f32
-torch.cat                pnnx_9                   2 1 658 674 x.5 dim=1 #658=(1,58,28,28)f32 #674=(1,58,28,28)f32 #x.5=(1,116,28,28)f32
-aten::view               pnnx_29                  1 1 x.5 x0.2 shape=[1,2,58,28,28] #x.5=(1,116,28,28)f32 #x0.2=(1,2,58,28,28)f32
-torch.transpose          pnnx_32                  1 1 x0.2 x1.2 dim0=1 dim1=2 #x0.2=(1,2,58,28,28)f32 #x1.2=(1,58,2,28,28)f32
-aten::view               pnnx_34                  1 1 x1.2 125 shape=[1,-1,28,28] #x1.2=(1,58,2,28,28)f32 #125=(1,116,28,28)f32
-torch.chunk              pnnx_38                  1 2 125 x1.4 input.5 chunks=2 dim=1 #125=(1,116,28,28)f32 #x1.4=(1,58,28,28)f32 #input.5=(1,58,28,28)f32
-Conv2d                   stage2.1.branch2.0       1 1 input.5 683 bias=0 dilation=(1,1) groups=1 in_channels=58 kernel_size=(1,1) out_channels=58 padding=(0,0) stride=(1,1) @weight=(58,58,1,1)f32 #input.5=(1,58,28,28)f32 #683=(1,58,28,28)f32
-BatchNorm2d              stage2.1.branch2.1       1 1 683 684 affine=1 eps=1.000000e-05 num_features=58 @bias=(58)f32 @running_mean=(58)f32 @running_var=(58)f32 @weight=(58)f32 #683=(1,58,28,28)f32 #684=(1,58,28,28)f32
-ReLU                     stage2.1.branch2.2       1 1 684 685 #684=(1,58,28,28)f32 #685=(1,58,28,28)f32
-Conv2d                   stage2.1.branch2.3       1 1 685 686 bias=0 dilation=(1,1) groups=58 in_channels=58 kernel_size=(3,3) out_channels=58 padding=(1,1) stride=(1,1) @weight=(58,1,3,3)f32 #685=(1,58,28,28)f32 #686=(1,58,28,28)f32
-BatchNorm2d              stage2.1.branch2.4       1 1 686 687 affine=1 eps=1.000000e-05 num_features=58 @bias=(58)f32 @running_mean=(58)f32 @running_var=(58)f32 @weight=(58)f32 #686=(1,58,28,28)f32 #687=(1,58,28,28)f32
-Conv2d                   stage2.1.branch2.5       1 1 687 688 bias=0 dilation=(1,1) groups=1 in_channels=58 kernel_size=(1,1) out_channels=58 padding=(0,0) stride=(1,1) @weight=(58,58,1,1)f32 #687=(1,58,28,28)f32 #688=(1,58,28,28)f32
-BatchNorm2d              stage2.1.branch2.6       1 1 688 689 affine=1 eps=1.000000e-05 num_features=58 @bias=(58)f32 @running_mean=(58)f32 @running_var=(58)f32 @weight=(58)f32 #688=(1,58,28,28)f32 #689=(1,58,28,28)f32
-ReLU                     stage2.1.branch2.7       1 1 689 690 #689=(1,58,28,28)f32 #690=(1,58,28,28)f32
-torch.cat                pnnx_43                  2 1 x1.4 690 x.7 dim=1 #x1.4=(1,58,28,28)f32 #690=(1,58,28,28)f32 #x.7=(1,116,28,28)f32
-aten::view               pnnx_64                  1 1 x.7 x0.4 shape=[1,2,58,28,28] #x.7=(1,116,28,28)f32 #x0.4=(1,2,58,28,28)f32
-torch.transpose          pnnx_67                  1 1 x0.4 x2.2 dim0=1 dim1=2 #x0.4=(1,2,58,28,28)f32 #x2.2=(1,58,2,28,28)f32
-aten::view               pnnx_69                  1 1 x2.2 160 shape=[1,-1,28,28] #x2.2=(1,58,2,28,28)f32 #160=(1,116,28,28)f32
-torch.chunk              pnnx_73                  1 2 160 x1.6 input.7 chunks=2 dim=1 #160=(1,116,28,28)f32 #x1.6=(1,58,28,28)f32 #input.7=(1,58,28,28)f32
-Conv2d                   stage2.2.branch2.0       1 1 input.7 699 bias=0 dilation=(1,1) groups=1 in_channels=58 kernel_size=(1,1) out_channels=58 padding=(0,0) stride=(1,1) @weight=(58,58,1,1)f32 #input.7=(1,58,28,28)f32 #699=(1,58,28,28)f32
-BatchNorm2d              stage2.2.branch2.1       1 1 699 700 affine=1 eps=1.000000e-05 num_features=58 @bias=(58)f32 @running_mean=(58)f32 @running_var=(58)f32 @weight=(58)f32 #699=(1,58,28,28)f32 #700=(1,58,28,28)f32
-ReLU                     stage2.2.branch2.2       1 1 700 701 #700=(1,58,28,28)f32 #701=(1,58,28,28)f32
-Conv2d                   stage2.2.branch2.3       1 1 701 702 bias=0 dilation=(1,1) groups=58 in_channels=58 kernel_size=(3,3) out_channels=58 padding=(1,1) stride=(1,1) @weight=(58,1,3,3)f32 #701=(1,58,28,28)f32 #702=(1,58,28,28)f32
-BatchNorm2d              stage2.2.branch2.4       1 1 702 703 affine=1 eps=1.000000e-05 num_features=58 @bias=(58)f32 @running_mean=(58)f32 @running_var=(58)f32 @weight=(58)f32 #702=(1,58,28,28)f32 #703=(1,58,28,28)f32
-Conv2d                   stage2.2.branch2.5       1 1 703 704 bias=0 dilation=(1,1) groups=1 in_channels=58 kernel_size=(1,1) out_channels=58 padding=(0,0) stride=(1,1) @weight=(58,58,1,1)f32 #703=(1,58,28,28)f32 #704=(1,58,28,28)f32
-BatchNorm2d              stage2.2.branch2.6       1 1 704 705 affine=1 eps=1.000000e-05 num_features=58 @bias=(58)f32 @running_mean=(58)f32 @running_var=(58)f32 @weight=(58)f32 #704=(1,58,28,28)f32 #705=(1,58,28,28)f32
-ReLU                     stage2.2.branch2.7       1 1 705 706 #705=(1,58,28,28)f32 #706=(1,58,28,28)f32
-torch.cat                pnnx_78                  2 1 x1.6 706 x.9 dim=1 #x1.6=(1,58,28,28)f32 #706=(1,58,28,28)f32 #x.9=(1,116,28,28)f32
-aten::view               pnnx_99                  1 1 x.9 x0.6 shape=[1,2,58,28,28] #x.9=(1,116,28,28)f32 #x0.6=(1,2,58,28,28)f32
-torch.transpose          pnnx_102                 1 1 x0.6 x2.4 dim0=1 dim1=2 #x0.6=(1,2,58,28,28)f32 #x2.4=(1,58,2,28,28)f32
-aten::view               pnnx_104                 1 1 x2.4 195 shape=[1,-1,28,28] #x2.4=(1,58,2,28,28)f32 #195=(1,116,28,28)f32
-torch.chunk              pnnx_108                 1 2 195 x1.8 input.9 chunks=2 dim=1 #195=(1,116,28,28)f32 #x1.8=(1,58,28,28)f32 #input.9=(1,58,28,28)f32
-Conv2d                   stage2.3.branch2.0       1 1 input.9 715 bias=0 dilation=(1,1) groups=1 in_channels=58 kernel_size=(1,1) out_channels=58 padding=(0,0) stride=(1,1) @weight=(58,58,1,1)f32 #input.9=(1,58,28,28)f32 #715=(1,58,28,28)f32
-BatchNorm2d              stage2.3.branch2.1       1 1 715 716 affine=1 eps=1.000000e-05 num_features=58 @bias=(58)f32 @running_mean=(58)f32 @running_var=(58)f32 @weight=(58)f32 #715=(1,58,28,28)f32 #716=(1,58,28,28)f32
-ReLU                     stage2.3.branch2.2       1 1 716 717 #716=(1,58,28,28)f32 #717=(1,58,28,28)f32
-Conv2d                   stage2.3.branch2.3       1 1 717 718 bias=0 dilation=(1,1) groups=58 in_channels=58 kernel_size=(3,3) out_channels=58 padding=(1,1) stride=(1,1) @weight=(58,1,3,3)f32 #717=(1,58,28,28)f32 #718=(1,58,28,28)f32
-BatchNorm2d              stage2.3.branch2.4       1 1 718 719 affine=1 eps=1.000000e-05 num_features=58 @bias=(58)f32 @running_mean=(58)f32 @running_var=(58)f32 @weight=(58)f32 #718=(1,58,28,28)f32 #719=(1,58,28,28)f32
-Conv2d                   stage2.3.branch2.5       1 1 719 720 bias=0 dilation=(1,1) groups=1 in_channels=58 kernel_size=(1,1) out_channels=58 padding=(0,0) stride=(1,1) @weight=(58,58,1,1)f32 #719=(1,58,28,28)f32 #720=(1,58,28,28)f32
-BatchNorm2d              stage2.3.branch2.6       1 1 720 721 affine=1 eps=1.000000e-05 num_features=58 @bias=(58)f32 @running_mean=(58)f32 @running_var=(58)f32 @weight=(58)f32 #720=(1,58,28,28)f32 #721=(1,58,28,28)f32
-ReLU                     stage2.3.branch2.7       1 1 721 722 #721=(1,58,28,28)f32 #722=(1,58,28,28)f32
-torch.cat                pnnx_113                 2 1 x1.8 722 x.11 dim=1 #x1.8=(1,58,28,28)f32 #722=(1,58,28,28)f32 #x.11=(1,116,28,28)f32
-aten::view               pnnx_134                 1 1 x.11 x0.8 shape=[1,2,58,28,28] #x.11=(1,116,28,28)f32 #x0.8=(1,2,58,28,28)f32
-torch.transpose          pnnx_137                 1 1 x0.8 x2.6 dim0=1 dim1=2 #x0.8=(1,2,58,28,28)f32 #x2.6=(1,58,2,28,28)f32
-aten::view               pnnx_139                 1 1 x2.6 230 shape=[1,-1,28,28] #x2.6=(1,58,2,28,28)f32 #230=(1,116,28,28)f32
-Conv2d                   stage3.0.branch1.0       1 1 230 728 bias=0 dilation=(1,1) groups=116 in_channels=116 kernel_size=(3,3) out_channels=116 padding=(1,1) stride=(2,2) @weight=(116,1,3,3)f32 #230=(1,116,28,28)f32 #728=(1,116,14,14)f32
-BatchNorm2d              stage3.0.branch1.1       1 1 728 729 affine=1 eps=1.000000e-05 num_features=116 @bias=(116)f32 @running_mean=(116)f32 @running_var=(116)f32 @weight=(116)f32 #728=(1,116,14,14)f32 #729=(1,116,14,14)f32
-Conv2d                   stage3.0.branch1.2       1 1 729 730 bias=0 dilation=(1,1) groups=1 in_channels=116 kernel_size=(1,1) out_channels=116 padding=(0,0) stride=(1,1) @weight=(116,116,1,1)f32 #729=(1,116,14,14)f32 #730=(1,116,14,14)f32
-BatchNorm2d              stage3.0.branch1.3       1 1 730 731 affine=1 eps=1.000000e-05 num_features=116 @bias=(116)f32 @running_mean=(116)f32 @running_var=(116)f32 @weight=(116)f32 #730=(1,116,14,14)f32 #731=(1,116,14,14)f32
-ReLU                     stage3.0.branch1.4       1 1 731 732 #731=(1,116,14,14)f32 #732=(1,116,14,14)f32
-Conv2d                   stage3.0.branch2.0       1 1 230 741 bias=0 dilation=(1,1) groups=1 in_channels=116 kernel_size=(1,1) out_channels=116 padding=(0,0) stride=(1,1) @weight=(116,116,1,1)f32 #230=(1,116,28,28)f32 #741=(1,116,28,28)f32
-BatchNorm2d              stage3.0.branch2.1       1 1 741 742 affine=1 eps=1.000000e-05 num_features=116 @bias=(116)f32 @running_mean=(116)f32 @running_var=(116)f32 @weight=(116)f32 #741=(1,116,28,28)f32 #742=(1,116,28,28)f32
-ReLU                     stage3.0.branch2.2       1 1 742 743 #742=(1,116,28,28)f32 #743=(1,116,28,28)f32
-Conv2d                   stage3.0.branch2.3       1 1 743 744 bias=0 dilation=(1,1) groups=116 in_channels=116 kernel_size=(3,3) out_channels=116 padding=(1,1) stride=(2,2) @weight=(116,1,3,3)f32 #743=(1,116,28,28)f32 #744=(1,116,14,14)f32
-BatchNorm2d              stage3.0.branch2.4       1 1 744 745 affine=1 eps=1.000000e-05 num_features=116 @bias=(116)f32 @running_mean=(116)f32 @running_var=(116)f32 @weight=(116)f32 #744=(1,116,14,14)f32 #745=(1,116,14,14)f32
-Conv2d                   stage3.0.branch2.5       1 1 745 746 bias=0 dilation=(1,1) groups=1 in_channels=116 kernel_size=(1,1) out_channels=116 padding=(0,0) stride=(1,1) @weight=(116,116,1,1)f32 #745=(1,116,14,14)f32 #746=(1,116,14,14)f32
-BatchNorm2d              stage3.0.branch2.6       1 1 746 747 affine=1 eps=1.000000e-05 num_features=116 @bias=(116)f32 @running_mean=(116)f32 @running_var=(116)f32 @weight=(116)f32 #746=(1,116,14,14)f32 #747=(1,116,14,14)f32
-ReLU                     stage3.0.branch2.7       1 1 747 748 #747=(1,116,14,14)f32 #748=(1,116,14,14)f32
-torch.cat                pnnx_146                 2 1 732 748 x.13 dim=1 #732=(1,116,14,14)f32 #748=(1,116,14,14)f32 #x.13=(1,232,14,14)f32
-aten::view               pnnx_166                 1 1 x.13 x0.10 shape=[1,2,116,14,14] #x.13=(1,232,14,14)f32 #x0.10=(1,2,116,14,14)f32
-torch.transpose          pnnx_169                 1 1 x0.10 x1.10 dim0=1 dim1=2 #x0.10=(1,2,116,14,14)f32 #x1.10=(1,116,2,14,14)f32
-aten::view               pnnx_171                 1 1 x1.10 264 shape=[1,-1,14,14] #x1.10=(1,116,2,14,14)f32 #264=(1,232,14,14)f32
-torch.chunk              pnnx_175                 1 2 264 x1.12 input.11 chunks=2 dim=1 #264=(1,232,14,14)f32 #x1.12=(1,116,14,14)f32 #input.11=(1,116,14,14)f32
-Conv2d                   stage3.1.branch2.0       1 1 input.11 757 bias=0 dilation=(1,1) groups=1 in_channels=116 kernel_size=(1,1) out_channels=116 padding=(0,0) stride=(1,1) @weight=(116,116,1,1)f32 #input.11=(1,116,14,14)f32 #757=(1,116,14,14)f32
-BatchNorm2d              stage3.1.branch2.1       1 1 757 758 affine=1 eps=1.000000e-05 num_features=116 @bias=(116)f32 @running_mean=(116)f32 @running_var=(116)f32 @weight=(116)f32 #757=(1,116,14,14)f32 #758=(1,116,14,14)f32
-ReLU                     stage3.1.branch2.2       1 1 758 759 #758=(1,116,14,14)f32 #759=(1,116,14,14)f32
-Conv2d                   stage3.1.branch2.3       1 1 759 760 bias=0 dilation=(1,1) groups=116 in_channels=116 kernel_size=(3,3) out_channels=116 padding=(1,1) stride=(1,1) @weight=(116,1,3,3)f32 #759=(1,116,14,14)f32 #760=(1,116,14,14)f32
-BatchNorm2d              stage3.1.branch2.4       1 1 760 761 affine=1 eps=1.000000e-05 num_features=116 @bias=(116)f32 @running_mean=(116)f32 @running_var=(116)f32 @weight=(116)f32 #760=(1,116,14,14)f32 #761=(1,116,14,14)f32
-Conv2d                   stage3.1.branch2.5       1 1 761 762 bias=0 dilation=(1,1) groups=1 in_channels=116 kernel_size=(1,1) out_channels=116 padding=(0,0) stride=(1,1) @weight=(116,116,1,1)f32 #761=(1,116,14,14)f32 #762=(1,116,14,14)f32
-BatchNorm2d              stage3.1.branch2.6       1 1 762 763 affine=1 eps=1.000000e-05 num_features=116 @bias=(116)f32 @running_mean=(116)f32 @running_var=(116)f32 @weight=(116)f32 #762=(1,116,14,14)f32 #763=(1,116,14,14)f32
-ReLU                     stage3.1.branch2.7       1 1 763 764 #763=(1,116,14,14)f32 #764=(1,116,14,14)f32
-torch.cat                pnnx_180                 2 1 x1.12 764 x.15 dim=1 #x1.12=(1,116,14,14)f32 #764=(1,116,14,14)f32 #x.15=(1,232,14,14)f32
-aten::view               pnnx_201                 1 1 x.15 x0.12 shape=[1,2,116,14,14] #x.15=(1,232,14,14)f32 #x0.12=(1,2,116,14,14)f32
-torch.transpose          pnnx_204                 1 1 x0.12 x2.8 dim0=1 dim1=2 #x0.12=(1,2,116,14,14)f32 #x2.8=(1,116,2,14,14)f32
-aten::view               pnnx_206                 1 1 x2.8 299 shape=[1,-1,14,14] #x2.8=(1,116,2,14,14)f32 #299=(1,232,14,14)f32
-torch.chunk              pnnx_210                 1 2 299 x1.14 input.13 chunks=2 dim=1 #299=(1,232,14,14)f32 #x1.14=(1,116,14,14)f32 #input.13=(1,116,14,14)f32
-Conv2d                   stage3.2.branch2.0       1 1 input.13 773 bias=0 dilation=(1,1) groups=1 in_channels=116 kernel_size=(1,1) out_channels=116 padding=(0,0) stride=(1,1) @weight=(116,116,1,1)f32 #input.13=(1,116,14,14)f32 #773=(1,116,14,14)f32
-BatchNorm2d              stage3.2.branch2.1       1 1 773 774 affine=1 eps=1.000000e-05 num_features=116 @bias=(116)f32 @running_mean=(116)f32 @running_var=(116)f32 @weight=(116)f32 #773=(1,116,14,14)f32 #774=(1,116,14,14)f32
-ReLU                     stage3.2.branch2.2       1 1 774 775 #774=(1,116,14,14)f32 #775=(1,116,14,14)f32
-Conv2d                   stage3.2.branch2.3       1 1 775 776 bias=0 dilation=(1,1) groups=116 in_channels=116 kernel_size=(3,3) out_channels=116 padding=(1,1) stride=(1,1) @weight=(116,1,3,3)f32 #775=(1,116,14,14)f32 #776=(1,116,14,14)f32
-BatchNorm2d              stage3.2.branch2.4       1 1 776 777 affine=1 eps=1.000000e-05 num_features=116 @bias=(116)f32 @running_mean=(116)f32 @running_var=(116)f32 @weight=(116)f32 #776=(1,116,14,14)f32 #777=(1,116,14,14)f32
-Conv2d                   stage3.2.branch2.5       1 1 777 778 bias=0 dilation=(1,1) groups=1 in_channels=116 kernel_size=(1,1) out_channels=116 padding=(0,0) stride=(1,1) @weight=(116,116,1,1)f32 #777=(1,116,14,14)f32 #778=(1,116,14,14)f32
-BatchNorm2d              stage3.2.branch2.6       1 1 778 779 affine=1 eps=1.000000e-05 num_features=116 @bias=(116)f32 @running_mean=(116)f32 @running_var=(116)f32 @weight=(116)f32 #778=(1,116,14,14)f32 #779=(1,116,14,14)f32
-ReLU                     stage3.2.branch2.7       1 1 779 780 #779=(1,116,14,14)f32 #780=(1,116,14,14)f32
-torch.cat                pnnx_215                 2 1 x1.14 780 x.17 dim=1 #x1.14=(1,116,14,14)f32 #780=(1,116,14,14)f32 #x.17=(1,232,14,14)f32
-aten::view               pnnx_236                 1 1 x.17 x0.14 shape=[1,2,116,14,14] #x.17=(1,232,14,14)f32 #x0.14=(1,2,116,14,14)f32
-torch.transpose          pnnx_239                 1 1 x0.14 x2.10 dim0=1 dim1=2 #x0.14=(1,2,116,14,14)f32 #x2.10=(1,116,2,14,14)f32
-aten::view               pnnx_241                 1 1 x2.10 334 shape=[1,-1,14,14] #x2.10=(1,116,2,14,14)f32 #334=(1,232,14,14)f32
-torch.chunk              pnnx_245                 1 2 334 x1.16 input.15 chunks=2 dim=1 #334=(1,232,14,14)f32 #x1.16=(1,116,14,14)f32 #input.15=(1,116,14,14)f32
-Conv2d                   stage3.3.branch2.0       1 1 input.15 789 bias=0 dilation=(1,1) groups=1 in_channels=116 kernel_size=(1,1) out_channels=116 padding=(0,0) stride=(1,1) @weight=(116,116,1,1)f32 #input.15=(1,116,14,14)f32 #789=(1,116,14,14)f32
-BatchNorm2d              stage3.3.branch2.1       1 1 789 790 affine=1 eps=1.000000e-05 num_features=116 @bias=(116)f32 @running_mean=(116)f32 @running_var=(116)f32 @weight=(116)f32 #789=(1,116,14,14)f32 #790=(1,116,14,14)f32
-ReLU                     stage3.3.branch2.2       1 1 790 791 #790=(1,116,14,14)f32 #791=(1,116,14,14)f32
-Conv2d                   stage3.3.branch2.3       1 1 791 792 bias=0 dilation=(1,1) groups=116 in_channels=116 kernel_size=(3,3) out_channels=116 padding=(1,1) stride=(1,1) @weight=(116,1,3,3)f32 #791=(1,116,14,14)f32 #792=(1,116,14,14)f32
-BatchNorm2d              stage3.3.branch2.4       1 1 792 793 affine=1 eps=1.000000e-05 num_features=116 @bias=(116)f32 @running_mean=(116)f32 @running_var=(116)f32 @weight=(116)f32 #792=(1,116,14,14)f32 #793=(1,116,14,14)f32
-Conv2d                   stage3.3.branch2.5       1 1 793 794 bias=0 dilation=(1,1) groups=1 in_channels=116 kernel_size=(1,1) out_channels=116 padding=(0,0) stride=(1,1) @weight=(116,116,1,1)f32 #793=(1,116,14,14)f32 #794=(1,116,14,14)f32
-BatchNorm2d              stage3.3.branch2.6       1 1 794 795 affine=1 eps=1.000000e-05 num_features=116 @bias=(116)f32 @running_mean=(116)f32 @running_var=(116)f32 @weight=(116)f32 #794=(1,116,14,14)f32 #795=(1,116,14,14)f32
-ReLU                     stage3.3.branch2.7       1 1 795 796 #795=(1,116,14,14)f32 #796=(1,116,14,14)f32
-torch.cat                pnnx_250                 2 1 x1.16 796 x.19 dim=1 #x1.16=(1,116,14,14)f32 #796=(1,116,14,14)f32 #x.19=(1,232,14,14)f32
-aten::view               pnnx_271                 1 1 x.19 x0.16 shape=[1,2,116,14,14] #x.19=(1,232,14,14)f32 #x0.16=(1,2,116,14,14)f32
-torch.transpose          pnnx_274                 1 1 x0.16 x2.12 dim0=1 dim1=2 #x0.16=(1,2,116,14,14)f32 #x2.12=(1,116,2,14,14)f32
-aten::view               pnnx_276                 1 1 x2.12 369 shape=[1,-1,14,14] #x2.12=(1,116,2,14,14)f32 #369=(1,232,14,14)f32
-torch.chunk              pnnx_280                 1 2 369 x1.18 input.17 chunks=2 dim=1 #369=(1,232,14,14)f32 #x1.18=(1,116,14,14)f32 #input.17=(1,116,14,14)f32
-Conv2d                   stage3.4.branch2.0       1 1 input.17 805 bias=0 dilation=(1,1) groups=1 in_channels=116 kernel_size=(1,1) out_channels=116 padding=(0,0) stride=(1,1) @weight=(116,116,1,1)f32 #input.17=(1,116,14,14)f32 #805=(1,116,14,14)f32
-BatchNorm2d              stage3.4.branch2.1       1 1 805 806 affine=1 eps=1.000000e-05 num_features=116 @bias=(116)f32 @running_mean=(116)f32 @running_var=(116)f32 @weight=(116)f32 #805=(1,116,14,14)f32 #806=(1,116,14,14)f32
-ReLU                     stage3.4.branch2.2       1 1 806 807 #806=(1,116,14,14)f32 #807=(1,116,14,14)f32
-Conv2d                   stage3.4.branch2.3       1 1 807 808 bias=0 dilation=(1,1) groups=116 in_channels=116 kernel_size=(3,3) out_channels=116 padding=(1,1) stride=(1,1) @weight=(116,1,3,3)f32 #807=(1,116,14,14)f32 #808=(1,116,14,14)f32
-BatchNorm2d              stage3.4.branch2.4       1 1 808 809 affine=1 eps=1.000000e-05 num_features=116 @bias=(116)f32 @running_mean=(116)f32 @running_var=(116)f32 @weight=(116)f32 #808=(1,116,14,14)f32 #809=(1,116,14,14)f32
-Conv2d                   stage3.4.branch2.5       1 1 809 810 bias=0 dilation=(1,1) groups=1 in_channels=116 kernel_size=(1,1) out_channels=116 padding=(0,0) stride=(1,1) @weight=(116,116,1,1)f32 #809=(1,116,14,14)f32 #810=(1,116,14,14)f32
-BatchNorm2d              stage3.4.branch2.6       1 1 810 811 affine=1 eps=1.000000e-05 num_features=116 @bias=(116)f32 @running_mean=(116)f32 @running_var=(116)f32 @weight=(116)f32 #810=(1,116,14,14)f32 #811=(1,116,14,14)f32
-ReLU                     stage3.4.branch2.7       1 1 811 812 #811=(1,116,14,14)f32 #812=(1,116,14,14)f32
-torch.cat                pnnx_285                 2 1 x1.18 812 x.21 dim=1 #x1.18=(1,116,14,14)f32 #812=(1,116,14,14)f32 #x.21=(1,232,14,14)f32
-aten::view               pnnx_306                 1 1 x.21 x0.18 shape=[1,2,116,14,14] #x.21=(1,232,14,14)f32 #x0.18=(1,2,116,14,14)f32
-torch.transpose          pnnx_309                 1 1 x0.18 x2.14 dim0=1 dim1=2 #x0.18=(1,2,116,14,14)f32 #x2.14=(1,116,2,14,14)f32
-aten::view               pnnx_311                 1 1 x2.14 404 shape=[1,-1,14,14] #x2.14=(1,116,2,14,14)f32 #404=(1,232,14,14)f32
-torch.chunk              pnnx_315                 1 2 404 x1.20 input.19 chunks=2 dim=1 #404=(1,232,14,14)f32 #x1.20=(1,116,14,14)f32 #input.19=(1,116,14,14)f32
-Conv2d                   stage3.5.branch2.0       1 1 input.19 821 bias=0 dilation=(1,1) groups=1 in_channels=116 kernel_size=(1,1) out_channels=116 padding=(0,0) stride=(1,1) @weight=(116,116,1,1)f32 #input.19=(1,116,14,14)f32 #821=(1,116,14,14)f32
-BatchNorm2d              stage3.5.branch2.1       1 1 821 822 affine=1 eps=1.000000e-05 num_features=116 @bias=(116)f32 @running_mean=(116)f32 @running_var=(116)f32 @weight=(116)f32 #821=(1,116,14,14)f32 #822=(1,116,14,14)f32
-ReLU                     stage3.5.branch2.2       1 1 822 823 #822=(1,116,14,14)f32 #823=(1,116,14,14)f32
-Conv2d                   stage3.5.branch2.3       1 1 823 824 bias=0 dilation=(1,1) groups=116 in_channels=116 kernel_size=(3,3) out_channels=116 padding=(1,1) stride=(1,1) @weight=(116,1,3,3)f32 #823=(1,116,14,14)f32 #824=(1,116,14,14)f32
-BatchNorm2d              stage3.5.branch2.4       1 1 824 825 affine=1 eps=1.000000e-05 num_features=116 @bias=(116)f32 @running_mean=(116)f32 @running_var=(116)f32 @weight=(116)f32 #824=(1,116,14,14)f32 #825=(1,116,14,14)f32
-Conv2d                   stage3.5.branch2.5       1 1 825 826 bias=0 dilation=(1,1) groups=1 in_channels=116 kernel_size=(1,1) out_channels=116 padding=(0,0) stride=(1,1) @weight=(116,116,1,1)f32 #825=(1,116,14,14)f32 #826=(1,116,14,14)f32
-BatchNorm2d              stage3.5.branch2.6       1 1 826 827 affine=1 eps=1.000000e-05 num_features=116 @bias=(116)f32 @running_mean=(116)f32 @running_var=(116)f32 @weight=(116)f32 #826=(1,116,14,14)f32 #827=(1,116,14,14)f32
-ReLU                     stage3.5.branch2.7       1 1 827 828 #827=(1,116,14,14)f32 #828=(1,116,14,14)f32
-torch.cat                pnnx_320                 2 1 x1.20 828 x.23 dim=1 #x1.20=(1,116,14,14)f32 #828=(1,116,14,14)f32 #x.23=(1,232,14,14)f32
-aten::view               pnnx_341                 1 1 x.23 x0.20 shape=[1,2,116,14,14] #x.23=(1,232,14,14)f32 #x0.20=(1,2,116,14,14)f32
-torch.transpose          pnnx_344                 1 1 x0.20 x2.16 dim0=1 dim1=2 #x0.20=(1,2,116,14,14)f32 #x2.16=(1,116,2,14,14)f32
-aten::view               pnnx_346                 1 1 x2.16 439 shape=[1,-1,14,14] #x2.16=(1,116,2,14,14)f32 #439=(1,232,14,14)f32
-torch.chunk              pnnx_350                 1 2 439 x1.22 input.21 chunks=2 dim=1 #439=(1,232,14,14)f32 #x1.22=(1,116,14,14)f32 #input.21=(1,116,14,14)f32
-Conv2d                   stage3.6.branch2.0       1 1 input.21 837 bias=0 dilation=(1,1) groups=1 in_channels=116 kernel_size=(1,1) out_channels=116 padding=(0,0) stride=(1,1) @weight=(116,116,1,1)f32 #input.21=(1,116,14,14)f32 #837=(1,116,14,14)f32
-BatchNorm2d              stage3.6.branch2.1       1 1 837 838 affine=1 eps=1.000000e-05 num_features=116 @bias=(116)f32 @running_mean=(116)f32 @running_var=(116)f32 @weight=(116)f32 #837=(1,116,14,14)f32 #838=(1,116,14,14)f32
-ReLU                     stage3.6.branch2.2       1 1 838 839 #838=(1,116,14,14)f32 #839=(1,116,14,14)f32
-Conv2d                   stage3.6.branch2.3       1 1 839 840 bias=0 dilation=(1,1) groups=116 in_channels=116 kernel_size=(3,3) out_channels=116 padding=(1,1) stride=(1,1) @weight=(116,1,3,3)f32 #839=(1,116,14,14)f32 #840=(1,116,14,14)f32
-BatchNorm2d              stage3.6.branch2.4       1 1 840 841 affine=1 eps=1.000000e-05 num_features=116 @bias=(116)f32 @running_mean=(116)f32 @running_var=(116)f32 @weight=(116)f32 #840=(1,116,14,14)f32 #841=(1,116,14,14)f32
-Conv2d                   stage3.6.branch2.5       1 1 841 842 bias=0 dilation=(1,1) groups=1 in_channels=116 kernel_size=(1,1) out_channels=116 padding=(0,0) stride=(1,1) @weight=(116,116,1,1)f32 #841=(1,116,14,14)f32 #842=(1,116,14,14)f32
-BatchNorm2d              stage3.6.branch2.6       1 1 842 843 affine=1 eps=1.000000e-05 num_features=116 @bias=(116)f32 @running_mean=(116)f32 @running_var=(116)f32 @weight=(116)f32 #842=(1,116,14,14)f32 #843=(1,116,14,14)f32
-ReLU                     stage3.6.branch2.7       1 1 843 844 #843=(1,116,14,14)f32 #844=(1,116,14,14)f32
-torch.cat                pnnx_355                 2 1 x1.22 844 x.25 dim=1 #x1.22=(1,116,14,14)f32 #844=(1,116,14,14)f32 #x.25=(1,232,14,14)f32
-aten::view               pnnx_376                 1 1 x.25 x0.22 shape=[1,2,116,14,14] #x.25=(1,232,14,14)f32 #x0.22=(1,2,116,14,14)f32
-torch.transpose          pnnx_379                 1 1 x0.22 x2.18 dim0=1 dim1=2 #x0.22=(1,2,116,14,14)f32 #x2.18=(1,116,2,14,14)f32
-aten::view               pnnx_381                 1 1 x2.18 474 shape=[1,-1,14,14] #x2.18=(1,116,2,14,14)f32 #474=(1,232,14,14)f32
-torch.chunk              pnnx_385                 1 2 474 x1.24 input.23 chunks=2 dim=1 #474=(1,232,14,14)f32 #x1.24=(1,116,14,14)f32 #input.23=(1,116,14,14)f32
-Conv2d                   stage3.7.branch2.0       1 1 input.23 853 bias=0 dilation=(1,1) groups=1 in_channels=116 kernel_size=(1,1) out_channels=116 padding=(0,0) stride=(1,1) @weight=(116,116,1,1)f32 #input.23=(1,116,14,14)f32 #853=(1,116,14,14)f32
-BatchNorm2d              stage3.7.branch2.1       1 1 853 854 affine=1 eps=1.000000e-05 num_features=116 @bias=(116)f32 @running_mean=(116)f32 @running_var=(116)f32 @weight=(116)f32 #853=(1,116,14,14)f32 #854=(1,116,14,14)f32
-ReLU                     stage3.7.branch2.2       1 1 854 855 #854=(1,116,14,14)f32 #855=(1,116,14,14)f32
-Conv2d                   stage3.7.branch2.3       1 1 855 856 bias=0 dilation=(1,1) groups=116 in_channels=116 kernel_size=(3,3) out_channels=116 padding=(1,1) stride=(1,1) @weight=(116,1,3,3)f32 #855=(1,116,14,14)f32 #856=(1,116,14,14)f32
-BatchNorm2d              stage3.7.branch2.4       1 1 856 857 affine=1 eps=1.000000e-05 num_features=116 @bias=(116)f32 @running_mean=(116)f32 @running_var=(116)f32 @weight=(116)f32 #856=(1,116,14,14)f32 #857=(1,116,14,14)f32
-Conv2d                   stage3.7.branch2.5       1 1 857 858 bias=0 dilation=(1,1) groups=1 in_channels=116 kernel_size=(1,1) out_channels=116 padding=(0,0) stride=(1,1) @weight=(116,116,1,1)f32 #857=(1,116,14,14)f32 #858=(1,116,14,14)f32
-BatchNorm2d              stage3.7.branch2.6       1 1 858 859 affine=1 eps=1.000000e-05 num_features=116 @bias=(116)f32 @running_mean=(116)f32 @running_var=(116)f32 @weight=(116)f32 #858=(1,116,14,14)f32 #859=(1,116,14,14)f32
-ReLU                     stage3.7.branch2.7       1 1 859 860 #859=(1,116,14,14)f32 #860=(1,116,14,14)f32
-torch.cat                pnnx_390                 2 1 x1.24 860 x.27 dim=1 #x1.24=(1,116,14,14)f32 #860=(1,116,14,14)f32 #x.27=(1,232,14,14)f32
-aten::view               pnnx_411                 1 1 x.27 x0.24 shape=[1,2,116,14,14] #x.27=(1,232,14,14)f32 #x0.24=(1,2,116,14,14)f32
-torch.transpose          pnnx_414                 1 1 x0.24 x2.20 dim0=1 dim1=2 #x0.24=(1,2,116,14,14)f32 #x2.20=(1,116,2,14,14)f32
-aten::view               pnnx_416                 1 1 x2.20 509 shape=[1,-1,14,14] #x2.20=(1,116,2,14,14)f32 #509=(1,232,14,14)f32
-Conv2d                   stage4.0.branch1.0       1 1 509 866 bias=0 dilation=(1,1) groups=232 in_channels=232 kernel_size=(3,3) out_channels=232 padding=(1,1) stride=(2,2) @weight=(232,1,3,3)f32 #509=(1,232,14,14)f32 #866=(1,232,7,7)f32
-BatchNorm2d              stage4.0.branch1.1       1 1 866 867 affine=1 eps=1.000000e-05 num_features=232 @bias=(232)f32 @running_mean=(232)f32 @running_var=(232)f32 @weight=(232)f32 #866=(1,232,7,7)f32 #867=(1,232,7,7)f32
-Conv2d                   stage4.0.branch1.2       1 1 867 868 bias=0 dilation=(1,1) groups=1 in_channels=232 kernel_size=(1,1) out_channels=232 padding=(0,0) stride=(1,1) @weight=(232,232,1,1)f32 #867=(1,232,7,7)f32 #868=(1,232,7,7)f32
-BatchNorm2d              stage4.0.branch1.3       1 1 868 869 affine=1 eps=1.000000e-05 num_features=232 @bias=(232)f32 @running_mean=(232)f32 @running_var=(232)f32 @weight=(232)f32 #868=(1,232,7,7)f32 #869=(1,232,7,7)f32
-ReLU                     stage4.0.branch1.4       1 1 869 870 #869=(1,232,7,7)f32 #870=(1,232,7,7)f32
-Conv2d                   stage4.0.branch2.0       1 1 509 879 bias=0 dilation=(1,1) groups=1 in_channels=232 kernel_size=(1,1) out_channels=232 padding=(0,0) stride=(1,1) @weight=(232,232,1,1)f32 #509=(1,232,14,14)f32 #879=(1,232,14,14)f32
-BatchNorm2d              stage4.0.branch2.1       1 1 879 880 affine=1 eps=1.000000e-05 num_features=232 @bias=(232)f32 @running_mean=(232)f32 @running_var=(232)f32 @weight=(232)f32 #879=(1,232,14,14)f32 #880=(1,232,14,14)f32
-ReLU                     stage4.0.branch2.2       1 1 880 881 #880=(1,232,14,14)f32 #881=(1,232,14,14)f32
-Conv2d                   stage4.0.branch2.3       1 1 881 882 bias=0 dilation=(1,1) groups=232 in_channels=232 kernel_size=(3,3) out_channels=232 padding=(1,1) stride=(2,2) @weight=(232,1,3,3)f32 #881=(1,232,14,14)f32 #882=(1,232,7,7)f32
-BatchNorm2d              stage4.0.branch2.4       1 1 882 883 affine=1 eps=1.000000e-05 num_features=232 @bias=(232)f32 @running_mean=(232)f32 @running_var=(232)f32 @weight=(232)f32 #882=(1,232,7,7)f32 #883=(1,232,7,7)f32
-Conv2d                   stage4.0.branch2.5       1 1 883 884 bias=0 dilation=(1,1) groups=1 in_channels=232 kernel_size=(1,1) out_channels=232 padding=(0,0) stride=(1,1) @weight=(232,232,1,1)f32 #883=(1,232,7,7)f32 #884=(1,232,7,7)f32
-BatchNorm2d              stage4.0.branch2.6       1 1 884 885 affine=1 eps=1.000000e-05 num_features=232 @bias=(232)f32 @running_mean=(232)f32 @running_var=(232)f32 @weight=(232)f32 #884=(1,232,7,7)f32 #885=(1,232,7,7)f32
-ReLU                     stage4.0.branch2.7       1 1 885 886 #885=(1,232,7,7)f32 #886=(1,232,7,7)f32
-torch.cat                pnnx_423                 2 1 870 886 x.29 dim=1 #870=(1,232,7,7)f32 #886=(1,232,7,7)f32 #x.29=(1,464,7,7)f32
-aten::view               pnnx_443                 1 1 x.29 x0.26 shape=[1,2,232,7,7] #x.29=(1,464,7,7)f32 #x0.26=(1,2,232,7,7)f32
-torch.transpose          pnnx_446                 1 1 x0.26 x1.26 dim0=1 dim1=2 #x0.26=(1,2,232,7,7)f32 #x1.26=(1,232,2,7,7)f32
-aten::view               pnnx_448                 1 1 x1.26 543 shape=[1,-1,7,7] #x1.26=(1,232,2,7,7)f32 #543=(1,464,7,7)f32
-torch.chunk              pnnx_452                 1 2 543 x1.28 input.25 chunks=2 dim=1 #543=(1,464,7,7)f32 #x1.28=(1,232,7,7)f32 #input.25=(1,232,7,7)f32
-Conv2d                   stage4.1.branch2.0       1 1 input.25 895 bias=0 dilation=(1,1) groups=1 in_channels=232 kernel_size=(1,1) out_channels=232 padding=(0,0) stride=(1,1) @weight=(232,232,1,1)f32 #input.25=(1,232,7,7)f32 #895=(1,232,7,7)f32
-BatchNorm2d              stage4.1.branch2.1       1 1 895 896 affine=1 eps=1.000000e-05 num_features=232 @bias=(232)f32 @running_mean=(232)f32 @running_var=(232)f32 @weight=(232)f32 #895=(1,232,7,7)f32 #896=(1,232,7,7)f32
-ReLU                     stage4.1.branch2.2       1 1 896 897 #896=(1,232,7,7)f32 #897=(1,232,7,7)f32
-Conv2d                   stage4.1.branch2.3       1 1 897 898 bias=0 dilation=(1,1) groups=232 in_channels=232 kernel_size=(3,3) out_channels=232 padding=(1,1) stride=(1,1) @weight=(232,1,3,3)f32 #897=(1,232,7,7)f32 #898=(1,232,7,7)f32
-BatchNorm2d              stage4.1.branch2.4       1 1 898 899 affine=1 eps=1.000000e-05 num_features=232 @bias=(232)f32 @running_mean=(232)f32 @running_var=(232)f32 @weight=(232)f32 #898=(1,232,7,7)f32 #899=(1,232,7,7)f32
-Conv2d                   stage4.1.branch2.5       1 1 899 900 bias=0 dilation=(1,1) groups=1 in_channels=232 kernel_size=(1,1) out_channels=232 padding=(0,0) stride=(1,1) @weight=(232,232,1,1)f32 #899=(1,232,7,7)f32 #900=(1,232,7,7)f32
-BatchNorm2d              stage4.1.branch2.6       1 1 900 901 affine=1 eps=1.000000e-05 num_features=232 @bias=(232)f32 @running_mean=(232)f32 @running_var=(232)f32 @weight=(232)f32 #900=(1,232,7,7)f32 #901=(1,232,7,7)f32
-ReLU                     stage4.1.branch2.7       1 1 901 902 #901=(1,232,7,7)f32 #902=(1,232,7,7)f32
-torch.cat                pnnx_457                 2 1 x1.28 902 x.31 dim=1 #x1.28=(1,232,7,7)f32 #902=(1,232,7,7)f32 #x.31=(1,464,7,7)f32
-aten::view               pnnx_478                 1 1 x.31 x0.28 shape=[1,2,232,7,7] #x.31=(1,464,7,7)f32 #x0.28=(1,2,232,7,7)f32
-torch.transpose          pnnx_481                 1 1 x0.28 x2.22 dim0=1 dim1=2 #x0.28=(1,2,232,7,7)f32 #x2.22=(1,232,2,7,7)f32
-aten::view               pnnx_483                 1 1 x2.22 578 shape=[1,-1,7,7] #x2.22=(1,232,2,7,7)f32 #578=(1,464,7,7)f32
-torch.chunk              pnnx_487                 1 2 578 x1.30 input.27 chunks=2 dim=1 #578=(1,464,7,7)f32 #x1.30=(1,232,7,7)f32 #input.27=(1,232,7,7)f32
-Conv2d                   stage4.2.branch2.0       1 1 input.27 911 bias=0 dilation=(1,1) groups=1 in_channels=232 kernel_size=(1,1) out_channels=232 padding=(0,0) stride=(1,1) @weight=(232,232,1,1)f32 #input.27=(1,232,7,7)f32 #911=(1,232,7,7)f32
-BatchNorm2d              stage4.2.branch2.1       1 1 911 912 affine=1 eps=1.000000e-05 num_features=232 @bias=(232)f32 @running_mean=(232)f32 @running_var=(232)f32 @weight=(232)f32 #911=(1,232,7,7)f32 #912=(1,232,7,7)f32
-ReLU                     stage4.2.branch2.2       1 1 912 913 #912=(1,232,7,7)f32 #913=(1,232,7,7)f32
-Conv2d                   stage4.2.branch2.3       1 1 913 914 bias=0 dilation=(1,1) groups=232 in_channels=232 kernel_size=(3,3) out_channels=232 padding=(1,1) stride=(1,1) @weight=(232,1,3,3)f32 #913=(1,232,7,7)f32 #914=(1,232,7,7)f32
-BatchNorm2d              stage4.2.branch2.4       1 1 914 915 affine=1 eps=1.000000e-05 num_features=232 @bias=(232)f32 @running_mean=(232)f32 @running_var=(232)f32 @weight=(232)f32 #914=(1,232,7,7)f32 #915=(1,232,7,7)f32
-Conv2d                   stage4.2.branch2.5       1 1 915 916 bias=0 dilation=(1,1) groups=1 in_channels=232 kernel_size=(1,1) out_channels=232 padding=(0,0) stride=(1,1) @weight=(232,232,1,1)f32 #915=(1,232,7,7)f32 #916=(1,232,7,7)f32
-BatchNorm2d              stage4.2.branch2.6       1 1 916 917 affine=1 eps=1.000000e-05 num_features=232 @bias=(232)f32 @running_mean=(232)f32 @running_var=(232)f32 @weight=(232)f32 #916=(1,232,7,7)f32 #917=(1,232,7,7)f32
-ReLU                     stage4.2.branch2.7       1 1 917 918 #917=(1,232,7,7)f32 #918=(1,232,7,7)f32
-torch.cat                pnnx_492                 2 1 x1.30 918 x.33 dim=1 #x1.30=(1,232,7,7)f32 #918=(1,232,7,7)f32 #x.33=(1,464,7,7)f32
-aten::view               pnnx_513                 1 1 x.33 x0.30 shape=[1,2,232,7,7] #x.33=(1,464,7,7)f32 #x0.30=(1,2,232,7,7)f32
-torch.transpose          pnnx_516                 1 1 x0.30 x2.24 dim0=1 dim1=2 #x0.30=(1,2,232,7,7)f32 #x2.24=(1,232,2,7,7)f32
-aten::view               pnnx_518                 1 1 x2.24 613 shape=[1,-1,7,7] #x2.24=(1,232,2,7,7)f32 #613=(1,464,7,7)f32
-torch.chunk              pnnx_522                 1 2 613 x1.1 input.1 chunks=2 dim=1 #613=(1,464,7,7)f32 #x1.1=(1,232,7,7)f32 #input.1=(1,232,7,7)f32
-Conv2d                   stage4.3.branch2.0       1 1 input.1 927 bias=0 dilation=(1,1) groups=1 in_channels=232 kernel_size=(1,1) out_channels=232 padding=(0,0) stride=(1,1) @weight=(232,232,1,1)f32 #input.1=(1,232,7,7)f32 #927=(1,232,7,7)f32
-BatchNorm2d              stage4.3.branch2.1       1 1 927 928 affine=1 eps=1.000000e-05 num_features=232 @bias=(232)f32 @running_mean=(232)f32 @running_var=(232)f32 @weight=(232)f32 #927=(1,232,7,7)f32 #928=(1,232,7,7)f32
-ReLU                     stage4.3.branch2.2       1 1 928 929 #928=(1,232,7,7)f32 #929=(1,232,7,7)f32
-Conv2d                   stage4.3.branch2.3       1 1 929 930 bias=0 dilation=(1,1) groups=232 in_channels=232 kernel_size=(3,3) out_channels=232 padding=(1,1) stride=(1,1) @weight=(232,1,3,3)f32 #929=(1,232,7,7)f32 #930=(1,232,7,7)f32
-BatchNorm2d              stage4.3.branch2.4       1 1 930 931 affine=1 eps=1.000000e-05 num_features=232 @bias=(232)f32 @running_mean=(232)f32 @running_var=(232)f32 @weight=(232)f32 #930=(1,232,7,7)f32 #931=(1,232,7,7)f32
-Conv2d                   stage4.3.branch2.5       1 1 931 932 bias=0 dilation=(1,1) groups=1 in_channels=232 kernel_size=(1,1) out_channels=232 padding=(0,0) stride=(1,1) @weight=(232,232,1,1)f32 #931=(1,232,7,7)f32 #932=(1,232,7,7)f32
-BatchNorm2d              stage4.3.branch2.6       1 1 932 933 affine=1 eps=1.000000e-05 num_features=232 @bias=(232)f32 @running_mean=(232)f32 @running_var=(232)f32 @weight=(232)f32 #932=(1,232,7,7)f32 #933=(1,232,7,7)f32
-ReLU                     stage4.3.branch2.7       1 1 933 934 #933=(1,232,7,7)f32 #934=(1,232,7,7)f32
-torch.cat                pnnx_527                 2 1 x1.1 934 x.1 dim=1 #x1.1=(1,232,7,7)f32 #934=(1,232,7,7)f32 #x.1=(1,464,7,7)f32
-aten::view               pnnx_548                 1 1 x.1 x0.1 shape=[1,2,232,7,7] #x.1=(1,464,7,7)f32 #x0.1=(1,2,232,7,7)f32
-torch.transpose          pnnx_551                 1 1 x0.1 x2.1 dim0=1 dim1=2 #x0.1=(1,2,232,7,7)f32 #x2.1=(1,232,2,7,7)f32
-aten::view               pnnx_553                 1 1 x2.1 648 shape=[1,-1,7,7] #x2.1=(1,232,2,7,7)f32 #648=(1,464,7,7)f32
-Conv2d                   conv5.0                  1 1 648 89 bias=0 dilation=(1,1) groups=1 in_channels=464 kernel_size=(1,1) out_channels=1024 padding=(0,0) stride=(1,1) @weight=(1024,464,1,1)f32 #648=(1,464,7,7)f32 #89=(1,1024,7,7)f32
-BatchNorm2d              conv5.1                  1 1 89 90 affine=1 eps=1.000000e-05 num_features=1024 @bias=(1024)f32 @running_mean=(1024)f32 @running_var=(1024)f32 @weight=(1024)f32 #89=(1,1024,7,7)f32 #90=(1,1024,7,7)f32
-ReLU                     conv5.2                  1 1 90 91 #90=(1,1024,7,7)f32 #91=(1,1024,7,7)f32
-torch.mean               pnnx_555                 1 1 91 input.3 dim=[2,3] keepdim=0 #91=(1,1024,7,7)f32 #input.3=(1,1024)f32
-Linear                   fc                       1 1 input.3 38 bias=1 in_features=1024 out_features=1000 @bias=(1000)f32 @weight=(1000,1024)f32 #input.3=(1,1024)f32 #38=(1,1000)f32
-Output                   pnnx_output_0            1 0 38 #38=(1,1000)f32
+159 184
+Input                    pnnx_input_1             0 1 x.3
+nn.Conv2d                conv2d_batchnorm2d_55    1 1 x.3 52 bias=True dilation=(1,1) groups=1 in_channels=3 kernel_size=(3,3) out_channels=24 padding=(1,1) stride=(2,2) @bias=(24)f32 @weight=(24,3,3,3)f32 $input=x.3
+nn.ReLU                  conv1.2                  1 1 52 53
+nn.MaxPool2d             maxpool                  1 1 53 18 ceil_mode=False dilation=(1,1) kernel_size=(3,3) padding=(1,1) return_indices=False stride=(2,2)
+nn.Conv2d                conv2d_batchnorm2d_54    1 1 18 72 bias=True dilation=(1,1) groups=24 in_channels=24 kernel_size=(3,3) out_channels=24 padding=(1,1) stride=(2,2) @bias=(24)f32 @weight=(24,1,3,3)f32 $input=18
+nn.Conv2d                conv2d_batchnorm2d_53    1 1 72 74 bias=True dilation=(1,1) groups=1 in_channels=24 kernel_size=(1,1) out_channels=58 padding=(0,0) stride=(1,1) @bias=(58)f32 @weight=(58,24,1,1)f32 $input=72
+nn.ReLU                  stage2.0.branch1.4       1 1 74 75
+nn.Conv2d                conv2d_batchnorm2d_52    1 1 18 85 bias=True dilation=(1,1) groups=1 in_channels=24 kernel_size=(1,1) out_channels=58 padding=(0,0) stride=(1,1) @bias=(58)f32 @weight=(58,24,1,1)f32 $input=18
+nn.ReLU                  stage2.0.branch2.2       1 1 85 86
+nn.Conv2d                conv2d_batchnorm2d_51    1 1 86 88 bias=True dilation=(1,1) groups=58 in_channels=58 kernel_size=(3,3) out_channels=58 padding=(1,1) stride=(2,2) @bias=(58)f32 @weight=(58,1,3,3)f32 $input=86
+nn.Conv2d                conv2d_batchnorm2d_50    1 1 88 90 bias=True dilation=(1,1) groups=1 in_channels=58 kernel_size=(1,1) out_channels=58 padding=(0,0) stride=(1,1) @bias=(58)f32 @weight=(58,58,1,1)f32 $input=88
+nn.ReLU                  stage2.0.branch2.7       1 1 90 91
+Expression               pnnx_expr_410            2 1 75 91 92 expr=[@0,@1]
+torch.cat                torch.cat_63             1 1 92 x.5 dim=1 $tensors=92
+torch.transpose          torch.transpose_93       1 1 x.5 112 dim0=1 dim1=2 $input=x.5
+torch.chunk              torch.chunk_76           1 2 112 x1.5 input.5 chunks=2 dim=1 $input=112
+nn.Conv2d                conv2d_batchnorm2d_49    1 1 input.5 135 bias=True dilation=(1,1) groups=1 in_channels=58 kernel_size=(1,1) out_channels=58 padding=(0,0) stride=(1,1) @bias=(58)f32 @weight=(58,58,1,1)f32 $input=input.5
+nn.ReLU                  stage2.1.branch2.2       1 1 135 136
+nn.Conv2d                conv2d_batchnorm2d_48    1 1 136 138 bias=True dilation=(1,1) groups=58 in_channels=58 kernel_size=(3,3) out_channels=58 padding=(1,1) stride=(1,1) @bias=(58)f32 @weight=(58,1,3,3)f32 $input=136
+nn.Conv2d                conv2d_batchnorm2d_47    1 1 138 140 bias=True dilation=(1,1) groups=1 in_channels=58 kernel_size=(1,1) out_channels=58 padding=(0,0) stride=(1,1) @bias=(58)f32 @weight=(58,58,1,1)f32 $input=138
+nn.ReLU                  stage2.1.branch2.7       1 1 140 141
+Expression               pnnx_expr_385            2 1 x1.5 141 142 expr=[@0,@1]
+torch.cat                torch.cat_62             1 1 142 x.7 dim=1 $tensors=142
+torch.transpose          torch.transpose_92       1 1 x.7 162 dim0=1 dim1=2 $input=x.7
+torch.chunk              torch.chunk_75           1 2 162 x1.7 input.7 chunks=2 dim=1 $input=162
+nn.Conv2d                conv2d_batchnorm2d_46    1 1 input.7 185 bias=True dilation=(1,1) groups=1 in_channels=58 kernel_size=(1,1) out_channels=58 padding=(0,0) stride=(1,1) @bias=(58)f32 @weight=(58,58,1,1)f32 $input=input.7
+nn.ReLU                  stage2.2.branch2.2       1 1 185 186
+nn.Conv2d                conv2d_batchnorm2d_45    1 1 186 188 bias=True dilation=(1,1) groups=58 in_channels=58 kernel_size=(3,3) out_channels=58 padding=(1,1) stride=(1,1) @bias=(58)f32 @weight=(58,1,3,3)f32 $input=186
+nn.Conv2d                conv2d_batchnorm2d_44    1 1 188 190 bias=True dilation=(1,1) groups=1 in_channels=58 kernel_size=(1,1) out_channels=58 padding=(0,0) stride=(1,1) @bias=(58)f32 @weight=(58,58,1,1)f32 $input=188
+nn.ReLU                  stage2.2.branch2.7       1 1 190 191
+Expression               pnnx_expr_359            2 1 x1.7 191 192 expr=[@0,@1]
+torch.cat                torch.cat_61             1 1 192 x.9 dim=1 $tensors=192
+torch.transpose          torch.transpose_91       1 1 x.9 212 dim0=1 dim1=2 $input=x.9
+torch.chunk              torch.chunk_74           1 2 212 x1.9 input.9 chunks=2 dim=1 $input=212
+nn.Conv2d                conv2d_batchnorm2d_43    1 1 input.9 235 bias=True dilation=(1,1) groups=1 in_channels=58 kernel_size=(1,1) out_channels=58 padding=(0,0) stride=(1,1) @bias=(58)f32 @weight=(58,58,1,1)f32 $input=input.9
+nn.ReLU                  stage2.3.branch2.2       1 1 235 236
+nn.Conv2d                conv2d_batchnorm2d_42    1 1 236 238 bias=True dilation=(1,1) groups=58 in_channels=58 kernel_size=(3,3) out_channels=58 padding=(1,1) stride=(1,1) @bias=(58)f32 @weight=(58,1,3,3)f32 $input=236
+nn.Conv2d                conv2d_batchnorm2d_41    1 1 238 240 bias=True dilation=(1,1) groups=1 in_channels=58 kernel_size=(1,1) out_channels=58 padding=(0,0) stride=(1,1) @bias=(58)f32 @weight=(58,58,1,1)f32 $input=238
+nn.ReLU                  stage2.3.branch2.7       1 1 240 241
+Expression               pnnx_expr_333            2 1 x1.9 241 242 expr=[@0,@1]
+torch.cat                torch.cat_60             1 1 242 x.11 dim=1 $tensors=242
+torch.transpose          torch.transpose_90       1 1 x.11 262 dim0=1 dim1=2 $input=x.11
+nn.Conv2d                conv2d_batchnorm2d_40    1 1 262 288 bias=True dilation=(1,1) groups=116 in_channels=116 kernel_size=(3,3) out_channels=116 padding=(1,1) stride=(2,2) @bias=(116)f32 @weight=(116,1,3,3)f32 $input=262
+nn.Conv2d                conv2d_batchnorm2d_39    1 1 288 290 bias=True dilation=(1,1) groups=1 in_channels=116 kernel_size=(1,1) out_channels=116 padding=(0,0) stride=(1,1) @bias=(116)f32 @weight=(116,116,1,1)f32 $input=288
+nn.ReLU                  stage3.0.branch1.4       1 1 290 291
+nn.Conv2d                conv2d_batchnorm2d_38    1 1 262 301 bias=True dilation=(1,1) groups=1 in_channels=116 kernel_size=(1,1) out_channels=116 padding=(0,0) stride=(1,1) @bias=(116)f32 @weight=(116,116,1,1)f32 $input=262
+nn.ReLU                  stage3.0.branch2.2       1 1 301 302
+nn.Conv2d                conv2d_batchnorm2d_37    1 1 302 304 bias=True dilation=(1,1) groups=116 in_channels=116 kernel_size=(3,3) out_channels=116 padding=(1,1) stride=(2,2) @bias=(116)f32 @weight=(116,1,3,3)f32 $input=302
+nn.Conv2d                conv2d_batchnorm2d_36    1 1 304 306 bias=True dilation=(1,1) groups=1 in_channels=116 kernel_size=(1,1) out_channels=116 padding=(0,0) stride=(1,1) @bias=(116)f32 @weight=(116,116,1,1)f32 $input=304
+nn.ReLU                  stage3.0.branch2.7       1 1 306 307
+Expression               pnnx_expr_306            2 1 291 307 308 expr=[@0,@1]
+torch.cat                torch.cat_59             1 1 308 x.13 dim=1 $tensors=308
+torch.transpose          torch.transpose_89       1 1 x.13 328 dim0=1 dim1=2 $input=x.13
+torch.chunk              torch.chunk_73           1 2 328 x1.13 input.11 chunks=2 dim=1 $input=328
+nn.Conv2d                conv2d_batchnorm2d_35    1 1 input.11 351 bias=True dilation=(1,1) groups=1 in_channels=116 kernel_size=(1,1) out_channels=116 padding=(0,0) stride=(1,1) @bias=(116)f32 @weight=(116,116,1,1)f32 $input=input.11
+nn.ReLU                  stage3.1.branch2.2       1 1 351 352
+nn.Conv2d                conv2d_batchnorm2d_34    1 1 352 354 bias=True dilation=(1,1) groups=116 in_channels=116 kernel_size=(3,3) out_channels=116 padding=(1,1) stride=(1,1) @bias=(116)f32 @weight=(116,1,3,3)f32 $input=352
+nn.Conv2d                conv2d_batchnorm2d_33    1 1 354 356 bias=True dilation=(1,1) groups=1 in_channels=116 kernel_size=(1,1) out_channels=116 padding=(0,0) stride=(1,1) @bias=(116)f32 @weight=(116,116,1,1)f32 $input=354
+nn.ReLU                  stage3.1.branch2.7       1 1 356 357
+Expression               pnnx_expr_281            2 1 x1.13 357 358 expr=[@0,@1]
+torch.cat                torch.cat_58             1 1 358 x.15 dim=1 $tensors=358
+torch.transpose          torch.transpose_88       1 1 x.15 378 dim0=1 dim1=2 $input=x.15
+torch.chunk              torch.chunk_72           1 2 378 x1.15 input.13 chunks=2 dim=1 $input=378
+nn.Conv2d                conv2d_batchnorm2d_32    1 1 input.13 401 bias=True dilation=(1,1) groups=1 in_channels=116 kernel_size=(1,1) out_channels=116 padding=(0,0) stride=(1,1) @bias=(116)f32 @weight=(116,116,1,1)f32 $input=input.13
+nn.ReLU                  stage3.2.branch2.2       1 1 401 402
+nn.Conv2d                conv2d_batchnorm2d_31    1 1 402 404 bias=True dilation=(1,1) groups=116 in_channels=116 kernel_size=(3,3) out_channels=116 padding=(1,1) stride=(1,1) @bias=(116)f32 @weight=(116,1,3,3)f32 $input=402
+nn.Conv2d                conv2d_batchnorm2d_30    1 1 404 406 bias=True dilation=(1,1) groups=1 in_channels=116 kernel_size=(1,1) out_channels=116 padding=(0,0) stride=(1,1) @bias=(116)f32 @weight=(116,116,1,1)f32 $input=404
+nn.ReLU                  stage3.2.branch2.7       1 1 406 407
+Expression               pnnx_expr_255            2 1 x1.15 407 408 expr=[@0,@1]
+torch.cat                torch.cat_57             1 1 408 x.17 dim=1 $tensors=408
+torch.transpose          torch.transpose_87       1 1 x.17 428 dim0=1 dim1=2 $input=x.17
+torch.chunk              torch.chunk_71           1 2 428 x1.8 input.6 chunks=2 dim=1 $input=428
+nn.Conv2d                conv2d_batchnorm2d_29    1 1 input.6 451 bias=True dilation=(1,1) groups=1 in_channels=116 kernel_size=(1,1) out_channels=116 padding=(0,0) stride=(1,1) @bias=(116)f32 @weight=(116,116,1,1)f32 $input=input.6
+nn.ReLU                  stage3.3.branch2.2       1 1 451 452
+nn.Conv2d                conv2d_batchnorm2d_28    1 1 452 454 bias=True dilation=(1,1) groups=116 in_channels=116 kernel_size=(3,3) out_channels=116 padding=(1,1) stride=(1,1) @bias=(116)f32 @weight=(116,1,3,3)f32 $input=452
+nn.Conv2d                conv2d_batchnorm2d_27    1 1 454 456 bias=True dilation=(1,1) groups=1 in_channels=116 kernel_size=(1,1) out_channels=116 padding=(0,0) stride=(1,1) @bias=(116)f32 @weight=(116,116,1,1)f32 $input=454
+nn.ReLU                  stage3.3.branch2.7       1 1 456 457
+Expression               pnnx_expr_229            2 1 x1.8 457 458 expr=[@0,@1]
+torch.cat                torch.cat_56             1 1 458 x.8 dim=1 $tensors=458
+torch.transpose          torch.transpose_86       1 1 x.8 478 dim0=1 dim1=2 $input=x.8
+torch.chunk              torch.chunk_70           1 2 478 x1.10 input.8 chunks=2 dim=1 $input=478
+nn.Conv2d                conv2d_batchnorm2d_26    1 1 input.8 501 bias=True dilation=(1,1) groups=1 in_channels=116 kernel_size=(1,1) out_channels=116 padding=(0,0) stride=(1,1) @bias=(116)f32 @weight=(116,116,1,1)f32 $input=input.8
+nn.ReLU                  stage3.4.branch2.2       1 1 501 502
+nn.Conv2d                conv2d_batchnorm2d_25    1 1 502 504 bias=True dilation=(1,1) groups=116 in_channels=116 kernel_size=(3,3) out_channels=116 padding=(1,1) stride=(1,1) @bias=(116)f32 @weight=(116,1,3,3)f32 $input=502
+nn.Conv2d                conv2d_batchnorm2d_24    1 1 504 506 bias=True dilation=(1,1) groups=1 in_channels=116 kernel_size=(1,1) out_channels=116 padding=(0,0) stride=(1,1) @bias=(116)f32 @weight=(116,116,1,1)f32 $input=504
+nn.ReLU                  stage3.4.branch2.7       1 1 506 507
+Expression               pnnx_expr_203            2 1 x1.10 507 508 expr=[@0,@1]
+torch.cat                torch.cat_55             1 1 508 x.10 dim=1 $tensors=508
+torch.transpose          torch.transpose_85       1 1 x.10 528 dim0=1 dim1=2 $input=x.10
+torch.chunk              torch.chunk_69           1 2 528 x1.12 input.10 chunks=2 dim=1 $input=528
+nn.Conv2d                conv2d_batchnorm2d_23    1 1 input.10 551 bias=True dilation=(1,1) groups=1 in_channels=116 kernel_size=(1,1) out_channels=116 padding=(0,0) stride=(1,1) @bias=(116)f32 @weight=(116,116,1,1)f32 $input=input.10
+nn.ReLU                  stage3.5.branch2.2       1 1 551 552
+nn.Conv2d                conv2d_batchnorm2d_22    1 1 552 554 bias=True dilation=(1,1) groups=116 in_channels=116 kernel_size=(3,3) out_channels=116 padding=(1,1) stride=(1,1) @bias=(116)f32 @weight=(116,1,3,3)f32 $input=552
+nn.Conv2d                conv2d_batchnorm2d_21    1 1 554 556 bias=True dilation=(1,1) groups=1 in_channels=116 kernel_size=(1,1) out_channels=116 padding=(0,0) stride=(1,1) @bias=(116)f32 @weight=(116,116,1,1)f32 $input=554
+nn.ReLU                  stage3.5.branch2.7       1 1 556 557
+Expression               pnnx_expr_177            2 1 x1.12 557 558 expr=[@0,@1]
+torch.cat                torch.cat_54             1 1 558 x.12 dim=1 $tensors=558
+torch.transpose          torch.transpose_84       1 1 x.12 578 dim0=1 dim1=2 $input=x.12
+torch.chunk              torch.chunk_68           1 2 578 x1.14 input.12 chunks=2 dim=1 $input=578
+nn.Conv2d                conv2d_batchnorm2d_20    1 1 input.12 601 bias=True dilation=(1,1) groups=1 in_channels=116 kernel_size=(1,1) out_channels=116 padding=(0,0) stride=(1,1) @bias=(116)f32 @weight=(116,116,1,1)f32 $input=input.12
+nn.ReLU                  stage3.6.branch2.2       1 1 601 602
+nn.Conv2d                conv2d_batchnorm2d_19    1 1 602 604 bias=True dilation=(1,1) groups=116 in_channels=116 kernel_size=(3,3) out_channels=116 padding=(1,1) stride=(1,1) @bias=(116)f32 @weight=(116,1,3,3)f32 $input=602
+nn.Conv2d                conv2d_batchnorm2d_18    1 1 604 606 bias=True dilation=(1,1) groups=1 in_channels=116 kernel_size=(1,1) out_channels=116 padding=(0,0) stride=(1,1) @bias=(116)f32 @weight=(116,116,1,1)f32 $input=604
+nn.ReLU                  stage3.6.branch2.7       1 1 606 607
+Expression               pnnx_expr_151            2 1 x1.14 607 608 expr=[@0,@1]
+torch.cat                torch.cat_53             1 1 608 x.14 dim=1 $tensors=608
+torch.transpose          torch.transpose_83       1 1 x.14 628 dim0=1 dim1=2 $input=x.14
+torch.chunk              torch.chunk_67           1 2 628 x1.17 input.15 chunks=2 dim=1 $input=628
+nn.Conv2d                conv2d_batchnorm2d_17    1 1 input.15 651 bias=True dilation=(1,1) groups=1 in_channels=116 kernel_size=(1,1) out_channels=116 padding=(0,0) stride=(1,1) @bias=(116)f32 @weight=(116,116,1,1)f32 $input=input.15
+nn.ReLU                  stage3.7.branch2.2       1 1 651 652
+nn.Conv2d                conv2d_batchnorm2d_16    1 1 652 654 bias=True dilation=(1,1) groups=116 in_channels=116 kernel_size=(3,3) out_channels=116 padding=(1,1) stride=(1,1) @bias=(116)f32 @weight=(116,1,3,3)f32 $input=652
+nn.Conv2d                conv2d_batchnorm2d_15    1 1 654 656 bias=True dilation=(1,1) groups=1 in_channels=116 kernel_size=(1,1) out_channels=116 padding=(0,0) stride=(1,1) @bias=(116)f32 @weight=(116,116,1,1)f32 $input=654
+nn.ReLU                  stage3.7.branch2.7       1 1 656 657
+Expression               pnnx_expr_125            2 1 x1.17 657 658 expr=[@0,@1]
+torch.cat                torch.cat_52             1 1 658 x.19 dim=1 $tensors=658
+torch.transpose          torch.transpose_82       1 1 x.19 678 dim0=1 dim1=2 $input=x.19
+nn.Conv2d                conv2d_batchnorm2d_14    1 1 678 700 bias=True dilation=(1,1) groups=232 in_channels=232 kernel_size=(3,3) out_channels=232 padding=(1,1) stride=(2,2) @bias=(232)f32 @weight=(232,1,3,3)f32 $input=678
+nn.Conv2d                conv2d_batchnorm2d_13    1 1 700 702 bias=True dilation=(1,1) groups=1 in_channels=232 kernel_size=(1,1) out_channels=232 padding=(0,0) stride=(1,1) @bias=(232)f32 @weight=(232,232,1,1)f32 $input=700
+nn.ReLU                  stage4.0.branch1.4       1 1 702 703
+nn.Conv2d                conv2d_batchnorm2d_12    1 1 678 713 bias=True dilation=(1,1) groups=1 in_channels=232 kernel_size=(1,1) out_channels=232 padding=(0,0) stride=(1,1) @bias=(232)f32 @weight=(232,232,1,1)f32 $input=678
+nn.ReLU                  stage4.0.branch2.2       1 1 713 714
+nn.Conv2d                conv2d_batchnorm2d_11    1 1 714 716 bias=True dilation=(1,1) groups=232 in_channels=232 kernel_size=(3,3) out_channels=232 padding=(1,1) stride=(2,2) @bias=(232)f32 @weight=(232,1,3,3)f32 $input=714
+nn.Conv2d                conv2d_batchnorm2d_10    1 1 716 718 bias=True dilation=(1,1) groups=1 in_channels=232 kernel_size=(1,1) out_channels=232 padding=(0,0) stride=(1,1) @bias=(232)f32 @weight=(232,232,1,1)f32 $input=716
+nn.ReLU                  stage4.0.branch2.7       1 1 718 719
+Expression               pnnx_expr_98             2 1 703 719 720 expr=[@0,@1]
+torch.cat                torch.cat_51             1 1 720 x.2 dim=1 $tensors=720
+torch.transpose          torch.transpose_81       1 1 x.2 740 dim0=1 dim1=2 $input=x.2
+torch.chunk              torch.chunk_66           1 2 740 x1.4 input.2 chunks=2 dim=1 $input=740
+nn.Conv2d                conv2d_batchnorm2d_9     1 1 input.2 763 bias=True dilation=(1,1) groups=1 in_channels=232 kernel_size=(1,1) out_channels=232 padding=(0,0) stride=(1,1) @bias=(232)f32 @weight=(232,232,1,1)f32 $input=input.2
+nn.ReLU                  stage4.1.branch2.2       1 1 763 764
+nn.Conv2d                conv2d_batchnorm2d_8     1 1 764 766 bias=True dilation=(1,1) groups=232 in_channels=232 kernel_size=(3,3) out_channels=232 padding=(1,1) stride=(1,1) @bias=(232)f32 @weight=(232,1,3,3)f32 $input=764
+nn.Conv2d                conv2d_batchnorm2d_7     1 1 766 768 bias=True dilation=(1,1) groups=1 in_channels=232 kernel_size=(1,1) out_channels=232 padding=(0,0) stride=(1,1) @bias=(232)f32 @weight=(232,232,1,1)f32 $input=766
+nn.ReLU                  stage4.1.branch2.7       1 1 768 769
+Expression               pnnx_expr_73             2 1 x1.4 769 770 expr=[@0,@1]
+torch.cat                torch.cat_50             1 1 770 x.4 dim=1 $tensors=770
+torch.transpose          torch.transpose_80       1 1 x.4 790 dim0=1 dim1=2 $input=x.4
+torch.chunk              torch.chunk_65           1 2 790 x1.6 input.4 chunks=2 dim=1 $input=790
+nn.Conv2d                conv2d_batchnorm2d_6     1 1 input.4 813 bias=True dilation=(1,1) groups=1 in_channels=232 kernel_size=(1,1) out_channels=232 padding=(0,0) stride=(1,1) @bias=(232)f32 @weight=(232,232,1,1)f32 $input=input.4
+nn.ReLU                  stage4.2.branch2.2       1 1 813 814
+nn.Conv2d                conv2d_batchnorm2d_5     1 1 814 816 bias=True dilation=(1,1) groups=232 in_channels=232 kernel_size=(3,3) out_channels=232 padding=(1,1) stride=(1,1) @bias=(232)f32 @weight=(232,1,3,3)f32 $input=814
+nn.Conv2d                conv2d_batchnorm2d_4     1 1 816 818 bias=True dilation=(1,1) groups=1 in_channels=232 kernel_size=(1,1) out_channels=232 padding=(0,0) stride=(1,1) @bias=(232)f32 @weight=(232,232,1,1)f32 $input=816
+nn.ReLU                  stage4.2.branch2.7       1 1 818 819
+Expression               pnnx_expr_47             2 1 x1.6 819 820 expr=[@0,@1]
+torch.cat                torch.cat_49             1 1 820 x.6 dim=1 $tensors=820
+torch.transpose          torch.transpose_79       1 1 x.6 840 dim0=1 dim1=2 $input=x.6
+torch.chunk              torch.chunk_64           1 2 840 x1.1 input.1 chunks=2 dim=1 $input=840
+nn.Conv2d                conv2d_batchnorm2d_3     1 1 input.1 863 bias=True dilation=(1,1) groups=1 in_channels=232 kernel_size=(1,1) out_channels=232 padding=(0,0) stride=(1,1) @bias=(232)f32 @weight=(232,232,1,1)f32 $input=input.1
+nn.ReLU                  stage4.3.branch2.2       1 1 863 864
+nn.Conv2d                conv2d_batchnorm2d_2     1 1 864 866 bias=True dilation=(1,1) groups=232 in_channels=232 kernel_size=(3,3) out_channels=232 padding=(1,1) stride=(1,1) @bias=(232)f32 @weight=(232,1,3,3)f32 $input=864
+nn.Conv2d                conv2d_batchnorm2d_1     1 1 866 868 bias=True dilation=(1,1) groups=1 in_channels=232 kernel_size=(1,1) out_channels=232 padding=(0,0) stride=(1,1) @bias=(232)f32 @weight=(232,232,1,1)f32 $input=866
+nn.ReLU                  stage4.3.branch2.7       1 1 868 869
+Expression               pnnx_expr_21             2 1 x1.1 869 870 expr=[@0,@1]
+torch.cat                torch.cat_48             1 1 870 x.1 dim=1 $tensors=870
+torch.transpose          torch.transpose_78       1 1 x.1 890 dim0=1 dim1=2 $input=x.1
+nn.Conv2d                conv2d_batchnorm2d_0     1 1 890 898 bias=True dilation=(1,1) groups=1 in_channels=464 kernel_size=(1,1) out_channels=1024 padding=(0,0) stride=(1,1) @bias=(1024)f32 @weight=(1024,464,1,1)f32 $input=890
+nn.ReLU                  conv5.2                  1 1 898 899
+torch.mean               torch.mean_77            1 1 899 input.3 dim=(2,3) keepdim=False $input=899
+nn.Linear                fc                       1 1 input.3 38 bias=True in_features=1024 out_features=1000 @bias=(1000)f32 @weight=(1000,1024)f32
+Output                   pnnx_output_0            1 0 38
