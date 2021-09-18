@@ -1,105 +1,105 @@
 7767517
 103 102
-Input                    pnnx_input_1             0 1 0
-nn.Conv2d                conv2d_batchnorm2d_51    1 1 0 1 bias=True dilation=(1,1) groups=1 in_channels=3 kernel_size=(3,3) out_channels=32 padding=(1,1) stride=(2,2) @bias=(32)f32 @weight=(32,3,3,3)f32 $input=0
-nn.ReLU6                 features.0.2             1 1 1 2
-nn.Conv2d                conv2d_batchnorm2d_50    1 1 2 3 bias=True dilation=(1,1) groups=32 in_channels=32 kernel_size=(3,3) out_channels=32 padding=(1,1) stride=(1,1) @bias=(32)f32 @weight=(32,1,3,3)f32 $input=2
-nn.ReLU6                 features.1.conv.0.2      1 1 3 4
-nn.Conv2d                conv2d_batchnorm2d_49    1 1 4 5 bias=True dilation=(1,1) groups=1 in_channels=32 kernel_size=(1,1) out_channels=16 padding=(0,0) stride=(1,1) @bias=(16)f32 @weight=(16,32,1,1)f32 $input=4
-nn.Conv2d                conv2d_batchnorm2d_48    1 1 5 6 bias=True dilation=(1,1) groups=1 in_channels=16 kernel_size=(1,1) out_channels=96 padding=(0,0) stride=(1,1) @bias=(96)f32 @weight=(96,16,1,1)f32 $input=5
-nn.ReLU6                 features.2.conv.0.2      1 1 6 7
-nn.Conv2d                conv2d_batchnorm2d_47    1 1 7 8 bias=True dilation=(1,1) groups=96 in_channels=96 kernel_size=(3,3) out_channels=96 padding=(1,1) stride=(2,2) @bias=(96)f32 @weight=(96,1,3,3)f32 $input=7
-nn.ReLU6                 features.2.conv.1.2      1 1 8 9
-nn.Conv2d                conv2d_batchnorm2d_46    1 1 9 10 bias=True dilation=(1,1) groups=1 in_channels=96 kernel_size=(1,1) out_channels=24 padding=(0,0) stride=(1,1) @bias=(24)f32 @weight=(24,96,1,1)f32 $input=9
-nn.Conv2d                conv2d_batchnorm2d_45    1 1 10 11 bias=True dilation=(1,1) groups=1 in_channels=24 kernel_size=(1,1) out_channels=144 padding=(0,0) stride=(1,1) @bias=(144)f32 @weight=(144,24,1,1)f32 $input=10
-nn.ReLU6                 features.3.conv.0.2      1 1 11 12
-nn.Conv2d                conv2d_batchnorm2d_44    1 1 12 13 bias=True dilation=(1,1) groups=144 in_channels=144 kernel_size=(3,3) out_channels=144 padding=(1,1) stride=(1,1) @bias=(144)f32 @weight=(144,1,3,3)f32 $input=12
-nn.ReLU6                 features.3.conv.1.2      1 1 13 14
-nn.Conv2d                conv2d_batchnorm2d_43    1 1 14 15 bias=True dilation=(1,1) groups=1 in_channels=144 kernel_size=(1,1) out_channels=24 padding=(0,0) stride=(1,1) @bias=(24)f32 @weight=(24,144,1,1)f32 $input=14
-Expression               pnnx_expr_18             2 1 10 15 16 expr=add(@0,@1)
-nn.Conv2d                conv2d_batchnorm2d_42    1 1 16 17 bias=True dilation=(1,1) groups=1 in_channels=24 kernel_size=(1,1) out_channels=144 padding=(0,0) stride=(1,1) @bias=(144)f32 @weight=(144,24,1,1)f32 $input=16
-nn.ReLU6                 features.4.conv.0.2      1 1 17 18
-nn.Conv2d                conv2d_batchnorm2d_41    1 1 18 19 bias=True dilation=(1,1) groups=144 in_channels=144 kernel_size=(3,3) out_channels=144 padding=(1,1) stride=(2,2) @bias=(144)f32 @weight=(144,1,3,3)f32 $input=18
-nn.ReLU6                 features.4.conv.1.2      1 1 19 20
-nn.Conv2d                conv2d_batchnorm2d_40    1 1 20 21 bias=True dilation=(1,1) groups=1 in_channels=144 kernel_size=(1,1) out_channels=32 padding=(0,0) stride=(1,1) @bias=(32)f32 @weight=(32,144,1,1)f32 $input=20
-nn.Conv2d                conv2d_batchnorm2d_39    1 1 21 22 bias=True dilation=(1,1) groups=1 in_channels=32 kernel_size=(1,1) out_channels=192 padding=(0,0) stride=(1,1) @bias=(192)f32 @weight=(192,32,1,1)f32 $input=21
-nn.ReLU6                 features.5.conv.0.2      1 1 22 23
-nn.Conv2d                conv2d_batchnorm2d_38    1 1 23 24 bias=True dilation=(1,1) groups=192 in_channels=192 kernel_size=(3,3) out_channels=192 padding=(1,1) stride=(1,1) @bias=(192)f32 @weight=(192,1,3,3)f32 $input=23
-nn.ReLU6                 features.5.conv.1.2      1 1 24 25
-nn.Conv2d                conv2d_batchnorm2d_37    1 1 25 26 bias=True dilation=(1,1) groups=1 in_channels=192 kernel_size=(1,1) out_channels=32 padding=(0,0) stride=(1,1) @bias=(32)f32 @weight=(32,192,1,1)f32 $input=25
-Expression               pnnx_expr_16             2 1 21 26 27 expr=add(@0,@1)
-nn.Conv2d                conv2d_batchnorm2d_36    1 1 27 28 bias=True dilation=(1,1) groups=1 in_channels=32 kernel_size=(1,1) out_channels=192 padding=(0,0) stride=(1,1) @bias=(192)f32 @weight=(192,32,1,1)f32 $input=27
-nn.ReLU6                 features.6.conv.0.2      1 1 28 29
-nn.Conv2d                conv2d_batchnorm2d_35    1 1 29 30 bias=True dilation=(1,1) groups=192 in_channels=192 kernel_size=(3,3) out_channels=192 padding=(1,1) stride=(1,1) @bias=(192)f32 @weight=(192,1,3,3)f32 $input=29
-nn.ReLU6                 features.6.conv.1.2      1 1 30 31
-nn.Conv2d                conv2d_batchnorm2d_34    1 1 31 32 bias=True dilation=(1,1) groups=1 in_channels=192 kernel_size=(1,1) out_channels=32 padding=(0,0) stride=(1,1) @bias=(32)f32 @weight=(32,192,1,1)f32 $input=31
-Expression               pnnx_expr_14             2 1 27 32 33 expr=add(@0,@1)
-nn.Conv2d                conv2d_batchnorm2d_33    1 1 33 34 bias=True dilation=(1,1) groups=1 in_channels=32 kernel_size=(1,1) out_channels=192 padding=(0,0) stride=(1,1) @bias=(192)f32 @weight=(192,32,1,1)f32 $input=33
-nn.ReLU6                 features.7.conv.0.2      1 1 34 35
-nn.Conv2d                conv2d_batchnorm2d_32    1 1 35 36 bias=True dilation=(1,1) groups=192 in_channels=192 kernel_size=(3,3) out_channels=192 padding=(1,1) stride=(2,2) @bias=(192)f32 @weight=(192,1,3,3)f32 $input=35
-nn.ReLU6                 features.7.conv.1.2      1 1 36 37
-nn.Conv2d                conv2d_batchnorm2d_31    1 1 37 38 bias=True dilation=(1,1) groups=1 in_channels=192 kernel_size=(1,1) out_channels=64 padding=(0,0) stride=(1,1) @bias=(64)f32 @weight=(64,192,1,1)f32 $input=37
-nn.Conv2d                conv2d_batchnorm2d_30    1 1 38 39 bias=True dilation=(1,1) groups=1 in_channels=64 kernel_size=(1,1) out_channels=384 padding=(0,0) stride=(1,1) @bias=(384)f32 @weight=(384,64,1,1)f32 $input=38
-nn.ReLU6                 features.8.conv.0.2      1 1 39 40
-nn.Conv2d                conv2d_batchnorm2d_29    1 1 40 41 bias=True dilation=(1,1) groups=384 in_channels=384 kernel_size=(3,3) out_channels=384 padding=(1,1) stride=(1,1) @bias=(384)f32 @weight=(384,1,3,3)f32 $input=40
-nn.ReLU6                 features.8.conv.1.2      1 1 41 42
-nn.Conv2d                conv2d_batchnorm2d_28    1 1 42 43 bias=True dilation=(1,1) groups=1 in_channels=384 kernel_size=(1,1) out_channels=64 padding=(0,0) stride=(1,1) @bias=(64)f32 @weight=(64,384,1,1)f32 $input=42
-Expression               pnnx_expr_12             2 1 38 43 44 expr=add(@0,@1)
-nn.Conv2d                conv2d_batchnorm2d_27    1 1 44 45 bias=True dilation=(1,1) groups=1 in_channels=64 kernel_size=(1,1) out_channels=384 padding=(0,0) stride=(1,1) @bias=(384)f32 @weight=(384,64,1,1)f32 $input=44
-nn.ReLU6                 features.9.conv.0.2      1 1 45 46
-nn.Conv2d                conv2d_batchnorm2d_26    1 1 46 47 bias=True dilation=(1,1) groups=384 in_channels=384 kernel_size=(3,3) out_channels=384 padding=(1,1) stride=(1,1) @bias=(384)f32 @weight=(384,1,3,3)f32 $input=46
-nn.ReLU6                 features.9.conv.1.2      1 1 47 48
-nn.Conv2d                conv2d_batchnorm2d_25    1 1 48 49 bias=True dilation=(1,1) groups=1 in_channels=384 kernel_size=(1,1) out_channels=64 padding=(0,0) stride=(1,1) @bias=(64)f32 @weight=(64,384,1,1)f32 $input=48
-Expression               pnnx_expr_10             2 1 44 49 50 expr=add(@0,@1)
-nn.Conv2d                conv2d_batchnorm2d_24    1 1 50 51 bias=True dilation=(1,1) groups=1 in_channels=64 kernel_size=(1,1) out_channels=384 padding=(0,0) stride=(1,1) @bias=(384)f32 @weight=(384,64,1,1)f32 $input=50
-nn.ReLU6                 features.10.conv.0.2     1 1 51 52
-nn.Conv2d                conv2d_batchnorm2d_23    1 1 52 53 bias=True dilation=(1,1) groups=384 in_channels=384 kernel_size=(3,3) out_channels=384 padding=(1,1) stride=(1,1) @bias=(384)f32 @weight=(384,1,3,3)f32 $input=52
-nn.ReLU6                 features.10.conv.1.2     1 1 53 54
-nn.Conv2d                conv2d_batchnorm2d_22    1 1 54 55 bias=True dilation=(1,1) groups=1 in_channels=384 kernel_size=(1,1) out_channels=64 padding=(0,0) stride=(1,1) @bias=(64)f32 @weight=(64,384,1,1)f32 $input=54
-Expression               pnnx_expr_8              2 1 50 55 56 expr=add(@0,@1)
-nn.Conv2d                conv2d_batchnorm2d_21    1 1 56 57 bias=True dilation=(1,1) groups=1 in_channels=64 kernel_size=(1,1) out_channels=384 padding=(0,0) stride=(1,1) @bias=(384)f32 @weight=(384,64,1,1)f32 $input=56
-nn.ReLU6                 features.11.conv.0.2     1 1 57 58
-nn.Conv2d                conv2d_batchnorm2d_20    1 1 58 59 bias=True dilation=(1,1) groups=384 in_channels=384 kernel_size=(3,3) out_channels=384 padding=(1,1) stride=(1,1) @bias=(384)f32 @weight=(384,1,3,3)f32 $input=58
-nn.ReLU6                 features.11.conv.1.2     1 1 59 60
-nn.Conv2d                conv2d_batchnorm2d_19    1 1 60 61 bias=True dilation=(1,1) groups=1 in_channels=384 kernel_size=(1,1) out_channels=96 padding=(0,0) stride=(1,1) @bias=(96)f32 @weight=(96,384,1,1)f32 $input=60
-nn.Conv2d                conv2d_batchnorm2d_18    1 1 61 62 bias=True dilation=(1,1) groups=1 in_channels=96 kernel_size=(1,1) out_channels=576 padding=(0,0) stride=(1,1) @bias=(576)f32 @weight=(576,96,1,1)f32 $input=61
-nn.ReLU6                 features.12.conv.0.2     1 1 62 63
-nn.Conv2d                conv2d_batchnorm2d_17    1 1 63 64 bias=True dilation=(1,1) groups=576 in_channels=576 kernel_size=(3,3) out_channels=576 padding=(1,1) stride=(1,1) @bias=(576)f32 @weight=(576,1,3,3)f32 $input=63
-nn.ReLU6                 features.12.conv.1.2     1 1 64 65
-nn.Conv2d                conv2d_batchnorm2d_16    1 1 65 66 bias=True dilation=(1,1) groups=1 in_channels=576 kernel_size=(1,1) out_channels=96 padding=(0,0) stride=(1,1) @bias=(96)f32 @weight=(96,576,1,1)f32 $input=65
-Expression               pnnx_expr_6              2 1 61 66 67 expr=add(@0,@1)
-nn.Conv2d                conv2d_batchnorm2d_15    1 1 67 68 bias=True dilation=(1,1) groups=1 in_channels=96 kernel_size=(1,1) out_channels=576 padding=(0,0) stride=(1,1) @bias=(576)f32 @weight=(576,96,1,1)f32 $input=67
-nn.ReLU6                 features.13.conv.0.2     1 1 68 69
-nn.Conv2d                conv2d_batchnorm2d_14    1 1 69 70 bias=True dilation=(1,1) groups=576 in_channels=576 kernel_size=(3,3) out_channels=576 padding=(1,1) stride=(1,1) @bias=(576)f32 @weight=(576,1,3,3)f32 $input=69
-nn.ReLU6                 features.13.conv.1.2     1 1 70 71
-nn.Conv2d                conv2d_batchnorm2d_13    1 1 71 72 bias=True dilation=(1,1) groups=1 in_channels=576 kernel_size=(1,1) out_channels=96 padding=(0,0) stride=(1,1) @bias=(96)f32 @weight=(96,576,1,1)f32 $input=71
-Expression               pnnx_expr_4              2 1 67 72 73 expr=add(@0,@1)
-nn.Conv2d                conv2d_batchnorm2d_12    1 1 73 74 bias=True dilation=(1,1) groups=1 in_channels=96 kernel_size=(1,1) out_channels=576 padding=(0,0) stride=(1,1) @bias=(576)f32 @weight=(576,96,1,1)f32 $input=73
-nn.ReLU6                 features.14.conv.0.2     1 1 74 75
-nn.Conv2d                conv2d_batchnorm2d_11    1 1 75 76 bias=True dilation=(1,1) groups=576 in_channels=576 kernel_size=(3,3) out_channels=576 padding=(1,1) stride=(2,2) @bias=(576)f32 @weight=(576,1,3,3)f32 $input=75
-nn.ReLU6                 features.14.conv.1.2     1 1 76 77
-nn.Conv2d                conv2d_batchnorm2d_10    1 1 77 78 bias=True dilation=(1,1) groups=1 in_channels=576 kernel_size=(1,1) out_channels=160 padding=(0,0) stride=(1,1) @bias=(160)f32 @weight=(160,576,1,1)f32 $input=77
-nn.Conv2d                conv2d_batchnorm2d_9     1 1 78 79 bias=True dilation=(1,1) groups=1 in_channels=160 kernel_size=(1,1) out_channels=960 padding=(0,0) stride=(1,1) @bias=(960)f32 @weight=(960,160,1,1)f32 $input=78
-nn.ReLU6                 features.15.conv.0.2     1 1 79 80
-nn.Conv2d                conv2d_batchnorm2d_8     1 1 80 81 bias=True dilation=(1,1) groups=960 in_channels=960 kernel_size=(3,3) out_channels=960 padding=(1,1) stride=(1,1) @bias=(960)f32 @weight=(960,1,3,3)f32 $input=80
-nn.ReLU6                 features.15.conv.1.2     1 1 81 82
-nn.Conv2d                conv2d_batchnorm2d_7     1 1 82 83 bias=True dilation=(1,1) groups=1 in_channels=960 kernel_size=(1,1) out_channels=160 padding=(0,0) stride=(1,1) @bias=(160)f32 @weight=(160,960,1,1)f32 $input=82
-Expression               pnnx_expr_2              2 1 78 83 84 expr=add(@0,@1)
-nn.Conv2d                conv2d_batchnorm2d_6     1 1 84 85 bias=True dilation=(1,1) groups=1 in_channels=160 kernel_size=(1,1) out_channels=960 padding=(0,0) stride=(1,1) @bias=(960)f32 @weight=(960,160,1,1)f32 $input=84
-nn.ReLU6                 features.16.conv.0.2     1 1 85 86
-nn.Conv2d                conv2d_batchnorm2d_5     1 1 86 87 bias=True dilation=(1,1) groups=960 in_channels=960 kernel_size=(3,3) out_channels=960 padding=(1,1) stride=(1,1) @bias=(960)f32 @weight=(960,1,3,3)f32 $input=86
-nn.ReLU6                 features.16.conv.1.2     1 1 87 88
-nn.Conv2d                conv2d_batchnorm2d_4     1 1 88 89 bias=True dilation=(1,1) groups=1 in_channels=960 kernel_size=(1,1) out_channels=160 padding=(0,0) stride=(1,1) @bias=(160)f32 @weight=(160,960,1,1)f32 $input=88
-Expression               pnnx_expr_0              2 1 84 89 90 expr=add(@0,@1)
-nn.Conv2d                conv2d_batchnorm2d_3     1 1 90 91 bias=True dilation=(1,1) groups=1 in_channels=160 kernel_size=(1,1) out_channels=960 padding=(0,0) stride=(1,1) @bias=(960)f32 @weight=(960,160,1,1)f32 $input=90
-nn.ReLU6                 features.17.conv.0.2     1 1 91 92
-nn.Conv2d                conv2d_batchnorm2d_2     1 1 92 93 bias=True dilation=(1,1) groups=960 in_channels=960 kernel_size=(3,3) out_channels=960 padding=(1,1) stride=(1,1) @bias=(960)f32 @weight=(960,1,3,3)f32 $input=92
-nn.ReLU6                 features.17.conv.1.2     1 1 93 94
-nn.Conv2d                conv2d_batchnorm2d_1     1 1 94 95 bias=True dilation=(1,1) groups=1 in_channels=960 kernel_size=(1,1) out_channels=320 padding=(0,0) stride=(1,1) @bias=(320)f32 @weight=(320,960,1,1)f32 $input=94
-nn.Conv2d                conv2d_batchnorm2d_0     1 1 95 96 bias=True dilation=(1,1) groups=1 in_channels=320 kernel_size=(1,1) out_channels=1280 padding=(0,0) stride=(1,1) @bias=(1280)f32 @weight=(1280,320,1,1)f32 $input=95
-nn.ReLU6                 features.18.2            1 1 96 97
-F.adaptive_avg_pool2d    F.adaptive_avg_pool2d_0  1 1 97 98 output_size=(1,1) $input=97
-torch.flatten            torch.flatten_1          1 1 98 99 end_dim=-1 start_dim=1 $input=98
-nn.Dropout               classifier.0             1 1 99 100
-nn.Linear                classifier.1             1 1 100 101 bias=True in_features=1280 out_features=1000 @bias=(1000)f32 @weight=(1000,1280)f32
-Output                   pnnx_output_0            1 0 101
+Input                    pnnx_input_1             0 1 0 #0=(1,3,224,224)f32
+nn.Conv2d                conv2d_batchnorm2d_51    1 1 0 1 bias=True dilation=(1,1) groups=1 in_channels=3 kernel_size=(3,3) out_channels=32 padding=(1,1) stride=(2,2) @bias=(32)f32 @weight=(32,3,3,3)f32 $input=0 #0=(1,3,224,224)f32 #1=(1,32,112,112)f32
+nn.ReLU6                 features.0.2             1 1 1 2 #1=(1,32,112,112)f32 #2=(1,32,112,112)f32
+nn.Conv2d                conv2d_batchnorm2d_50    1 1 2 3 bias=True dilation=(1,1) groups=32 in_channels=32 kernel_size=(3,3) out_channels=32 padding=(1,1) stride=(1,1) @bias=(32)f32 @weight=(32,1,3,3)f32 $input=2 #2=(1,32,112,112)f32 #3=(1,32,112,112)f32
+nn.ReLU6                 features.1.conv.0.2      1 1 3 4 #3=(1,32,112,112)f32 #4=(1,32,112,112)f32
+nn.Conv2d                conv2d_batchnorm2d_49    1 1 4 5 bias=True dilation=(1,1) groups=1 in_channels=32 kernel_size=(1,1) out_channels=16 padding=(0,0) stride=(1,1) @bias=(16)f32 @weight=(16,32,1,1)f32 $input=4 #4=(1,32,112,112)f32 #5=(1,16,112,112)f32
+nn.Conv2d                conv2d_batchnorm2d_48    1 1 5 6 bias=True dilation=(1,1) groups=1 in_channels=16 kernel_size=(1,1) out_channels=96 padding=(0,0) stride=(1,1) @bias=(96)f32 @weight=(96,16,1,1)f32 $input=5 #5=(1,16,112,112)f32 #6=(1,96,112,112)f32
+nn.ReLU6                 features.2.conv.0.2      1 1 6 7 #6=(1,96,112,112)f32 #7=(1,96,112,112)f32
+nn.Conv2d                conv2d_batchnorm2d_47    1 1 7 8 bias=True dilation=(1,1) groups=96 in_channels=96 kernel_size=(3,3) out_channels=96 padding=(1,1) stride=(2,2) @bias=(96)f32 @weight=(96,1,3,3)f32 $input=7 #7=(1,96,112,112)f32 #8=(1,96,56,56)f32
+nn.ReLU6                 features.2.conv.1.2      1 1 8 9 #8=(1,96,56,56)f32 #9=(1,96,56,56)f32
+nn.Conv2d                conv2d_batchnorm2d_46    1 1 9 10 bias=True dilation=(1,1) groups=1 in_channels=96 kernel_size=(1,1) out_channels=24 padding=(0,0) stride=(1,1) @bias=(24)f32 @weight=(24,96,1,1)f32 $input=9 #9=(1,96,56,56)f32 #10=(1,24,56,56)f32
+nn.Conv2d                conv2d_batchnorm2d_45    1 1 10 11 bias=True dilation=(1,1) groups=1 in_channels=24 kernel_size=(1,1) out_channels=144 padding=(0,0) stride=(1,1) @bias=(144)f32 @weight=(144,24,1,1)f32 $input=10 #10=(1,24,56,56)f32 #11=(1,144,56,56)f32
+nn.ReLU6                 features.3.conv.0.2      1 1 11 12 #11=(1,144,56,56)f32 #12=(1,144,56,56)f32
+nn.Conv2d                conv2d_batchnorm2d_44    1 1 12 13 bias=True dilation=(1,1) groups=144 in_channels=144 kernel_size=(3,3) out_channels=144 padding=(1,1) stride=(1,1) @bias=(144)f32 @weight=(144,1,3,3)f32 $input=12 #12=(1,144,56,56)f32 #13=(1,144,56,56)f32
+nn.ReLU6                 features.3.conv.1.2      1 1 13 14 #13=(1,144,56,56)f32 #14=(1,144,56,56)f32
+nn.Conv2d                conv2d_batchnorm2d_43    1 1 14 15 bias=True dilation=(1,1) groups=1 in_channels=144 kernel_size=(1,1) out_channels=24 padding=(0,0) stride=(1,1) @bias=(24)f32 @weight=(24,144,1,1)f32 $input=14 #14=(1,144,56,56)f32 #15=(1,24,56,56)f32
+Expression               pnnx_expr_18             2 1 10 15 16 expr=add(@0,@1) #10=(1,24,56,56)f32 #15=(1,24,56,56)f32 #16=(1,24,56,56)f32
+nn.Conv2d                conv2d_batchnorm2d_42    1 1 16 17 bias=True dilation=(1,1) groups=1 in_channels=24 kernel_size=(1,1) out_channels=144 padding=(0,0) stride=(1,1) @bias=(144)f32 @weight=(144,24,1,1)f32 $input=16 #16=(1,24,56,56)f32 #17=(1,144,56,56)f32
+nn.ReLU6                 features.4.conv.0.2      1 1 17 18 #17=(1,144,56,56)f32 #18=(1,144,56,56)f32
+nn.Conv2d                conv2d_batchnorm2d_41    1 1 18 19 bias=True dilation=(1,1) groups=144 in_channels=144 kernel_size=(3,3) out_channels=144 padding=(1,1) stride=(2,2) @bias=(144)f32 @weight=(144,1,3,3)f32 $input=18 #18=(1,144,56,56)f32 #19=(1,144,28,28)f32
+nn.ReLU6                 features.4.conv.1.2      1 1 19 20 #19=(1,144,28,28)f32 #20=(1,144,28,28)f32
+nn.Conv2d                conv2d_batchnorm2d_40    1 1 20 21 bias=True dilation=(1,1) groups=1 in_channels=144 kernel_size=(1,1) out_channels=32 padding=(0,0) stride=(1,1) @bias=(32)f32 @weight=(32,144,1,1)f32 $input=20 #20=(1,144,28,28)f32 #21=(1,32,28,28)f32
+nn.Conv2d                conv2d_batchnorm2d_39    1 1 21 22 bias=True dilation=(1,1) groups=1 in_channels=32 kernel_size=(1,1) out_channels=192 padding=(0,0) stride=(1,1) @bias=(192)f32 @weight=(192,32,1,1)f32 $input=21 #21=(1,32,28,28)f32 #22=(1,192,28,28)f32
+nn.ReLU6                 features.5.conv.0.2      1 1 22 23 #22=(1,192,28,28)f32 #23=(1,192,28,28)f32
+nn.Conv2d                conv2d_batchnorm2d_38    1 1 23 24 bias=True dilation=(1,1) groups=192 in_channels=192 kernel_size=(3,3) out_channels=192 padding=(1,1) stride=(1,1) @bias=(192)f32 @weight=(192,1,3,3)f32 $input=23 #23=(1,192,28,28)f32 #24=(1,192,28,28)f32
+nn.ReLU6                 features.5.conv.1.2      1 1 24 25 #24=(1,192,28,28)f32 #25=(1,192,28,28)f32
+nn.Conv2d                conv2d_batchnorm2d_37    1 1 25 26 bias=True dilation=(1,1) groups=1 in_channels=192 kernel_size=(1,1) out_channels=32 padding=(0,0) stride=(1,1) @bias=(32)f32 @weight=(32,192,1,1)f32 $input=25 #25=(1,192,28,28)f32 #26=(1,32,28,28)f32
+Expression               pnnx_expr_16             2 1 21 26 27 expr=add(@0,@1) #21=(1,32,28,28)f32 #26=(1,32,28,28)f32 #27=(1,32,28,28)f32
+nn.Conv2d                conv2d_batchnorm2d_36    1 1 27 28 bias=True dilation=(1,1) groups=1 in_channels=32 kernel_size=(1,1) out_channels=192 padding=(0,0) stride=(1,1) @bias=(192)f32 @weight=(192,32,1,1)f32 $input=27 #27=(1,32,28,28)f32 #28=(1,192,28,28)f32
+nn.ReLU6                 features.6.conv.0.2      1 1 28 29 #28=(1,192,28,28)f32 #29=(1,192,28,28)f32
+nn.Conv2d                conv2d_batchnorm2d_35    1 1 29 30 bias=True dilation=(1,1) groups=192 in_channels=192 kernel_size=(3,3) out_channels=192 padding=(1,1) stride=(1,1) @bias=(192)f32 @weight=(192,1,3,3)f32 $input=29 #29=(1,192,28,28)f32 #30=(1,192,28,28)f32
+nn.ReLU6                 features.6.conv.1.2      1 1 30 31 #30=(1,192,28,28)f32 #31=(1,192,28,28)f32
+nn.Conv2d                conv2d_batchnorm2d_34    1 1 31 32 bias=True dilation=(1,1) groups=1 in_channels=192 kernel_size=(1,1) out_channels=32 padding=(0,0) stride=(1,1) @bias=(32)f32 @weight=(32,192,1,1)f32 $input=31 #31=(1,192,28,28)f32 #32=(1,32,28,28)f32
+Expression               pnnx_expr_14             2 1 27 32 33 expr=add(@0,@1) #27=(1,32,28,28)f32 #32=(1,32,28,28)f32 #33=(1,32,28,28)f32
+nn.Conv2d                conv2d_batchnorm2d_33    1 1 33 34 bias=True dilation=(1,1) groups=1 in_channels=32 kernel_size=(1,1) out_channels=192 padding=(0,0) stride=(1,1) @bias=(192)f32 @weight=(192,32,1,1)f32 $input=33 #33=(1,32,28,28)f32 #34=(1,192,28,28)f32
+nn.ReLU6                 features.7.conv.0.2      1 1 34 35 #34=(1,192,28,28)f32 #35=(1,192,28,28)f32
+nn.Conv2d                conv2d_batchnorm2d_32    1 1 35 36 bias=True dilation=(1,1) groups=192 in_channels=192 kernel_size=(3,3) out_channels=192 padding=(1,1) stride=(2,2) @bias=(192)f32 @weight=(192,1,3,3)f32 $input=35 #35=(1,192,28,28)f32 #36=(1,192,14,14)f32
+nn.ReLU6                 features.7.conv.1.2      1 1 36 37 #36=(1,192,14,14)f32 #37=(1,192,14,14)f32
+nn.Conv2d                conv2d_batchnorm2d_31    1 1 37 38 bias=True dilation=(1,1) groups=1 in_channels=192 kernel_size=(1,1) out_channels=64 padding=(0,0) stride=(1,1) @bias=(64)f32 @weight=(64,192,1,1)f32 $input=37 #37=(1,192,14,14)f32 #38=(1,64,14,14)f32
+nn.Conv2d                conv2d_batchnorm2d_30    1 1 38 39 bias=True dilation=(1,1) groups=1 in_channels=64 kernel_size=(1,1) out_channels=384 padding=(0,0) stride=(1,1) @bias=(384)f32 @weight=(384,64,1,1)f32 $input=38 #38=(1,64,14,14)f32 #39=(1,384,14,14)f32
+nn.ReLU6                 features.8.conv.0.2      1 1 39 40 #39=(1,384,14,14)f32 #40=(1,384,14,14)f32
+nn.Conv2d                conv2d_batchnorm2d_29    1 1 40 41 bias=True dilation=(1,1) groups=384 in_channels=384 kernel_size=(3,3) out_channels=384 padding=(1,1) stride=(1,1) @bias=(384)f32 @weight=(384,1,3,3)f32 $input=40 #40=(1,384,14,14)f32 #41=(1,384,14,14)f32
+nn.ReLU6                 features.8.conv.1.2      1 1 41 42 #41=(1,384,14,14)f32 #42=(1,384,14,14)f32
+nn.Conv2d                conv2d_batchnorm2d_28    1 1 42 43 bias=True dilation=(1,1) groups=1 in_channels=384 kernel_size=(1,1) out_channels=64 padding=(0,0) stride=(1,1) @bias=(64)f32 @weight=(64,384,1,1)f32 $input=42 #42=(1,384,14,14)f32 #43=(1,64,14,14)f32
+Expression               pnnx_expr_12             2 1 38 43 44 expr=add(@0,@1) #38=(1,64,14,14)f32 #43=(1,64,14,14)f32 #44=(1,64,14,14)f32
+nn.Conv2d                conv2d_batchnorm2d_27    1 1 44 45 bias=True dilation=(1,1) groups=1 in_channels=64 kernel_size=(1,1) out_channels=384 padding=(0,0) stride=(1,1) @bias=(384)f32 @weight=(384,64,1,1)f32 $input=44 #44=(1,64,14,14)f32 #45=(1,384,14,14)f32
+nn.ReLU6                 features.9.conv.0.2      1 1 45 46 #45=(1,384,14,14)f32 #46=(1,384,14,14)f32
+nn.Conv2d                conv2d_batchnorm2d_26    1 1 46 47 bias=True dilation=(1,1) groups=384 in_channels=384 kernel_size=(3,3) out_channels=384 padding=(1,1) stride=(1,1) @bias=(384)f32 @weight=(384,1,3,3)f32 $input=46 #46=(1,384,14,14)f32 #47=(1,384,14,14)f32
+nn.ReLU6                 features.9.conv.1.2      1 1 47 48 #47=(1,384,14,14)f32 #48=(1,384,14,14)f32
+nn.Conv2d                conv2d_batchnorm2d_25    1 1 48 49 bias=True dilation=(1,1) groups=1 in_channels=384 kernel_size=(1,1) out_channels=64 padding=(0,0) stride=(1,1) @bias=(64)f32 @weight=(64,384,1,1)f32 $input=48 #48=(1,384,14,14)f32 #49=(1,64,14,14)f32
+Expression               pnnx_expr_10             2 1 44 49 50 expr=add(@0,@1) #44=(1,64,14,14)f32 #49=(1,64,14,14)f32 #50=(1,64,14,14)f32
+nn.Conv2d                conv2d_batchnorm2d_24    1 1 50 51 bias=True dilation=(1,1) groups=1 in_channels=64 kernel_size=(1,1) out_channels=384 padding=(0,0) stride=(1,1) @bias=(384)f32 @weight=(384,64,1,1)f32 $input=50 #50=(1,64,14,14)f32 #51=(1,384,14,14)f32
+nn.ReLU6                 features.10.conv.0.2     1 1 51 52 #51=(1,384,14,14)f32 #52=(1,384,14,14)f32
+nn.Conv2d                conv2d_batchnorm2d_23    1 1 52 53 bias=True dilation=(1,1) groups=384 in_channels=384 kernel_size=(3,3) out_channels=384 padding=(1,1) stride=(1,1) @bias=(384)f32 @weight=(384,1,3,3)f32 $input=52 #52=(1,384,14,14)f32 #53=(1,384,14,14)f32
+nn.ReLU6                 features.10.conv.1.2     1 1 53 54 #53=(1,384,14,14)f32 #54=(1,384,14,14)f32
+nn.Conv2d                conv2d_batchnorm2d_22    1 1 54 55 bias=True dilation=(1,1) groups=1 in_channels=384 kernel_size=(1,1) out_channels=64 padding=(0,0) stride=(1,1) @bias=(64)f32 @weight=(64,384,1,1)f32 $input=54 #54=(1,384,14,14)f32 #55=(1,64,14,14)f32
+Expression               pnnx_expr_8              2 1 50 55 56 expr=add(@0,@1) #50=(1,64,14,14)f32 #55=(1,64,14,14)f32 #56=(1,64,14,14)f32
+nn.Conv2d                conv2d_batchnorm2d_21    1 1 56 57 bias=True dilation=(1,1) groups=1 in_channels=64 kernel_size=(1,1) out_channels=384 padding=(0,0) stride=(1,1) @bias=(384)f32 @weight=(384,64,1,1)f32 $input=56 #56=(1,64,14,14)f32 #57=(1,384,14,14)f32
+nn.ReLU6                 features.11.conv.0.2     1 1 57 58 #57=(1,384,14,14)f32 #58=(1,384,14,14)f32
+nn.Conv2d                conv2d_batchnorm2d_20    1 1 58 59 bias=True dilation=(1,1) groups=384 in_channels=384 kernel_size=(3,3) out_channels=384 padding=(1,1) stride=(1,1) @bias=(384)f32 @weight=(384,1,3,3)f32 $input=58 #58=(1,384,14,14)f32 #59=(1,384,14,14)f32
+nn.ReLU6                 features.11.conv.1.2     1 1 59 60 #59=(1,384,14,14)f32 #60=(1,384,14,14)f32
+nn.Conv2d                conv2d_batchnorm2d_19    1 1 60 61 bias=True dilation=(1,1) groups=1 in_channels=384 kernel_size=(1,1) out_channels=96 padding=(0,0) stride=(1,1) @bias=(96)f32 @weight=(96,384,1,1)f32 $input=60 #60=(1,384,14,14)f32 #61=(1,96,14,14)f32
+nn.Conv2d                conv2d_batchnorm2d_18    1 1 61 62 bias=True dilation=(1,1) groups=1 in_channels=96 kernel_size=(1,1) out_channels=576 padding=(0,0) stride=(1,1) @bias=(576)f32 @weight=(576,96,1,1)f32 $input=61 #61=(1,96,14,14)f32 #62=(1,576,14,14)f32
+nn.ReLU6                 features.12.conv.0.2     1 1 62 63 #62=(1,576,14,14)f32 #63=(1,576,14,14)f32
+nn.Conv2d                conv2d_batchnorm2d_17    1 1 63 64 bias=True dilation=(1,1) groups=576 in_channels=576 kernel_size=(3,3) out_channels=576 padding=(1,1) stride=(1,1) @bias=(576)f32 @weight=(576,1,3,3)f32 $input=63 #63=(1,576,14,14)f32 #64=(1,576,14,14)f32
+nn.ReLU6                 features.12.conv.1.2     1 1 64 65 #64=(1,576,14,14)f32 #65=(1,576,14,14)f32
+nn.Conv2d                conv2d_batchnorm2d_16    1 1 65 66 bias=True dilation=(1,1) groups=1 in_channels=576 kernel_size=(1,1) out_channels=96 padding=(0,0) stride=(1,1) @bias=(96)f32 @weight=(96,576,1,1)f32 $input=65 #65=(1,576,14,14)f32 #66=(1,96,14,14)f32
+Expression               pnnx_expr_6              2 1 61 66 67 expr=add(@0,@1) #61=(1,96,14,14)f32 #66=(1,96,14,14)f32 #67=(1,96,14,14)f32
+nn.Conv2d                conv2d_batchnorm2d_15    1 1 67 68 bias=True dilation=(1,1) groups=1 in_channels=96 kernel_size=(1,1) out_channels=576 padding=(0,0) stride=(1,1) @bias=(576)f32 @weight=(576,96,1,1)f32 $input=67 #67=(1,96,14,14)f32 #68=(1,576,14,14)f32
+nn.ReLU6                 features.13.conv.0.2     1 1 68 69 #68=(1,576,14,14)f32 #69=(1,576,14,14)f32
+nn.Conv2d                conv2d_batchnorm2d_14    1 1 69 70 bias=True dilation=(1,1) groups=576 in_channels=576 kernel_size=(3,3) out_channels=576 padding=(1,1) stride=(1,1) @bias=(576)f32 @weight=(576,1,3,3)f32 $input=69 #69=(1,576,14,14)f32 #70=(1,576,14,14)f32
+nn.ReLU6                 features.13.conv.1.2     1 1 70 71 #70=(1,576,14,14)f32 #71=(1,576,14,14)f32
+nn.Conv2d                conv2d_batchnorm2d_13    1 1 71 72 bias=True dilation=(1,1) groups=1 in_channels=576 kernel_size=(1,1) out_channels=96 padding=(0,0) stride=(1,1) @bias=(96)f32 @weight=(96,576,1,1)f32 $input=71 #71=(1,576,14,14)f32 #72=(1,96,14,14)f32
+Expression               pnnx_expr_4              2 1 67 72 73 expr=add(@0,@1) #67=(1,96,14,14)f32 #72=(1,96,14,14)f32 #73=(1,96,14,14)f32
+nn.Conv2d                conv2d_batchnorm2d_12    1 1 73 74 bias=True dilation=(1,1) groups=1 in_channels=96 kernel_size=(1,1) out_channels=576 padding=(0,0) stride=(1,1) @bias=(576)f32 @weight=(576,96,1,1)f32 $input=73 #73=(1,96,14,14)f32 #74=(1,576,14,14)f32
+nn.ReLU6                 features.14.conv.0.2     1 1 74 75 #74=(1,576,14,14)f32 #75=(1,576,14,14)f32
+nn.Conv2d                conv2d_batchnorm2d_11    1 1 75 76 bias=True dilation=(1,1) groups=576 in_channels=576 kernel_size=(3,3) out_channels=576 padding=(1,1) stride=(2,2) @bias=(576)f32 @weight=(576,1,3,3)f32 $input=75 #75=(1,576,14,14)f32 #76=(1,576,7,7)f32
+nn.ReLU6                 features.14.conv.1.2     1 1 76 77 #76=(1,576,7,7)f32 #77=(1,576,7,7)f32
+nn.Conv2d                conv2d_batchnorm2d_10    1 1 77 78 bias=True dilation=(1,1) groups=1 in_channels=576 kernel_size=(1,1) out_channels=160 padding=(0,0) stride=(1,1) @bias=(160)f32 @weight=(160,576,1,1)f32 $input=77 #77=(1,576,7,7)f32 #78=(1,160,7,7)f32
+nn.Conv2d                conv2d_batchnorm2d_9     1 1 78 79 bias=True dilation=(1,1) groups=1 in_channels=160 kernel_size=(1,1) out_channels=960 padding=(0,0) stride=(1,1) @bias=(960)f32 @weight=(960,160,1,1)f32 $input=78 #78=(1,160,7,7)f32 #79=(1,960,7,7)f32
+nn.ReLU6                 features.15.conv.0.2     1 1 79 80 #79=(1,960,7,7)f32 #80=(1,960,7,7)f32
+nn.Conv2d                conv2d_batchnorm2d_8     1 1 80 81 bias=True dilation=(1,1) groups=960 in_channels=960 kernel_size=(3,3) out_channels=960 padding=(1,1) stride=(1,1) @bias=(960)f32 @weight=(960,1,3,3)f32 $input=80 #80=(1,960,7,7)f32 #81=(1,960,7,7)f32
+nn.ReLU6                 features.15.conv.1.2     1 1 81 82 #81=(1,960,7,7)f32 #82=(1,960,7,7)f32
+nn.Conv2d                conv2d_batchnorm2d_7     1 1 82 83 bias=True dilation=(1,1) groups=1 in_channels=960 kernel_size=(1,1) out_channels=160 padding=(0,0) stride=(1,1) @bias=(160)f32 @weight=(160,960,1,1)f32 $input=82 #82=(1,960,7,7)f32 #83=(1,160,7,7)f32
+Expression               pnnx_expr_2              2 1 78 83 84 expr=add(@0,@1) #78=(1,160,7,7)f32 #83=(1,160,7,7)f32 #84=(1,160,7,7)f32
+nn.Conv2d                conv2d_batchnorm2d_6     1 1 84 85 bias=True dilation=(1,1) groups=1 in_channels=160 kernel_size=(1,1) out_channels=960 padding=(0,0) stride=(1,1) @bias=(960)f32 @weight=(960,160,1,1)f32 $input=84 #84=(1,160,7,7)f32 #85=(1,960,7,7)f32
+nn.ReLU6                 features.16.conv.0.2     1 1 85 86 #85=(1,960,7,7)f32 #86=(1,960,7,7)f32
+nn.Conv2d                conv2d_batchnorm2d_5     1 1 86 87 bias=True dilation=(1,1) groups=960 in_channels=960 kernel_size=(3,3) out_channels=960 padding=(1,1) stride=(1,1) @bias=(960)f32 @weight=(960,1,3,3)f32 $input=86 #86=(1,960,7,7)f32 #87=(1,960,7,7)f32
+nn.ReLU6                 features.16.conv.1.2     1 1 87 88 #87=(1,960,7,7)f32 #88=(1,960,7,7)f32
+nn.Conv2d                conv2d_batchnorm2d_4     1 1 88 89 bias=True dilation=(1,1) groups=1 in_channels=960 kernel_size=(1,1) out_channels=160 padding=(0,0) stride=(1,1) @bias=(160)f32 @weight=(160,960,1,1)f32 $input=88 #88=(1,960,7,7)f32 #89=(1,160,7,7)f32
+Expression               pnnx_expr_0              2 1 84 89 90 expr=add(@0,@1) #84=(1,160,7,7)f32 #89=(1,160,7,7)f32 #90=(1,160,7,7)f32
+nn.Conv2d                conv2d_batchnorm2d_3     1 1 90 91 bias=True dilation=(1,1) groups=1 in_channels=160 kernel_size=(1,1) out_channels=960 padding=(0,0) stride=(1,1) @bias=(960)f32 @weight=(960,160,1,1)f32 $input=90 #90=(1,160,7,7)f32 #91=(1,960,7,7)f32
+nn.ReLU6                 features.17.conv.0.2     1 1 91 92 #91=(1,960,7,7)f32 #92=(1,960,7,7)f32
+nn.Conv2d                conv2d_batchnorm2d_2     1 1 92 93 bias=True dilation=(1,1) groups=960 in_channels=960 kernel_size=(3,3) out_channels=960 padding=(1,1) stride=(1,1) @bias=(960)f32 @weight=(960,1,3,3)f32 $input=92 #92=(1,960,7,7)f32 #93=(1,960,7,7)f32
+nn.ReLU6                 features.17.conv.1.2     1 1 93 94 #93=(1,960,7,7)f32 #94=(1,960,7,7)f32
+nn.Conv2d                conv2d_batchnorm2d_1     1 1 94 95 bias=True dilation=(1,1) groups=1 in_channels=960 kernel_size=(1,1) out_channels=320 padding=(0,0) stride=(1,1) @bias=(320)f32 @weight=(320,960,1,1)f32 $input=94 #94=(1,960,7,7)f32 #95=(1,320,7,7)f32
+nn.Conv2d                conv2d_batchnorm2d_0     1 1 95 96 bias=True dilation=(1,1) groups=1 in_channels=320 kernel_size=(1,1) out_channels=1280 padding=(0,0) stride=(1,1) @bias=(1280)f32 @weight=(1280,320,1,1)f32 $input=95 #95=(1,320,7,7)f32 #96=(1,1280,7,7)f32
+nn.ReLU6                 features.18.2            1 1 96 97 #96=(1,1280,7,7)f32 #97=(1,1280,7,7)f32
+F.adaptive_avg_pool2d    F.adaptive_avg_pool2d_0  1 1 97 98 output_size=(1,1) $input=97 #97=(1,1280,7,7)f32 #98=(1,1280,1,1)f32
+torch.flatten            torch.flatten_1          1 1 98 99 end_dim=-1 start_dim=1 $input=98 #98=(1,1280,1,1)f32 #99=(1,1280)f32
+nn.Dropout               classifier.0             1 1 99 100 #99=(1,1280)f32 #100=(1,1280)f32
+nn.Linear                classifier.1             1 1 100 101 bias=True in_features=1280 out_features=1000 @bias=(1000)f32 @weight=(1000,1280)f32 #100=(1,1280)f32 #101=(1,1000)f32
+Output                   pnnx_output_0            1 0 101 #101=(1,1000)f32
