@@ -23,6 +23,10 @@ This package includes all the binaries required. It is portable, so no CUDA or P
 pnnx.exe mobilenet_v2.pt inputshape=[1,3,224,224]
 ```
 
+```shell
+pnnx.exe yolov5s.pt inputshape=[1,3,640,640] inputshape2=[1,3,320,320]
+```
+
 ### Full Usages
 
 ```console
@@ -39,8 +43,6 @@ Usage: pnnx [model.pt] [(key=value)...]
   inputshape2=[1,3,320,320],...
   customop=/home/nihui/.cache/torch_extensions/fused/fused.so,...
   moduleop=models.common.Focus,models.yolo.Detect,...
-Sample usage: pnnx mobilenet_v2.pt inputshape=[1,3,224,224]
-              pnnx yolov5s.pt inputshape=[1,3,640,640] inputshape2=[1,3,320,320] device=gpu moduleop=models.common.Focus,models.yolo.Detect
 ```
 
 ## Build from Source
