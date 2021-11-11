@@ -1,0 +1,174 @@
+name: release
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      VERSION: ${{ steps.get_version.outputs.VERSION }}
+    steps:
+    - name: get-version
+      id: get_version
+      run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+
+  ubuntu:
+    needs: [setup]
+    runs-on: ubuntu-18.04
+    env:
+      PACKAGENAME: pnnx-${{ needs.setup.outputs.VERSION }}-ubuntu
+    steps:
+    - name: setup libtorch
+      run: |
+        wget https://download.pytorch.org/libtorch/cpu/libtorch-cxx11-abi-shared-with-deps-1.10.0%2Bcpu.zip
+        unzip -q libtorch-cxx11-abi-shared-with-deps-1.10.0+cpu.zip
+    - name: ncnn
+      uses: actions/checkout@v2
+      with:
+        repository: nihui/ncnn
+        path: ncnn
+        ref: pnnx
+    - name: build-pnnx
+      run: |
+        cd ncnn/tools/pnnx
+        mkdir build && cd build
+        cmake -DCMAKE_INSTALL_PREFIX=install -DTorch_INSTALL_DIR="$GITHUB_WORKSPACE/libtorch" -DCMAKE_BUILD_TYPE=Release ..
+        cmake --build . -j 2
+        cmake --build . --target install
+    - name: package
+      run: |
+        mkdir ${{ env.PACKAGENAME }}
+        cp ncnn/tools/pnnx/build/install/bin/pnnx ${{ env.PACKAGENAME }}
+        cp libtorch/lib/*.so ${{ env.PACKAGENAME }}
+        cp libtorch/lib/libgomp*.so* ${{ env.PACKAGENAME }}
+        zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
+    - name: upload
+      uses: actions/upload-artifact@v2
+      with:
+        name: ${{ env.PACKAGENAME }}
+        path: ${{ env.PACKAGENAME }}.zip
+
+  macos:
+    needs: [setup]
+    runs-on: macos-10.15
+    env:
+      PACKAGENAME: pnnx-${{ needs.setup.outputs.VERSION }}-macos
+    steps:
+    - name: setup libtorch
+      run: |
+        wget https://download.pytorch.org/libtorch/cpu/libtorch-macos-1.10.0.zip
+        unzip -q libtorch-macos-1.10.0.zip
+    - name: ncnn
+      uses: actions/checkout@v2
+      with:
+        repository: nihui/ncnn
+        path: ncnn
+        ref: pnnx
+    - name: build-pnnx
+      run: |
+        cd ncnn/tools/pnnx
+        mkdir build && cd build
+        cmake -DCMAKE_INSTALL_PREFIX=install -DTorch_INSTALL_DIR="$GITHUB_WORKSPACE/libtorch" -DCMAKE_BUILD_TYPE=Release ..
+        cmake --build . -j 2
+        cmake --build . --target install
+    - name: package
+      run: |
+        mkdir ${{ env.PACKAGENAME }}
+        cp ncnn/tools/pnnx/build/install/bin/pnnx ${{ env.PACKAGENAME }}
+        cp libtorch/lib/*.dylib ${{ env.PACKAGENAME }}
+        zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
+    - name: upload
+      uses: actions/upload-artifact@v2
+      with:
+        name: ${{ env.PACKAGENAME }}
+        path: ${{ env.PACKAGENAME }}.zip
+
+  windows:
+    needs: [setup]
+    runs-on: windows-2019
+    env:
+      PACKAGENAME: pnnx-${{ needs.setup.outputs.VERSION }}-windows
+    steps:
+    - name: setup libtorch
+      run: |
+        Invoke-WebRequest -Uri https://download.pytorch.org/libtorch/cpu/libtorch-win-shared-with-deps-1.10.0%2Bcpu.zip -OutFile libtorch-win-shared-with-deps-1.10.0+cpu.zip
+        7z x libtorch-win-shared-with-deps-1.10.0+cpu.zip
+    - name: ncnn
+      uses: actions/checkout@v2
+      with:
+        repository: nihui/ncnn
+        path: ncnn
+        ref: pnnx
+    - name: build-pnnx
+      run: |
+        cd ncnn/tools/pnnx
+        mkdir build && cd build
+        cmake -DCMAKE_INSTALL_PREFIX=install -DTorch_INSTALL_DIR="$env:GITHUB_WORKSPACE/libtorch" ..
+        cmake --build . --config Release -j 2
+        cmake --build . --config Release --target install
+    - name: package
+      run: |
+        mkdir ${{ env.PACKAGENAME }}
+        Copy-Item -Verbose -Path "ncnn\tools\pnnx\build\install\bin\pnnx.exe" -Destination ${{ env.PACKAGENAME }}
+        Copy-Item -Verbose -Recurse -Path "libtorch\lib\*.dll" -Destination ${{ env.PACKAGENAME }}
+        7z a -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
+    - name: upload
+      uses: actions/upload-artifact@v2
+      with:
+        name: ${{ env.PACKAGENAME }}
+        path: ${{ env.PACKAGENAME }}.zip
+
+  release:
+    needs: [setup, ubuntu, macos, windows]
+    runs-on: ubuntu-latest
+    steps:
+    - name: download
+      uses: actions/download-artifact@v2
+      with:
+        path: artifacts
+
+    - name: create-release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ needs.setup.outputs.VERSION }}
+        release_name: Release ${{ needs.setup.outputs.VERSION }}
+        draft: false
+        prerelease: false
+
+    - name: upload-pnnx-ubuntu
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        PACKAGENAME: pnnx-${{ needs.setup.outputs.VERSION }}-ubuntu
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: artifacts/${{ env.PACKAGENAME }}/${{ env.PACKAGENAME }}.zip
+        asset_name: ${{ env.PACKAGENAME }}.zip
+        asset_content_type: application/zip
+
+    - name: upload-pnnx-macos
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        PACKAGENAME: pnnx-${{ needs.setup.outputs.VERSION }}-macos
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: artifacts/${{ env.PACKAGENAME }}/${{ env.PACKAGENAME }}.zip
+        asset_name: ${{ env.PACKAGENAME }}.zip
+        asset_content_type: application/zip
+
+    - name: upload-pnnx-windows
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        PACKAGENAME: pnnx-${{ needs.setup.outputs.VERSION }}-windows
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: artifacts/${{ env.PACKAGENAME }}/${{ env.PACKAGENAME }}.zip
+        asset_name: ${{ env.PACKAGENAME }}.zip
+        asset_content_type: application/zip
