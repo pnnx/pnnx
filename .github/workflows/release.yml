@@ -27,9 +27,8 @@ jobs:
     - name: ncnn
       uses: actions/checkout@v2
       with:
-        repository: nihui/ncnn
+        repository: Tencent/ncnn
         path: ncnn
-        ref: pnnx
     - name: build-pnnx
       run: |
         cd ncnn/tools/pnnx
@@ -63,9 +62,8 @@ jobs:
     - name: ncnn
       uses: actions/checkout@v2
       with:
-        repository: nihui/ncnn
+        repository: Tencent/ncnn
         path: ncnn
-        ref: pnnx
     - name: build-pnnx
       run: |
         cd ncnn/tools/pnnx
@@ -98,9 +96,8 @@ jobs:
     - name: ncnn
       uses: actions/checkout@v2
       with:
-        repository: nihui/ncnn
+        repository: Tencent/ncnn
         path: ncnn
-        ref: pnnx
     - name: build-pnnx
       run: |
         cd ncnn/tools/pnnx
