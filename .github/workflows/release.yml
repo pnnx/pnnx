@@ -2,21 +2,15 @@ name: release
 on: push
 
 jobs:
-  setup:
-    runs-on: ubuntu-latest
-    outputs:
-      VERSION: ${{ steps.get_version.outputs.VERSION }}
-    steps:
-    - name: get-version
-      id: get_version
-      run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
-
   ubuntu:
-    needs: [setup]
     runs-on: ubuntu-18.04
     env:
-      PACKAGENAME: pnnx-${{ needs.setup.outputs.VERSION }}-ubuntu
+      PACKAGENAME: pnnx-ubuntu
     steps:
+    - name: pnnx-patches
+      uses: actions/checkout@v2
+      with:
+        path: pnnx-patches
     - name: libtorch
       run: |
         wget https://download.pytorch.org/libtorch/cpu/libtorch-cxx11-abi-shared-with-deps-1.10.0%2Bcpu.zip
@@ -26,6 +20,7 @@ jobs:
         wget https://github.com/pytorch/vision/archive/refs/tags/v0.11.1.zip -O vision-0.11.1.zip
         unzip -q vision-0.11.1.zip
         cd vision-0.11.1
+        patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/vision-0.11.1-ops-only.patch
         mkdir -p build; cd build
         cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/libtorch" -DTorch_DIR="$GITHUB_WORKSPACE/libtorch/share/cmake/Torch" -DCMAKE_BUILD_TYPE=Release ..
         cmake --build . -j 2
@@ -56,11 +51,14 @@ jobs:
         path: ${{ env.PACKAGENAME }}.zip
 
   macos:
-    needs: [setup]
     runs-on: macos-10.15
     env:
-      PACKAGENAME: pnnx-${{ needs.setup.outputs.VERSION }}-macos
+      PACKAGENAME: pnnx-macos
     steps:
+    - name: pnnx-patches
+      uses: actions/checkout@v2
+      with:
+        path: pnnx-patches
     - name: libtorch
       run: |
         wget https://download.pytorch.org/libtorch/cpu/libtorch-macos-1.10.0.zip
@@ -69,6 +67,7 @@ jobs:
       run: |
         wget https://github.com/pytorch/vision/archive/refs/tags/v0.11.1.zip -O vision-0.11.1.zip
         unzip -q vision-0.11.1.zip
+        patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/vision-0.11.1-ops-only.patch
         cd vision-0.11.1
         mkdir -p build; cd build
         cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/libtorch" -DTorch_DIR="$GITHUB_WORKSPACE/libtorch/share/cmake/Torch" -DCMAKE_BUILD_TYPE=Release ..
@@ -99,11 +98,14 @@ jobs:
         path: ${{ env.PACKAGENAME }}.zip
 
   windows:
-    needs: [setup]
     runs-on: windows-2019
     env:
-      PACKAGENAME: pnnx-${{ needs.setup.outputs.VERSION }}-windows
+      PACKAGENAME: pnnx-windows
     steps:
+    - name: pnnx-patches
+      uses: actions/checkout@v2
+      with:
+        path: pnnx-patches
     - name: libtorch
       run: |
         Invoke-WebRequest -Uri https://download.pytorch.org/libtorch/cpu/libtorch-win-shared-with-deps-1.10.0%2Bcpu.zip -OutFile libtorch-win-shared-with-deps-1.10.0+cpu.zip
@@ -113,6 +115,7 @@ jobs:
         Invoke-WebRequest -Uri https://github.com/pytorch/vision/archive/refs/tags/v0.11.1.zip -OutFile vision-0.11.1.zip
         7z x vision-0.11.1.zip
         cd vision-0.11.1
+        C:\msys64\usr\bin\patch.exe -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\vision-0.11.1-ops-only.patch
         mkdir -p build; cd build
         cmake -DCMAKE_INSTALL_PREFIX="$env:GITHUB_WORKSPACE/libtorch" -DTorch_DIR="$env:GITHUB_WORKSPACE/libtorch/share/cmake/Torch" ..
         cmake --build . --config Release -j 2
