@@ -1,8 +1,5 @@
 name: release
-on:
-  push:
-    tags:
-      - '*'
+on: push
 
 jobs:
   setup:
@@ -20,10 +17,19 @@ jobs:
     env:
       PACKAGENAME: pnnx-${{ needs.setup.outputs.VERSION }}-ubuntu
     steps:
-    - name: setup libtorch
+    - name: libtorch
       run: |
         wget https://download.pytorch.org/libtorch/cpu/libtorch-cxx11-abi-shared-with-deps-1.10.0%2Bcpu.zip
         unzip -q libtorch-cxx11-abi-shared-with-deps-1.10.0+cpu.zip
+    - name: torchvision
+      run: |
+        wget https://github.com/pytorch/vision/archive/refs/tags/v0.11.1.zip -O vision-0.11.1.zip
+        unzip -q vision-0.11.1.zip
+        cd vision-0.11.1
+        mkdir -p build; cd build
+        cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/libtorch" -DTorch_DIR="$GITHUB_WORKSPACE/libtorch/share/cmake/Torch" -DCMAKE_BUILD_TYPE=Release ..
+        cmake --build . -j 2
+        cmake --build . --target install
     - name: ncnn
       uses: actions/checkout@v2
       with:
@@ -33,7 +39,7 @@ jobs:
       run: |
         cd ncnn/tools/pnnx
         mkdir build && cd build
-        cmake -DCMAKE_INSTALL_PREFIX=install -DTorch_INSTALL_DIR="$GITHUB_WORKSPACE/libtorch" -DCMAKE_BUILD_TYPE=Release ..
+        cmake -DCMAKE_INSTALL_PREFIX=install -DTorch_INSTALL_DIR="$GITHUB_WORKSPACE/libtorch" -DTorchVision_INSTALL_DIR="$GITHUB_WORKSPACE/libtorch" -DCMAKE_BUILD_TYPE=Release ..
         cmake --build . -j 2
         cmake --build . --target install
     - name: package
@@ -55,10 +61,19 @@ jobs:
     env:
       PACKAGENAME: pnnx-${{ needs.setup.outputs.VERSION }}-macos
     steps:
-    - name: setup libtorch
+    - name: libtorch
       run: |
         wget https://download.pytorch.org/libtorch/cpu/libtorch-macos-1.10.0.zip
         unzip -q libtorch-macos-1.10.0.zip
+    - name: torchvision
+      run: |
+        wget https://github.com/pytorch/vision/archive/refs/tags/v0.11.1.zip -O vision-0.11.1.zip
+        unzip -q vision-0.11.1.zip
+        cd vision-0.11.1
+        mkdir -p build; cd build
+        cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/libtorch" -DTorch_DIR="$GITHUB_WORKSPACE/libtorch/share/cmake/Torch" -DCMAKE_BUILD_TYPE=Release ..
+        cmake --build . -j 2
+        cmake --build . --target install
     - name: ncnn
       uses: actions/checkout@v2
       with:
@@ -89,10 +104,19 @@ jobs:
     env:
       PACKAGENAME: pnnx-${{ needs.setup.outputs.VERSION }}-windows
     steps:
-    - name: setup libtorch
+    - name: libtorch
       run: |
         Invoke-WebRequest -Uri https://download.pytorch.org/libtorch/cpu/libtorch-win-shared-with-deps-1.10.0%2Bcpu.zip -OutFile libtorch-win-shared-with-deps-1.10.0+cpu.zip
         7z x libtorch-win-shared-with-deps-1.10.0+cpu.zip
+    - name: torchvision
+      run: |
+        Invoke-WebRequest -Uri https://github.com/pytorch/vision/archive/refs/tags/v0.11.1.zip -OutFile vision-0.11.1.zip
+        7z x vision-0.11.1.zip
+        cd vision-0.11.1
+        mkdir -p build; cd build
+        cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/libtorch" -DTorch_DIR="$GITHUB_WORKSPACE/libtorch/share/cmake/Torch" ..
+        cmake --build . --config Release -j 2
+        cmake --build . --config Release --target install
     - name: ncnn
       uses: actions/checkout@v2
       with:
