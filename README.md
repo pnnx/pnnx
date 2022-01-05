@@ -4,7 +4,7 @@
 
 PyTorch Neural Network eXchange
 
-Note: The current WIP implementation is in https://github.com/Tencent/ncnn/pull/3262
+Note: The current implementation is in https://github.com/Tencent/ncnn/tree/master/tools/pnnx
 
 
 ## [Download](https://github.com/pnnx/pnnx/releases)
@@ -52,16 +52,14 @@ Usage: pnnx [model.pt] [(key=value)...]
 2. Clone pnnx (inside nihui/ncnn pnnx branch atm)
 
 ```shell
-git clone https://github.com/nihui/ncnn.git
-cd ncnn
-git checkout pnnx
+git clone https://github.com/Tencent/ncnn.git
 ```
 
 3. Build with CMake
 
 ```shell
-mkdir tools/pnnx/build
-cd tools/pnnx/build
+mkdir ncnn/tools/pnnx/build
+cd ncnn/tools/pnnx/build
 cmake -DCMAKE_INSTALL_PREFIX=install -DTorch_INSTALL_DIR=<your libtorch dir> ..
 cmake --build . --config Release -j 2
 cmake --build . --config Release --target install
