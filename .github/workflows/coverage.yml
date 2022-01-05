@@ -54,9 +54,8 @@ jobs:
     - name: ncnn
       uses: actions/checkout@v2
       with:
-        repository: nihui/ncnn
+        repository: Tencent/ncnn
         path: ncnn
-        ref: pnnx
         submodules: recursive
 
     - name: build-ncnn
