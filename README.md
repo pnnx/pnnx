@@ -49,7 +49,7 @@ Usage: pnnx [model.pt] [(key=value)...]
 
 1. Download and setup the libtorch from https://pytorch.org/
 
-2. Clone pnnx (inside nihui/ncnn pnnx branch atm)
+2. Clone pnnx (inside Tencent/ncnn tools/pnnx folder)
 
 ```shell
 git clone https://github.com/Tencent/ncnn.git
