@@ -71,7 +71,7 @@ jobs:
         patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/vision-0.11.1-ops-only.patch
         mkdir -p build; cd build
         cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/libtorch" -DTorch_DIR="$GITHUB_WORKSPACE/libtorch/share/cmake/Torch" -DCMAKE_BUILD_TYPE=Release ..
-        cmake --build . -j 2
+        cmake --build . -j 3
         cmake --build . --target install
     - name: ncnn
       uses: actions/checkout@v2
@@ -83,7 +83,7 @@ jobs:
         cd ncnn/tools/pnnx
         mkdir build && cd build
         cmake -DCMAKE_INSTALL_PREFIX=install -DTorch_INSTALL_DIR="$GITHUB_WORKSPACE/libtorch" -DTorchVision_INSTALL_DIR="$GITHUB_WORKSPACE/libtorch" -DCMAKE_BUILD_TYPE=Release ..
-        cmake --build . -j 2
+        cmake --build . -j 3
         cmake --build . --target install
     - name: package
       run: |
