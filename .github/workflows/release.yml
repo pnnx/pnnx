@@ -1,11 +1,25 @@
 name: release
-on: push
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      VERSION: ${{ steps.get_version.outputs.VERSION }}
+    steps:
+    - name: get-version
+      id: get_version
+      run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
 
 jobs:
   ubuntu:
+    needs: [setup]
     runs-on: ubuntu-18.04
     env:
-      PACKAGENAME: pnnx-ubuntu
+      PACKAGENAME: pnnx-${{ needs.setup.outputs.VERSION }}-ubuntu
     steps:
     - name: pnnx-patches
       uses: actions/checkout@v2
@@ -51,9 +65,10 @@ jobs:
         path: ${{ env.PACKAGENAME }}.zip
 
   macos:
+    needs: [setup]
     runs-on: macos-10.15
     env:
-      PACKAGENAME: pnnx-macos
+      PACKAGENAME: pnnx-${{ needs.setup.outputs.VERSION }}-macos
     steps:
     - name: pnnx-patches
       uses: actions/checkout@v2
@@ -98,9 +113,10 @@ jobs:
         path: ${{ env.PACKAGENAME }}.zip
 
   windows:
+    needs: [setup]
     runs-on: windows-2019
     env:
-      PACKAGENAME: pnnx-windows
+      PACKAGENAME: pnnx-${{ needs.setup.outputs.VERSION }}-windows
     steps:
     - name: pnnx-patches
       uses: actions/checkout@v2
@@ -143,3 +159,56 @@ jobs:
       with:
         name: ${{ env.PACKAGENAME }}
         path: ${{ env.PACKAGENAME }}.zip
+
+  release:
+    needs: [setup, ubuntu, macos, windows]
+    runs-on: ubuntu-latest
+    steps:
+    - name: download
+      uses: actions/download-artifact@v2
+      with:
+        path: artifacts
+
+    - name: create-release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ needs.setup.outputs.VERSION }}
+        release_name: Release ${{ needs.setup.outputs.VERSION }}
+        draft: false
+        prerelease: false
+
+    - name: upload-pnnx-ubuntu
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        PACKAGENAME: pnnx-${{ needs.setup.outputs.VERSION }}-ubuntu
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: artifacts/${{ env.PACKAGENAME }}/${{ env.PACKAGENAME }}.zip
+        asset_name: ${{ env.PACKAGENAME }}.zip
+        asset_content_type: application/zip
+
+    - name: upload-pnnx-macos
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        PACKAGENAME: pnnx-${{ needs.setup.outputs.VERSION }}-macos
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: artifacts/${{ env.PACKAGENAME }}/${{ env.PACKAGENAME }}.zip
+        asset_name: ${{ env.PACKAGENAME }}.zip
+        asset_content_type: application/zip
+
+    - name: upload-pnnx-windows
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        PACKAGENAME: pnnx-${{ needs.setup.outputs.VERSION }}-windows
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: artifacts/${{ env.PACKAGENAME }}/${{ env.PACKAGENAME }}.zip
+        asset_name: ${{ env.PACKAGENAME }}.zip
+        asset_content_type: application/zip

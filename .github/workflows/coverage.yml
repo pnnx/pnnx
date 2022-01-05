@@ -1,5 +1,8 @@
 name: coverage
-on: push
+on:
+  push:
+    tags:
+      - '*'
 
 jobs:
   ubuntu:
