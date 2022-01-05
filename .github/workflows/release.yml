@@ -14,7 +14,6 @@ jobs:
       id: get_version
       run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
 
-jobs:
   ubuntu:
     needs: [setup]
     runs-on: ubuntu-18.04
