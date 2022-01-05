@@ -67,8 +67,8 @@ jobs:
       run: |
         wget https://github.com/pytorch/vision/archive/refs/tags/v0.11.1.zip -O vision-0.11.1.zip
         unzip -q vision-0.11.1.zip
-        patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/vision-0.11.1-ops-only.patch
         cd vision-0.11.1
+        patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/vision-0.11.1-ops-only.patch
         mkdir -p build; cd build
         cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/libtorch" -DTorch_DIR="$GITHUB_WORKSPACE/libtorch/share/cmake/Torch" -DCMAKE_BUILD_TYPE=Release ..
         cmake --build . -j 2
