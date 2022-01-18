@@ -152,6 +152,7 @@ jobs:
         mkdir ${{ env.PACKAGENAME }}
         Copy-Item -Verbose -Path "ncnn\tools\pnnx\build\install\bin\pnnx.exe" -Destination ${{ env.PACKAGENAME }}
         Copy-Item -Verbose -Recurse -Path "libtorch\lib\*.dll" -Destination ${{ env.PACKAGENAME }}
+        Copy-Item -Verbose -Recurse -Path "libtorch\bin\*.dll" -Destination ${{ env.PACKAGENAME }}
         7z a -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
     - name: upload
       uses: actions/upload-artifact@v2
