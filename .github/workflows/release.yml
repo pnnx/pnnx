@@ -21,7 +21,7 @@ jobs:
       PACKAGENAME: pnnx-${{ needs.setup.outputs.VERSION }}-ubuntu
     steps:
     - name: pnnx-patches
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         path: pnnx-patches
     - name: libtorch
@@ -39,7 +39,7 @@ jobs:
         cmake --build . -j 2
         cmake --build . --target install
     - name: ncnn
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         repository: Tencent/ncnn
         path: ncnn
@@ -70,7 +70,7 @@ jobs:
       PACKAGENAME: pnnx-${{ needs.setup.outputs.VERSION }}-macos
     steps:
     - name: pnnx-patches
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         path: pnnx-patches
     - name: libtorch
@@ -88,7 +88,7 @@ jobs:
         cmake --build . -j 3
         cmake --build . --target install
     - name: ncnn
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         repository: Tencent/ncnn
         path: ncnn
@@ -118,7 +118,7 @@ jobs:
       PACKAGENAME: pnnx-${{ needs.setup.outputs.VERSION }}-windows
     steps:
     - name: pnnx-patches
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         path: pnnx-patches
     - name: libtorch
@@ -136,7 +136,7 @@ jobs:
         cmake --build . --config Release -j 2
         cmake --build . --config Release --target install
     - name: ncnn
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         repository: Tencent/ncnn
         path: ncnn
