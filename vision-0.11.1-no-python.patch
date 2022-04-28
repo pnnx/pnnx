@@ -1,33 +1,16 @@
-From fb771ef5fedb76aabf00c6c6b113ae16d059ba2d Mon Sep 17 00:00:00 2001
-From: nihui <shuizhuyuanluo@126.com>
-Date: Sun, 13 Mar 2022 11:02:44 +0800
-Subject: [PATCH] add python linking dependency when USE_PYTHON=on
-
----
- cmake/TorchVisionConfig.cmake.in | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
-
-diff --git a/cmake/TorchVisionConfig.cmake.in b/cmake/TorchVisionConfig.cmake.in
-index aa04284475..98f4f58d3c 100644
---- a/cmake/TorchVisionConfig.cmake.in
-+++ b/cmake/TorchVisionConfig.cmake.in
-@@ -28,14 +28,16 @@ include("${CMAKE_CURRENT_LIST_DIR}/${PN}Targets.cmake")
+diff -Nuarp vision-0.11.1/cmake/TorchVisionConfig.cmake.in vision-0.11.1.no-python/cmake/TorchVisionConfig.cmake.in
+--- vision-0.11.1/cmake/TorchVisionConfig.cmake.in	2021-10-21 09:16:22.000000000 +0800
++++ vision-0.11.1.no-python/cmake/TorchVisionConfig.cmake.in	2022-04-28 16:34:33.810073013 +0800
+@@ -28,11 +28,8 @@ include("${CMAKE_CURRENT_LIST_DIR}/${PN}
  if(NOT TARGET torch_library)
  find_package(Torch REQUIRED)
  endif()
--if (@USE_PYTHON@)
-+if(@USE_PYTHON@)
-   if(NOT TARGET Python3::Python)
-     find_package(Python3 COMPONENTS Development)
-   endif()
- endif()
+-if(NOT TARGET Python3::Python)
+-find_package(Python3 COMPONENTS Development)
+-endif()
  
 -set_target_properties(TorchVision::TorchVision PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${${PN}_INCLUDE_DIR}" INTERFACE_LINK_LIBRARIES "torch;Python3::Python" )
--
-+set_target_properties(TorchVision::TorchVision PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${${PN}_INCLUDE_DIR}" INTERFACE_LINK_LIBRARIES "torch")
-+if(@USE_PYTHON@)
-+  set_property(TARGET TorchVision::TorchVision APPEND PROPERTY INTERFACE_LINK_LIBRARIES "Python3::Python")
-+endif()
++set_target_properties(TorchVision::TorchVision PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${${PN}_INCLUDE_DIR}" INTERFACE_LINK_LIBRARIES "torch" )
+ 
  
  if(@WITH_CUDA@)
-   target_compile_definitions(TorchVision::TorchVision INTERFACE WITH_CUDA)
