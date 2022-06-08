@@ -28,7 +28,7 @@ jobs:
 
     - name: cache-torchvision-${{ matrix.torchvision-version }}
       id: cache-torchvision
-      uses: actions/cache@v3.0.2
+      uses: actions/cache@v3.0.4
       with:
         path: torchvision-${{ matrix.torchvision-version }}-install
         key: torchvision-${{ matrix.torchvision-version }}-linux-install-20211228
