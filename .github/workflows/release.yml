@@ -37,8 +37,8 @@ jobs:
         wget https://github.com/pytorch/vision/archive/refs/tags/v${TORCHVISION_VERSION}.zip -O vision-${TORCHVISION_VERSION}.zip
         unzip -q vision-${TORCHVISION_VERSION}.zip
         cd vision-${TORCHVISION_VERSION}
-        patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/vision-0.11.1-ops-only.patch
-        patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/vision-0.11.1-no-python.patch
+        patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/vision-${TORCHVISION_VERSION}-ops-only.patch
+        patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/vision-${TORCHVISION_VERSION}-no-python.patch
         mkdir -p build; cd build
         cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/libtorch" -DTorch_DIR="$GITHUB_WORKSPACE/libtorch/share/cmake/Torch" -DCMAKE_BUILD_TYPE=Release ..
         cmake --build . -j 2
@@ -87,8 +87,8 @@ jobs:
         wget https://github.com/pytorch/vision/archive/refs/tags/v${TORCHVISION_VERSION}.zip -O vision-${TORCHVISION_VERSION}.zip
         unzip -q vision-${TORCHVISION_VERSION}.zip
         cd vision-${TORCHVISION_VERSION}
-        patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/vision-0.11.1-ops-only.patch
-        patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/vision-0.11.1-no-python.patch
+        patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/vision-${TORCHVISION_VERSION}-ops-only.patch
+        patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/vision-${TORCHVISION_VERSION}-no-python.patch
         mkdir -p build; cd build
         cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/libtorch" -DTorch_DIR="$GITHUB_WORKSPACE/libtorch/share/cmake/Torch" -DCMAKE_BUILD_TYPE=Release ..
         cmake --build . -j 3
@@ -136,8 +136,8 @@ jobs:
         Invoke-WebRequest -Uri https://github.com/pytorch/vision/archive/refs/tags/v${env:TORCHVISION_VERSION}.zip -OutFile vision-${env:TORCHVISION_VERSION}.zip
         7z x vision-${env:TORCHVISION_VERSION}.zip
         cd vision-${env:TORCHVISION_VERSION}
-        C:\msys64\usr\bin\patch.exe -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\vision-0.11.1-ops-only.patch
-        C:\msys64\usr\bin\patch.exe -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\vision-0.11.1-no-python.patch
+        C:\msys64\usr\bin\patch.exe -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\vision-${env:TORCHVISION_VERSION}-ops-only.patch
+        C:\msys64\usr\bin\patch.exe -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\vision-${env:TORCHVISION_VERSION}-no-python.patch
         mkdir -p build; cd build
         cmake -DCMAKE_INSTALL_PREFIX="$env:GITHUB_WORKSPACE/libtorch" -DTorch_DIR="$env:GITHUB_WORKSPACE/libtorch/share/cmake/Torch" ..
         cmake --build . --config Release -j 2
