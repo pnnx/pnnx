@@ -1,0 +1,12 @@
+diff -Nuarp vision-0.13.1/cmake/TorchVisionConfig.cmake.in vision-0.13.1.no-python/cmake/TorchVisionConfig.cmake.in
+--- vision-0.13.1/cmake/TorchVisionConfig.cmake.in	2022-08-03 06:31:28.000000000 +0800
++++ vision-0.13.1.no-python/cmake/TorchVisionConfig.cmake.in	2022-10-19 16:03:03.246784504 +0800
+@@ -34,7 +34,7 @@ if (@USE_PYTHON@)
+   endif()
+ endif()
+ 
+-set_target_properties(TorchVision::TorchVision PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${${PN}_INCLUDE_DIR}" INTERFACE_LINK_LIBRARIES "torch;Python3::Python" )
++set_target_properties(TorchVision::TorchVision PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${${PN}_INCLUDE_DIR}" INTERFACE_LINK_LIBRARIES "torch" )
+ 
+ 
+ if(@WITH_CUDA@)
