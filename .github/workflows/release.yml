@@ -197,7 +197,7 @@ jobs:
         cd ncnn/tools/pnnx
         mkdir build && cd build
         cmake -DCMAKE_INSTALL_PREFIX=install -DTorch_INSTALL_DIR="$env:GITHUB_WORKSPACE/libtorch" -DTorchVision_INSTALL_DIR="$env:GITHUB_WORKSPACE/libtorch" -DProtobuf_INCLUDE_DIR="$env:GITHUB_WORKSPACE\protobuf-install\include" -DProtobuf_LIBRARIES="$env:GITHUB_WORKSPACE\protobuf-install\lib\libprotobuf.lib" -DProtobuf_PROTOC_EXECUTABLE="$env:GITHUB_WORKSPACE\protobuf-install\bin\protoc.exe" ..
-        cmake --build . --config Release -j 2
+        cmake --build . --config Release --verbose -j 2
         cmake --build . --config Release --target install
     - name: package
       run: |
