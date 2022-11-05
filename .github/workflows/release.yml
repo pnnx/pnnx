@@ -136,7 +136,7 @@ jobs:
         cd vision-${env:TORCHVISION_VERSION}
         C:\msys64\usr\bin\patch.exe -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\vision-${env:TORCHVISION_VERSION}-ops-only.patch
         mkdir -p build; cd build
-        cmake -DCMAKE_INSTALL_PREFIX="$env:GITHUB_WORKSPACE/libtorch" -DTorch_DIR="$env:GITHUB_WORKSPACE/libtorch/share/cmake/Torch" ..
+        cmake -DCMAKE_INSTALL_PREFIX="$env:GITHUB_WORKSPACE/libtorch" -DTorch_DIR="$env:GITHUB_WORKSPACE/libtorch/share/cmake/Torch" -DWITH_PNG=OFF -DWITH_JPEG=OFF ..
         cmake --build . --config Release -j 2
         cmake --build . --config Release --target install
     - name: ncnn
@@ -148,7 +148,7 @@ jobs:
       run: |
         cd ncnn/tools/pnnx
         mkdir build && cd build
-        cmake -DCMAKE_INSTALL_PREFIX=install -DTorch_INSTALL_DIR="$env:GITHUB_WORKSPACE/libtorch" -DTorchVision_INSTALL_DIR="$env:GITHUB_WORKSPACE/libtorch" -DWITH_PNG=OFF -DWITH_JPEG=OFF ..
+        cmake -DCMAKE_INSTALL_PREFIX=install -DTorch_INSTALL_DIR="$env:GITHUB_WORKSPACE/libtorch" -DTorchVision_INSTALL_DIR="$env:GITHUB_WORKSPACE/libtorch" ..
         cmake --build . --config Release -j 2
         cmake --build . --config Release --target install
     - name: package
