@@ -54,7 +54,7 @@ jobs:
         wget https://github.com/protocolbuffers/protobuf/archive/v3.11.2.zip -O protobuf-3.11.2.zip
         unzip -q protobuf-3.11.2.zip
         cd protobuf-3.11.2
-        mkdir -p build; cd build;
+        mkdir -p build2; cd build2;
         cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/protobuf-install" -Dprotobuf_BUILD_TESTS=OFF -DCMAKE_BUILD_TYPE=Release ../cmake
         cmake --build . -j 2
         cmake --build . --target install
@@ -119,7 +119,7 @@ jobs:
         wget https://github.com/protocolbuffers/protobuf/archive/v3.11.2.zip -O protobuf-3.11.2.zip
         unzip -q protobuf-3.11.2.zip
         cd protobuf-3.11.2
-        mkdir -p build; cd build;
+        mkdir -p build2; cd build2;
         cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/protobuf-install" -Dprotobuf_BUILD_TESTS=OFF -DCMAKE_BUILD_TYPE=Release ../cmake
         cmake --build . -j 3
         cmake --build . --target install
@@ -183,7 +183,7 @@ jobs:
         Invoke-WebRequest -Uri https://github.com/protocolbuffers/protobuf/archive/v3.11.2.zip -OutFile protobuf-3.11.2.zip
         7z x ./protobuf-3.11.2.zip
         cd protobuf-3.11.2
-        mkdir -p build; cd build;
+        mkdir -p build2; cd build2;
         cmake -DCMAKE_INSTALL_PREFIX="$env:GITHUB_WORKSPACE\protobuf-install" -Dprotobuf_BUILD_TESTS=OFF -Dprotobuf_MSVC_STATIC_RUNTIME=OFF ../cmake
         cmake --build . --config Release -j 2
         cmake --build . --config Release --target install
