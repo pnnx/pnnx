@@ -48,6 +48,7 @@ jobs:
             -DINTERN_DISABLE_ONNX=ON \
             -DUSE_CUDA=OFF \
             -DUSE_DISTRIBUTED=OFF \
+            -DUSE_ITT=OFF \
             -DUSE_KINETO=OFF \
             -DUSE_LITE_INTERPRETER_PROFILER=OFF \
             -DUSE_MKLDNN=OFF \
@@ -93,7 +94,13 @@ jobs:
       run: |
         cd ncnn/tools/pnnx
         mkdir build && cd build
-        cmake -DCMAKE_INSTALL_PREFIX=install -DTorch_INSTALL_DIR="$GITHUB_WORKSPACE/libtorch" -DTorchVision_INSTALL_DIR="$GITHUB_WORKSPACE/libtorch" -DProtobuf_INCLUDE_DIR="$GITHUB_WORKSPACE/protobuf-install/include" -DProtobuf_LIBRARIES="$GITHUB_WORKSPACE/protobuf-install/lib/libprotobuf.a" -DProtobuf_PROTOC_EXECUTABLE="$GITHUB_WORKSPACE/protobuf-install/bin/protoc" -DCMAKE_BUILD_TYPE=Release ..
+        cmake -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release \
+            -DTorch_INSTALL_DIR="$GITHUB_WORKSPACE/libtorch" \
+            -DTorchVision_INSTALL_DIR="$GITHUB_WORKSPACE/libtorch" \
+            -DProtobuf_INCLUDE_DIR="$GITHUB_WORKSPACE/protobuf-install/include" \
+            -DProtobuf_LIBRARIES="$GITHUB_WORKSPACE/protobuf-install/lib/libprotobuf.a" \
+            -DProtobuf_PROTOC_EXECUTABLE="$GITHUB_WORKSPACE/protobuf-install/bin/protoc" \
+            ..
         cmake --build . -j 2
         cmake --build . --target install/strip
     - name: package
@@ -137,6 +144,7 @@ jobs:
             -DINTERN_DISABLE_ONNX=ON \
             -DUSE_CUDA=OFF \
             -DUSE_DISTRIBUTED=OFF \
+            -DUSE_ITT=OFF \
             -DUSE_KINETO=OFF \
             -DUSE_LITE_INTERPRETER_PROFILER=OFF \
             -DUSE_MKLDNN=OFF \
@@ -182,7 +190,13 @@ jobs:
       run: |
         cd ncnn/tools/pnnx
         mkdir build && cd build
-        cmake -DCMAKE_INSTALL_PREFIX=install -DTorch_INSTALL_DIR="$GITHUB_WORKSPACE/libtorch" -DTorchVision_INSTALL_DIR="$GITHUB_WORKSPACE/libtorch" -DProtobuf_INCLUDE_DIR="$GITHUB_WORKSPACE/protobuf-install/include" -DProtobuf_LIBRARIES="$GITHUB_WORKSPACE/protobuf-install/lib/libprotobuf.a" -DProtobuf_PROTOC_EXECUTABLE="$GITHUB_WORKSPACE/protobuf-install/bin/protoc" -DCMAKE_BUILD_TYPE=Release ..
+        cmake -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release \
+            -DTorch_INSTALL_DIR="$GITHUB_WORKSPACE/libtorch" \
+            -DTorchVision_INSTALL_DIR="$GITHUB_WORKSPACE/libtorch" \
+            -DProtobuf_INCLUDE_DIR="$GITHUB_WORKSPACE/protobuf-install/include" \
+            -DProtobuf_LIBRARIES="$GITHUB_WORKSPACE/protobuf-install/lib/libprotobuf.a" \
+            -DProtobuf_PROTOC_EXECUTABLE="$GITHUB_WORKSPACE/protobuf-install/bin/protoc" \
+            ..
         cmake --build . -j 3
         cmake --build . --target install/strip
     - name: package
@@ -217,23 +231,24 @@ jobs:
         cd pytorch-v${env:LIBTORCH_VERSION}
         pip3 install -r requirements.txt
         mkdir -p build; cd build
-        cmake -DCMAKE_INSTALL_PREFIX="$env:GITHUB_WORKSPACE/libtorch" -DBUILD_SHARED_LIBS=OFF \
-            -DBUILD_CAFFE2_OPS=OFF \
-            -DBUILD_CUSTOM_PROTOBUF=OFF \
-            -DBUILD_LITE_INTERPRETER=OFF \
-            -DBUILD_PYTHON=OFF \
-            -DINTERN_BUILD_MOBILE=ON \
-            -DINTERN_DISABLE_AUTOGRAD=ON \
-            -DINTERN_DISABLE_ONNX=ON \
-            -DUSE_CUDA=OFF \
-            -DUSE_DISTRIBUTED=OFF \
-            -DUSE_KINETO=OFF \
-            -DUSE_LITE_INTERPRETER_PROFILER=OFF \
-            -DUSE_MKLDNN=OFF \
-            -DUSE_NUMPY=OFF \
-            -DUSE_OPENMP=OFF \
-            -DUSE_SOURCE_DEBUG_ON_MOBILE=OFF \
-            -DUSE_XNNPACK=OFF \
+        cmake -DCMAKE_INSTALL_PREFIX="$env:GITHUB_WORKSPACE/libtorch" -DBUILD_SHARED_LIBS=OFF `
+            -DBUILD_CAFFE2_OPS=OFF `
+            -DBUILD_CUSTOM_PROTOBUF=OFF `
+            -DBUILD_LITE_INTERPRETER=OFF `
+            -DBUILD_PYTHON=OFF `
+            -DINTERN_BUILD_MOBILE=ON `
+            -DINTERN_DISABLE_AUTOGRAD=ON `
+            -DINTERN_DISABLE_ONNX=ON `
+            -DUSE_CUDA=OFF `
+            -DUSE_DISTRIBUTED=OFF `
+            -DUSE_ITT=OFF `
+            -DUSE_KINETO=OFF `
+            -DUSE_LITE_INTERPRETER_PROFILER=OFF `
+            -DUSE_MKLDNN=OFF `
+            -DUSE_NUMPY=OFF `
+            -DUSE_OPENMP=OFF `
+            -DUSE_SOURCE_DEBUG_ON_MOBILE=OFF `
+            -DUSE_XNNPACK=OFF `
             ..
         cmake --build . --config Release -j 2
         cmake --build . --config Release --target install
@@ -260,7 +275,7 @@ jobs:
         7z x ./protobuf-3.11.2.zip
         cd protobuf-3.11.2
         mkdir -p build2; cd build2;
-        cmake -DCMAKE_INSTALL_PREFIX="$env:GITHUB_WORKSPACE\protobuf-install" -Dprotobuf_BUILD_TESTS=OFF -Dprotobuf_MSVC_STATIC_RUNTIME=OFF ../cmake
+        cmake -DCMAKE_INSTALL_PREFIX="$env:GITHUB_WORKSPACE/protobuf-install" -Dprotobuf_BUILD_TESTS=OFF -Dprotobuf_MSVC_STATIC_RUNTIME=OFF ../cmake
         cmake --build . --config Release -j 2
         cmake --build . --config Release --target install
     - name: ncnn
@@ -272,7 +287,13 @@ jobs:
       run: |
         cd ncnn/tools/pnnx
         mkdir build && cd build
-        cmake -DCMAKE_INSTALL_PREFIX=install -DTorch_INSTALL_DIR="$env:GITHUB_WORKSPACE/libtorch" -DTorchVision_INSTALL_DIR="$env:GITHUB_WORKSPACE/libtorch" -DProtobuf_INCLUDE_DIR="$env:GITHUB_WORKSPACE\libtorch\include" -DProtobuf_LIBRARIES="$env:GITHUB_WORKSPACE\libtorch\lib\libprotobuf.lib" -DProtobuf_PROTOC_EXECUTABLE="$env:GITHUB_WORKSPACE\libtorch\bin\protoc.exe" -DPNNX_BUILD_WITH_STATIC_CRT=ON ..
+        cmake -DCMAKE_INSTALL_PREFIX=install -DPNNX_BUILD_WITH_STATIC_CRT=ON `
+            -DTorch_INSTALL_DIR="$env:GITHUB_WORKSPACE/libtorch" `
+            -DTorchVision_INSTALL_DIR="$env:GITHUB_WORKSPACE/libtorch" `
+            -DProtobuf_INCLUDE_DIR="$env:GITHUB_WORKSPACE/libtorch/include" `
+            -DProtobuf_LIBRARIES="$env:GITHUB_WORKSPACE/libtorch/lib/libprotobuf.lib" `
+            -DProtobuf_PROTOC_EXECUTABLE="$env:GITHUB_WORKSPACE/libtorch/bin/protoc.exe" `
+            ..
         cmake --build . --config Release -j 2
         cmake --build . --config Release --target install
     - name: package
