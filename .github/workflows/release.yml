@@ -24,9 +24,6 @@ jobs:
     env:
       PACKAGENAME: pnnx-${{ needs.setup.outputs.VERSION }}-ubuntu
     steps:
-    - uses: actions/setup-python@v3
-      with:
-        python-version: '3.10'
     - name: pnnx-patches
       uses: actions/checkout@v3
       with:
@@ -43,7 +40,7 @@ jobs:
         wget https://github.com/pytorch/pytorch/releases/download/v${LIBTORCH_VERSION}/pytorch-v${LIBTORCH_VERSION}.tar.gz
         tar -xf pytorch-v${LIBTORCH_VERSION}.tar.gz
         cd pytorch-v${LIBTORCH_VERSION}
-        pip install -r requirements.txt
+        pip3 install -r requirements.txt
         patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${LIBTORCH_VERSION}-fix-mobile-build.patch
         patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${LIBTORCH_VERSION}-no-link-system-lib.patch
         patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${LIBTORCH_VERSION}-fix-static-initialization.patch
@@ -126,13 +123,10 @@ jobs:
 
   macos:
     needs: [setup]
-    runs-on: macos-10.15
+    runs-on: macos-11
     env:
       PACKAGENAME: pnnx-${{ needs.setup.outputs.VERSION }}-macos
     steps:
-    - uses: actions/setup-python@v3
-      with:
-        python-version: '3.10'
     - name: pnnx-patches
       uses: actions/checkout@v3
       with:
@@ -149,7 +143,7 @@ jobs:
         wget https://github.com/pytorch/pytorch/releases/download/v${LIBTORCH_VERSION}/pytorch-v${LIBTORCH_VERSION}.tar.gz
         tar -xf pytorch-v${LIBTORCH_VERSION}.tar.gz
         cd pytorch-v${LIBTORCH_VERSION}
-        pip install -r requirements.txt
+        pip3 install -r requirements.txt
         patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${LIBTORCH_VERSION}-fix-mobile-build.patch
         patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${LIBTORCH_VERSION}-no-link-system-lib.patch
         patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${LIBTORCH_VERSION}-fix-static-initialization.patch
@@ -236,9 +230,6 @@ jobs:
     env:
       PACKAGENAME: pnnx-${{ needs.setup.outputs.VERSION }}-windows
     steps:
-    - uses: actions/setup-python@v3
-      with:
-        python-version: '3.10'
     - name: pnnx-patches
       uses: actions/checkout@v3
       with:
