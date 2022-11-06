@@ -31,14 +31,24 @@ jobs:
       uses: actions/checkout@v3
       with:
         path: pnnx-patches
+    - name: cache-libtorch
+      id: cache-libtorch
+      uses: actions/cache@v3
+      with:
+        path: "libtorch"
+        key: libtorch-ubuntu-20221106
     - name: libtorch
+      if: steps.cache-libtorch.outputs.cache-hit != 'true'
       run: |
         wget https://github.com/pytorch/pytorch/releases/download/v${LIBTORCH_VERSION}/pytorch-v${LIBTORCH_VERSION}.tar.gz
         tar -xf pytorch-v${LIBTORCH_VERSION}.tar.gz
         cd pytorch-v${LIBTORCH_VERSION}
         pip install -r requirements.txt
+        patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${LIBTORCH_VERSION}-fix-mobile-build.patch
+        patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${LIBTORCH_VERSION}-no-link-system-lib.patch
+        patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${LIBTORCH_VERSION}-fix-static-initialization.patch
         mkdir -p build; cd build
-        cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/libtorch" -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF \
+        cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/libtorch" -DCMAKE_BUILD_TYPE=MinSizeRel -DBUILD_SHARED_LIBS=OFF \
             -DBUILD_CAFFE2_OPS=OFF \
             -DBUILD_CUSTOM_PROTOBUF=OFF \
             -DBUILD_LITE_INTERPRETER=OFF \
@@ -59,60 +69,60 @@ jobs:
             ..
         cmake --build . -j 2
         cmake --build . --target install/strip
-    - name: torchvision
-      run: |
-        wget https://github.com/pytorch/vision/archive/refs/tags/v${TORCHVISION_VERSION}.zip -O vision-${TORCHVISION_VERSION}.zip
-        unzip -q vision-${TORCHVISION_VERSION}.zip
-        cd vision-${TORCHVISION_VERSION}
-        patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/vision-${TORCHVISION_VERSION}-ops-only.patch
-        mkdir -p build; cd build
-        cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/libtorch" -DTorch_DIR="$GITHUB_WORKSPACE/libtorch/share/cmake/Torch" -DCMAKE_BUILD_TYPE=Release -DWITH_PNG=OFF -DWITH_JPEG=OFF ..
-        cmake --build . -j 2
-        cmake --build . --target install/strip
-    - name: cache-protobuf
-      id: cache-protobuf
-      uses: actions/cache@v3
-      with:
-        path: "protobuf-install"
-        key: protobuf-ubuntu-install
-    - name: protobuf
-      if: steps.cache-protobuf.outputs.cache-hit != 'true'
-      run: |
-        wget https://github.com/protocolbuffers/protobuf/archive/v3.11.2.zip -O protobuf-3.11.2.zip
-        unzip -q protobuf-3.11.2.zip
-        cd protobuf-3.11.2
-        mkdir -p build2; cd build2;
-        cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/protobuf-install" -Dprotobuf_BUILD_TESTS=OFF -DCMAKE_BUILD_TYPE=Release ../cmake
-        cmake --build . -j 2
-        cmake --build . --target install/strip
-    - name: ncnn
-      uses: actions/checkout@v3
-      with:
-        repository: Tencent/ncnn
-        path: ncnn
-    - name: build-pnnx
-      run: |
-        cd ncnn/tools/pnnx
-        mkdir build && cd build
-        cmake -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release \
-            -DTorch_INSTALL_DIR="$GITHUB_WORKSPACE/libtorch" \
-            -DTorchVision_INSTALL_DIR="$GITHUB_WORKSPACE/libtorch" \
-            -DProtobuf_INCLUDE_DIR="$GITHUB_WORKSPACE/protobuf-install/include" \
-            -DProtobuf_LIBRARIES="$GITHUB_WORKSPACE/protobuf-install/lib/libprotobuf.a" \
-            -DProtobuf_PROTOC_EXECUTABLE="$GITHUB_WORKSPACE/protobuf-install/bin/protoc" \
-            ..
-        cmake --build . -j 2
-        cmake --build . --target install/strip
-    - name: package
-      run: |
-        mkdir ${{ env.PACKAGENAME }}
-        cp ncnn/tools/pnnx/build/install/bin/pnnx ${{ env.PACKAGENAME }}
-        zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
-    - name: upload
-      uses: actions/upload-artifact@v3
-      with:
-        name: ${{ env.PACKAGENAME }}
-        path: ${{ env.PACKAGENAME }}.zip
+    # - name: torchvision
+    #   run: |
+    #     wget https://github.com/pytorch/vision/archive/refs/tags/v${TORCHVISION_VERSION}.zip -O vision-${TORCHVISION_VERSION}.zip
+    #     unzip -q vision-${TORCHVISION_VERSION}.zip
+    #     cd vision-${TORCHVISION_VERSION}
+    #     patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/vision-${TORCHVISION_VERSION}-ops-only.patch
+    #     mkdir -p build; cd build
+    #     cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/libtorch" -DTorch_DIR="$GITHUB_WORKSPACE/libtorch/share/cmake/Torch" -DCMAKE_BUILD_TYPE=Release -DWITH_PNG=OFF -DWITH_JPEG=OFF ..
+    #     cmake --build . -j 2
+    #     cmake --build . --target install/strip
+    # - name: cache-protobuf
+    #   id: cache-protobuf
+    #   uses: actions/cache@v3
+    #   with:
+    #     path: "protobuf-install"
+    #     key: protobuf-ubuntu-install
+    # - name: protobuf
+    #   if: steps.cache-protobuf.outputs.cache-hit != 'true'
+    #   run: |
+    #     wget https://github.com/protocolbuffers/protobuf/archive/v3.11.2.zip -O protobuf-3.11.2.zip
+    #     unzip -q protobuf-3.11.2.zip
+    #     cd protobuf-3.11.2
+    #     mkdir -p build2; cd build2;
+    #     cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/protobuf-install" -Dprotobuf_BUILD_TESTS=OFF -DCMAKE_BUILD_TYPE=Release ../cmake
+    #     cmake --build . -j 2
+    #     cmake --build . --target install/strip
+    # - name: ncnn
+    #   uses: actions/checkout@v3
+    #   with:
+    #     repository: Tencent/ncnn
+    #     path: ncnn
+    # - name: build-pnnx
+    #   run: |
+    #     cd ncnn/tools/pnnx
+    #     mkdir build && cd build
+    #     cmake -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release \
+    #         -DTorch_INSTALL_DIR="$GITHUB_WORKSPACE/libtorch" \
+    #         -DTorchVision_INSTALL_DIR="$GITHUB_WORKSPACE/libtorch" \
+    #         -DProtobuf_INCLUDE_DIR="$GITHUB_WORKSPACE/protobuf-install/include" \
+    #         -DProtobuf_LIBRARIES="$GITHUB_WORKSPACE/protobuf-install/lib/libprotobuf.a" \
+    #         -DProtobuf_PROTOC_EXECUTABLE="$GITHUB_WORKSPACE/protobuf-install/bin/protoc" \
+    #         ..
+    #     cmake --build . -j 2
+    #     cmake --build . --target install/strip
+    # - name: package
+    #   run: |
+    #     mkdir ${{ env.PACKAGENAME }}
+    #     cp ncnn/tools/pnnx/build/install/bin/pnnx ${{ env.PACKAGENAME }}
+    #     zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
+    # - name: upload
+    #   uses: actions/upload-artifact@v3
+    #   with:
+    #     name: ${{ env.PACKAGENAME }}
+    #     path: ${{ env.PACKAGENAME }}.zip
 
   macos:
     needs: [setup]
@@ -127,14 +137,24 @@ jobs:
       uses: actions/checkout@v3
       with:
         path: pnnx-patches
+    - name: cache-libtorch
+      id: cache-libtorch
+      uses: actions/cache@v3
+      with:
+        path: "libtorch"
+        key: libtorch-macos-20221106
     - name: libtorch
+      if: steps.cache-libtorch.outputs.cache-hit != 'true'
       run: |
         wget https://github.com/pytorch/pytorch/releases/download/v${LIBTORCH_VERSION}/pytorch-v${LIBTORCH_VERSION}.tar.gz
         tar -xf pytorch-v${LIBTORCH_VERSION}.tar.gz
         cd pytorch-v${LIBTORCH_VERSION}
         pip install -r requirements.txt
+        patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${LIBTORCH_VERSION}-fix-mobile-build.patch
+        patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${LIBTORCH_VERSION}-no-link-system-lib.patch
+        patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${LIBTORCH_VERSION}-fix-static-initialization.patch
         mkdir -p build; cd build
-        cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/libtorch" -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF \
+        cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/libtorch" -DCMAKE_BUILD_TYPE=MinSizeRel -DBUILD_SHARED_LIBS=OFF \
             -DBUILD_CAFFE2_OPS=OFF \
             -DBUILD_CUSTOM_PROTOBUF=OFF \
             -DBUILD_LITE_INTERPRETER=OFF \
@@ -155,60 +175,60 @@ jobs:
             ..
         cmake --build . -j 3
         cmake --build . --target install/strip
-    - name: torchvision
-      run: |
-        wget https://github.com/pytorch/vision/archive/refs/tags/v${TORCHVISION_VERSION}.zip -O vision-${TORCHVISION_VERSION}.zip
-        unzip -q vision-${TORCHVISION_VERSION}.zip
-        cd vision-${TORCHVISION_VERSION}
-        patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/vision-${TORCHVISION_VERSION}-ops-only.patch
-        mkdir -p build; cd build
-        cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/libtorch" -DTorch_DIR="$GITHUB_WORKSPACE/libtorch/share/cmake/Torch" -DCMAKE_BUILD_TYPE=Release -DWITH_PNG=OFF -DWITH_JPEG=OFF ..
-        cmake --build . -j 3
-        cmake --build . --target install/strip
-    - name: cache-protobuf
-      id: cache-protobuf
-      uses: actions/cache@v3
-      with:
-        path: "protobuf-install"
-        key: protobuf-macos-install
-    - name: protobuf
-      if: steps.cache-protobuf.outputs.cache-hit != 'true'
-      run: |
-        wget https://github.com/protocolbuffers/protobuf/archive/v3.11.2.zip -O protobuf-3.11.2.zip
-        unzip -q protobuf-3.11.2.zip
-        cd protobuf-3.11.2
-        mkdir -p build2; cd build2;
-        cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/protobuf-install" -Dprotobuf_BUILD_TESTS=OFF -DCMAKE_BUILD_TYPE=Release ../cmake
-        cmake --build . -j 3
-        cmake --build . --target install/strip
-    - name: ncnn
-      uses: actions/checkout@v3
-      with:
-        repository: Tencent/ncnn
-        path: ncnn
-    - name: build-pnnx
-      run: |
-        cd ncnn/tools/pnnx
-        mkdir build && cd build
-        cmake -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release \
-            -DTorch_INSTALL_DIR="$GITHUB_WORKSPACE/libtorch" \
-            -DTorchVision_INSTALL_DIR="$GITHUB_WORKSPACE/libtorch" \
-            -DProtobuf_INCLUDE_DIR="$GITHUB_WORKSPACE/protobuf-install/include" \
-            -DProtobuf_LIBRARIES="$GITHUB_WORKSPACE/protobuf-install/lib/libprotobuf.a" \
-            -DProtobuf_PROTOC_EXECUTABLE="$GITHUB_WORKSPACE/protobuf-install/bin/protoc" \
-            ..
-        cmake --build . -j 3
-        cmake --build . --target install/strip
-    - name: package
-      run: |
-        mkdir ${{ env.PACKAGENAME }}
-        cp ncnn/tools/pnnx/build/install/bin/pnnx ${{ env.PACKAGENAME }}
-        zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
-    - name: upload
-      uses: actions/upload-artifact@v3
-      with:
-        name: ${{ env.PACKAGENAME }}
-        path: ${{ env.PACKAGENAME }}.zip
+    # - name: torchvision
+    #   run: |
+    #     wget https://github.com/pytorch/vision/archive/refs/tags/v${TORCHVISION_VERSION}.zip -O vision-${TORCHVISION_VERSION}.zip
+    #     unzip -q vision-${TORCHVISION_VERSION}.zip
+    #     cd vision-${TORCHVISION_VERSION}
+    #     patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/vision-${TORCHVISION_VERSION}-ops-only.patch
+    #     mkdir -p build; cd build
+    #     cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/libtorch" -DTorch_DIR="$GITHUB_WORKSPACE/libtorch/share/cmake/Torch" -DCMAKE_BUILD_TYPE=Release -DWITH_PNG=OFF -DWITH_JPEG=OFF ..
+    #     cmake --build . -j 3
+    #     cmake --build . --target install/strip
+    # - name: cache-protobuf
+    #   id: cache-protobuf
+    #   uses: actions/cache@v3
+    #   with:
+    #     path: "protobuf-install"
+    #     key: protobuf-macos-install
+    # - name: protobuf
+    #   if: steps.cache-protobuf.outputs.cache-hit != 'true'
+    #   run: |
+    #     wget https://github.com/protocolbuffers/protobuf/archive/v3.11.2.zip -O protobuf-3.11.2.zip
+    #     unzip -q protobuf-3.11.2.zip
+    #     cd protobuf-3.11.2
+    #     mkdir -p build2; cd build2;
+    #     cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/protobuf-install" -Dprotobuf_BUILD_TESTS=OFF -DCMAKE_BUILD_TYPE=Release ../cmake
+    #     cmake --build . -j 3
+    #     cmake --build . --target install/strip
+    # - name: ncnn
+    #   uses: actions/checkout@v3
+    #   with:
+    #     repository: Tencent/ncnn
+    #     path: ncnn
+    # - name: build-pnnx
+    #   run: |
+    #     cd ncnn/tools/pnnx
+    #     mkdir build && cd build
+    #     cmake -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release \
+    #         -DTorch_INSTALL_DIR="$GITHUB_WORKSPACE/libtorch" \
+    #         -DTorchVision_INSTALL_DIR="$GITHUB_WORKSPACE/libtorch" \
+    #         -DProtobuf_INCLUDE_DIR="$GITHUB_WORKSPACE/protobuf-install/include" \
+    #         -DProtobuf_LIBRARIES="$GITHUB_WORKSPACE/protobuf-install/lib/libprotobuf.a" \
+    #         -DProtobuf_PROTOC_EXECUTABLE="$GITHUB_WORKSPACE/protobuf-install/bin/protoc" \
+    #         ..
+    #     cmake --build . -j 3
+    #     cmake --build . --target install/strip
+    # - name: package
+    #   run: |
+    #     mkdir ${{ env.PACKAGENAME }}
+    #     cp ncnn/tools/pnnx/build/install/bin/pnnx ${{ env.PACKAGENAME }}
+    #     zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
+    # - name: upload
+    #   uses: actions/upload-artifact@v3
+    #   with:
+    #     name: ${{ env.PACKAGENAME }}
+    #     path: ${{ env.PACKAGENAME }}.zip
 
   windows:
     needs: [setup]
@@ -223,13 +243,24 @@ jobs:
       uses: actions/checkout@v3
       with:
         path: pnnx-patches
+    - name: cache-libtorch
+      id: cache-libtorch
+      uses: actions/cache@v3
+      with:
+        path: "libtorch"
+        key: libtorch-vs2019-20221106
     - name: libtorch
+      if: steps.cache-libtorch.outputs.cache-hit != 'true'
       run: |
         Invoke-WebRequest -Uri https://github.com/pytorch/pytorch/releases/download/v${env:LIBTORCH_VERSION}/pytorch-v${env:LIBTORCH_VERSION}.tar.gz -OutFile pytorch-v${env:LIBTORCH_VERSION}.tar.gz
         7z x pytorch-v${env:LIBTORCH_VERSION}.tar.gz
         7z x pytorch-v${env:LIBTORCH_VERSION}.tar
         cd pytorch-v${env:LIBTORCH_VERSION}
         pip3 install -r requirements.txt
+        C:\msys64\usr\bin\patch.exe -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\pytorch-v${env:LIBTORCH_VERSION}-fix-mobile-build.patch
+        C:\msys64\usr\bin\patch.exe -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\pytorch-v${env:LIBTORCH_VERSION}-no-link-system-lib.patch
+        C:\msys64\usr\bin\patch.exe -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\pytorch-v${env:LIBTORCH_VERSION}-fix-static-initialization.patch
+        C:\msys64\usr\bin\patch.exe -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\pytorch-v${env:LIBTORCH_VERSION}-set-python-executable.patch
         mkdir -p build; cd build
         cmake -DCMAKE_INSTALL_PREFIX="$env:GITHUB_WORKSPACE/libtorch" -DBUILD_SHARED_LIBS=OFF `
             -DBUILD_CAFFE2_OPS=OFF `
@@ -250,112 +281,112 @@ jobs:
             -DUSE_SOURCE_DEBUG_ON_MOBILE=OFF `
             -DUSE_XNNPACK=OFF `
             ..
-        cmake --build . --config Release -j 2
-        cmake --build . --config Release --target install
-    - name: torchvision
-      run: |
-        Invoke-WebRequest -Uri https://github.com/pytorch/vision/archive/refs/tags/v${env:TORCHVISION_VERSION}.zip -OutFile vision-${env:TORCHVISION_VERSION}.zip
-        7z x vision-${env:TORCHVISION_VERSION}.zip
-        cd vision-${env:TORCHVISION_VERSION}
-        C:\msys64\usr\bin\patch.exe -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\vision-${env:TORCHVISION_VERSION}-ops-only.patch
-        mkdir -p build; cd build
-        cmake -DCMAKE_INSTALL_PREFIX="$env:GITHUB_WORKSPACE/libtorch" -DTorch_DIR="$env:GITHUB_WORKSPACE/libtorch/share/cmake/Torch" -DWITH_PNG=OFF -DWITH_JPEG=OFF ..
-        cmake --build . --config Release -j 2
-        cmake --build . --config Release --target install
-    - name: cache-protobuf
-      id: cache-protobuf
-      uses: actions/cache@v3
-      with:
-        path: "protobuf-install"
-        key: protobuf-vs2019-install
-    - name: protobuf
-      if: steps.cache-protobuf.outputs.cache-hit != 'true'
-      run: |
-        Invoke-WebRequest -Uri https://github.com/protocolbuffers/protobuf/archive/v3.11.2.zip -OutFile protobuf-3.11.2.zip
-        7z x ./protobuf-3.11.2.zip
-        cd protobuf-3.11.2
-        mkdir -p build2; cd build2;
-        cmake -DCMAKE_INSTALL_PREFIX="$env:GITHUB_WORKSPACE/protobuf-install" -Dprotobuf_BUILD_TESTS=OFF -Dprotobuf_MSVC_STATIC_RUNTIME=OFF ../cmake
-        cmake --build . --config Release -j 2
-        cmake --build . --config Release --target install
-    - name: ncnn
-      uses: actions/checkout@v3
-      with:
-        repository: Tencent/ncnn
-        path: ncnn
-    - name: build-pnnx
-      run: |
-        cd ncnn/tools/pnnx
-        mkdir build && cd build
-        cmake -DCMAKE_INSTALL_PREFIX=install -DPNNX_BUILD_WITH_STATIC_CRT=ON `
-            -DTorch_INSTALL_DIR="$env:GITHUB_WORKSPACE/libtorch" `
-            -DTorchVision_INSTALL_DIR="$env:GITHUB_WORKSPACE/libtorch" `
-            -DProtobuf_INCLUDE_DIR="$env:GITHUB_WORKSPACE/libtorch/include" `
-            -DProtobuf_LIBRARIES="$env:GITHUB_WORKSPACE/libtorch/lib/libprotobuf.lib" `
-            -DProtobuf_PROTOC_EXECUTABLE="$env:GITHUB_WORKSPACE/libtorch/bin/protoc.exe" `
-            ..
-        cmake --build . --config Release -j 2
-        cmake --build . --config Release --target install
-    - name: package
-      run: |
-        mkdir ${{ env.PACKAGENAME }}
-        Copy-Item -Verbose -Path "ncnn\tools\pnnx\build\install\bin\pnnx.exe" -Destination ${{ env.PACKAGENAME }}
-        7z a -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
-    - name: upload
-      uses: actions/upload-artifact@v3
-      with:
-        name: ${{ env.PACKAGENAME }}
-        path: ${{ env.PACKAGENAME }}.zip
+        cmake --build . --config MinSizeRel -j 2
+        cmake --build . --config MinSizeRel --target install
+    # - name: torchvision
+    #   run: |
+    #     Invoke-WebRequest -Uri https://github.com/pytorch/vision/archive/refs/tags/v${env:TORCHVISION_VERSION}.zip -OutFile vision-${env:TORCHVISION_VERSION}.zip
+    #     7z x vision-${env:TORCHVISION_VERSION}.zip
+    #     cd vision-${env:TORCHVISION_VERSION}
+    #     C:\msys64\usr\bin\patch.exe -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\vision-${env:TORCHVISION_VERSION}-ops-only.patch
+    #     mkdir -p build; cd build
+    #     cmake -DCMAKE_INSTALL_PREFIX="$env:GITHUB_WORKSPACE/libtorch" -DTorch_DIR="$env:GITHUB_WORKSPACE/libtorch/share/cmake/Torch" -DWITH_PNG=OFF -DWITH_JPEG=OFF ..
+    #     cmake --build . --config Release -j 2
+    #     cmake --build . --config Release --target install
+    # - name: cache-protobuf
+    #   id: cache-protobuf
+    #   uses: actions/cache@v3
+    #   with:
+    #     path: "protobuf-install"
+    #     key: protobuf-vs2019-install
+    # - name: protobuf
+    #   if: steps.cache-protobuf.outputs.cache-hit != 'true'
+    #   run: |
+    #     Invoke-WebRequest -Uri https://github.com/protocolbuffers/protobuf/archive/v3.11.2.zip -OutFile protobuf-3.11.2.zip
+    #     7z x ./protobuf-3.11.2.zip
+    #     cd protobuf-3.11.2
+    #     mkdir -p build2; cd build2;
+    #     cmake -DCMAKE_INSTALL_PREFIX="$env:GITHUB_WORKSPACE/protobuf-install" -Dprotobuf_BUILD_TESTS=OFF -Dprotobuf_MSVC_STATIC_RUNTIME=OFF ../cmake
+    #     cmake --build . --config Release -j 2
+    #     cmake --build . --config Release --target install
+    # - name: ncnn
+    #   uses: actions/checkout@v3
+    #   with:
+    #     repository: Tencent/ncnn
+    #     path: ncnn
+    # - name: build-pnnx
+    #   run: |
+    #     cd ncnn/tools/pnnx
+    #     mkdir build && cd build
+    #     cmake -DCMAKE_INSTALL_PREFIX=install -DPNNX_BUILD_WITH_STATIC_CRT=ON `
+    #         -DTorch_INSTALL_DIR="$env:GITHUB_WORKSPACE/libtorch" `
+    #         -DTorchVision_INSTALL_DIR="$env:GITHUB_WORKSPACE/libtorch" `
+    #         -DProtobuf_INCLUDE_DIR="$env:GITHUB_WORKSPACE/libtorch/include" `
+    #         -DProtobuf_LIBRARIES="$env:GITHUB_WORKSPACE/libtorch/lib/libprotobuf.lib" `
+    #         -DProtobuf_PROTOC_EXECUTABLE="$env:GITHUB_WORKSPACE/libtorch/bin/protoc.exe" `
+    #         ..
+    #     cmake --build . --config Release -j 2
+    #     cmake --build . --config Release --target install
+    # - name: package
+    #   run: |
+    #     mkdir ${{ env.PACKAGENAME }}
+    #     Copy-Item -Verbose -Path "ncnn\tools\pnnx\build\install\bin\pnnx.exe" -Destination ${{ env.PACKAGENAME }}
+    #     7z a -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
+    # - name: upload
+    #   uses: actions/upload-artifact@v3
+    #   with:
+    #     name: ${{ env.PACKAGENAME }}
+    #     path: ${{ env.PACKAGENAME }}.zip
 
-  release:
-    needs: [setup, ubuntu, macos, windows]
-    runs-on: ubuntu-latest
-    steps:
-    - name: download
-      uses: actions/download-artifact@v3
-      with:
-        path: artifacts
-
-    - name: create-release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ needs.setup.outputs.VERSION }}
-        release_name: Release ${{ needs.setup.outputs.VERSION }}
-        draft: false
-        prerelease: false
-
-    - name: upload-pnnx-ubuntu
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        PACKAGENAME: pnnx-${{ needs.setup.outputs.VERSION }}-ubuntu
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: artifacts/${{ env.PACKAGENAME }}/${{ env.PACKAGENAME }}.zip
-        asset_name: ${{ env.PACKAGENAME }}.zip
-        asset_content_type: application/zip
-
-    - name: upload-pnnx-macos
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        PACKAGENAME: pnnx-${{ needs.setup.outputs.VERSION }}-macos
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: artifacts/${{ env.PACKAGENAME }}/${{ env.PACKAGENAME }}.zip
-        asset_name: ${{ env.PACKAGENAME }}.zip
-        asset_content_type: application/zip
-
-    - name: upload-pnnx-windows
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        PACKAGENAME: pnnx-${{ needs.setup.outputs.VERSION }}-windows
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: artifacts/${{ env.PACKAGENAME }}/${{ env.PACKAGENAME }}.zip
-        asset_name: ${{ env.PACKAGENAME }}.zip
-        asset_content_type: application/zip
+  # release:
+  #   needs: [setup, ubuntu, macos, windows]
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   - name: download
+  #     uses: actions/download-artifact@v3
+  #     with:
+  #       path: artifacts
+  #
+  #   - name: create-release
+  #     id: create_release
+  #     uses: actions/create-release@v1
+  #     env:
+  #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #     with:
+  #       tag_name: ${{ needs.setup.outputs.VERSION }}
+  #       release_name: Release ${{ needs.setup.outputs.VERSION }}
+  #       draft: false
+  #       prerelease: false
+  #
+  #   - name: upload-pnnx-ubuntu
+  #     uses: actions/upload-release-asset@v1
+  #     env:
+  #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #       PACKAGENAME: pnnx-${{ needs.setup.outputs.VERSION }}-ubuntu
+  #     with:
+  #       upload_url: ${{ steps.create_release.outputs.upload_url }}
+  #       asset_path: artifacts/${{ env.PACKAGENAME }}/${{ env.PACKAGENAME }}.zip
+  #       asset_name: ${{ env.PACKAGENAME }}.zip
+  #       asset_content_type: application/zip
+  #
+  #   - name: upload-pnnx-macos
+  #     uses: actions/upload-release-asset@v1
+  #     env:
+  #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #       PACKAGENAME: pnnx-${{ needs.setup.outputs.VERSION }}-macos
+  #     with:
+  #       upload_url: ${{ steps.create_release.outputs.upload_url }}
+  #       asset_path: artifacts/${{ env.PACKAGENAME }}/${{ env.PACKAGENAME }}.zip
+  #       asset_name: ${{ env.PACKAGENAME }}.zip
+  #       asset_content_type: application/zip
+  #
+  #   - name: upload-pnnx-windows
+  #     uses: actions/upload-release-asset@v1
+  #     env:
+  #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #       PACKAGENAME: pnnx-${{ needs.setup.outputs.VERSION }}-windows
+  #     with:
+  #       upload_url: ${{ steps.create_release.outputs.upload_url }}
+  #       asset_path: artifacts/${{ env.PACKAGENAME }}/${{ env.PACKAGENAME }}.zip
+  #       asset_name: ${{ env.PACKAGENAME }}.zip
+  #       asset_content_type: application/zip

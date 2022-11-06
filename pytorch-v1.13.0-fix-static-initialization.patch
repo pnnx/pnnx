@@ -1,0 +1,148 @@
+diff -Nuarp pytorch-v1.13.0.orig/aten/src/ATen/native/ao_sparse/quantized/cpu/qlinear.cpp pytorch-v1.13.0/aten/src/ATen/native/ao_sparse/quantized/cpu/qlinear.cpp
+--- pytorch-v1.13.0.orig/aten/src/ATen/native/ao_sparse/quantized/cpu/qlinear.cpp	2022-10-29 00:56:05.000000000 +0800
++++ pytorch-v1.13.0/aten/src/ATen/native/ao_sparse/quantized/cpu/qlinear.cpp	2022-11-06 21:27:54.314939829 +0800
+@@ -239,6 +239,7 @@ class QLinearInt8 final {
+ };
+ 
+ TORCH_LIBRARY_IMPL(sparse, QuantizedCPU, m) {
++  register_linear_params();
+   m.impl(
+       TORCH_SELECTIVE_NAME("sparse::qlinear"),
+       TORCH_FN(QLinearInt8<false>::run));
+diff -Nuarp pytorch-v1.13.0.orig/aten/src/ATen/native/ao_sparse/quantized/cpu/qlinear_prepack.cpp pytorch-v1.13.0/aten/src/ATen/native/ao_sparse/quantized/cpu/qlinear_prepack.cpp
+--- pytorch-v1.13.0.orig/aten/src/ATen/native/ao_sparse/quantized/cpu/qlinear_prepack.cpp	2022-10-29 00:56:05.000000000 +0800
++++ pytorch-v1.13.0/aten/src/ATen/native/ao_sparse/quantized/cpu/qlinear_prepack.cpp	2022-11-06 21:27:54.315939823 +0800
+@@ -231,6 +231,7 @@ class QLinearPackWeightInt8 final {
+ };
+ 
+ TORCH_LIBRARY_IMPL(sparse, QuantizedCPU, m) {
++  register_linear_params();
+   m.impl(
+       TORCH_SELECTIVE_NAME("sparse::qlinear_prepack"),
+       TORCH_FN(QLinearPackWeightInt8::run));
+diff -Nuarp pytorch-v1.13.0.orig/aten/src/ATen/native/ao_sparse/quantized/cpu/qlinear_unpack.cpp pytorch-v1.13.0/aten/src/ATen/native/ao_sparse/quantized/cpu/qlinear_unpack.cpp
+--- pytorch-v1.13.0.orig/aten/src/ATen/native/ao_sparse/quantized/cpu/qlinear_unpack.cpp	2022-10-29 00:56:05.000000000 +0800
++++ pytorch-v1.13.0/aten/src/ATen/native/ao_sparse/quantized/cpu/qlinear_unpack.cpp	2022-11-06 21:27:54.315939823 +0800
+@@ -123,6 +123,7 @@ class QLinearUnpackWeightInt8 final {
+ };
+ 
+ TORCH_LIBRARY_IMPL(sparse, CatchAll, m) {
++  register_linear_params();
+   m.impl(
+       TORCH_SELECTIVE_NAME("sparse::qlinear_unpack"),
+       TORCH_FN(QLinearUnpackWeightInt8::run));
+diff -Nuarp pytorch-v1.13.0.orig/aten/src/ATen/native/quantized/cpu/qlinear.cpp pytorch-v1.13.0/aten/src/ATen/native/quantized/cpu/qlinear.cpp
+--- pytorch-v1.13.0.orig/aten/src/ATen/native/quantized/cpu/qlinear.cpp	2022-10-29 00:56:05.000000000 +0800
++++ pytorch-v1.13.0/aten/src/ATen/native/quantized/cpu/qlinear.cpp	2022-11-06 21:27:54.315939823 +0800
+@@ -727,11 +727,13 @@ class QLinearInt8 final {
+ };
+ 
+ TORCH_LIBRARY_IMPL(quantized, QuantizedCPU, m) {
++  register_linear_params();
+   m.impl(TORCH_SELECTIVE_NAME("quantized::linear"), TORCH_FN(QLinearInt8<false>::run));
+   m.impl(TORCH_SELECTIVE_NAME("quantized::linear_relu"), TORCH_FN(QLinearInt8<true>::run));
+ }
+ 
+ TORCH_LIBRARY_IMPL(_quantized, QuantizedCPU, m) {
++  register_linear_params();
+   m.impl(TORCH_SELECTIVE_NAME("_quantized::linear"), TORCH_FN(QLinearInt8<false>::run));
+ }
+ 
+diff -Nuarp pytorch-v1.13.0.orig/aten/src/ATen/native/quantized/cpu/qlinear_dynamic.cpp pytorch-v1.13.0/aten/src/ATen/native/quantized/cpu/qlinear_dynamic.cpp
+--- pytorch-v1.13.0.orig/aten/src/ATen/native/quantized/cpu/qlinear_dynamic.cpp	2022-10-29 00:56:05.000000000 +0800
++++ pytorch-v1.13.0/aten/src/ATen/native/quantized/cpu/qlinear_dynamic.cpp	2022-11-06 21:30:39.968938297 +0800
+@@ -654,6 +654,7 @@ class QLinearDynamicFp16 final {
+ };
+ 
+ TORCH_LIBRARY_IMPL(quantized, CPU, m) {
++  register_linear_params();
+   m.impl(
+       TORCH_SELECTIVE_NAME("quantized::linear_dynamic"),
+       TORCH_FN(QLinearDynamicInt8<false>::run));
+@@ -669,6 +670,7 @@ TORCH_LIBRARY_IMPL(quantized, CPU, m) {
+ }
+ 
+ TORCH_LIBRARY_IMPL(_quantized, CPU, m) {
++  register_linear_params();
+   m.impl(
+       TORCH_SELECTIVE_NAME("_quantized::linear_dynamic"),
+       TORCH_FN(QLinearDynamicInt8<false>::run));
+diff -Nuarp pytorch-v1.13.0.orig/aten/src/ATen/native/quantized/cpu/qlinear_prepack.cpp pytorch-v1.13.0/aten/src/ATen/native/quantized/cpu/qlinear_prepack.cpp
+--- pytorch-v1.13.0.orig/aten/src/ATen/native/quantized/cpu/qlinear_prepack.cpp	2022-10-29 00:56:05.000000000 +0800
++++ pytorch-v1.13.0/aten/src/ATen/native/quantized/cpu/qlinear_prepack.cpp	2022-11-06 21:27:54.315939823 +0800
+@@ -369,20 +369,24 @@ class QLinearPackWeightFp16Legacy final
+ };
+ 
+ TORCH_LIBRARY_IMPL(quantized, QuantizedCPU, m) {
++  register_linear_params();
+   m.impl(TORCH_SELECTIVE_NAME("quantized::linear_prepack"), TORCH_FN(QLinearPackWeightInt8::run));
+   m.impl(TORCH_SELECTIVE_NAME("quantized::linear_prepack_legacy"), TORCH_FN(QLinearPackWeightInt8Legacy::run));
+ }
+ 
+ TORCH_LIBRARY_IMPL(quantized, CPU, m) {
++  register_linear_params();
+   m.impl(TORCH_SELECTIVE_NAME("quantized::linear_prepack_fp16"), TORCH_FN(QLinearPackWeightFp16::run));
+   m.impl(TORCH_SELECTIVE_NAME("quantized::linear_prepack_fp16_legacy"), TORCH_FN(QLinearPackWeightFp16Legacy::run));
+ }
+ 
+ TORCH_LIBRARY_IMPL(_quantized, QuantizedCPU, m) {
++  register_linear_params();
+   m.impl(TORCH_SELECTIVE_NAME("_quantized::linear_prepack"), TORCH_FN(QLinearPackWeightInt8::run));
+ }
+ 
+ TORCH_LIBRARY_IMPL(_quantized, CPU, m) {
++  register_linear_params();
+   m.impl(TORCH_SELECTIVE_NAME("_quantized::linear_prepack_fp16"), TORCH_FN(QLinearPackWeightFp16::run));
+   m.impl(TORCH_SELECTIVE_NAME("_quantized::linear_prepack_fp16_legacy"), TORCH_FN(QLinearPackWeightFp16Legacy::run));
+ }
+diff -Nuarp pytorch-v1.13.0.orig/aten/src/ATen/native/quantized/qconv_unpack.cpp pytorch-v1.13.0/aten/src/ATen/native/quantized/qconv_unpack.cpp
+--- pytorch-v1.13.0.orig/aten/src/ATen/native/quantized/qconv_unpack.cpp	2022-10-29 00:56:05.000000000 +0800
++++ pytorch-v1.13.0/aten/src/ATen/native/quantized/qconv_unpack.cpp	2022-11-06 21:27:54.315939823 +0800
+@@ -17,6 +17,12 @@ and /cudnn/ConvUnpackImpl.cpp, for cudnn
+ #include <ATen/native/quantized/cpu/QuantUtils.h>
+ #include <ATen/native/quantized/PackedParams.h>
+ 
++template <int kSpatialDim = 2>
++int register_conv_params();
++
++extern template int register_conv_params<2>();
++extern template int register_conv_params<3>();
++
+ namespace at {
+ namespace native {
+ namespace {
+@@ -180,6 +186,8 @@ unpack_quantized_prepacked_sizes_conv2d(
+ }
+ 
+ TORCH_LIBRARY_IMPL(quantized, CatchAll, m) {
++  register_conv_params<2>();
++  register_conv_params<3>();
+   // conv_unpack is deprecated, please use conv2d_unpack for 2D conv.
+   m.impl(TORCH_SELECTIVE_NAME("quantized::conv_unpack"), TORCH_FN(QConvUnpackWeightsInt8<2>::run));
+   // We use  conv2d_unpack to be consistent with conv3d_unpack
+diff -Nuarp pytorch-v1.13.0.orig/aten/src/ATen/native/quantized/qlinear_unpack.cpp pytorch-v1.13.0/aten/src/ATen/native/quantized/qlinear_unpack.cpp
+--- pytorch-v1.13.0.orig/aten/src/ATen/native/quantized/qlinear_unpack.cpp	2022-10-29 00:56:05.000000000 +0800
++++ pytorch-v1.13.0/aten/src/ATen/native/quantized/qlinear_unpack.cpp	2022-11-06 21:32:23.110302190 +0800
+@@ -13,6 +13,8 @@ and /cudnn/linear_unpack_impl.cpp, for c
+ #include <torch/custom_class.h>
+ #include <torch/library.h>
+ 
++int register_linear_params();
++
+ namespace at {
+ namespace native {
+ namespace {
+@@ -63,11 +65,13 @@ class QLinearUnpackWeightFp16Legacy fina
+ };
+ 
+ TORCH_LIBRARY_IMPL(quantized, CPU, m) {
++  register_linear_params();
+   m.impl(TORCH_SELECTIVE_NAME("quantized::linear_unpack.legacy"), TORCH_FN(QLinearUnpackWeightInt8Legacy::run));
+   m.impl(TORCH_SELECTIVE_NAME("quantized::linear_unpack_fp16.legacy"), TORCH_FN(QLinearUnpackWeightFp16Legacy::run));
+ }
+ 
+ TORCH_LIBRARY_IMPL(quantized, CatchAll, m) {
++  register_linear_params();
+   m.impl(TORCH_SELECTIVE_NAME("quantized::linear_unpack"), TORCH_FN(QLinearUnpackWeightInt8::run));
+   m.impl(TORCH_SELECTIVE_NAME("quantized::linear_unpack_fp16"), TORCH_FN(QLinearUnpackWeightFp16::run));
+ }
