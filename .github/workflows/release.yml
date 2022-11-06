@@ -24,14 +24,40 @@ jobs:
     env:
       PACKAGENAME: pnnx-${{ needs.setup.outputs.VERSION }}-ubuntu
     steps:
+    - uses: actions/setup-python@v3
+      with:
+        python-version: '3.x'
     - name: pnnx-patches
       uses: actions/checkout@v3
       with:
         path: pnnx-patches
     - name: libtorch
       run: |
-        wget https://download.pytorch.org/libtorch/cpu/libtorch-cxx11-abi-shared-with-deps-${LIBTORCH_VERSION}%2Bcpu.zip
-        unzip -q libtorch-cxx11-abi-shared-with-deps-${LIBTORCH_VERSION}+cpu.zip
+        wget https://github.com/pytorch/pytorch/releases/download/v${LIBTORCH_VERSION}/pytorch-v${LIBTORCH_VERSION}.tar.gz
+        tar -xf pytorch-v${LIBTORCH_VERSION}.tar.gz
+        cd pytorch-v${LIBTORCH_VERSION}
+        pip install -r requirements.txt
+        mkdir -p build; cd build
+        cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/libtorch" -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF \
+            -DBUILD_CAFFE2_OPS=OFF \
+            -DBUILD_CUSTOM_PROTOBUF=OFF \
+            -DBUILD_LITE_INTERPRETER=OFF \
+            -DBUILD_PYTHON=OFF \
+            -DINTERN_BUILD_MOBILE=ON \
+            -DINTERN_DISABLE_AUTOGRAD=ON \
+            -DINTERN_DISABLE_ONNX=ON \
+            -DUSE_CUDA=OFF \
+            -DUSE_DISTRIBUTED=OFF \
+            -DUSE_KINETO=OFF \
+            -DUSE_LITE_INTERPRETER_PROFILER=OFF \
+            -DUSE_MKLDNN=OFF \
+            -DUSE_NUMPY=OFF \
+            -DUSE_OPENMP=OFF \
+            -DUSE_SOURCE_DEBUG_ON_MOBILE=OFF \
+            -DUSE_XNNPACK=OFF \
+            ..
+        cmake --build . -j 2
+        cmake --build . --target install/strip
     - name: torchvision
       run: |
         wget https://github.com/pytorch/vision/archive/refs/tags/v${TORCHVISION_VERSION}.zip -O vision-${TORCHVISION_VERSION}.zip
@@ -41,7 +67,7 @@ jobs:
         mkdir -p build; cd build
         cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/libtorch" -DTorch_DIR="$GITHUB_WORKSPACE/libtorch/share/cmake/Torch" -DCMAKE_BUILD_TYPE=Release -DWITH_PNG=OFF -DWITH_JPEG=OFF ..
         cmake --build . -j 2
-        cmake --build . --target install
+        cmake --build . --target install/strip
     - name: cache-protobuf
       id: cache-protobuf
       uses: actions/cache@v3
@@ -57,7 +83,7 @@ jobs:
         mkdir -p build2; cd build2;
         cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/protobuf-install" -Dprotobuf_BUILD_TESTS=OFF -DCMAKE_BUILD_TYPE=Release ../cmake
         cmake --build . -j 2
-        cmake --build . --target install
+        cmake --build . --target install/strip
     - name: ncnn
       uses: actions/checkout@v3
       with:
@@ -69,13 +95,11 @@ jobs:
         mkdir build && cd build
         cmake -DCMAKE_INSTALL_PREFIX=install -DTorch_INSTALL_DIR="$GITHUB_WORKSPACE/libtorch" -DTorchVision_INSTALL_DIR="$GITHUB_WORKSPACE/libtorch" -DProtobuf_INCLUDE_DIR="$GITHUB_WORKSPACE/protobuf-install/include" -DProtobuf_LIBRARIES="$GITHUB_WORKSPACE/protobuf-install/lib/libprotobuf.a" -DProtobuf_PROTOC_EXECUTABLE="$GITHUB_WORKSPACE/protobuf-install/bin/protoc" -DCMAKE_BUILD_TYPE=Release ..
         cmake --build . -j 2
-        cmake --build . --target install
+        cmake --build . --target install/strip
     - name: package
       run: |
         mkdir ${{ env.PACKAGENAME }}
         cp ncnn/tools/pnnx/build/install/bin/pnnx ${{ env.PACKAGENAME }}
-        cp libtorch/lib/*.so ${{ env.PACKAGENAME }}
-        cp libtorch/lib/libgomp*.so* ${{ env.PACKAGENAME }}
         zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
     - name: upload
       uses: actions/upload-artifact@v3
@@ -89,14 +113,40 @@ jobs:
     env:
       PACKAGENAME: pnnx-${{ needs.setup.outputs.VERSION }}-macos
     steps:
+    - uses: actions/setup-python@v3
+      with:
+        python-version: '3.x'
     - name: pnnx-patches
       uses: actions/checkout@v3
       with:
         path: pnnx-patches
     - name: libtorch
       run: |
-        wget https://download.pytorch.org/libtorch/cpu/libtorch-macos-${LIBTORCH_VERSION}.zip
-        unzip -q libtorch-macos-${LIBTORCH_VERSION}.zip
+        wget https://github.com/pytorch/pytorch/releases/download/v${LIBTORCH_VERSION}/pytorch-v${LIBTORCH_VERSION}.tar.gz
+        tar -xf pytorch-v${LIBTORCH_VERSION}.tar.gz
+        cd pytorch-v${LIBTORCH_VERSION}
+        pip install -r requirements.txt
+        mkdir -p build; cd build
+        cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/libtorch" -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF \
+            -DBUILD_CAFFE2_OPS=OFF \
+            -DBUILD_CUSTOM_PROTOBUF=OFF \
+            -DBUILD_LITE_INTERPRETER=OFF \
+            -DBUILD_PYTHON=OFF \
+            -DINTERN_BUILD_MOBILE=ON \
+            -DINTERN_DISABLE_AUTOGRAD=ON \
+            -DINTERN_DISABLE_ONNX=ON \
+            -DUSE_CUDA=OFF \
+            -DUSE_DISTRIBUTED=OFF \
+            -DUSE_KINETO=OFF \
+            -DUSE_LITE_INTERPRETER_PROFILER=OFF \
+            -DUSE_MKLDNN=OFF \
+            -DUSE_NUMPY=OFF \
+            -DUSE_OPENMP=OFF \
+            -DUSE_SOURCE_DEBUG_ON_MOBILE=OFF \
+            -DUSE_XNNPACK=OFF \
+            ..
+        cmake --build . -j 3
+        cmake --build . --target install/strip
     - name: torchvision
       run: |
         wget https://github.com/pytorch/vision/archive/refs/tags/v${TORCHVISION_VERSION}.zip -O vision-${TORCHVISION_VERSION}.zip
@@ -106,7 +156,7 @@ jobs:
         mkdir -p build; cd build
         cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/libtorch" -DTorch_DIR="$GITHUB_WORKSPACE/libtorch/share/cmake/Torch" -DCMAKE_BUILD_TYPE=Release -DWITH_PNG=OFF -DWITH_JPEG=OFF ..
         cmake --build . -j 3
-        cmake --build . --target install
+        cmake --build . --target install/strip
     - name: cache-protobuf
       id: cache-protobuf
       uses: actions/cache@v3
@@ -122,7 +172,7 @@ jobs:
         mkdir -p build2; cd build2;
         cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/protobuf-install" -Dprotobuf_BUILD_TESTS=OFF -DCMAKE_BUILD_TYPE=Release ../cmake
         cmake --build . -j 3
-        cmake --build . --target install
+        cmake --build . --target install/strip
     - name: ncnn
       uses: actions/checkout@v3
       with:
@@ -134,12 +184,11 @@ jobs:
         mkdir build && cd build
         cmake -DCMAKE_INSTALL_PREFIX=install -DTorch_INSTALL_DIR="$GITHUB_WORKSPACE/libtorch" -DTorchVision_INSTALL_DIR="$GITHUB_WORKSPACE/libtorch" -DProtobuf_INCLUDE_DIR="$GITHUB_WORKSPACE/protobuf-install/include" -DProtobuf_LIBRARIES="$GITHUB_WORKSPACE/protobuf-install/lib/libprotobuf.a" -DProtobuf_PROTOC_EXECUTABLE="$GITHUB_WORKSPACE/protobuf-install/bin/protoc" -DCMAKE_BUILD_TYPE=Release ..
         cmake --build . -j 3
-        cmake --build . --target install
+        cmake --build . --target install/strip
     - name: package
       run: |
         mkdir ${{ env.PACKAGENAME }}
         cp ncnn/tools/pnnx/build/install/bin/pnnx ${{ env.PACKAGENAME }}
-        cp libtorch/lib/*.dylib ${{ env.PACKAGENAME }}
         zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
     - name: upload
       uses: actions/upload-artifact@v3
@@ -153,14 +202,41 @@ jobs:
     env:
       PACKAGENAME: pnnx-${{ needs.setup.outputs.VERSION }}-windows
     steps:
+    - uses: actions/setup-python@v3
+      with:
+        python-version: '3.x'
     - name: pnnx-patches
       uses: actions/checkout@v3
       with:
         path: pnnx-patches
     - name: libtorch
       run: |
-        Invoke-WebRequest -Uri https://download.pytorch.org/libtorch/cpu/libtorch-win-shared-with-deps-${env:LIBTORCH_VERSION}%2Bcpu.zip -OutFile libtorch-win-shared-with-deps-${env:LIBTORCH_VERSION}+cpu.zip
-        7z x libtorch-win-shared-with-deps-${env:LIBTORCH_VERSION}+cpu.zip
+        Invoke-WebRequest -Uri https://github.com/pytorch/pytorch/releases/download/v${env:LIBTORCH_VERSION}/pytorch-v${env:LIBTORCH_VERSION}.tar.gz -OutFile pytorch-v${env:LIBTORCH_VERSION}.tar.gz
+        7z x pytorch-v${env:LIBTORCH_VERSION}.tar.gz
+        7z x pytorch-v${env:LIBTORCH_VERSION}.tar
+        cd pytorch-v${env:LIBTORCH_VERSION}
+        pip3 install -r requirements.txt
+        mkdir -p build; cd build
+        cmake -DCMAKE_INSTALL_PREFIX="$env:GITHUB_WORKSPACE/libtorch" -DBUILD_SHARED_LIBS=OFF \
+            -DBUILD_CAFFE2_OPS=OFF \
+            -DBUILD_CUSTOM_PROTOBUF=OFF \
+            -DBUILD_LITE_INTERPRETER=OFF \
+            -DBUILD_PYTHON=OFF \
+            -DINTERN_BUILD_MOBILE=ON \
+            -DINTERN_DISABLE_AUTOGRAD=ON \
+            -DINTERN_DISABLE_ONNX=ON \
+            -DUSE_CUDA=OFF \
+            -DUSE_DISTRIBUTED=OFF \
+            -DUSE_KINETO=OFF \
+            -DUSE_LITE_INTERPRETER_PROFILER=OFF \
+            -DUSE_MKLDNN=OFF \
+            -DUSE_NUMPY=OFF \
+            -DUSE_OPENMP=OFF \
+            -DUSE_SOURCE_DEBUG_ON_MOBILE=OFF \
+            -DUSE_XNNPACK=OFF \
+            ..
+        cmake --build . --config Release -j 2
+        cmake --build . --config Release --target install
     - name: torchvision
       run: |
         Invoke-WebRequest -Uri https://github.com/pytorch/vision/archive/refs/tags/v${env:TORCHVISION_VERSION}.zip -OutFile vision-${env:TORCHVISION_VERSION}.zip
@@ -169,6 +245,22 @@ jobs:
         C:\msys64\usr\bin\patch.exe -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\vision-${env:TORCHVISION_VERSION}-ops-only.patch
         mkdir -p build; cd build
         cmake -DCMAKE_INSTALL_PREFIX="$env:GITHUB_WORKSPACE/libtorch" -DTorch_DIR="$env:GITHUB_WORKSPACE/libtorch/share/cmake/Torch" -DWITH_PNG=OFF -DWITH_JPEG=OFF ..
+        cmake --build . --config Release -j 2
+        cmake --build . --config Release --target install
+    - name: cache-protobuf
+      id: cache-protobuf
+      uses: actions/cache@v3
+      with:
+        path: "protobuf-install"
+        key: protobuf-vs2019-install
+    - name: protobuf
+      if: steps.cache-protobuf.outputs.cache-hit != 'true'
+      run: |
+        Invoke-WebRequest -Uri https://github.com/protocolbuffers/protobuf/archive/v3.11.2.zip -OutFile protobuf-3.11.2.zip
+        7z x ./protobuf-3.11.2.zip
+        cd protobuf-3.11.2
+        mkdir -p build2; cd build2;
+        cmake -DCMAKE_INSTALL_PREFIX="$env:GITHUB_WORKSPACE\protobuf-install" -Dprotobuf_BUILD_TESTS=OFF -Dprotobuf_MSVC_STATIC_RUNTIME=OFF ../cmake
         cmake --build . --config Release -j 2
         cmake --build . --config Release --target install
     - name: ncnn
@@ -180,15 +272,13 @@ jobs:
       run: |
         cd ncnn/tools/pnnx
         mkdir build && cd build
-        cmake -DCMAKE_INSTALL_PREFIX=install -DTorch_INSTALL_DIR="$env:GITHUB_WORKSPACE/libtorch" -DTorchVision_INSTALL_DIR="$env:GITHUB_WORKSPACE/libtorch" -DProtobuf_INCLUDE_DIR="$env:GITHUB_WORKSPACE\libtorch\include" -DProtobuf_LIBRARIES="$env:GITHUB_WORKSPACE\libtorch\lib\libprotobuf.lib" -DProtobuf_PROTOC_EXECUTABLE="$env:GITHUB_WORKSPACE\libtorch\bin\protoc.exe" ..
+        cmake -DCMAKE_INSTALL_PREFIX=install -DTorch_INSTALL_DIR="$env:GITHUB_WORKSPACE/libtorch" -DTorchVision_INSTALL_DIR="$env:GITHUB_WORKSPACE/libtorch" -DProtobuf_INCLUDE_DIR="$env:GITHUB_WORKSPACE\libtorch\include" -DProtobuf_LIBRARIES="$env:GITHUB_WORKSPACE\libtorch\lib\libprotobuf.lib" -DProtobuf_PROTOC_EXECUTABLE="$env:GITHUB_WORKSPACE\libtorch\bin\protoc.exe" -DPNNX_BUILD_WITH_STATIC_CRT=ON ..
         cmake --build . --config Release -j 2
         cmake --build . --config Release --target install
     - name: package
       run: |
         mkdir ${{ env.PACKAGENAME }}
         Copy-Item -Verbose -Path "ncnn\tools\pnnx\build\install\bin\pnnx.exe" -Destination ${{ env.PACKAGENAME }}
-        Copy-Item -Verbose -Recurse -Path "libtorch\lib\*.dll" -Destination ${{ env.PACKAGENAME }}
-        Copy-Item -Verbose -Recurse -Path "libtorch\bin\*.dll" -Destination ${{ env.PACKAGENAME }}
         7z a -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
     - name: upload
       uses: actions/upload-artifact@v3
