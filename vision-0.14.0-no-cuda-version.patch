@@ -1,0 +1,40 @@
+diff -Nuarp vision-0.14.0.orig/torchvision/csrc/vision.cpp vision-0.14.0/torchvision/csrc/vision.cpp
+--- vision-0.14.0.orig/torchvision/csrc/vision.cpp	2022-10-11 12:22:58.000000000 +0800
++++ vision-0.14.0/torchvision/csrc/vision.cpp	2022-11-07 17:33:54.513130822 +0800
+@@ -25,17 +25,3 @@ PyMODINIT_FUNC PyInit__C(void) {
+ }
+ #endif // USE_PYTHON
+ #endif // !defined(MOBILE) && defined(_WIN32)
+-
+-namespace vision {
+-int64_t cuda_version() {
+-#ifdef WITH_CUDA
+-  return CUDA_VERSION;
+-#else
+-  return -1;
+-#endif
+-}
+-
+-TORCH_LIBRARY_FRAGMENT(torchvision, m) {
+-  m.def("_cuda_version", &cuda_version);
+-}
+-} // namespace vision
+diff -Nuarp vision-0.14.0.orig/torchvision/csrc/vision.h vision-0.14.0/torchvision/csrc/vision.h
+--- vision-0.14.0.orig/torchvision/csrc/vision.h	2022-10-11 12:22:58.000000000 +0800
++++ vision-0.14.0/torchvision/csrc/vision.h	2022-11-07 17:35:07.276125094 +0800
+@@ -2,15 +2,3 @@
+ 
+ #include <cstdint>
+ #include "macros.h"
+-
+-namespace vision {
+-VISION_API int64_t cuda_version();
+-
+-namespace detail {
+-extern "C" VISION_INLINE_VARIABLE auto _register_ops = &cuda_version;
+-#ifdef HINT_MSVC_LINKER_INCLUDE_SYMBOL
+-#pragma comment(linker, "/include:_register_ops")
+-#endif
+-
+-} // namespace detail
+-} // namespace vision
