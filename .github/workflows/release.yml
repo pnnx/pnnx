@@ -87,50 +87,50 @@ jobs:
         cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/torchvision" -DTorch_DIR="$GITHUB_WORKSPACE/libtorch/share/cmake/Torch" -DCMAKE_BUILD_TYPE=MinSizeRel -DWITH_PNG=OFF -DWITH_JPEG=OFF ..
         cmake --build . -j 2
         cmake --build . --target install/strip
-    # - name: cache-protobuf
-    #   id: cache-protobuf
-    #   uses: actions/cache@v3
-    #   with:
-    #     path: "protobuf-install"
-    #     key: protobuf-ubuntu-install
-    # - name: protobuf
-    #   if: steps.cache-protobuf.outputs.cache-hit != 'true'
-    #   run: |
-    #     wget -q https://github.com/protocolbuffers/protobuf/archive/v3.11.2.zip -O protobuf-3.11.2.zip
-    #     unzip -q protobuf-3.11.2.zip
-    #     cd protobuf-3.11.2
-    #     mkdir -p build2; cd build2;
-    #     cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/protobuf-install" -Dprotobuf_BUILD_TESTS=OFF -DCMAKE_BUILD_TYPE=MinSizeRel ../cmake
-    #     cmake --build . -j 2
-    #     cmake --build . --target install/strip
-    # - name: ncnn
-    #   uses: actions/checkout@v3
-    #   with:
-    #     repository: Tencent/ncnn
-    #     path: ncnn
-    # - name: build-pnnx
-    #   run: |
-    #     cd ncnn/tools/pnnx
-    #     mkdir build && cd build
-    #     cmake -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=MinSizeRel \
-    #         -DTorch_INSTALL_DIR="$GITHUB_WORKSPACE/libtorch" \
-    #         -DTorchVision_INSTALL_DIR="$GITHUB_WORKSPACE/torchvision" \
-    #         -DProtobuf_INCLUDE_DIR="$GITHUB_WORKSPACE/protobuf-install/include" \
-    #         -DProtobuf_LIBRARIES="$GITHUB_WORKSPACE/protobuf-install/lib/libprotobuf.a" \
-    #         -DProtobuf_PROTOC_EXECUTABLE="$GITHUB_WORKSPACE/protobuf-install/bin/protoc" \
-    #         ..
-    #     cmake --build . -j 2
-    #     cmake --build . --target install/strip
-    # - name: package
-    #   run: |
-    #     mkdir ${{ env.PACKAGENAME }}
-    #     cp ncnn/tools/pnnx/build/install/bin/pnnx ${{ env.PACKAGENAME }}
-    #     zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
-    # - name: upload
-    #   uses: actions/upload-artifact@v3
-    #   with:
-    #     name: ${{ env.PACKAGENAME }}
-    #     path: ${{ env.PACKAGENAME }}.zip
+    - name: cache-protobuf
+      id: cache-protobuf
+      uses: actions/cache@v3
+      with:
+        path: "protobuf"
+        key: protobuf-ubuntu-20221106
+    - name: protobuf
+      if: steps.cache-protobuf.outputs.cache-hit != 'true'
+      run: |
+        wget -q https://github.com/protocolbuffers/protobuf/archive/v3.11.2.zip -O protobuf-3.11.2.zip
+        unzip -q protobuf-3.11.2.zip
+        cd protobuf-3.11.2
+        mkdir -p build2; cd build2;
+        cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/protobuf" -Dprotobuf_BUILD_TESTS=OFF -DCMAKE_BUILD_TYPE=MinSizeRel ../cmake
+        cmake --build . -j 2
+        cmake --build . --target install/strip
+    - name: ncnn
+      uses: actions/checkout@v3
+      with:
+        repository: Tencent/ncnn
+        path: ncnn
+    - name: build-pnnx
+      run: |
+        cd ncnn/tools/pnnx
+        mkdir build && cd build
+        cmake -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=MinSizeRel \
+            -DTorch_INSTALL_DIR="$GITHUB_WORKSPACE/libtorch" \
+            -DTorchVision_INSTALL_DIR="$GITHUB_WORKSPACE/torchvision" \
+            -DProtobuf_INCLUDE_DIR="$GITHUB_WORKSPACE/protobuf/include" \
+            -DProtobuf_LIBRARIES="$GITHUB_WORKSPACE/protobuf/lib/libprotobuf.a" \
+            -DProtobuf_PROTOC_EXECUTABLE="$GITHUB_WORKSPACE/protobuf/bin/protoc" \
+            ..
+        cmake --build . -j 2
+        cmake --build . --target install/strip
+    - name: package
+      run: |
+        mkdir ${{ env.PACKAGENAME }}
+        cp ncnn/tools/pnnx/build/install/bin/pnnx ${{ env.PACKAGENAME }}
+        zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
+    - name: upload
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ env.PACKAGENAME }}
+        path: ${{ env.PACKAGENAME }}.zip
 
   macos:
     needs: [setup]
@@ -200,50 +200,50 @@ jobs:
         cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/torchvision" -DTorch_DIR="$GITHUB_WORKSPACE/libtorch/share/cmake/Torch" -DCMAKE_BUILD_TYPE=MinSizeRel -DWITH_PNG=OFF -DWITH_JPEG=OFF ..
         cmake --build . -j 3
         cmake --build . --target install/strip
-    # - name: cache-protobuf
-    #   id: cache-protobuf
-    #   uses: actions/cache@v3
-    #   with:
-    #     path: "protobuf-install"
-    #     key: protobuf-macos-install
-    # - name: protobuf
-    #   if: steps.cache-protobuf.outputs.cache-hit != 'true'
-    #   run: |
-    #     wget -q https://github.com/protocolbuffers/protobuf/archive/v3.11.2.zip -O protobuf-3.11.2.zip
-    #     unzip -q protobuf-3.11.2.zip
-    #     cd protobuf-3.11.2
-    #     mkdir -p build2; cd build2;
-    #     cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/protobuf-install" -Dprotobuf_BUILD_TESTS=OFF -DCMAKE_BUILD_TYPE=MinSizeRel ../cmake
-    #     cmake --build . -j 3
-    #     cmake --build . --target install/strip
-    # - name: ncnn
-    #   uses: actions/checkout@v3
-    #   with:
-    #     repository: Tencent/ncnn
-    #     path: ncnn
-    # - name: build-pnnx
-    #   run: |
-    #     cd ncnn/tools/pnnx
-    #     mkdir build && cd build
-    #     cmake -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=MinSizeRel \
-    #         -DTorch_INSTALL_DIR="$GITHUB_WORKSPACE/libtorch" \
-    #         -DTorchVision_INSTALL_DIR="$GITHUB_WORKSPACE/torchvision" \
-    #         -DProtobuf_INCLUDE_DIR="$GITHUB_WORKSPACE/protobuf-install/include" \
-    #         -DProtobuf_LIBRARIES="$GITHUB_WORKSPACE/protobuf-install/lib/libprotobuf.a" \
-    #         -DProtobuf_PROTOC_EXECUTABLE="$GITHUB_WORKSPACE/protobuf-install/bin/protoc" \
-    #         ..
-    #     cmake --build . -j 3
-    #     cmake --build . --target install/strip
-    # - name: package
-    #   run: |
-    #     mkdir ${{ env.PACKAGENAME }}
-    #     cp ncnn/tools/pnnx/build/install/bin/pnnx ${{ env.PACKAGENAME }}
-    #     zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
-    # - name: upload
-    #   uses: actions/upload-artifact@v3
-    #   with:
-    #     name: ${{ env.PACKAGENAME }}
-    #     path: ${{ env.PACKAGENAME }}.zip
+    - name: cache-protobuf
+      id: cache-protobuf
+      uses: actions/cache@v3
+      with:
+        path: "protobuf"
+        key: protobuf-macos-20221106
+    - name: protobuf
+      if: steps.cache-protobuf.outputs.cache-hit != 'true'
+      run: |
+        wget -q https://github.com/protocolbuffers/protobuf/archive/v3.11.2.zip -O protobuf-3.11.2.zip
+        unzip -q protobuf-3.11.2.zip
+        cd protobuf-3.11.2
+        mkdir -p build2; cd build2;
+        cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/protobuf" -Dprotobuf_BUILD_TESTS=OFF -DCMAKE_BUILD_TYPE=MinSizeRel ../cmake
+        cmake --build . -j 3
+        cmake --build . --target install/strip
+    - name: ncnn
+      uses: actions/checkout@v3
+      with:
+        repository: Tencent/ncnn
+        path: ncnn
+    - name: build-pnnx
+      run: |
+        cd ncnn/tools/pnnx
+        mkdir build && cd build
+        cmake -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=MinSizeRel \
+            -DTorch_INSTALL_DIR="$GITHUB_WORKSPACE/libtorch" \
+            -DTorchVision_INSTALL_DIR="$GITHUB_WORKSPACE/torchvision" \
+            -DProtobuf_INCLUDE_DIR="$GITHUB_WORKSPACE/protobuf/include" \
+            -DProtobuf_LIBRARIES="$GITHUB_WORKSPACE/protobuf/lib/libprotobuf.a" \
+            -DProtobuf_PROTOC_EXECUTABLE="$GITHUB_WORKSPACE/protobuf/bin/protoc" \
+            ..
+        cmake --build . -j 3
+        cmake --build . --target install/strip
+    - name: package
+      run: |
+        mkdir ${{ env.PACKAGENAME }}
+        cp ncnn/tools/pnnx/build/install/bin/pnnx ${{ env.PACKAGENAME }}
+        zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
+    - name: upload
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ env.PACKAGENAME }}
+        path: ${{ env.PACKAGENAME }}.zip
 
   windows:
     needs: [setup]
@@ -316,50 +316,50 @@ jobs:
         cmake -DCMAKE_INSTALL_PREFIX="$env:GITHUB_WORKSPACE/torchvision" -DTorch_DIR="$env:GITHUB_WORKSPACE/libtorch/share/cmake/Torch" -DCMAKE_BUILD_TYPE=MinSizeRel -DWITH_PNG=OFF -DWITH_JPEG=OFF ..
         cmake --build . --config MinSizeRel -j 2
         cmake --build . --config MinSizeRel --target install
-    # - name: cache-protobuf
-    #   id: cache-protobuf
-    #   uses: actions/cache@v3
-    #   with:
-    #     path: "protobuf-install"
-    #     key: protobuf-vs2019-install
-    # - name: protobuf
-    #   if: steps.cache-protobuf.outputs.cache-hit != 'true'
-    #   run: |
-    #     Invoke-WebRequest -Uri https://github.com/protocolbuffers/protobuf/archive/v3.11.2.zip -OutFile protobuf-3.11.2.zip
-    #     7z x ./protobuf-3.11.2.zip
-    #     cd protobuf-3.11.2
-    #     mkdir -p build2; cd build2;
-    #     cmake -DCMAKE_INSTALL_PREFIX="$env:GITHUB_WORKSPACE/protobuf-install" -Dprotobuf_BUILD_TESTS=OFF -Dprotobuf_MSVC_STATIC_RUNTIME=OFF -DCMAKE_BUILD_TYPE=MinSizeRel ../cmake
-    #     cmake --build . --config MinSizeRel -j 2
-    #     cmake --build . --config MinSizeRel --target install
-    # - name: ncnn
-    #   uses: actions/checkout@v3
-    #   with:
-    #     repository: Tencent/ncnn
-    #     path: ncnn
-    # - name: build-pnnx
-    #   run: |
-    #     cd ncnn/tools/pnnx
-    #     mkdir build && cd build
-    #     cmake -DCMAKE_INSTALL_PREFIX=install -DPNNX_BUILD_WITH_STATIC_CRT=ON `
-    #         -DTorch_INSTALL_DIR="$env:GITHUB_WORKSPACE/libtorch" `
-    #         -DTorchVision_INSTALL_DIR="$env:GITHUB_WORKSPACE/torchvision" `
-    #         -DProtobuf_INCLUDE_DIR="$env:GITHUB_WORKSPACE/libtorch/include" `
-    #         -DProtobuf_LIBRARIES="$env:GITHUB_WORKSPACE/libtorch/lib/libprotobuf.lib" `
-    #         -DProtobuf_PROTOC_EXECUTABLE="$env:GITHUB_WORKSPACE/libtorch/bin/protoc.exe" `
-    #         ..
-    #     cmake --build . --config MinSizeRel -j 2
-    #     cmake --build . --config MinSizeRel --target install
-    # - name: package
-    #   run: |
-    #     mkdir ${{ env.PACKAGENAME }}
-    #     Copy-Item -Verbose -Path "ncnn\tools\pnnx\build\install\bin\pnnx.exe" -Destination ${{ env.PACKAGENAME }}
-    #     7z a -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
-    # - name: upload
-    #   uses: actions/upload-artifact@v3
-    #   with:
-    #     name: ${{ env.PACKAGENAME }}
-    #     path: ${{ env.PACKAGENAME }}.zip
+    - name: cache-protobuf
+      id: cache-protobuf
+      uses: actions/cache@v3
+      with:
+        path: "protobuf"
+        key: protobuf-vs2019-20221106
+    - name: protobuf
+      if: steps.cache-protobuf.outputs.cache-hit != 'true'
+      run: |
+        Invoke-WebRequest -Uri https://github.com/protocolbuffers/protobuf/archive/v3.11.2.zip -OutFile protobuf-3.11.2.zip
+        7z x ./protobuf-3.11.2.zip
+        cd protobuf-3.11.2
+        mkdir -p build2; cd build2;
+        cmake -DCMAKE_INSTALL_PREFIX="$env:GITHUB_WORKSPACE/protobuf" -Dprotobuf_BUILD_TESTS=OFF -Dprotobuf_MSVC_STATIC_RUNTIME=OFF -DCMAKE_BUILD_TYPE=MinSizeRel ../cmake
+        cmake --build . --config MinSizeRel -j 2
+        cmake --build . --config MinSizeRel --target install
+    - name: ncnn
+      uses: actions/checkout@v3
+      with:
+        repository: Tencent/ncnn
+        path: ncnn
+    - name: build-pnnx
+      run: |
+        cd ncnn/tools/pnnx
+        mkdir build && cd build
+        cmake -DCMAKE_INSTALL_PREFIX=install -DPNNX_BUILD_WITH_STATIC_CRT=ON `
+            -DTorch_INSTALL_DIR="$env:GITHUB_WORKSPACE/libtorch" `
+            -DTorchVision_INSTALL_DIR="$env:GITHUB_WORKSPACE/torchvision" `
+            -DProtobuf_INCLUDE_DIR="$env:GITHUB_WORKSPACE/protobuf/include" `
+            -DProtobuf_LIBRARIES="$env:GITHUB_WORKSPACE/protobuf/lib/libprotobuf.lib" `
+            -DProtobuf_PROTOC_EXECUTABLE="$env:GITHUB_WORKSPACE/protobuf/bin/protoc.exe" `
+            ..
+        cmake --build . --config MinSizeRel -j 2
+        cmake --build . --config MinSizeRel --target install
+    - name: package
+      run: |
+        mkdir ${{ env.PACKAGENAME }}
+        Copy-Item -Verbose -Path "ncnn\tools\pnnx\build\install\bin\pnnx.exe" -Destination ${{ env.PACKAGENAME }}
+        7z a -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
+    - name: upload
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ env.PACKAGENAME }}
+        path: ${{ env.PACKAGENAME }}.zip
 
   # release:
   #   needs: [setup, ubuntu, macos, windows]
