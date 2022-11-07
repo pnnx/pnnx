@@ -24,6 +24,9 @@ jobs:
     env:
       PACKAGENAME: pnnx-${{ needs.setup.outputs.VERSION }}-ubuntu
     steps:
+    - uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
     - name: pnnx-patches
       uses: actions/checkout@v3
       with:
@@ -127,6 +130,9 @@ jobs:
     env:
       PACKAGENAME: pnnx-${{ needs.setup.outputs.VERSION }}-macos
     steps:
+    - uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
     - name: pnnx-patches
       uses: actions/checkout@v3
       with:
@@ -230,6 +236,9 @@ jobs:
     env:
       PACKAGENAME: pnnx-${{ needs.setup.outputs.VERSION }}-windows
     steps:
+    - uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
     - name: pnnx-patches
       uses: actions/checkout@v3
       with:
