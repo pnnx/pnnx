@@ -278,7 +278,7 @@ jobs:
         C:\msys64\usr\bin\patch.exe -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\pytorch-v${env:LIBTORCH_VERSION}-fix-static-initialization.patch
         C:\msys64\usr\bin\patch.exe -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\pytorch-v${env:LIBTORCH_VERSION}-set-python-executable.patch
         mkdir -p build; cd build
-        cmake -DCMAKE_INSTALL_PREFIX="$env:GITHUB_WORKSPACE/libtorch" -DBUILD_SHARED_LIBS=OFF `
+        cmake -DCMAKE_INSTALL_PREFIX="$env:GITHUB_WORKSPACE/libtorch" -DCMAKE_BUILD_TYPE=MinSizeRel -DBUILD_SHARED_LIBS=OFF `
             -DBUILD_CAFFE2_OPS=OFF `
             -DBUILD_CUSTOM_PROTOBUF=OFF `
             -DBUILD_LITE_INTERPRETER=OFF `
@@ -313,7 +313,7 @@ jobs:
         cd vision-${env:TORCHVISION_VERSION}
         C:\msys64\usr\bin\patch.exe -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\vision-${env:TORCHVISION_VERSION}-ops-only.patch
         mkdir -p build; cd build
-        cmake -DCMAKE_INSTALL_PREFIX="$env:GITHUB_WORKSPACE/torchvision" -DTorch_DIR="$env:GITHUB_WORKSPACE/libtorch/share/cmake/Torch" -DWITH_PNG=OFF -DWITH_JPEG=OFF ..
+        cmake -DCMAKE_INSTALL_PREFIX="$env:GITHUB_WORKSPACE/torchvision" -DTorch_DIR="$env:GITHUB_WORKSPACE/libtorch/share/cmake/Torch" -DCMAKE_BUILD_TYPE=MinSizeRel -DWITH_PNG=OFF -DWITH_JPEG=OFF ..
         cmake --build . --config MinSizeRel -j 2
         cmake --build . --config MinSizeRel --target install
     # - name: cache-protobuf
@@ -329,7 +329,7 @@ jobs:
     #     7z x ./protobuf-3.11.2.zip
     #     cd protobuf-3.11.2
     #     mkdir -p build2; cd build2;
-    #     cmake -DCMAKE_INSTALL_PREFIX="$env:GITHUB_WORKSPACE/protobuf-install" -Dprotobuf_BUILD_TESTS=OFF -Dprotobuf_MSVC_STATIC_RUNTIME=OFF ../cmake
+    #     cmake -DCMAKE_INSTALL_PREFIX="$env:GITHUB_WORKSPACE/protobuf-install" -Dprotobuf_BUILD_TESTS=OFF -Dprotobuf_MSVC_STATIC_RUNTIME=OFF -DCMAKE_BUILD_TYPE=MinSizeRel ../cmake
     #     cmake --build . --config MinSizeRel -j 2
     #     cmake --build . --config MinSizeRel --target install
     # - name: ncnn
