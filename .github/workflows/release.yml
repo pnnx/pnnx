@@ -69,16 +69,23 @@ jobs:
             ..
         cmake --build . -j 2
         cmake --build . --target install/strip
-    # - name: torchvision
-    #   run: |
-    #     wget https://github.com/pytorch/vision/archive/refs/tags/v${TORCHVISION_VERSION}.zip -O vision-${TORCHVISION_VERSION}.zip
-    #     unzip -q vision-${TORCHVISION_VERSION}.zip
-    #     cd vision-${TORCHVISION_VERSION}
-    #     patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/vision-${TORCHVISION_VERSION}-ops-only.patch
-    #     mkdir -p build; cd build
-    #     cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/libtorch" -DTorch_DIR="$GITHUB_WORKSPACE/libtorch/share/cmake/Torch" -DCMAKE_BUILD_TYPE=Release -DWITH_PNG=OFF -DWITH_JPEG=OFF ..
-    #     cmake --build . -j 2
-    #     cmake --build . --target install/strip
+    - name: cache-torchvision
+      id: cache-torchvision
+      uses: actions/cache@v3
+      with:
+        path: "torchvision"
+        key: torchvision-ubuntu-20221106
+    - name: torchvision
+      if: steps.cache-torchvision.outputs.cache-hit != 'true'
+      run: |
+        wget https://github.com/pytorch/vision/archive/refs/tags/v${TORCHVISION_VERSION}.zip -O vision-${TORCHVISION_VERSION}.zip
+        unzip -q vision-${TORCHVISION_VERSION}.zip
+        cd vision-${TORCHVISION_VERSION}
+        patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/vision-${TORCHVISION_VERSION}-ops-only.patch
+        mkdir -p build; cd build
+        cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/torchvision" -DTorch_DIR="$GITHUB_WORKSPACE/libtorch/share/cmake/Torch" -DCMAKE_BUILD_TYPE=MinSizeRel -DWITH_PNG=OFF -DWITH_JPEG=OFF ..
+        cmake --build . -j 2
+        cmake --build . --target install/strip
     # - name: cache-protobuf
     #   id: cache-protobuf
     #   uses: actions/cache@v3
@@ -92,7 +99,7 @@ jobs:
     #     unzip -q protobuf-3.11.2.zip
     #     cd protobuf-3.11.2
     #     mkdir -p build2; cd build2;
-    #     cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/protobuf-install" -Dprotobuf_BUILD_TESTS=OFF -DCMAKE_BUILD_TYPE=Release ../cmake
+    #     cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/protobuf-install" -Dprotobuf_BUILD_TESTS=OFF -DCMAKE_BUILD_TYPE=MinSizeRel ../cmake
     #     cmake --build . -j 2
     #     cmake --build . --target install/strip
     # - name: ncnn
@@ -104,9 +111,9 @@ jobs:
     #   run: |
     #     cd ncnn/tools/pnnx
     #     mkdir build && cd build
-    #     cmake -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release \
+    #     cmake -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=MinSizeRel \
     #         -DTorch_INSTALL_DIR="$GITHUB_WORKSPACE/libtorch" \
-    #         -DTorchVision_INSTALL_DIR="$GITHUB_WORKSPACE/libtorch" \
+    #         -DTorchVision_INSTALL_DIR="$GITHUB_WORKSPACE/torchvision" \
     #         -DProtobuf_INCLUDE_DIR="$GITHUB_WORKSPACE/protobuf-install/include" \
     #         -DProtobuf_LIBRARIES="$GITHUB_WORKSPACE/protobuf-install/lib/libprotobuf.a" \
     #         -DProtobuf_PROTOC_EXECUTABLE="$GITHUB_WORKSPACE/protobuf-install/bin/protoc" \
@@ -175,16 +182,23 @@ jobs:
             ..
         cmake --build . -j 3
         cmake --build . --target install/strip
-    # - name: torchvision
-    #   run: |
-    #     wget https://github.com/pytorch/vision/archive/refs/tags/v${TORCHVISION_VERSION}.zip -O vision-${TORCHVISION_VERSION}.zip
-    #     unzip -q vision-${TORCHVISION_VERSION}.zip
-    #     cd vision-${TORCHVISION_VERSION}
-    #     patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/vision-${TORCHVISION_VERSION}-ops-only.patch
-    #     mkdir -p build; cd build
-    #     cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/libtorch" -DTorch_DIR="$GITHUB_WORKSPACE/libtorch/share/cmake/Torch" -DCMAKE_BUILD_TYPE=Release -DWITH_PNG=OFF -DWITH_JPEG=OFF ..
-    #     cmake --build . -j 3
-    #     cmake --build . --target install/strip
+    - name: cache-torchvision
+      id: cache-torchvision
+      uses: actions/cache@v3
+      with:
+        path: "torchvision"
+        key: torchvision-macos-20221106
+    - name: torchvision
+      if: steps.cache-torchvision.outputs.cache-hit != 'true'
+      run: |
+        wget https://github.com/pytorch/vision/archive/refs/tags/v${TORCHVISION_VERSION}.zip -O vision-${TORCHVISION_VERSION}.zip
+        unzip -q vision-${TORCHVISION_VERSION}.zip
+        cd vision-${TORCHVISION_VERSION}
+        patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/vision-${TORCHVISION_VERSION}-ops-only.patch
+        mkdir -p build; cd build
+        cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/torchvision" -DTorch_DIR="$GITHUB_WORKSPACE/libtorch/share/cmake/Torch" -DCMAKE_BUILD_TYPE=MinSizeRel -DWITH_PNG=OFF -DWITH_JPEG=OFF ..
+        cmake --build . -j 3
+        cmake --build . --target install/strip
     # - name: cache-protobuf
     #   id: cache-protobuf
     #   uses: actions/cache@v3
@@ -198,7 +212,7 @@ jobs:
     #     unzip -q protobuf-3.11.2.zip
     #     cd protobuf-3.11.2
     #     mkdir -p build2; cd build2;
-    #     cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/protobuf-install" -Dprotobuf_BUILD_TESTS=OFF -DCMAKE_BUILD_TYPE=Release ../cmake
+    #     cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/protobuf-install" -Dprotobuf_BUILD_TESTS=OFF -DCMAKE_BUILD_TYPE=MinSizeRel ../cmake
     #     cmake --build . -j 3
     #     cmake --build . --target install/strip
     # - name: ncnn
@@ -210,9 +224,9 @@ jobs:
     #   run: |
     #     cd ncnn/tools/pnnx
     #     mkdir build && cd build
-    #     cmake -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release \
+    #     cmake -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=MinSizeRel \
     #         -DTorch_INSTALL_DIR="$GITHUB_WORKSPACE/libtorch" \
-    #         -DTorchVision_INSTALL_DIR="$GITHUB_WORKSPACE/libtorch" \
+    #         -DTorchVision_INSTALL_DIR="$GITHUB_WORKSPACE/torchvision" \
     #         -DProtobuf_INCLUDE_DIR="$GITHUB_WORKSPACE/protobuf-install/include" \
     #         -DProtobuf_LIBRARIES="$GITHUB_WORKSPACE/protobuf-install/lib/libprotobuf.a" \
     #         -DProtobuf_PROTOC_EXECUTABLE="$GITHUB_WORKSPACE/protobuf-install/bin/protoc" \
@@ -283,16 +297,23 @@ jobs:
             ..
         cmake --build . --config MinSizeRel -j 2
         cmake --build . --config MinSizeRel --target install
-    # - name: torchvision
-    #   run: |
-    #     Invoke-WebRequest -Uri https://github.com/pytorch/vision/archive/refs/tags/v${env:TORCHVISION_VERSION}.zip -OutFile vision-${env:TORCHVISION_VERSION}.zip
-    #     7z x vision-${env:TORCHVISION_VERSION}.zip
-    #     cd vision-${env:TORCHVISION_VERSION}
-    #     C:\msys64\usr\bin\patch.exe -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\vision-${env:TORCHVISION_VERSION}-ops-only.patch
-    #     mkdir -p build; cd build
-    #     cmake -DCMAKE_INSTALL_PREFIX="$env:GITHUB_WORKSPACE/libtorch" -DTorch_DIR="$env:GITHUB_WORKSPACE/libtorch/share/cmake/Torch" -DWITH_PNG=OFF -DWITH_JPEG=OFF ..
-    #     cmake --build . --config Release -j 2
-    #     cmake --build . --config Release --target install
+    - name: cache-torchvision
+      id: cache-torchvision
+      uses: actions/cache@v3
+      with:
+        path: "torchvision"
+        key: torchvision-vs2019-20221106
+    - name: torchvision
+      if: steps.cache-torchvision.outputs.cache-hit != 'true'
+      run: |
+        Invoke-WebRequest -Uri https://github.com/pytorch/vision/archive/refs/tags/v${env:TORCHVISION_VERSION}.zip -OutFile vision-${env:TORCHVISION_VERSION}.zip
+        7z x vision-${env:TORCHVISION_VERSION}.zip
+        cd vision-${env:TORCHVISION_VERSION}
+        C:\msys64\usr\bin\patch.exe -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\vision-${env:TORCHVISION_VERSION}-ops-only.patch
+        mkdir -p build; cd build
+        cmake -DCMAKE_INSTALL_PREFIX="$env:GITHUB_WORKSPACE/torchvision" -DTorch_DIR="$env:GITHUB_WORKSPACE/libtorch/share/cmake/Torch" -DWITH_PNG=OFF -DWITH_JPEG=OFF ..
+        cmake --build . --config MinSizeRel -j 2
+        cmake --build . --config MinSizeRel --target install
     # - name: cache-protobuf
     #   id: cache-protobuf
     #   uses: actions/cache@v3
@@ -307,8 +328,8 @@ jobs:
     #     cd protobuf-3.11.2
     #     mkdir -p build2; cd build2;
     #     cmake -DCMAKE_INSTALL_PREFIX="$env:GITHUB_WORKSPACE/protobuf-install" -Dprotobuf_BUILD_TESTS=OFF -Dprotobuf_MSVC_STATIC_RUNTIME=OFF ../cmake
-    #     cmake --build . --config Release -j 2
-    #     cmake --build . --config Release --target install
+    #     cmake --build . --config MinSizeRel -j 2
+    #     cmake --build . --config MinSizeRel --target install
     # - name: ncnn
     #   uses: actions/checkout@v3
     #   with:
@@ -320,13 +341,13 @@ jobs:
     #     mkdir build && cd build
     #     cmake -DCMAKE_INSTALL_PREFIX=install -DPNNX_BUILD_WITH_STATIC_CRT=ON `
     #         -DTorch_INSTALL_DIR="$env:GITHUB_WORKSPACE/libtorch" `
-    #         -DTorchVision_INSTALL_DIR="$env:GITHUB_WORKSPACE/libtorch" `
+    #         -DTorchVision_INSTALL_DIR="$env:GITHUB_WORKSPACE/torchvision" `
     #         -DProtobuf_INCLUDE_DIR="$env:GITHUB_WORKSPACE/libtorch/include" `
     #         -DProtobuf_LIBRARIES="$env:GITHUB_WORKSPACE/libtorch/lib/libprotobuf.lib" `
     #         -DProtobuf_PROTOC_EXECUTABLE="$env:GITHUB_WORKSPACE/libtorch/bin/protoc.exe" `
     #         ..
-    #     cmake --build . --config Release -j 2
-    #     cmake --build . --config Release --target install
+    #     cmake --build . --config MinSizeRel -j 2
+    #     cmake --build . --config MinSizeRel --target install
     # - name: package
     #   run: |
     #     mkdir ${{ env.PACKAGENAME }}
