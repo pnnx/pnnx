@@ -16,7 +16,8 @@ jobs:
     steps:
     - name: get-version
       id: get_version
-      run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+      # run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+      run: echo "VERSION=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_OUTPUT
 
   ubuntu:
     needs: [setup]
@@ -40,7 +41,7 @@ jobs:
     - name: libtorch
       if: steps.cache-libtorch.outputs.cache-hit != 'true'
       run: |
-        wget https://github.com/pytorch/pytorch/releases/download/v${LIBTORCH_VERSION}/pytorch-v${LIBTORCH_VERSION}.tar.gz
+        wget -q https://github.com/pytorch/pytorch/releases/download/v${LIBTORCH_VERSION}/pytorch-v${LIBTORCH_VERSION}.tar.gz
         tar -xf pytorch-v${LIBTORCH_VERSION}.tar.gz
         cd pytorch-v${LIBTORCH_VERSION}
         pip3 install -r requirements.txt
@@ -78,7 +79,7 @@ jobs:
     - name: torchvision
       if: steps.cache-torchvision.outputs.cache-hit != 'true'
       run: |
-        wget https://github.com/pytorch/vision/archive/refs/tags/v${TORCHVISION_VERSION}.zip -O vision-${TORCHVISION_VERSION}.zip
+        wget -q https://github.com/pytorch/vision/archive/refs/tags/v${TORCHVISION_VERSION}.zip -O vision-${TORCHVISION_VERSION}.zip
         unzip -q vision-${TORCHVISION_VERSION}.zip
         cd vision-${TORCHVISION_VERSION}
         patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/vision-${TORCHVISION_VERSION}-ops-only.patch
@@ -95,7 +96,7 @@ jobs:
     # - name: protobuf
     #   if: steps.cache-protobuf.outputs.cache-hit != 'true'
     #   run: |
-    #     wget https://github.com/protocolbuffers/protobuf/archive/v3.11.2.zip -O protobuf-3.11.2.zip
+    #     wget -q https://github.com/protocolbuffers/protobuf/archive/v3.11.2.zip -O protobuf-3.11.2.zip
     #     unzip -q protobuf-3.11.2.zip
     #     cd protobuf-3.11.2
     #     mkdir -p build2; cd build2;
@@ -153,7 +154,7 @@ jobs:
     - name: libtorch
       if: steps.cache-libtorch.outputs.cache-hit != 'true'
       run: |
-        wget https://github.com/pytorch/pytorch/releases/download/v${LIBTORCH_VERSION}/pytorch-v${LIBTORCH_VERSION}.tar.gz
+        wget -q https://github.com/pytorch/pytorch/releases/download/v${LIBTORCH_VERSION}/pytorch-v${LIBTORCH_VERSION}.tar.gz
         tar -xf pytorch-v${LIBTORCH_VERSION}.tar.gz
         cd pytorch-v${LIBTORCH_VERSION}
         pip3 install -r requirements.txt
@@ -191,7 +192,7 @@ jobs:
     - name: torchvision
       if: steps.cache-torchvision.outputs.cache-hit != 'true'
       run: |
-        wget https://github.com/pytorch/vision/archive/refs/tags/v${TORCHVISION_VERSION}.zip -O vision-${TORCHVISION_VERSION}.zip
+        wget -q https://github.com/pytorch/vision/archive/refs/tags/v${TORCHVISION_VERSION}.zip -O vision-${TORCHVISION_VERSION}.zip
         unzip -q vision-${TORCHVISION_VERSION}.zip
         cd vision-${TORCHVISION_VERSION}
         patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/vision-${TORCHVISION_VERSION}-ops-only.patch
@@ -208,7 +209,7 @@ jobs:
     # - name: protobuf
     #   if: steps.cache-protobuf.outputs.cache-hit != 'true'
     #   run: |
-    #     wget https://github.com/protocolbuffers/protobuf/archive/v3.11.2.zip -O protobuf-3.11.2.zip
+    #     wget -q https://github.com/protocolbuffers/protobuf/archive/v3.11.2.zip -O protobuf-3.11.2.zip
     #     unzip -q protobuf-3.11.2.zip
     #     cd protobuf-3.11.2
     #     mkdir -p build2; cd build2;
