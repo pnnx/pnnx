@@ -249,6 +249,7 @@ jobs:
     runs-on: windows-2019
     env:
       PACKAGENAME: pnnx-${{ needs.setup.outputs.VERSION }}-windows
+      UseMultiToolTask: true
     steps:
     - uses: actions/setup-python@v4
       with:
