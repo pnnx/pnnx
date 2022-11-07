@@ -1,3 +1,17 @@
+diff -Nuarp vision-0.14.0.orig/cmake/TorchVisionConfig.cmake.in vision-0.14.0/cmake/TorchVisionConfig.cmake.in
+--- vision-0.14.0.orig/cmake/TorchVisionConfig.cmake.in	2022-10-11 12:22:58.000000000 +0800
++++ vision-0.14.0/cmake/TorchVisionConfig.cmake.in	2022-11-07 16:48:13.521346589 +0800
+@@ -31,7 +31,9 @@ if(@WITH_CUDA@)
+   target_compile_definitions(${PN}::${PN} INTERFACE WITH_CUDA)
+ endif()
+ 
+-find_package(Torch REQUIRED)
++if(NOT TARGET torch)
++  find_package(Torch REQUIRED)
++endif()
+ target_link_libraries(${PN}::${PN} INTERFACE torch)
+ 
+ if(@WITH_PNG@)
 diff -Nuarp vision-0.14.0.orig/CMakeLists.txt vision-0.14.0/CMakeLists.txt
 --- vision-0.14.0.orig/CMakeLists.txt	2022-10-11 12:22:58.000000000 +0800
 +++ vision-0.14.0/CMakeLists.txt	2022-11-07 15:09:23.951813357 +0800
