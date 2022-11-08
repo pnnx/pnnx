@@ -282,7 +282,7 @@ jobs:
     - uses: actions/setup-python@v4
       with:
         python-version: '3.10'
-    - name: pnnx-patches
+    - name: checkout
       uses: actions/checkout@v3
     - name: cache-libtorch
       id: cache-libtorch
@@ -341,7 +341,7 @@ jobs:
     - uses: actions/setup-python@v4
       with:
         python-version: '3.10'
-    - name: pnnx-patches
+    - name: checkout
       uses: actions/checkout@v3
     - name: cache-libtorch
       id: cache-libtorch
@@ -401,7 +401,7 @@ jobs:
     - uses: actions/setup-python@v4
       with:
         python-version: '3.10'
-    - name: pnnx-patches
+    - name: checkout
       uses: actions/checkout@v3
     - name: cache-libtorch
       id: cache-libtorch
