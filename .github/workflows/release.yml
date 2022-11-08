@@ -325,6 +325,7 @@ jobs:
     - name: package
       run: |
         mkdir ${{ env.PACKAGENAME }}
+        cp README.md ${{ env.PACKAGENAME }}
         cp ncnn/tools/pnnx/build/install/bin/pnnx ${{ env.PACKAGENAME }}
         zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
     - name: upload
@@ -385,6 +386,7 @@ jobs:
     - name: package
       run: |
         mkdir ${{ env.PACKAGENAME }}
+        cp README.md ${{ env.PACKAGENAME }}
         cp ncnn/tools/pnnx/build/install/bin/pnnx ${{ env.PACKAGENAME }}
         zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
     - name: upload
@@ -446,6 +448,7 @@ jobs:
     - name: package
       run: |
         mkdir ${{ env.PACKAGENAME }}
+        Copy-Item -Verbose -Path "README.md" -Destination "${{ env.PACKAGENAME }}"
         Copy-Item -Verbose -Path "ncnn\tools\pnnx\build\install\bin\pnnx.exe" -Destination ${{ env.PACKAGENAME }}
         7z a -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
     - name: upload
