@@ -10,6 +10,9 @@ on:
     paths:
     - '.github/workflows/deps-cache.yml'
 
+  schedule:
+    - cron: '0 12 * * *'
+
 env:
   LIBTORCH_VERSION: 1.13.0
   TORCHVISION_VERSION: 0.14.0
