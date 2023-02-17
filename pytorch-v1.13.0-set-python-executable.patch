@@ -5,8 +5,8 @@ diff -Nuarp pytorch-v1.13.0.orig/cmake/Codegen.cmake pytorch-v1.13.0/cmake/Codeg
  install(FILES ${CMAKE_BINARY_DIR}/caffe2/core/macros.h
          DESTINATION include/caffe2/core)
  
-+set(Python3_FIND_STRATEGY "LOCATION")
-+set(Python3_FIND_REGISTRY "LAST")
++set(Python3_FIND_STRATEGY "LOCATION" CACHE INTERNAL "" FORCE)
++set(Python3_FIND_REGISTRY "NEVER" CACHE INTERNAL "" FORCE)
 +find_package(Python3 COMPONENTS Interpreter)
 +set(PYTHON_EXECUTABLE ${Python3_EXECUTABLE})
 +
