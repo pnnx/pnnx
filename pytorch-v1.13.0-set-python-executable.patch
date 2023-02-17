@@ -1,10 +1,11 @@
 diff -Nuarp pytorch-v1.13.0.orig/cmake/Codegen.cmake pytorch-v1.13.0/cmake/Codegen.cmake
 --- pytorch-v1.13.0.orig/cmake/Codegen.cmake	2022-10-29 00:56:05.000000000 +0800
 +++ pytorch-v1.13.0/cmake/Codegen.cmake	2022-11-06 21:25:12.432918573 +0800
-@@ -52,6 +52,10 @@ endif()
+@@ -52,6 +52,11 @@ endif()
  install(FILES ${CMAKE_BINARY_DIR}/caffe2/core/macros.h
          DESTINATION include/caffe2/core)
  
++set(Python3_FIND_STRATEGY "LOCATION")
 +set(Python3_FIND_REGISTRY "LAST")
 +find_package(Python3 COMPONENTS Interpreter)
 +set(PYTHON_EXECUTABLE ${Python3_EXECUTABLE})
