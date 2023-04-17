@@ -45,7 +45,6 @@ jobs:
         pip3 install -r requirements.txt
         patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-mobile-build.patch
         patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-no-link-system-lib.patch
-        patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-static-initialization.patch
         mkdir -p build; cd build
         cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/libtorch" -DCMAKE_BUILD_TYPE=MinSizeRel -DBUILD_SHARED_LIBS=OFF \
             -DBUILD_CAFFE2_OPS=OFF \
@@ -128,7 +127,6 @@ jobs:
         pip3 install -r requirements.txt
         patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-mobile-build.patch
         patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-no-link-system-lib.patch
-        patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-static-initialization.patch
         mkdir -p build; cd build
         cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/libtorch" -DCMAKE_BUILD_TYPE=MinSizeRel -DBUILD_SHARED_LIBS=OFF \
             -DBUILD_CAFFE2_OPS=OFF \
@@ -214,7 +212,6 @@ jobs:
         pip3 install -r requirements.txt
         C:\msys64\usr\bin\patch.exe -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\pytorch-v${{ env.LIBTORCH_VERSION }}-fix-mobile-build.patch
         C:\msys64\usr\bin\patch.exe -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\pytorch-v${{ env.LIBTORCH_VERSION }}-no-link-system-lib.patch
-        C:\msys64\usr\bin\patch.exe -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\pytorch-v${{ env.LIBTORCH_VERSION }}-fix-static-initialization.patch
         C:\msys64\usr\bin\patch.exe -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\pytorch-v${{ env.LIBTORCH_VERSION }}-set-python-executable.patch
         mkdir -p build; cd build
         cmake -DCMAKE_INSTALL_PREFIX="$env:GITHUB_WORKSPACE/libtorch" -DCMAKE_BUILD_TYPE=MinSizeRel -DBUILD_SHARED_LIBS=OFF `
@@ -461,45 +458,9 @@ jobs:
         path: artifacts
 
     - name: create-release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      uses: softprops/action-gh-release@v1
       with:
+        token: ${{ secrets.GITHUB_TOKEN }}
         tag_name: ${{ needs.setup.outputs.VERSION }}
-        release_name: Release ${{ needs.setup.outputs.VERSION }}
-        draft: false
-        prerelease: false
-
-    - name: upload-pnnx-ubuntu
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        PACKAGENAME: pnnx-${{ needs.setup.outputs.VERSION }}-ubuntu
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: artifacts/${{ env.PACKAGENAME }}/${{ env.PACKAGENAME }}.zip
-        asset_name: ${{ env.PACKAGENAME }}.zip
-        asset_content_type: application/zip
-
-    - name: upload-pnnx-macos
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        PACKAGENAME: pnnx-${{ needs.setup.outputs.VERSION }}-macos
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: artifacts/${{ env.PACKAGENAME }}/${{ env.PACKAGENAME }}.zip
-        asset_name: ${{ env.PACKAGENAME }}.zip
-        asset_content_type: application/zip
-
-    - name: upload-pnnx-windows
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        PACKAGENAME: pnnx-${{ needs.setup.outputs.VERSION }}-windows
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: artifacts/${{ env.PACKAGENAME }}/${{ env.PACKAGENAME }}.zip
-        asset_name: ${{ env.PACKAGENAME }}.zip
-        asset_content_type: application/zip
+        name: Release ${{ needs.setup.outputs.VERSION }}
+        files: artifacts/*/*.zip
