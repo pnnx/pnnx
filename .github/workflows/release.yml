@@ -21,7 +21,7 @@ jobs:
       run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
 
   ubuntu-deps:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     steps:
     - uses: actions/setup-python@v4
       with:
@@ -275,7 +275,7 @@ jobs:
 
   ubuntu:
     needs: [setup, ubuntu-deps]
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     env:
       PACKAGENAME: pnnx-${{ needs.setup.outputs.VERSION }}-ubuntu
     steps:
