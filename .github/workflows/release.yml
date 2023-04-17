@@ -10,15 +10,20 @@ env:
   PROTOBUF_VERSION: 3.11.2
   CACHE_DATE: 20230417
 
+permissions:
+  contents: read
+
 jobs:
   setup:
+    permissions:
+      contents: none
     runs-on: ubuntu-latest
     outputs:
       VERSION: ${{ steps.get_version.outputs.VERSION }}
     steps:
     - name: get-version
       id: get_version
-      run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+      run: echo "VERSION=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_OUTPUT
 
   ubuntu-deps:
     runs-on: ubuntu-20.04
@@ -449,6 +454,8 @@ jobs:
         path: ${{ env.PACKAGENAME }}.zip
 
   release:
+    permissions:
+      contents: write  # for softprops/action-gh-release to create a release
     needs: [setup, ubuntu, macos, windows]
     runs-on: ubuntu-latest
     steps:
