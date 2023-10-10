@@ -1,0 +1,14 @@
+diff -Nuarp pytorch-v2.1.0.orig/CMakeLists.txt pytorch-v2.1.0/CMakeLists.txt
+--- pytorch-v2.1.0.orig/CMakeLists.txt	2023-10-07 03:49:00.000000000 +0800
++++ pytorch-v2.1.0/CMakeLists.txt	2023-10-10 19:37:54.361795888 +0800
+@@ -354,10 +354,6 @@ cmake_dependent_option(
+     BUILD_FUNCTORCH "Build Functorch" ON "BUILD_PYTHON" OFF)
+ 
+ option(USE_MIMALLOC "Use mimalloc" OFF)
+-# Enable third party mimalloc library to improve memory allocation performance on Windows.
+-if(WIN32)
+-  set(USE_MIMALLOC ON)
+-endif()
+ 
+ if(USE_CCACHE)
+   find_program(CCACHE_PROGRAM ccache)

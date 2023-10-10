@@ -1,0 +1,18 @@
+diff -Nuarp vision-0.16.0.orig/torchvision/csrc/macros.h vision-0.16.0/torchvision/csrc/macros.h
+--- vision-0.16.0.orig/torchvision/csrc/macros.h	2023-09-25 21:45:29.000000000 +0800
++++ vision-0.16.0/torchvision/csrc/macros.h	2023-10-10 19:44:58.333816105 +0800
+@@ -1,14 +1,6 @@
+ #pragma once
+ 
+-#if defined(_WIN32) && !defined(TORCHVISION_BUILD_STATIC_LIBS)
+-#if defined(torchvision_EXPORTS)
+-#define VISION_API __declspec(dllexport)
+-#else
+-#define VISION_API __declspec(dllimport)
+-#endif
+-#else
+ #define VISION_API
+-#endif
+ 
+ #if (defined __cpp_inline_variables) || __cplusplus >= 201703L
+ #define VISION_INLINE_VARIABLE inline
