@@ -1,0 +1,15 @@
+diff -Nuarp pytorch-v2.1.0.orig/cmake/Codegen.cmake pytorch-v2.1.0/cmake/Codegen.cmake
+--- pytorch-v2.1.0.orig/cmake/Codegen.cmake	2023-10-10 16:22:47.086237642 +0800
++++ pytorch-v2.1.0/cmake/Codegen.cmake	2023-10-10 16:24:28.479242476 +0800
+@@ -52,6 +52,11 @@ endif()
+ install(FILES ${CMAKE_BINARY_DIR}/caffe2/core/macros.h
+         DESTINATION include/caffe2/core)
+ 
++set(Python3_FIND_STRATEGY "LOCATION" CACHE INTERNAL "" FORCE)
++set(Python3_FIND_REGISTRY "NEVER" CACHE INTERNAL "" FORCE)
++find_package(Python3 COMPONENTS Interpreter)
++set(PYTHON_EXECUTABLE ${Python3_EXECUTABLE})
++
+ # ---[ ATen specific
+ if(INTERN_BUILD_ATEN_OPS)
+   if(MSVC)

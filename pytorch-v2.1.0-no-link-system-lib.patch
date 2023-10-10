@@ -1,0 +1,12 @@
+diff -Nuarp pytorch-v2.1.0.orig/cmake/TorchConfig.cmake.in pytorch-v2.1.0/cmake/TorchConfig.cmake.in
+--- pytorch-v2.1.0.orig/cmake/TorchConfig.cmake.in	2023-10-10 16:22:47.087237642 +0800
++++ pytorch-v2.1.0/cmake/TorchConfig.cmake.in	2023-10-10 16:25:30.613245439 +0800
+@@ -15,7 +15,7 @@
+ #   torch
+ macro(append_torchlib_if_found)
+   foreach (_arg ${ARGN})
+-    find_library(${_arg}_LIBRARY ${_arg} PATHS "${TORCH_INSTALL_PREFIX}/lib")
++    find_library(${_arg}_LIBRARY ${_arg} PATHS "${TORCH_INSTALL_PREFIX}/lib" NO_DEFAULT_PATH)
+     if(${_arg}_LIBRARY)
+       list(APPEND TORCH_LIBRARIES ${${_arg}_LIBRARY})
+     else()

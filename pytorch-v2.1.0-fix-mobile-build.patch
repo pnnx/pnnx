@@ -1,0 +1,24 @@
+diff -Nuarp pytorch-v2.1.0.orig/torch/csrc/jit/serialization/import.cpp pytorch-v2.1.0/torch/csrc/jit/serialization/import.cpp
+--- pytorch-v2.1.0.orig/torch/csrc/jit/serialization/import.cpp	2023-10-10 16:22:47.106237643 +0800
++++ pytorch-v2.1.0/torch/csrc/jit/serialization/import.cpp	2023-10-10 16:23:06.223238554 +0800
+@@ -274,7 +274,7 @@ Module ScriptModuleDeserializer::deseria
+     }
+   }
+   if (reader_->hasRecord("model.json") && code_prefix_ == "code/") {
+-#if !defined(C10_MOBILE) && !defined(C10_DISABLE_LEGACY_IMPORT)
++#if 0//!defined(C10_MOBILE) && !defined(C10_DISABLE_LEGACY_IMPORT)
+     return torch::jit::LEGACY_deserialize(compilation_unit_, reader_, device_);
+ #else
+     AT_ERROR("Legacy model format is not supported on mobile.");
+diff -Nuarp pytorch-v2.1.0.orig/torch/csrc/jit/serialization/pickle.cpp pytorch-v2.1.0/torch/csrc/jit/serialization/pickle.cpp
+--- pytorch-v2.1.0.orig/torch/csrc/jit/serialization/pickle.cpp	2023-10-10 16:22:47.106237643 +0800
++++ pytorch-v2.1.0/torch/csrc/jit/serialization/pickle.cpp	2023-10-10 16:23:06.223238554 +0800
+@@ -36,7 +36,7 @@ std::vector<char> pickle(
+ // This has to live here instead of the C++ API to mirror torch.save since the
+ // mobile build excludes the C++ API
+ std::vector<char> pickle_save(const at::IValue& ivalue) {
+-#ifndef C10_MOBILE
++#if 0//ndef C10_MOBILE
+   // Pickle the IValue into an array of bytes
+   std::vector<char> pickle_data;
+   Pickler pickler([&](const char* buf, size_t size) {
