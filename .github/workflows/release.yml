@@ -32,7 +32,7 @@ jobs:
       with:
         python-version: '3.10'
     - name: pnnx-patches
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         path: pnnx-patches
     - name: cache-libtorch
@@ -114,7 +114,7 @@ jobs:
       with:
         python-version: '3.10'
     - name: pnnx-patches
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         path: pnnx-patches
     - name: cache-libtorch
@@ -198,7 +198,7 @@ jobs:
       with:
         python-version: '3.10'
     - name: pnnx-patches
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         path: pnnx-patches
     - name: cache-libtorch
@@ -287,7 +287,7 @@ jobs:
       with:
         python-version: '3.10'
     - name: checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
     - name: cache-libtorch
       id: cache-libtorch
       uses: actions/cache@v3.3.1
@@ -307,7 +307,7 @@ jobs:
         path: "protobuf"
         key: protobuf-${{ env.PROTOBUF_VERSION }}-ubuntu-${{ env.CACHE_DATE }}
     - name: ncnn
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         repository: Tencent/ncnn
         path: ncnn
@@ -346,7 +346,7 @@ jobs:
       with:
         python-version: '3.10'
     - name: checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
     - name: cache-libtorch
       id: cache-libtorch
       uses: actions/cache@v3.3.1
@@ -366,7 +366,7 @@ jobs:
         path: "protobuf"
         key: protobuf-${{ env.PROTOBUF_VERSION }}-macos-${{ env.CACHE_DATE }}
     - name: ncnn
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         repository: Tencent/ncnn
         path: ncnn
@@ -406,7 +406,7 @@ jobs:
       with:
         python-version: '3.10'
     - name: checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
     - name: cache-libtorch
       id: cache-libtorch
       uses: actions/cache@v3.3.1
@@ -426,7 +426,7 @@ jobs:
         path: "protobuf"
         key: protobuf-${{ env.PROTOBUF_VERSION }}-vs2019-${{ env.CACHE_DATE }}
     - name: ncnn
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         repository: Tencent/ncnn
         path: ncnn
