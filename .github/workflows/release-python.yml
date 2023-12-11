@@ -279,7 +279,6 @@ jobs:
           cmake --build . --target install/strip &&
           cp /project/ncnn/tools/pnnx/build/install/bin/pnnx /project/ncnn/tools/pnnx/python/pnnx
         CIBW_ENVIRONMENT: PNNX_WHEEL_WITHOUT_BUILD=ON
-        CIBW_REPAIR_WHEEL_COMMAND: ""
         CIBW_BEFORE_TEST: pip install pytest numpy &&
                           pip install torch torchvision
         CIBW_TEST_COMMAND: "pytest {project}/ncnn/tools/pnnx/python/tests"
@@ -354,7 +353,6 @@ jobs:
         CIBW_SKIP: cp36-* cp312-*
         CIBW_BUILD_VERBOSITY: 1
         CIBW_ENVIRONMENT: PNNX_WHEEL_WITHOUT_BUILD=ON
-        CIBW_REPAIR_WHEEL_COMMAND: ""
         CIBW_BEFORE_TEST: pip install pytest numpy &&
                           pip install torch torchvision
         CIBW_TEST_COMMAND: "pytest {project}/ncnn/tools/pnnx/python/tests"
@@ -431,7 +429,6 @@ jobs:
         CIBW_SKIP: cp36-* cp312-*
         CIBW_BUILD_VERBOSITY: 1
         CIBW_ENVIRONMENT: PNNX_WHEEL_WITHOUT_BUILD=ON
-        CIBW_REPAIR_WHEEL_COMMAND_WINDOWS: ""
         CIBW_BEFORE_TEST: pip install pytest numpy &&
                           pip install torch torchvision
         CIBW_TEST_COMMAND: "pytest D:/a/pnnx/pnnx/ncnn/tools/pnnx/python/tests"
