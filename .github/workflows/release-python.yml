@@ -1,8 +1,9 @@
 name: release
-on:
-  push:
-    tags:
-      - '*'
+on: [push, pull_request]
+# on:
+#   push:
+#     tags:
+#       - '*'
 
 env:
   LIBTORCH_VERSION: 2.1.0
