@@ -87,7 +87,7 @@ jobs:
           cmake --build . -j 2 &&
           cmake --build . --target install/strip
       with:
-        package-dir: ./pypa/python-manylinux-demo
+        package-dir: python-manylinux-demo
         output-dir: wheelhouse1
 
     - name: cache-torchvision
@@ -122,7 +122,7 @@ jobs:
           cmake --build . -j 2  &&
           cmake --build . --target install/strip
       with:
-        package-dir: ./pypa/python-manylinux-demo
+        package-dir: python-manylinux-demo
         output-dir: wheelhouse2
 
     - name: cache-protobuf
@@ -152,7 +152,7 @@ jobs:
           cmake --build . -j 2 &&
           cmake --build . --target install/strip
       with:
-        package-dir: ./pypa/python-manylinux-demo
+        package-dir: python-manylinux-demo
         output-dir: wheelhouse3
 
   # macos-deps:
