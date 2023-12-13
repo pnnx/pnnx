@@ -38,7 +38,6 @@ jobs:
         path: "libtorch"
         key: libtorch-${{ env.LIBTORCH_VERSION }}-ubuntu-${{ env.CACHE_DATE }}
 
-
     - name: libtorch
       if: steps.cache-libtorch.outputs.cache-hit != 'true'
       uses: pypa/cibuildwheel@v2.16.2
