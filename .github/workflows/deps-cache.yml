@@ -17,11 +17,14 @@ env:
   LIBTORCH_VERSION: 2.1.0
   TORCHVISION_VERSION: 0.16.0
   PROTOBUF_VERSION: 3.11.2
-  CACHE_DATE: 20231010
+  CACHE_DATE: 20231213
 
 jobs:
   ubuntu-deps:
     runs-on: ubuntu-20.04
+    container:
+      image: quay.io/pypa/manylinux2014_x86_64
+
     steps:
     - uses: actions/setup-python@v5
       with:
@@ -102,172 +105,172 @@ jobs:
         cmake --build . -j 2
         cmake --build . --target install/strip
 
-  macos-deps:
-    runs-on: macos-11
-    steps:
-    - uses: actions/setup-python@v5
-      with:
-        python-version: '3.10'
-    - name: pnnx-patches
-      uses: actions/checkout@v4
-      with:
-        path: pnnx-patches
-    - name: cache-libtorch
-      id: cache-libtorch
-      uses: actions/cache@v3.3.2
-      with:
-        path: "libtorch"
-        key: libtorch-${{ env.LIBTORCH_VERSION }}-macos-${{ env.CACHE_DATE }}
-    - name: libtorch
-      if: steps.cache-libtorch.outputs.cache-hit != 'true'
-      run: |
-        wget -q https://github.com/pytorch/pytorch/releases/download/v${{ env.LIBTORCH_VERSION }}/pytorch-v${{ env.LIBTORCH_VERSION }}.tar.gz
-        tar -xf pytorch-v${{ env.LIBTORCH_VERSION }}.tar.gz
-        cd pytorch-v${{ env.LIBTORCH_VERSION }}
-        pip3 install -r requirements.txt
-        patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-mobile-build.patch
-        patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-no-link-system-lib.patch
-        mkdir -p build; cd build
-        cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/libtorch" -DCMAKE_BUILD_TYPE=MinSizeRel -DBUILD_SHARED_LIBS=OFF \
-            -DBUILD_CAFFE2_OPS=OFF \
-            -DBUILD_CUSTOM_PROTOBUF=OFF \
-            -DBUILD_LITE_INTERPRETER=OFF \
-            -DBUILD_PYTHON=OFF \
-            -DINTERN_BUILD_MOBILE=ON \
-            -DINTERN_DISABLE_AUTOGRAD=ON \
-            -DINTERN_DISABLE_ONNX=ON \
-            -DUSE_CUDA=OFF \
-            -DUSE_DISTRIBUTED=OFF \
-            -DUSE_ITT=OFF \
-            -DUSE_KINETO=OFF \
-            -DUSE_LITE_INTERPRETER_PROFILER=OFF \
-            -DUSE_MKLDNN=OFF \
-            -DUSE_NUMPY=OFF \
-            -DUSE_OPENMP=OFF \
-            -DUSE_SOURCE_DEBUG_ON_MOBILE=OFF \
-            -DUSE_XNNPACK=OFF \
-            ..
-        cmake --build . -j 3
-        cmake --build . --target install/strip
-    - name: cache-torchvision
-      id: cache-torchvision
-      uses: actions/cache@v3.3.2
-      with:
-        path: "torchvision"
-        key: torchvision-${{ env.TORCHVISION_VERSION }}-macos-${{ env.CACHE_DATE }}
-    - name: torchvision
-      if: steps.cache-torchvision.outputs.cache-hit != 'true'
-      run: |
-        wget -q https://github.com/pytorch/vision/archive/refs/tags/v${{ env.TORCHVISION_VERSION }}.zip -O vision-${{ env.TORCHVISION_VERSION }}.zip
-        unzip -q vision-${{ env.TORCHVISION_VERSION }}.zip
-        cd vision-${{ env.TORCHVISION_VERSION }}
-        patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/vision-${{ env.TORCHVISION_VERSION }}-ops-only.patch
-        patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/vision-${{ env.TORCHVISION_VERSION }}-no-cuda-version.patch
-        mkdir -p build; cd build
-        cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/torchvision" -DTorch_DIR="$GITHUB_WORKSPACE/libtorch/share/cmake/Torch" -DCMAKE_BUILD_TYPE=MinSizeRel -DWITH_PNG=OFF -DWITH_JPEG=OFF ..
-        cmake --build . -j 3
-        cmake --build . --target install/strip
-    - name: cache-protobuf
-      id: cache-protobuf
-      uses: actions/cache@v3.3.2
-      with:
-        path: "protobuf"
-        key: protobuf-${{ env.PROTOBUF_VERSION }}-macos-${{ env.CACHE_DATE }}
-    - name: protobuf
-      if: steps.cache-protobuf.outputs.cache-hit != 'true'
-      run: |
-        wget -q https://github.com/protocolbuffers/protobuf/archive/v${{ env.PROTOBUF_VERSION }}.zip -O protobuf-${{ env.PROTOBUF_VERSION }}.zip
-        unzip -q protobuf-${{ env.PROTOBUF_VERSION }}.zip
-        cd protobuf-${{ env.PROTOBUF_VERSION }}
-        mkdir -p build2; cd build2;
-        cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/protobuf" -Dprotobuf_BUILD_TESTS=OFF -DCMAKE_BUILD_TYPE=MinSizeRel ../cmake
-        cmake --build . -j 3
-        cmake --build . --target install/strip
-
-  windows-deps:
-    runs-on: windows-2019
-    env:
-      UseMultiToolTask: true
-    steps:
-    - uses: actions/setup-python@v5
-      with:
-        python-version: '3.10'
-    - name: pnnx-patches
-      uses: actions/checkout@v4
-      with:
-        path: pnnx-patches
-    - name: cache-libtorch
-      id: cache-libtorch
-      uses: actions/cache@v3.3.2
-      with:
-        path: "libtorch"
-        key: libtorch-${{ env.LIBTORCH_VERSION }}-vs2019-${{ env.CACHE_DATE }}
-    - name: libtorch
-      if: steps.cache-libtorch.outputs.cache-hit != 'true'
-      run: |
-        Invoke-WebRequest -Uri https://github.com/pytorch/pytorch/releases/download/v${{ env.LIBTORCH_VERSION }}/pytorch-v${{ env.LIBTORCH_VERSION }}.tar.gz -OutFile pytorch-v${{ env.LIBTORCH_VERSION }}.tar.gz
-        7z x pytorch-v${{ env.LIBTORCH_VERSION }}.tar.gz
-        7z x pytorch-v${{ env.LIBTORCH_VERSION }}.tar
-        cd pytorch-v${{ env.LIBTORCH_VERSION }}
-        pip3 install -r requirements.txt
-        C:\msys64\usr\bin\patch.exe -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\pytorch-v${{ env.LIBTORCH_VERSION }}-fix-mobile-build.patch
-        C:\msys64\usr\bin\patch.exe -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\pytorch-v${{ env.LIBTORCH_VERSION }}-no-link-system-lib.patch
-        C:\msys64\usr\bin\patch.exe -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\pytorch-v${{ env.LIBTORCH_VERSION }}-set-python-executable.patch
-        C:\msys64\usr\bin\patch.exe -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\pytorch-v${{ env.LIBTORCH_VERSION }}-no-mimalloc.patch
-        mkdir -p build; cd build
-        cmake -DCMAKE_INSTALL_PREFIX="$env:GITHUB_WORKSPACE/libtorch" -DCMAKE_BUILD_TYPE=MinSizeRel -DBUILD_SHARED_LIBS=OFF -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded `
-            -DBUILD_CAFFE2_OPS=OFF `
-            -DBUILD_CUSTOM_PROTOBUF=OFF `
-            -DBUILD_LITE_INTERPRETER=OFF `
-            -DBUILD_PYTHON=OFF `
-            -DINTERN_BUILD_MOBILE=ON `
-            -DINTERN_DISABLE_AUTOGRAD=ON `
-            -DINTERN_DISABLE_ONNX=ON `
-            -DUSE_CUDA=OFF `
-            -DUSE_DISTRIBUTED=OFF `
-            -DUSE_ITT=OFF `
-            -DUSE_KINETO=OFF `
-            -DUSE_LITE_INTERPRETER_PROFILER=OFF `
-            -DUSE_MKLDNN=OFF `
-            -DUSE_NUMPY=OFF `
-            -DUSE_OPENMP=OFF `
-            -DUSE_SOURCE_DEBUG_ON_MOBILE=OFF `
-            -DUSE_XNNPACK=OFF `
-            ..
-        cmake --build . --config MinSizeRel -j 2
-        cmake --build . --config MinSizeRel --target install
-    - name: cache-torchvision
-      id: cache-torchvision
-      uses: actions/cache@v3.3.2
-      with:
-        path: "torchvision"
-        key: torchvision-${{ env.TORCHVISION_VERSION }}-vs2019-${{ env.CACHE_DATE }}
-    - name: torchvision
-      if: steps.cache-torchvision.outputs.cache-hit != 'true'
-      run: |
-        Invoke-WebRequest -Uri https://github.com/pytorch/vision/archive/refs/tags/v${{ env.TORCHVISION_VERSION }}.zip -OutFile vision-${{ env.TORCHVISION_VERSION }}.zip
-        7z x vision-${{ env.TORCHVISION_VERSION }}.zip
-        cd vision-${{ env.TORCHVISION_VERSION }}
-        C:\msys64\usr\bin\patch.exe -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\vision-${{ env.TORCHVISION_VERSION }}-ops-only.patch
-        C:\msys64\usr\bin\patch.exe -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\vision-${{ env.TORCHVISION_VERSION }}-no-cuda-version.patch
-        C:\msys64\usr\bin\patch.exe -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\vision-${{ env.TORCHVISION_VERSION }}-no-dll-export.patch
-        mkdir -p build; cd build
-        cmake -DCMAKE_INSTALL_PREFIX="$env:GITHUB_WORKSPACE/torchvision" -DTorch_DIR="$env:GITHUB_WORKSPACE/libtorch/share/cmake/Torch" -DCMAKE_BUILD_TYPE=MinSizeRel -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded -DWITH_PNG=OFF -DWITH_JPEG=OFF ..
-        cmake --build . --config MinSizeRel -j 2
-        cmake --build . --config MinSizeRel --target install
-    - name: cache-protobuf
-      id: cache-protobuf
-      uses: actions/cache@v3.3.2
-      with:
-        path: "protobuf"
-        key: protobuf-${{ env.PROTOBUF_VERSION }}-vs2019-${{ env.CACHE_DATE }}
-    - name: protobuf
-      if: steps.cache-protobuf.outputs.cache-hit != 'true'
-      run: |
-        Invoke-WebRequest -Uri https://github.com/protocolbuffers/protobuf/archive/v${{ env.PROTOBUF_VERSION }}.zip -OutFile protobuf-${{ env.PROTOBUF_VERSION }}.zip
-        7z x ./protobuf-${{ env.PROTOBUF_VERSION }}.zip
-        cd protobuf-${{ env.PROTOBUF_VERSION }}
-        mkdir -p build2; cd build2;
-        cmake -DCMAKE_INSTALL_PREFIX="$env:GITHUB_WORKSPACE/protobuf" -Dprotobuf_BUILD_TESTS=OFF -Dprotobuf_MSVC_STATIC_RUNTIME=ON -DCMAKE_BUILD_TYPE=MinSizeRel ../cmake
-        cmake --build . --config MinSizeRel -j 2
-        cmake --build . --config MinSizeRel --target install
+  # macos-deps:
+  #   runs-on: macos-11
+  #   steps:
+  #   - uses: actions/setup-python@v5
+  #     with:
+  #       python-version: '3.10'
+  #   - name: pnnx-patches
+  #     uses: actions/checkout@v4
+  #     with:
+  #       path: pnnx-patches
+  #   - name: cache-libtorch
+  #     id: cache-libtorch
+  #     uses: actions/cache@v3.3.2
+  #     with:
+  #       path: "libtorch"
+  #       key: libtorch-${{ env.LIBTORCH_VERSION }}-macos-${{ env.CACHE_DATE }}
+  #   - name: libtorch
+  #     if: steps.cache-libtorch.outputs.cache-hit != 'true'
+  #     run: |
+  #       wget -q https://github.com/pytorch/pytorch/releases/download/v${{ env.LIBTORCH_VERSION }}/pytorch-v${{ env.LIBTORCH_VERSION }}.tar.gz
+  #       tar -xf pytorch-v${{ env.LIBTORCH_VERSION }}.tar.gz
+  #       cd pytorch-v${{ env.LIBTORCH_VERSION }}
+  #       pip3 install -r requirements.txt
+  #       patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-mobile-build.patch
+  #       patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-no-link-system-lib.patch
+  #       mkdir -p build; cd build
+  #       cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/libtorch" -DCMAKE_BUILD_TYPE=MinSizeRel -DBUILD_SHARED_LIBS=OFF \
+  #           -DBUILD_CAFFE2_OPS=OFF \
+  #           -DBUILD_CUSTOM_PROTOBUF=OFF \
+  #           -DBUILD_LITE_INTERPRETER=OFF \
+  #           -DBUILD_PYTHON=OFF \
+  #           -DINTERN_BUILD_MOBILE=ON \
+  #           -DINTERN_DISABLE_AUTOGRAD=ON \
+  #           -DINTERN_DISABLE_ONNX=ON \
+  #           -DUSE_CUDA=OFF \
+  #           -DUSE_DISTRIBUTED=OFF \
+  #           -DUSE_ITT=OFF \
+  #           -DUSE_KINETO=OFF \
+  #           -DUSE_LITE_INTERPRETER_PROFILER=OFF \
+  #           -DUSE_MKLDNN=OFF \
+  #           -DUSE_NUMPY=OFF \
+  #           -DUSE_OPENMP=OFF \
+  #           -DUSE_SOURCE_DEBUG_ON_MOBILE=OFF \
+  #           -DUSE_XNNPACK=OFF \
+  #           ..
+  #       cmake --build . -j 3
+  #       cmake --build . --target install/strip
+  #   - name: cache-torchvision
+  #     id: cache-torchvision
+  #     uses: actions/cache@v3.3.2
+  #     with:
+  #       path: "torchvision"
+  #       key: torchvision-${{ env.TORCHVISION_VERSION }}-macos-${{ env.CACHE_DATE }}
+  #   - name: torchvision
+  #     if: steps.cache-torchvision.outputs.cache-hit != 'true'
+  #     run: |
+  #       wget -q https://github.com/pytorch/vision/archive/refs/tags/v${{ env.TORCHVISION_VERSION }}.zip -O vision-${{ env.TORCHVISION_VERSION }}.zip
+  #       unzip -q vision-${{ env.TORCHVISION_VERSION }}.zip
+  #       cd vision-${{ env.TORCHVISION_VERSION }}
+  #       patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/vision-${{ env.TORCHVISION_VERSION }}-ops-only.patch
+  #       patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/vision-${{ env.TORCHVISION_VERSION }}-no-cuda-version.patch
+  #       mkdir -p build; cd build
+  #       cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/torchvision" -DTorch_DIR="$GITHUB_WORKSPACE/libtorch/share/cmake/Torch" -DCMAKE_BUILD_TYPE=MinSizeRel -DWITH_PNG=OFF -DWITH_JPEG=OFF ..
+  #       cmake --build . -j 3
+  #       cmake --build . --target install/strip
+  #   - name: cache-protobuf
+  #     id: cache-protobuf
+  #     uses: actions/cache@v3.3.2
+  #     with:
+  #       path: "protobuf"
+  #       key: protobuf-${{ env.PROTOBUF_VERSION }}-macos-${{ env.CACHE_DATE }}
+  #   - name: protobuf
+  #     if: steps.cache-protobuf.outputs.cache-hit != 'true'
+  #     run: |
+  #       wget -q https://github.com/protocolbuffers/protobuf/archive/v${{ env.PROTOBUF_VERSION }}.zip -O protobuf-${{ env.PROTOBUF_VERSION }}.zip
+  #       unzip -q protobuf-${{ env.PROTOBUF_VERSION }}.zip
+  #       cd protobuf-${{ env.PROTOBUF_VERSION }}
+  #       mkdir -p build2; cd build2;
+  #       cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/protobuf" -Dprotobuf_BUILD_TESTS=OFF -DCMAKE_BUILD_TYPE=MinSizeRel ../cmake
+  #       cmake --build . -j 3
+  #       cmake --build . --target install/strip
+  #
+  # windows-deps:
+  #   runs-on: windows-2019
+  #   env:
+  #     UseMultiToolTask: true
+  #   steps:
+  #   - uses: actions/setup-python@v5
+  #     with:
+  #       python-version: '3.10'
+  #   - name: pnnx-patches
+  #     uses: actions/checkout@v4
+  #     with:
+  #       path: pnnx-patches
+  #   - name: cache-libtorch
+  #     id: cache-libtorch
+  #     uses: actions/cache@v3.3.2
+  #     with:
+  #       path: "libtorch"
+  #       key: libtorch-${{ env.LIBTORCH_VERSION }}-vs2019-${{ env.CACHE_DATE }}
+  #   - name: libtorch
+  #     if: steps.cache-libtorch.outputs.cache-hit != 'true'
+  #     run: |
+  #       Invoke-WebRequest -Uri https://github.com/pytorch/pytorch/releases/download/v${{ env.LIBTORCH_VERSION }}/pytorch-v${{ env.LIBTORCH_VERSION }}.tar.gz -OutFile pytorch-v${{ env.LIBTORCH_VERSION }}.tar.gz
+  #       7z x pytorch-v${{ env.LIBTORCH_VERSION }}.tar.gz
+  #       7z x pytorch-v${{ env.LIBTORCH_VERSION }}.tar
+  #       cd pytorch-v${{ env.LIBTORCH_VERSION }}
+  #       pip3 install -r requirements.txt
+  #       C:\msys64\usr\bin\patch.exe -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\pytorch-v${{ env.LIBTORCH_VERSION }}-fix-mobile-build.patch
+  #       C:\msys64\usr\bin\patch.exe -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\pytorch-v${{ env.LIBTORCH_VERSION }}-no-link-system-lib.patch
+  #       C:\msys64\usr\bin\patch.exe -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\pytorch-v${{ env.LIBTORCH_VERSION }}-set-python-executable.patch
+  #       C:\msys64\usr\bin\patch.exe -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\pytorch-v${{ env.LIBTORCH_VERSION }}-no-mimalloc.patch
+  #       mkdir -p build; cd build
+  #       cmake -DCMAKE_INSTALL_PREFIX="$env:GITHUB_WORKSPACE/libtorch" -DCMAKE_BUILD_TYPE=MinSizeRel -DBUILD_SHARED_LIBS=OFF -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded `
+  #           -DBUILD_CAFFE2_OPS=OFF `
+  #           -DBUILD_CUSTOM_PROTOBUF=OFF `
+  #           -DBUILD_LITE_INTERPRETER=OFF `
+  #           -DBUILD_PYTHON=OFF `
+  #           -DINTERN_BUILD_MOBILE=ON `
+  #           -DINTERN_DISABLE_AUTOGRAD=ON `
+  #           -DINTERN_DISABLE_ONNX=ON `
+  #           -DUSE_CUDA=OFF `
+  #           -DUSE_DISTRIBUTED=OFF `
+  #           -DUSE_ITT=OFF `
+  #           -DUSE_KINETO=OFF `
+  #           -DUSE_LITE_INTERPRETER_PROFILER=OFF `
+  #           -DUSE_MKLDNN=OFF `
+  #           -DUSE_NUMPY=OFF `
+  #           -DUSE_OPENMP=OFF `
+  #           -DUSE_SOURCE_DEBUG_ON_MOBILE=OFF `
+  #           -DUSE_XNNPACK=OFF `
+  #           ..
+  #       cmake --build . --config MinSizeRel -j 2
+  #       cmake --build . --config MinSizeRel --target install
+  #   - name: cache-torchvision
+  #     id: cache-torchvision
+  #     uses: actions/cache@v3.3.2
+  #     with:
+  #       path: "torchvision"
+  #       key: torchvision-${{ env.TORCHVISION_VERSION }}-vs2019-${{ env.CACHE_DATE }}
+  #   - name: torchvision
+  #     if: steps.cache-torchvision.outputs.cache-hit != 'true'
+  #     run: |
+  #       Invoke-WebRequest -Uri https://github.com/pytorch/vision/archive/refs/tags/v${{ env.TORCHVISION_VERSION }}.zip -OutFile vision-${{ env.TORCHVISION_VERSION }}.zip
+  #       7z x vision-${{ env.TORCHVISION_VERSION }}.zip
+  #       cd vision-${{ env.TORCHVISION_VERSION }}
+  #       C:\msys64\usr\bin\patch.exe -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\vision-${{ env.TORCHVISION_VERSION }}-ops-only.patch
+  #       C:\msys64\usr\bin\patch.exe -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\vision-${{ env.TORCHVISION_VERSION }}-no-cuda-version.patch
+  #       C:\msys64\usr\bin\patch.exe -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\vision-${{ env.TORCHVISION_VERSION }}-no-dll-export.patch
+  #       mkdir -p build; cd build
+  #       cmake -DCMAKE_INSTALL_PREFIX="$env:GITHUB_WORKSPACE/torchvision" -DTorch_DIR="$env:GITHUB_WORKSPACE/libtorch/share/cmake/Torch" -DCMAKE_BUILD_TYPE=MinSizeRel -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded -DWITH_PNG=OFF -DWITH_JPEG=OFF ..
+  #       cmake --build . --config MinSizeRel -j 2
+  #       cmake --build . --config MinSizeRel --target install
+  #   - name: cache-protobuf
+  #     id: cache-protobuf
+  #     uses: actions/cache@v3.3.2
+  #     with:
+  #       path: "protobuf"
+  #       key: protobuf-${{ env.PROTOBUF_VERSION }}-vs2019-${{ env.CACHE_DATE }}
+  #   - name: protobuf
+  #     if: steps.cache-protobuf.outputs.cache-hit != 'true'
+  #     run: |
+  #       Invoke-WebRequest -Uri https://github.com/protocolbuffers/protobuf/archive/v${{ env.PROTOBUF_VERSION }}.zip -OutFile protobuf-${{ env.PROTOBUF_VERSION }}.zip
+  #       7z x ./protobuf-${{ env.PROTOBUF_VERSION }}.zip
+  #       cd protobuf-${{ env.PROTOBUF_VERSION }}
+  #       mkdir -p build2; cd build2;
+  #       cmake -DCMAKE_INSTALL_PREFIX="$env:GITHUB_WORKSPACE/protobuf" -Dprotobuf_BUILD_TESTS=OFF -Dprotobuf_MSVC_STATIC_RUNTIME=ON -DCMAKE_BUILD_TYPE=MinSizeRel ../cmake
+  #       cmake --build . --config MinSizeRel -j 2
+  #       cmake --build . --config MinSizeRel --target install
