@@ -31,6 +31,13 @@ jobs:
       with:
         path: pnnx-patches
 
+
+    - name: python-manylinux-demo
+      uses: actions/checkout@v4
+      with:
+        repository: pypa/python-manylinux-demo
+        path: python-manylinux-demo
+
     - name: cache-libtorch
       id: cache-libtorch
       uses: actions/cache@v3.3.2
@@ -53,8 +60,8 @@ jobs:
           tar -xf pytorch-v${{ env.LIBTORCH_VERSION }}.tar.gz &&
           cd pytorch-v${{ env.LIBTORCH_VERSION }} &&
           pip install -r requirements.txt &&
-          patch -p1 -i /project/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-mobile-build.patch &&
-          patch -p1 -i /project/pytorch-v${{ env.LIBTORCH_VERSION }}-no-link-system-lib.patch &&
+          patch -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-mobile-build.patch &&
+          patch -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-no-link-system-lib.patch &&
           mkdir -p build && cd build &&
           cmake -DCMAKE_INSTALL_PREFIX="/project/libtorch" -DCMAKE_BUILD_TYPE=MinSizeRel -DBUILD_SHARED_LIBS=OFF
               -DBUILD_CAFFE2_OPS=OFF
@@ -79,6 +86,9 @@ jobs:
               .. &&
           cmake --build . -j 2 &&
           cmake --build . --target install/strip
+      with:
+        package-dir: ./pypa/python-manylinux-demo
+        output-dir: wheelhouse1
 
     - name: cache-torchvision
       id: cache-torchvision
@@ -101,8 +111,8 @@ jobs:
           wget -q https://github.com/pytorch/vision/archive/refs/tags/v${{ env.TORCHVISION_VERSION }}.zip -O vision-${{ env.TORCHVISION_VERSION }}.zip &&
           unzip -q vision-${{ env.TORCHVISION_VERSION }}.zip &&
           cd vision-${{ env.TORCHVISION_VERSION }} &&
-          patch -p1 -i /project/vision-${{ env.TORCHVISION_VERSION }}-ops-only.patch  &&
-          patch -p1 -i /project/vision-${{ env.TORCHVISION_VERSION }}-no-cuda-version.patch  &&
+          patch -p1 -i /project/pnnx-patches/vision-${{ env.TORCHVISION_VERSION }}-ops-only.patch  &&
+          patch -p1 -i /project/pnnx-patches/vision-${{ env.TORCHVISION_VERSION }}-no-cuda-version.patch  &&
           mkdir -p build && cd build  &&
           cmake -DCMAKE_INSTALL_PREFIX="/project/torchvision"
           -DTorch_DIR="/project/libtorch/share/cmake/Torch"
@@ -111,6 +121,9 @@ jobs:
           -DCMAKE_CXX_COMPILER="/opt/rh/devtoolset-9/root/usr/bin/c++" -DWITH_JPEG=OFF ..  &&
           cmake --build . -j 2  &&
           cmake --build . --target install/strip
+      with:
+        package-dir: ./pypa/python-manylinux-demo
+        output-dir: wheelhouse2
 
     - name: cache-protobuf
       id: cache-protobuf
@@ -138,6 +151,9 @@ jobs:
           -DCMAKE_CXX_COMPILER="/opt/rh/devtoolset-9/root/usr/bin/c++" -DCMAKE_BUILD_TYPE=MinSizeRel ../cmake &&
           cmake --build . -j 2 &&
           cmake --build . --target install/strip
+      with:
+        package-dir: ./pypa/python-manylinux-demo
+        output-dir: wheelhouse3
 
   # macos-deps:
   #   runs-on: macos-11
