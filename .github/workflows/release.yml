@@ -522,7 +522,7 @@ jobs:
         python-version: '3.10'
 
     - name: download-pnnx
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: pnnx-${{ needs.setup.outputs.VERSION }}-linux
         path: /tmp
@@ -564,7 +564,7 @@ jobs:
         python-version: '3.10'
 
     - name: download-pnnx
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: pnnx-${{ needs.setup.outputs.VERSION }}-macos
         path: tmp
@@ -610,7 +610,7 @@ jobs:
         python-version: '3.10'
 
     - name: download-pnnx
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: pnnx-${{ needs.setup.outputs.VERSION }}-windows
         path: tmp
@@ -652,17 +652,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: download-linux
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: pnnx-${{ needs.setup.outputs.VERSION }}-linux
         path: artifacts
     - name: download-macos
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: pnnx-${{ needs.setup.outputs.VERSION }}-macos
         path: artifacts
     - name: download-windows
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: pnnx-${{ needs.setup.outputs.VERSION }}-windows
         path: artifacts
@@ -681,17 +681,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: download-linux
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: pnnx-${{ needs.setup.outputs.VERSION }}-linux-python
         path: dist
     - name: download-macos
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: pnnx-${{ needs.setup.outputs.VERSION }}-macos-python
         path: dist
     - name: download-windows
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: pnnx-${{ needs.setup.outputs.VERSION }}-windows-python
         path: dist
