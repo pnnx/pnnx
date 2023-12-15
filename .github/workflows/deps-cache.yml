@@ -46,7 +46,7 @@ jobs:
         CIBW_BUILD: 'cp310-manylinux_x86_64'
         CIBW_BUILD_VERBOSITY: 1
         CIBW_REPAIR_WHEEL_COMMAND: ""
-        CIBW_BEFORE_ALL: echo "hello cibuildwheel" > /output/a.txt
+        CIBW_BEFORE_ALL: echo "hello cibuildwheel" > wheelhouse1/a.txt
         # CIBW_BEFORE_ALL: yum install protobuf-devel -y &&
         #   yum install devtoolset-9 -y &&
         #   yum install wget zip -y &&
