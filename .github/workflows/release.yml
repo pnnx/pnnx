@@ -385,7 +385,7 @@ jobs:
     - name: package
       run: |
         mkdir ${{ env.PACKAGENAME }}
-        cp README.md ${{ env.PACKAGENAME }}
+        cp pnnx-patches/README.md ${{ env.PACKAGENAME }}
         cp /tmp/install/bin/pnnx ${{ env.PACKAGENAME }}
         zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
     - name: upload
@@ -527,6 +527,11 @@ jobs:
         name: pnnx-${{ needs.setup.outputs.VERSION }}-linux
         path: /tmp
 
+    - name: unzip-pnnx
+      run: |
+        cd /tmp
+        unzip -q pnnx-${{ needs.setup.outputs.VERSION }}-linux.zip
+
     - name: ncnn
       uses: actions/checkout@v4
       with:
@@ -568,6 +573,11 @@ jobs:
       with:
         name: pnnx-${{ needs.setup.outputs.VERSION }}-macos
         path: tmp
+
+    - name: unzip-pnnx
+      run: |
+        cd tmp
+        unzip -q pnnx-${{ needs.setup.outputs.VERSION }}-macos.zip
 
     - name: ncnn
       uses: actions/checkout@v4
@@ -614,6 +624,11 @@ jobs:
       with:
         name: pnnx-${{ needs.setup.outputs.VERSION }}-windows
         path: tmp
+
+    - name: unzip-pnnx
+      run: |
+        cd tmp
+        7z x pnnx-${{ needs.setup.outputs.VERSION }}-windows.zip
 
     - name: ncnn
       uses: actions/checkout@v4
