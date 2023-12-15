@@ -109,7 +109,7 @@ jobs:
           patch -p1 -i /project/pnnx-patches/vision-${{ env.TORCHVISION_VERSION }}-ops-only.patch  &&
           patch -p1 -i /project/pnnx-patches/vision-${{ env.TORCHVISION_VERSION }}-no-cuda-version.patch  &&
           mkdir -p build && cd build  &&
-          cmake -DCMAKE_INSTALL_PREFIX="/tmp/torchvision"
+          cmake -DCMAKE_INSTALL_PREFIX="/host/tmp/torchvision"
           -DTorch_DIR="/host/tmp/libtorch/share/cmake/Torch"
           -DCMAKE_BUILD_TYPE=MinSizeRel -DWITH_PNG=OFF
           -DCMAKE_C_COMPILER="/opt/rh/devtoolset-9/root/usr/bin/cc"
