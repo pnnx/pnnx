@@ -356,11 +356,11 @@ jobs:
           cd /project/ncnn/tools/pnnx/ &&
           mkdir build && cd build &&
           cmake -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=MinSizeRel 
-            -DTorch_INSTALL_DIR="/tmp/libtorch"
-            -DTorchVision_INSTALL_DIR="/tmp/torchvision"
-            -DProtobuf_INCLUDE_DIR="/tmp/protobuf/include"
-            -DProtobuf_LIBRARIES="/tmp/protobuf/lib64/libprotobuf.a"
-            -DProtobuf_PROTOC_EXECUTABLE="/tmp/protobuf/bin/protoc"
+            -DTorch_INSTALL_DIR="/host/tmp/libtorch"
+            -DTorchVision_INSTALL_DIR="/host/tmp/torchvision"
+            -DProtobuf_INCLUDE_DIR="/host/tmp/protobuf/include"
+            -DProtobuf_LIBRARIES="/host/tmp/protobuf/lib64/libprotobuf.a"
+            -DProtobuf_PROTOC_EXECUTABLE="/host/tmp/protobuf/bin/protoc"
             -DCMAKE_CXX_COMPILER="/opt/rh/devtoolset-9/root/usr/bin/c++"
             -DCMAKE_C_COMPILER="/opt/rh/devtoolset-9/root/usr/bin/cc"
             .. &&
