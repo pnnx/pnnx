@@ -1,14 +1,15 @@
 name: release
+# on: [push]
 on:
   push:
     tags:
       - '*'
 
 env:
-  LIBTORCH_VERSION: 2.1.0
-  TORCHVISION_VERSION: 0.16.0
+  LIBTORCH_VERSION: 2.1.2
+  TORCHVISION_VERSION: 0.16.2
   PROTOBUF_VERSION: 3.11.2
-  CACHE_DATE: 20231010
+  CACHE_DATE: 20231213
 
 permissions:
   contents: read
@@ -25,7 +26,7 @@ jobs:
       id: get_version
       run: echo "VERSION=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_OUTPUT
 
-  ubuntu-deps:
+  linux-deps:
     runs-on: ubuntu-20.04
     steps:
     - uses: actions/setup-python@v5
@@ -39,73 +40,113 @@ jobs:
       id: cache-libtorch
       uses: actions/cache@v3.3.2
       with:
-        path: "libtorch"
-        key: libtorch-${{ env.LIBTORCH_VERSION }}-ubuntu-${{ env.CACHE_DATE }}
+        path: "/tmp/libtorch"
+        key: libtorch-${{ env.LIBTORCH_VERSION }}-linux-${{ env.CACHE_DATE }}
     - name: libtorch
       if: steps.cache-libtorch.outputs.cache-hit != 'true'
-      run: |
-        wget -q https://github.com/pytorch/pytorch/releases/download/v${{ env.LIBTORCH_VERSION }}/pytorch-v${{ env.LIBTORCH_VERSION }}.tar.gz
-        tar -xf pytorch-v${{ env.LIBTORCH_VERSION }}.tar.gz
-        cd pytorch-v${{ env.LIBTORCH_VERSION }}
-        pip3 install -r requirements.txt
-        patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-mobile-build.patch
-        patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-no-link-system-lib.patch
-        mkdir -p build; cd build
-        cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/libtorch" -DCMAKE_BUILD_TYPE=MinSizeRel -DBUILD_SHARED_LIBS=OFF \
-            -DBUILD_CAFFE2_OPS=OFF \
-            -DBUILD_CUSTOM_PROTOBUF=OFF \
-            -DBUILD_LITE_INTERPRETER=OFF \
-            -DBUILD_PYTHON=OFF \
-            -DINTERN_BUILD_MOBILE=ON \
-            -DINTERN_DISABLE_AUTOGRAD=ON \
-            -DINTERN_DISABLE_ONNX=ON \
-            -DUSE_CUDA=OFF \
-            -DUSE_DISTRIBUTED=OFF \
-            -DUSE_ITT=OFF \
-            -DUSE_KINETO=OFF \
-            -DUSE_LITE_INTERPRETER_PROFILER=OFF \
-            -DUSE_MKLDNN=OFF \
-            -DUSE_NUMPY=OFF \
-            -DUSE_OPENMP=OFF \
-            -DUSE_SOURCE_DEBUG_ON_MOBILE=OFF \
-            -DUSE_XNNPACK=OFF \
-            ..
-        cmake --build . -j 2
-        cmake --build . --target install/strip
+      uses: pypa/cibuildwheel@v2.16.2
+      env:
+        CIBW_ARCHS_LINUX: "x86_64"
+        CIBW_BUILD: 'cp310-manylinux_x86_64'
+        CIBW_BUILD_VERBOSITY: 1
+        CIBW_REPAIR_WHEEL_COMMAND: ""
+        CIBW_BEFORE_ALL: yum install protobuf-devel -y &&
+          yum install devtoolset-9 -y &&
+          yum install wget zip -y &&
+          wget -q https://github.com/pytorch/pytorch/releases/download/v${{ env.LIBTORCH_VERSION }}/pytorch-v${{ env.LIBTORCH_VERSION }}.tar.gz &&
+          tar -xf pytorch-v${{ env.LIBTORCH_VERSION }}.tar.gz &&
+          cd pytorch-v${{ env.LIBTORCH_VERSION }} &&
+          pip install -r requirements.txt &&
+          patch -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-mobile-build.patch &&
+          patch -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-no-link-system-lib.patch &&
+          mkdir -p build && cd build &&
+          cmake -DCMAKE_INSTALL_PREFIX="/host/tmp/libtorch" -DCMAKE_BUILD_TYPE=MinSizeRel -DBUILD_SHARED_LIBS=OFF
+              -DBUILD_CAFFE2_OPS=OFF
+              -DBUILD_CUSTOM_PROTOBUF=OFF
+              -DBUILD_LITE_INTERPRETER=OFF
+              -DBUILD_PYTHON=OFF
+              -DINTERN_BUILD_MOBILE=ON
+              -DINTERN_DISABLE_AUTOGRAD=ON
+              -DINTERN_DISABLE_ONNX=ON
+              -DUSE_CUDA=OFF
+              -DUSE_DISTRIBUTED=OFF
+              -DUSE_ITT=OFF
+              -DUSE_KINETO=OFF
+              -DUSE_LITE_INTERPRETER_PROFILER=OFF
+              -DUSE_MKLDNN=OFF
+              -DUSE_NUMPY=OFF
+              -DUSE_OPENMP=OFF
+              -DUSE_SOURCE_DEBUG_ON_MOBILE=OFF
+              -DUSE_XNNPACK=OFF
+              -DCMAKE_CXX_COMPILER="/opt/rh/devtoolset-9/root/usr/bin/c++"
+              -DCMAKE_C_COMPILER="/opt/rh/devtoolset-9/root/usr/bin/cc"
+              .. &&
+          cmake --build . -j 2 &&
+          cmake --build . --target install/strip
+      with:
+        package-dir: pnnx-patches
+        output-dir: wheelhouse1
     - name: cache-torchvision
       id: cache-torchvision
       uses: actions/cache@v3.3.2
       with:
-        path: "torchvision"
-        key: torchvision-${{ env.TORCHVISION_VERSION }}-ubuntu-${{ env.CACHE_DATE }}
+        path: "/tmp/torchvision"
+        key: torchvision-${{ env.TORCHVISION_VERSION }}-linux-${{ env.CACHE_DATE }}
     - name: torchvision
       if: steps.cache-torchvision.outputs.cache-hit != 'true'
-      run: |
-        wget -q https://github.com/pytorch/vision/archive/refs/tags/v${{ env.TORCHVISION_VERSION }}.zip -O vision-${{ env.TORCHVISION_VERSION }}.zip
-        unzip -q vision-${{ env.TORCHVISION_VERSION }}.zip
-        cd vision-${{ env.TORCHVISION_VERSION }}
-        patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/vision-${{ env.TORCHVISION_VERSION }}-ops-only.patch
-        patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/vision-${{ env.TORCHVISION_VERSION }}-no-cuda-version.patch
-        mkdir -p build; cd build
-        cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/torchvision" -DTorch_DIR="$GITHUB_WORKSPACE/libtorch/share/cmake/Torch" -DCMAKE_BUILD_TYPE=MinSizeRel -DWITH_PNG=OFF -DWITH_JPEG=OFF ..
-        cmake --build . -j 2
-        cmake --build . --target install/strip
+      uses: pypa/cibuildwheel@v2.16.2
+      env:
+        CIBW_ARCHS_LINUX: "x86_64"
+        CIBW_BUILD: 'cp310-manylinux_x86_64'
+        CIBW_BUILD_VERBOSITY: 1
+        CIBW_REPAIR_WHEEL_COMMAND: ""
+        CIBW_BEFORE_ALL: yum install protobuf-devel -y &&
+          yum install devtoolset-9 -y &&
+          yum install wget zip -y &&
+          wget -q https://github.com/pytorch/vision/archive/refs/tags/v${{ env.TORCHVISION_VERSION }}.zip -O vision-${{ env.TORCHVISION_VERSION }}.zip &&
+          unzip -q vision-${{ env.TORCHVISION_VERSION }}.zip &&
+          cd vision-${{ env.TORCHVISION_VERSION }} &&
+          patch -p1 -i /project/pnnx-patches/vision-${{ env.TORCHVISION_VERSION }}-ops-only.patch  &&
+          patch -p1 -i /project/pnnx-patches/vision-${{ env.TORCHVISION_VERSION }}-no-cuda-version.patch  &&
+          mkdir -p build && cd build  &&
+          cmake -DCMAKE_INSTALL_PREFIX="/host/tmp/torchvision"
+          -DTorch_DIR="/host/tmp/libtorch/share/cmake/Torch"
+          -DCMAKE_BUILD_TYPE=MinSizeRel -DWITH_PNG=OFF
+          -DCMAKE_C_COMPILER="/opt/rh/devtoolset-9/root/usr/bin/cc"
+          -DCMAKE_CXX_COMPILER="/opt/rh/devtoolset-9/root/usr/bin/c++" -DWITH_JPEG=OFF ..  &&
+          cmake --build . -j 2  &&
+          cmake --build . --target install/strip
+      with:
+        package-dir: pnnx-patches
+        output-dir: wheelhouse2
     - name: cache-protobuf
       id: cache-protobuf
       uses: actions/cache@v3.3.2
       with:
-        path: "protobuf"
-        key: protobuf-${{ env.PROTOBUF_VERSION }}-ubuntu-${{ env.CACHE_DATE }}
+        path: "/tmp/protobuf"
+        key: protobuf-${{ env.PROTOBUF_VERSION }}-linux-${{ env.CACHE_DATE }}
     - name: protobuf
       if: steps.cache-protobuf.outputs.cache-hit != 'true'
-      run: |
-        wget -q https://github.com/protocolbuffers/protobuf/archive/v${{ env.PROTOBUF_VERSION }}.zip -O protobuf-${{ env.PROTOBUF_VERSION }}.zip
-        unzip -q protobuf-${{ env.PROTOBUF_VERSION }}.zip
-        cd protobuf-${{ env.PROTOBUF_VERSION }}
-        mkdir -p build2; cd build2;
-        cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/protobuf" -Dprotobuf_BUILD_TESTS=OFF -DCMAKE_BUILD_TYPE=MinSizeRel ../cmake
-        cmake --build . -j 2
-        cmake --build . --target install/strip
+      uses: pypa/cibuildwheel@v2.16.2
+      env:
+        CIBW_ARCHS_LINUX: "x86_64"
+        CIBW_BUILD: 'cp310-manylinux_x86_64'
+        CIBW_BUILD_VERBOSITY: 1
+        CIBW_REPAIR_WHEEL_COMMAND: ""
+        CIBW_BEFORE_ALL: yum install protobuf-devel -y &&
+          yum install devtoolset-9 -y &&
+          yum install wget zip -y &&
+          wget -q https://github.com/protocolbuffers/protobuf/archive/v${{ env.PROTOBUF_VERSION }}.zip -O protobuf-${{ env.PROTOBUF_VERSION }}.zip &&
+          unzip -q protobuf-${{ env.PROTOBUF_VERSION }}.zip &&
+          cd protobuf-${{ env.PROTOBUF_VERSION }} &&
+          mkdir -p build2 && cd build2 &&
+          cmake -DCMAKE_INSTALL_PREFIX="/host/tmp/protobuf" -Dprotobuf_BUILD_TESTS=OFF -DCMAKE_C_COMPILER="/opt/rh/devtoolset-9/root/usr/bin/cc"
+          -DCMAKE_CXX_COMPILER="/opt/rh/devtoolset-9/root/usr/bin/c++" -DCMAKE_BUILD_TYPE=MinSizeRel ../cmake &&
+          cmake --build . -j 2 &&
+          cmake --build . --target install/strip
+      with:
+        package-dir: pnnx-patches
+        output-dir: wheelhouse3
 
   macos-deps:
     runs-on: macos-11
@@ -277,58 +318,75 @@ jobs:
         cmake --build . --config MinSizeRel -j 2
         cmake --build . --config MinSizeRel --target install
 
-  ubuntu:
-    needs: [setup, ubuntu-deps]
+  linux:
+    needs: [setup, linux-deps]
     runs-on: ubuntu-20.04
     env:
-      PACKAGENAME: pnnx-${{ needs.setup.outputs.VERSION }}-ubuntu
+      PACKAGENAME: pnnx-${{ needs.setup.outputs.VERSION }}-linux
     steps:
     - uses: actions/setup-python@v5
       with:
         python-version: '3.10'
-    - name: checkout
+    - name: pnnx-patches
       uses: actions/checkout@v4
+      with:
+        path: pnnx-patches
     - name: cache-libtorch
       id: cache-libtorch
       uses: actions/cache@v3.3.2
       with:
-        path: "libtorch"
-        key: libtorch-${{ env.LIBTORCH_VERSION }}-ubuntu-${{ env.CACHE_DATE }}
+        path: "/tmp/libtorch"
+        key: libtorch-${{ env.LIBTORCH_VERSION }}-linux-${{ env.CACHE_DATE }}
     - name: cache-torchvision
       id: cache-torchvision
       uses: actions/cache@v3.3.2
       with:
-        path: "torchvision"
-        key: torchvision-${{ env.TORCHVISION_VERSION }}-ubuntu-${{ env.CACHE_DATE }}
+        path: "/tmp/torchvision"
+        key: torchvision-${{ env.TORCHVISION_VERSION }}-linux-${{ env.CACHE_DATE }}
     - name: cache-protobuf
       id: cache-protobuf
       uses: actions/cache@v3.3.2
       with:
-        path: "protobuf"
-        key: protobuf-${{ env.PROTOBUF_VERSION }}-ubuntu-${{ env.CACHE_DATE }}
+        path: "/tmp/protobuf"
+        key: protobuf-${{ env.PROTOBUF_VERSION }}-linux-${{ env.CACHE_DATE }}
     - name: ncnn
       uses: actions/checkout@v4
       with:
         repository: Tencent/ncnn
         path: ncnn
+
     - name: build-pnnx
-      run: |
-        cd ncnn/tools/pnnx
-        mkdir build && cd build
-        cmake -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=MinSizeRel \
-            -DTorch_INSTALL_DIR="$GITHUB_WORKSPACE/libtorch" \
-            -DTorchVision_INSTALL_DIR="$GITHUB_WORKSPACE/torchvision" \
-            -DProtobuf_INCLUDE_DIR="$GITHUB_WORKSPACE/protobuf/include" \
-            -DProtobuf_LIBRARIES="$GITHUB_WORKSPACE/protobuf/lib/libprotobuf.a" \
-            -DProtobuf_PROTOC_EXECUTABLE="$GITHUB_WORKSPACE/protobuf/bin/protoc" \
-            ..
-        cmake --build . -j 2
-        cmake --build . --target install/strip
+      uses: pypa/cibuildwheel@v2.16.2
+      env:
+        CIBW_ARCHS_LINUX: "x86_64"
+        CIBW_BUILD: 'cp310-manylinux_x86_64'
+        CIBW_BUILD_VERBOSITY: 1
+        CIBW_REPAIR_WHEEL_COMMAND: ""
+        CIBW_BEFORE_ALL: yum install protobuf-devel -y &&
+          yum install devtoolset-9 -y &&
+          yum install wget zip -y &&
+          cd /project/ncnn/tools/pnnx/ &&
+          mkdir build && cd build &&
+          cmake -DCMAKE_INSTALL_PREFIX=/host/tmp/install -DCMAKE_BUILD_TYPE=MinSizeRel
+            -DTorch_INSTALL_DIR="/host/tmp/libtorch"
+            -DTorchVision_INSTALL_DIR="/host/tmp/torchvision"
+            -DProtobuf_INCLUDE_DIR="/host/tmp/protobuf/include"
+            -DProtobuf_LIBRARIES="/host/tmp/protobuf/lib64/libprotobuf.a"
+            -DProtobuf_PROTOC_EXECUTABLE="/host/tmp/protobuf/bin/protoc"
+            -DCMAKE_CXX_COMPILER="/opt/rh/devtoolset-9/root/usr/bin/c++"
+            -DCMAKE_C_COMPILER="/opt/rh/devtoolset-9/root/usr/bin/cc"
+            .. &&
+          cmake --build . -j 2 &&
+          cmake --build . --target install/strip
+      with:
+        package-dir: pnnx-patches
+        output-dir: wheelhouse3
+
     - name: package
       run: |
         mkdir ${{ env.PACKAGENAME }}
         cp README.md ${{ env.PACKAGENAME }}
-        cp ncnn/tools/pnnx/build/install/bin/pnnx ${{ env.PACKAGENAME }}
+        cp /tmp/install/bin/pnnx ${{ env.PACKAGENAME }}
         zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
     - name: upload
       uses: actions/upload-artifact@v3
@@ -455,21 +513,189 @@ jobs:
         name: ${{ env.PACKAGENAME }}
         path: ${{ env.PACKAGENAME }}.zip
 
+  linux-python:
+    needs: [setup, linux]
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+
+    - name: download-pnnx
+      uses: actions/download-artifact@v3
+      with:
+        name: pnnx-${{ needs.setup.outputs.VERSION }}-linux
+        path: /tmp
+
+    - name: ncnn
+      uses: actions/checkout@v4
+      with:
+        repository: Tencent/ncnn
+        path: ncnn
+
+    - name: Build wheel for manylinux
+      uses: pypa/cibuildwheel@v2.16.2
+      env:
+        CIBW_ARCHS_LINUX: "x86_64"
+        CIBW_BUILD: 'cp*-manylinux*'
+        CIBW_SKIP: cp36-* cp312-*
+        CIBW_BUILD_VERBOSITY: 1
+        CIBW_BEFORE_ALL: cp /host/tmp/pnnx-${{ needs.setup.outputs.VERSION }}-linux/pnnx /project/ncnn/tools/pnnx/python/pnnx
+        CIBW_ENVIRONMENT: PNNX_WHEEL_WITHOUT_BUILD=ON
+        CIBW_BEFORE_TEST: pip install pytest numpy &&
+                          pip install torch torchvision
+        CIBW_TEST_COMMAND: "pytest {project}/ncnn/tools/pnnx/python/tests"
+      with:
+        package-dir: ./ncnn/tools/pnnx
+        output-dir: wheelhouse
+
+    - name: Upload wheels
+      uses: actions/upload-artifact@v3
+      with:
+        name: pnnx-${{ needs.setup.outputs.VERSION }}-linux-python
+        path: wheelhouse/*.whl
+
+  macos-python:
+    needs: [setup, macos]
+    runs-on: macos-11
+    steps:
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+
+    - name: download-pnnx
+      uses: actions/download-artifact@v3
+      with:
+        name: pnnx-${{ needs.setup.outputs.VERSION }}-macos
+        path: tmp
+
+    - name: ncnn
+      uses: actions/checkout@v4
+      with:
+        repository: Tencent/ncnn
+        path: ncnn
+
+    - name: copy runtime
+      run: |
+        cp tmp/pnnx-${{ needs.setup.outputs.VERSION }}-macos/pnnx ncnn/tools/pnnx/python/pnnx
+    - name: Build wheels for macos
+      uses: pypa/cibuildwheel@v2.16.2
+      env:
+        CIBW_ARCHS_MACOS: "x86_64"
+        CIBW_BUILD: 'cp*'
+        CIBW_SKIP: cp36-* cp312-*
+        CIBW_BUILD_VERBOSITY: 1
+        CIBW_ENVIRONMENT: PNNX_WHEEL_WITHOUT_BUILD=ON
+        CIBW_BEFORE_TEST: pip install pytest numpy &&
+                          pip install torch torchvision
+        CIBW_TEST_COMMAND: "pytest {project}/ncnn/tools/pnnx/python/tests"
+      with:
+        package-dir: ./ncnn/tools/pnnx
+        output-dir: wheelhouse
+
+    - name: Upload wheels
+      uses: actions/upload-artifact@v3
+      with:
+        name: pnnx-${{ needs.setup.outputs.VERSION }}-macos-python
+        path: wheelhouse/*.whl
+
+  windows-python:
+    needs: [setup, windows]
+    runs-on: windows-2019
+    env:
+      UseMultiToolTask: true
+    steps:
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+
+    - name: download-pnnx
+      uses: actions/download-artifact@v3
+      with:
+        name: pnnx-${{ needs.setup.outputs.VERSION }}-windows
+        path: tmp
+
+    - name: ncnn
+      uses: actions/checkout@v4
+      with:
+        repository: Tencent/ncnn
+        path: ncnn
+
+    - name: copy runtime
+      run: |
+        Copy-Item -Verbose -Path "tmp\pnnx-${{ needs.setup.outputs.VERSION }}-windows\pnnx.exe" -Destination "ncnn\tools\pnnx\python\pnnx\"
+    - name: Build wheels for windows
+      uses: pypa/cibuildwheel@v2.16.2
+      env:
+        CIBW_ARCHS_WINDOWS: "AMD64"
+        CIBW_BUILD: 'cp*'
+        CIBW_SKIP: cp36-* cp312-*
+        CIBW_BUILD_VERBOSITY: 1
+        CIBW_ENVIRONMENT: PNNX_WHEEL_WITHOUT_BUILD=ON
+        CIBW_BEFORE_TEST: pip install pytest numpy &&
+                          pip install torch torchvision
+        CIBW_TEST_COMMAND: "pytest D:/a/pnnx/pnnx/ncnn/tools/pnnx/python/tests"
+      with:
+        package-dir: ./ncnn/tools/pnnx
+        output-dir: wheelhouse
+
+    - name: Upload wheels
+      uses: actions/upload-artifact@v3
+      with:
+        name: pnnx-${{ needs.setup.outputs.VERSION }}-windows-python
+        path: wheelhouse/*.whl
+
   release:
     permissions:
       contents: write  # for softprops/action-gh-release to create a release
-    needs: [setup, ubuntu, macos, windows]
+    needs: [setup, linux, macos, windows]
     runs-on: ubuntu-latest
     steps:
-    - name: download
+    - name: download-linux
       uses: actions/download-artifact@v3
       with:
+        name: pnnx-${{ needs.setup.outputs.VERSION }}-linux
         path: artifacts
-
-    - name: create-release
-      uses: softprops/action-gh-release@v1
+    - name: download-macos
+      uses: actions/download-artifact@v3
       with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        tag_name: ${{ needs.setup.outputs.VERSION }}
-        name: Release ${{ needs.setup.outputs.VERSION }}
-        files: artifacts/*/*.zip
+        name: pnnx-${{ needs.setup.outputs.VERSION }}-macos
+        path: artifacts
+    - name: download-windows
+      uses: actions/download-artifact@v3
+      with:
+        name: pnnx-${{ needs.setup.outputs.VERSION }}-windows
+        path: artifacts
+    # - name: create-release
+    #   uses: softprops/action-gh-release@v1
+    #   with:
+    #     token: ${{ secrets.GITHUB_TOKEN }}
+    #     tag_name: ${{ needs.setup.outputs.VERSION }}
+    #     name: Release ${{ needs.setup.outputs.VERSION }}
+    #     files: artifacts/*/*.zip
+
+  release-python:
+    permissions:
+      contents: none
+    needs: [setup, linux-python, macos-python, windows-python]
+    runs-on: ubuntu-latest
+    steps:
+    - name: download-linux
+      uses: actions/download-artifact@v3
+      with:
+        name: pnnx-${{ needs.setup.outputs.VERSION }}-linux-python
+        path: dist
+    - name: download-macos
+      uses: actions/download-artifact@v3
+      with:
+        name: pnnx-${{ needs.setup.outputs.VERSION }}-macos-python
+        path: dist
+    - name: download-windows
+      uses: actions/download-artifact@v3
+      with:
+        name: pnnx-${{ needs.setup.outputs.VERSION }}-windows-python
+        path: dist
+    # - uses: pypa/gh-action-pypi-publish@release/v1
+    #   with:
+    #     user: __token__
+    #     password: ${{ secrets.PYPI_API_TOKEN }}
