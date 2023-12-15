@@ -333,19 +333,19 @@ jobs:
       id: cache-libtorch
       uses: actions/cache@v3.3.2
       with:
-        path: "libtorch"
+        path: "/tmp/libtorch"
         key: libtorch-${{ env.LIBTORCH_VERSION }}-ubuntu-${{ env.CACHE_DATE }}
     - name: cache-torchvision
       id: cache-torchvision
       uses: actions/cache@v3.3.2
       with:
-        path: "torchvision"
+        path: "/tmp/torchvision"
         key: torchvision-${{ env.TORCHVISION_VERSION }}-ubuntu-${{ env.CACHE_DATE }}
     - name: cache-protobuf
       id: cache-protobuf
       uses: actions/cache@v3.3.2
       with:
-        path: "protobuf"
+        path: "/tmp/protobuf"
         key: protobuf-${{ env.PROTOBUF_VERSION }}-ubuntu-${{ env.CACHE_DATE }}
     - name: ncnn
       uses: actions/checkout@v4

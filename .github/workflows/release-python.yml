@@ -1,4 +1,4 @@
-name: release
+name: release-python
 on: [push]
 # on:
 #   push:
@@ -308,6 +308,7 @@ jobs:
   #       cmake --build . --config MinSizeRel --target install
 
   ubuntu_x86_64:
+    needs: [ubuntu-deps]
     runs-on: ubuntu-20.04
     steps:
     - uses: actions/setup-python@v5
@@ -317,6 +318,25 @@ jobs:
     - name: checkout
       uses: actions/checkout@v4
         
+    - name: cache-libtorch
+      id: cache-libtorch
+      uses: actions/cache@v3.3.2
+      with:
+        path: "/tmp/libtorch"
+        key: libtorch-${{ env.LIBTORCH_VERSION }}-ubuntu-${{ env.CACHE_DATE }}
+    - name: cache-torchvision
+      id: cache-torchvision
+      uses: actions/cache@v3.3.2
+      with:
+        path: "/tmp/torchvision"
+        key: torchvision-${{ env.TORCHVISION_VERSION }}-ubuntu-${{ env.CACHE_DATE }}
+    - name: cache-protobuf
+      id: cache-protobuf
+      uses: actions/cache@v3.3.2
+      with:
+        path: "/tmp/protobuf"
+        key: protobuf-${{ env.PROTOBUF_VERSION }}-ubuntu-${{ env.CACHE_DATE }}
+
     - name: ncnn
       uses: actions/checkout@v4
       with:
