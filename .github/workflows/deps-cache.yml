@@ -84,42 +84,42 @@ jobs:
         output-dir: wheelhouse1
 
 
-    # - name: cache-torchvision
-    #   id: cache-torchvision
-    #   uses: actions/cache@v3.3.2
-    #   with:
-    #     path: "torchvision"
-    #     key: torchvision-${{ env.TORCHVISION_VERSION }}-ubuntu-${{ env.CACHE_DATE }}
-    #
-    #
-    # - name: torchvision
-    #   if: steps.cache-torchvision.outputs.cache-hit != 'true'
-    #   uses: pypa/cibuildwheel@v2.16.2
-    #   env:
-    #     CIBW_ARCHS_LINUX: "x86_64"
-    #     CIBW_BUILD: 'cp310-manylinux_x86_64'
-    #     CIBW_BUILD_VERBOSITY: 1
-    #     CIBW_REPAIR_WHEEL_COMMAND: ""
-    #     CIBW_BEFORE_ALL: yum install protobuf-devel -y &&
-    #       yum install devtoolset-9 -y &&
-    #       yum install wget zip -y &&
-    #       wget -q https://github.com/pytorch/vision/archive/refs/tags/v${{ env.TORCHVISION_VERSION }}.zip -O vision-${{ env.TORCHVISION_VERSION }}.zip &&
-    #       unzip -q vision-${{ env.TORCHVISION_VERSION }}.zip &&
-    #       cd vision-${{ env.TORCHVISION_VERSION }} &&
-    #       patch -p1 -i /project/pnnx-patches/vision-${{ env.TORCHVISION_VERSION }}-ops-only.patch  &&
-    #       patch -p1 -i /project/pnnx-patches/vision-${{ env.TORCHVISION_VERSION }}-no-cuda-version.patch  &&
-    #       mkdir -p build && cd build  &&
-    #       cmake -DCMAKE_INSTALL_PREFIX="/project/torchvision"
-    #       -DTorch_DIR="/project/libtorch/share/cmake/Torch"
-    #       -DCMAKE_BUILD_TYPE=MinSizeRel -DWITH_PNG=OFF
-    #       -DCMAKE_C_COMPILER="/opt/rh/devtoolset-9/root/usr/bin/cc"
-    #       -DCMAKE_CXX_COMPILER="/opt/rh/devtoolset-9/root/usr/bin/c++" -DWITH_JPEG=OFF ..  &&
-    #       cmake --build . -j 2  &&
-    #       cmake --build . --target install/strip
-    #   with:
-    #     package-dir: pnnx-patches
-    #     output-dir: wheelhouse2
-    #
+    - name: cache-torchvision
+      id: cache-torchvision
+      uses: actions/cache@v3.3.2
+      with:
+        path: "/tmp/torchvision"
+        key: torchvision-${{ env.TORCHVISION_VERSION }}-ubuntu-${{ env.CACHE_DATE }}
+
+
+    - name: torchvision
+      if: steps.cache-torchvision.outputs.cache-hit != 'true'
+      uses: pypa/cibuildwheel@v2.16.2
+      env:
+        CIBW_ARCHS_LINUX: "x86_64"
+        CIBW_BUILD: 'cp310-manylinux_x86_64'
+        CIBW_BUILD_VERBOSITY: 1
+        CIBW_REPAIR_WHEEL_COMMAND: ""
+        CIBW_BEFORE_ALL: yum install protobuf-devel -y &&
+          yum install devtoolset-9 -y &&
+          yum install wget zip -y &&
+          wget -q https://github.com/pytorch/vision/archive/refs/tags/v${{ env.TORCHVISION_VERSION }}.zip -O vision-${{ env.TORCHVISION_VERSION }}.zip &&
+          unzip -q vision-${{ env.TORCHVISION_VERSION }}.zip &&
+          cd vision-${{ env.TORCHVISION_VERSION }} &&
+          patch -p1 -i /project/pnnx-patches/vision-${{ env.TORCHVISION_VERSION }}-ops-only.patch  &&
+          patch -p1 -i /project/pnnx-patches/vision-${{ env.TORCHVISION_VERSION }}-no-cuda-version.patch  &&
+          mkdir -p build && cd build  &&
+          cmake -DCMAKE_INSTALL_PREFIX="/tmp/torchvision"
+          -DTorch_DIR="/tmp/libtorch/share/cmake/Torch"
+          -DCMAKE_BUILD_TYPE=MinSizeRel -DWITH_PNG=OFF
+          -DCMAKE_C_COMPILER="/opt/rh/devtoolset-9/root/usr/bin/cc"
+          -DCMAKE_CXX_COMPILER="/opt/rh/devtoolset-9/root/usr/bin/c++" -DWITH_JPEG=OFF ..  &&
+          cmake --build . -j 2  &&
+          cmake --build . --target install/strip
+      with:
+        package-dir: pnnx-patches
+        output-dir: wheelhouse2
+
     # - name: cache-protobuf
     #   id: cache-protobuf
     #   uses: actions/cache@v3.3.2
