@@ -687,7 +687,7 @@ jobs:
         token: ${{ secrets.GITHUB_TOKEN }}
         tag_name: ${{ needs.setup.outputs.VERSION }}
         name: Release ${{ needs.setup.outputs.VERSION }}
-        files: artifacts/*/*.zip
+        files: artifacts/*.zip
 
   release-python:
     permissions:
