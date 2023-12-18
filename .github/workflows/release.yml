@@ -681,13 +681,13 @@ jobs:
       with:
         name: pnnx-${{ needs.setup.outputs.VERSION }}-windows
         path: artifacts
-    # - name: create-release
-    #   uses: softprops/action-gh-release@v1
-    #   with:
-    #     token: ${{ secrets.GITHUB_TOKEN }}
-    #     tag_name: ${{ needs.setup.outputs.VERSION }}
-    #     name: Release ${{ needs.setup.outputs.VERSION }}
-    #     files: artifacts/*/*.zip
+    - name: create-release
+      uses: softprops/action-gh-release@v1
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        tag_name: ${{ needs.setup.outputs.VERSION }}
+        name: Release ${{ needs.setup.outputs.VERSION }}
+        files: artifacts/*/*.zip
 
   release-python:
     permissions:
@@ -710,7 +710,7 @@ jobs:
       with:
         name: pnnx-${{ needs.setup.outputs.VERSION }}-windows-python
         path: dist
-    # - uses: pypa/gh-action-pypi-publish@release/v1
-    #   with:
-    #     user: __token__
-    #     password: ${{ secrets.PYPI_API_TOKEN }}
+    - uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        user: __token__
+        password: ${{ secrets.PYPI_API_TOKEN }}
