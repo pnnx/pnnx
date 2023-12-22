@@ -6,12 +6,72 @@ PyTorch Neural Network eXchange
 
 Note: The current implementation is in https://github.com/Tencent/ncnn/tree/master/tools/pnnx
 
+# What is pnnx
 
-## [Download](https://github.com/pnnx/pnnx/releases)
+PyTorch Neural Network eXchange(PNNX) is an open standard for PyTorch model interoperability. PNNX provides an open model format for PyTorch. It defines computation graph as well as high level operators strictly matches PyTorch.
 
-Download PNNX Windows/Linux/MacOS Executable
+<table>
+<tr>
+<td>
 
-**https://github.com/pnnx/pnnx/releases**
+* optimize torch model
+</td>
+<td>
+
+* reduce extension package dependency
+</td>
+</tr>
+<tr>
+<td>
+
+* convert torchscript back to python
+</td>
+<td>
+
+* export to portable pnnx format
+* export to onnx-zero format
+* export to ncnn model
+</td>
+</tr>
+</table>
+
+```mermaid
+flowchart TD
+    torchmodel["torch model\ntorchvision.models.resnet18()"]
+    torchscript["torchscript file\nresnet18.pt"]
+    optmodel["optimized torch model\nresnet18_pnnx.Model()"]
+    ncnnmodel["ncnn model\nresnet18.ncnn.param/bin"]
+    onnxzeromodel["onnx-zero model\nresnet18.pnnx.onnx"]
+
+    subgraph pnnx
+        optmodel
+        ncnnmodel
+        onnxzeromodel
+    end
+
+    torchmodel -->|"torch.jit.trace(model, 'resnet18.pt', x)"| torchscript
+    torchmodel -->|"pnnx.export(model, 'resnet18.pt', x)"| pnnx
+    torchscript -->|"pnnx.convert('resnet18.pt', x)"| pnnx
+
+```
+
+# How to install pnnx
+
+### ----- A. python pip (recommended)
+
+* Windows/Linux/macOS 64bit
+* python 3.7 or later
+
+```shell
+pip3 install pnnx
+```
+
+### ----- B. portable binary package (recommended if you hate python)
+
+* Windows/Linux/macOS 64bit
+* For Linux, glibc 2.17+
+
+Download portable pnnx binary package from https://github.com/pnnx/pnnx/releases and extract it.
 
 This package includes all the binaries required. It is portable, so no CUDA or PyTorch runtime environment is needed :)
 
@@ -38,19 +98,58 @@ This package includes all the binaries required. It is portable, so no CUDA or P
     <img src="https://img.shields.io/badge/download-blue?style=for-the-badge">
   </a>
 </td>
-<td>
-  <img src="https://user-images.githubusercontent.com/25181517/183423507-c056a6f9-1ba8-4312-a350-19bcbc5a8697.png" width="auto" height="60">
-  <br /><b>pip install pnnx</b><br />
-  <a href="https://pypi.org/project/pnnx">
-    <img src="https://img.shields.io/badge/download-blue?style=for-the-badge">
-  </a>
-</td>
 </tr>
 </table>
 
-## Usages
+### ----- C. build from source
 
-1. Export your model to TorchScript
+1. install pytorch
+2. (optional) install torchvision for pnnx torchvision operator support
+3. (optional) install protobuf for pnnx onnx-zero support
+4. clone https://github.com/Tencent/ncnn.git
+5. build pnnx in ncnn/tools/pnnx with cmake
+
+You will probably refer https://github.com/pnnx/pnnx/blob/main/.github/workflows/release.yml for detailed steps
+
+```shell
+git clone https://github.com/Tencent/ncnn.git
+mkdir ncnn/tools/pnnx/build
+cd ncnn/tools/pnnx/build
+cmake -DCMAKE_INSTALL_PREFIX=install -DTorch_INSTALL_DIR=<your libtorch install dir> -DTorchVision_INSTALL_DIR=<your torchvision install dir> ..
+cmake --build . --config Release -j 4
+cmake --build . --config Release --target install
+```
+
+# How to use pnnx
+
+### ----- A. python
+
+1. optimize and export your torch model with pnnx.export()
+
+```python
+import torch
+import torchvision.models as models
+import pnnx
+
+model = models.resnet18(pretrained=True)
+
+x = torch.rand(1, 3, 224, 224)
+
+opt_model = pnnx.export(model, "resnet18.pt", x)
+```
+
+2. use optimized module just like the normal one
+
+```python
+result = opt_model(x)
+```
+
+3. pick resnet18_pnnx.py for pnnx-optimized torch model
+4. pick resnet18.ncnn.param and resnet18.ncnn.bin for ncnn inference
+
+### ----- B. command line
+
+1. export your torch model to torchscript
 
 ```python
 import torch
@@ -68,33 +167,56 @@ mod = torch.jit.trace(net, x)
 mod.save("resnet18.pt")
 ```
 
-2. Convert TorchScript to PNNX
+2. pnnx convert torchscript to optimized pnnx model and ncnn model files
 
 ```shell
-pnnx resnet18.pt inputshape=[1,3,224,224]
+./pnnx resnet18.pt inputshape=[1,3,224,224]
 ```
 
-Normally, you will get seven files
+3. pick resnet18_pnnx.py for pnnx-optimized torch model
+4. pick resnet18.ncnn.param and resnet18.ncnn.bin for ncnn inference
 
-```resnet18.pnnx.param``` PNNX graph definition
-
-```resnet18.pnnx.bin``` PNNX model weight
-
-```resnet18_pnnx.py``` PyTorch script for inference, the python code for model construction and weight initialization
-
-```resnet18.pnnx.onnx``` PNNX model in onnx format
-
-```resnet18.ncnn.param``` ncnn graph definition
-
-```resnet18.ncnn.bin``` ncnn model weight
-
-```resnet18_ncnn.py``` pyncnn script for inference
-
-3. Visualize PNNX with Netron
+### ----- visualize pnnx with netron
 
 Open https://netron.app/ in browser, and drag resnet18.pnnx.param or resnet18.pnnx.onnx into it.
 
-4. PNNX command line options
+### ----- compare inference result
+
+Normally, you will get seven files
+
+|||
+|---|---|
+|resnet18.pnnx.param|PNNX graph definition|
+|resnet18.pnnx.bin|PNNX model weight|
+|resnet18_pnnx.py|PyTorch script for inference, the python code for model construction and weight initialization|
+|resnet18.pnnx.onnx|PNNX model in onnx format|
+|resnet18.ncnn.param|ncnn graph definition|
+|resnet18.ncnn.bin|ncnn model weight|
+|resnet18_ncnn.py|pyncnn script for inference|
+
+```shell
+pip install ncnn
+```
+
+run inference script generated by pnnx and check if the outputs are close enough.
+
+```shell
+$ python resnet18_pnnx.py
+tensor([[-1.5752e+00,  6.8381e-01,  1.4599e+00,  1.1986e+00,  1.0503e+00,
+         -5.0585e-01,  9.1962e-01,  1.4127e-01, -1.2256e+00, -3.8200e-01,
+          1.1840e+00,  2.5817e+00,  1.3319e+00,  2.8250e+00,  2.6328e+00,
+          1.1827e+00,  1.6862e+00,  2.9742e-01,  1.5851e+00,  1.9562e+00,
+          ...
+
+$ python resnet18_ncnn.py
+tensor([[-1.5719e+00,  6.8591e-01,  1.4592e+00,  1.1973e+00,  1.0503e+00,
+         -5.0833e-01,  9.1693e-01,  1.4180e-01, -1.2239e+00, -3.8417e-01,
+          1.1816e+00,  2.5768e+00,  1.3295e+00,  2.8196e+00,  2.6259e+00,
+          1.1806e+00,  1.6830e+00,  2.9536e-01,  1.5808e+00,  1.9530e+00,
+          ...
+```
+
+### ----- detailed options
 
 ```
 Usage: pnnx [model.pt] [(key=value)...]
@@ -113,61 +235,24 @@ Usage: pnnx [model.pt] [(key=value)...]
   customop=/home/nihui/.cache/torch_extensions/fused/fused.so,...
   moduleop=models.common.Focus,models.yolo.Detect,...
 Sample usage: pnnx mobilenet_v2.pt inputshape=[1,3,224,224]
-              pnnx yolov5s.pt inputshape=[1,3,640,640] inputshape2=[1,3,320,320] device=gpu moduleop=models.common.Focus,models.yolo.Detect
+              pnnx yolov5s.pt inputshape=[1,3,640,640]f32 inputshape2=[1,3,320,320]f32 device=gpu moduleop=models.common.Focus,models.yolo.Detect
 ```
 
-Parameters:
+|paramter|default value|description|
+|:---:|:---:|:---|
+|model.pt|**(required)**|The torchscript file path|
+|pnnxparam|*.pnnx.param<br />(\* is the model name)|PNNX graph definition file|
+|pnnxbin|*.pnnx.bin|PNNX model weight|
+|pnnxpy|*_pnnx.py|PyTorch script for inference, including model construction and weight initialization code|
+|pnnxonnx|*.pnnx.onnx|PNNX model in onnx format|
+|ncnnparam|*.ncnn.param|ncnn graph definition|
+|ncnnbin|*.ncnn.bin|ncnn model weight|
+|ncnnpy|*_ncnn.py|pyncnn script for inference|
+|fp16|1|save ncnn weight and onnx in fp16 data type|
+|optlevel|2|graph optimization level<br />0 = do not apply optimization<br />1 = optimize for inference<br />2 = optimize more for inference|
+|device|cpu|device type for the input in TorchScript model, cpu or gpu|
+|inputshape|*(optional)*|shapes of model inputs. It is used to resolve tensor shapes in model graph. for example, `[1,3,224,224]` for the model with only 1 input, `[1,3,224,224],[1,3,224,224]` for the model that have 2 inputs.<br />shape tuple can be optionally decorated by a typename, like `[1,3,224,224]f32` for float32 type.<br />f32 = torch.float32 or torch.float<br />f64 = torch.float64 or torch.double<br />f16 = torch.float16 or torch.half<br />u8 = torch.uint8<br />i8 = torch.int8<br />i16 = torch.int16 or torch.short<br />i32 = torch.int32 or torch.int<br />i64 = torch.int64 or torch.long<br />c32 = torch.complex32<br />c64 = torch.complex64<br />c128 = torch.complex128<br />|
+|inputshape2|*(optional)*|shapes of alternative model inputs, the format is identical to `inputshape`. Usually, it is used with `inputshape` to resolve dynamic shape (-1) in model graph.|
+|customop|*(optional)*|list of Torch extensions (dynamic library) for custom operators, separated by ",". For example, `/home/nihui/.cache/torch_extensions/fused/fused.so,...`|
+|moduleop|*(optional)*|list of modules to keep as one big operator, separated by ",". for example, `models.common.Focus,models.yolo.Detect`|
 
-`pnnxparam` (default="*.pnnx.param", * is the model name): PNNX graph definition file
-
-`pnnxbin` (default="*.pnnx.bin"): PNNX model weight
-
-`pnnxpy` (default="*_pnnx.py"): PyTorch script for inference, including model construction and weight initialization code
-
-`pnnxonnx` (default="*.pnnx.onnx"): PNNX model in onnx format
-
-`ncnnparam` (default="*.ncnn.param"): ncnn graph definition
-
-`ncnnbin` (default="*.ncnn.bin"): ncnn model weight
-
-`ncnnpy` (default="*_ncnn.py"): pyncnn script for inference
-
-`fp16` (default=1): save ncnn weight and onnx in fp16 data type
-
-`optlevel` (default=2): graph optimization level 
-
-| Option | Optimization level              |
-|--------|---------------------------------|
-|   0    | do not apply optimization       |
-|   1    | optimization for inference      |
-|   2    | optimization more for inference |
-
-`device` (default="cpu"): device type for the input in TorchScript model, cpu or gpu
-
-`inputshape` (Optional): shapes of model inputs. It is used to resolve tensor shapes in model graph. for example, `[1,3,224,224]` for the model with only 1 input, `[1,3,224,224],[1,3,224,224]` for the model that have 2 inputs.
-
-`inputshape2` (Optional): shapes of alternative model inputs, the format is identical to `inputshape`. Usually, it is used with `inputshape` to resolve dynamic shape (-1) in model graph.
-
-`customop` (Optional): list of Torch extensions (dynamic library) for custom operators, separated by ",". For example, `/home/nihui/.cache/torch_extensions/fused/fused.so,...`
-
-`moduleop` (Optional): list of modules to keep as one big operator, separated by ",". for example, `models.common.Focus,models.yolo.Detect`
-
-## Build from Source
-
-1. Download and setup the libtorch from https://pytorch.org/
-
-2. Clone pnnx (inside Tencent/ncnn tools/pnnx folder)
-
-```shell
-git clone https://github.com/Tencent/ncnn.git
-```
-
-3. Build with CMake
-
-```shell
-mkdir ncnn/tools/pnnx/build
-cd ncnn/tools/pnnx/build
-cmake -DCMAKE_INSTALL_PREFIX=install -DTorch_INSTALL_DIR=<your libtorch dir> ..
-cmake --build . --config Release -j 2
-cmake --build . --config Release --target install
-```
