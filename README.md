@@ -15,22 +15,32 @@ PyTorch Neural Network eXchange(PNNX) is an open standard for PyTorch model inte
 <td>
 
 * optimize torch model
+
+<img src="https://github.com/pnnx/pnnx/blob/main/images/pnnx0.jpg?raw=true" height="160">
+
 </td>
 <td>
 
 * reduce extension package dependency
+
+<img src="https://github.com/pnnx/pnnx/blob/main/images/pnnx1.jpg?raw=true" height="160">
+
 </td>
 </tr>
 <tr>
 <td>
 
 * convert torchscript back to python
+
+<img src="https://github.com/pnnx/pnnx/blob/main/images/pnnx2.jpg?raw=true" height="160">
+
 </td>
 <td>
 
-* export to portable pnnx format
-* export to onnx-zero format
-* export to ncnn model
+* export to portable pnnx format / onnx-zero / ncnn
+
+<img src="https://github.com/pnnx/pnnx/blob/main/images/pnnx3.jpg?raw=true" height="160">
+
 </td>
 </tr>
 </table>
