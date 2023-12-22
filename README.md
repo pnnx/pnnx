@@ -59,7 +59,7 @@ flowchart TD
         onnxzeromodel
     end
 
-    torchmodel -->|"torch.jit.trace(model, 'resnet18.pt', x)"| torchscript
+    torchmodel -->|"mod = torch.jit.trace(model, x)\nmod.save('resnet18.pt')"| torchscript
     torchmodel -->|"pnnx.export(model, 'resnet18.pt', x)"| pnnx
     torchscript -->|"pnnx.convert('resnet18.pt', x)"| pnnx
 
