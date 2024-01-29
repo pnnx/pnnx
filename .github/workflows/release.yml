@@ -44,7 +44,7 @@ jobs:
         key: libtorch-${{ env.LIBTORCH_VERSION }}-linux-${{ env.CACHE_DATE }}
     - name: libtorch
       if: steps.cache-libtorch.outputs.cache-hit != 'true'
-      uses: pypa/cibuildwheel@v2.16.2
+      uses: pypa/cibuildwheel@v2.16.4
       env:
         CIBW_ARCHS_LINUX: "x86_64"
         CIBW_BUILD: 'cp310-manylinux_x86_64'
@@ -94,7 +94,7 @@ jobs:
         key: torchvision-${{ env.TORCHVISION_VERSION }}-linux-${{ env.CACHE_DATE }}
     - name: torchvision
       if: steps.cache-torchvision.outputs.cache-hit != 'true'
-      uses: pypa/cibuildwheel@v2.16.2
+      uses: pypa/cibuildwheel@v2.16.4
       env:
         CIBW_ARCHS_LINUX: "x86_64"
         CIBW_BUILD: 'cp310-manylinux_x86_64'
@@ -127,7 +127,7 @@ jobs:
         key: protobuf-${{ env.PROTOBUF_VERSION }}-linux-${{ env.CACHE_DATE }}
     - name: protobuf
       if: steps.cache-protobuf.outputs.cache-hit != 'true'
-      uses: pypa/cibuildwheel@v2.16.2
+      uses: pypa/cibuildwheel@v2.16.4
       env:
         CIBW_ARCHS_LINUX: "x86_64"
         CIBW_BUILD: 'cp310-manylinux_x86_64'
@@ -356,7 +356,7 @@ jobs:
         path: ncnn
 
     - name: build-pnnx
-      uses: pypa/cibuildwheel@v2.16.2
+      uses: pypa/cibuildwheel@v2.16.4
       env:
         CIBW_ARCHS_LINUX: "x86_64"
         CIBW_BUILD: 'cp310-manylinux_x86_64'
@@ -539,7 +539,7 @@ jobs:
         path: ncnn
 
     - name: Build wheel for manylinux
-      uses: pypa/cibuildwheel@v2.16.2
+      uses: pypa/cibuildwheel@v2.16.4
       env:
         CIBW_ARCHS_LINUX: "x86_64"
         CIBW_BUILD: 'cp*-manylinux*'
@@ -589,7 +589,7 @@ jobs:
       run: |
         cp tmp/pnnx-${{ needs.setup.outputs.VERSION }}-macos/pnnx ncnn/tools/pnnx/python/pnnx
     - name: Build wheels for macos
-      uses: pypa/cibuildwheel@v2.16.2
+      uses: pypa/cibuildwheel@v2.16.4
       env:
         CIBW_ARCHS_MACOS: "x86_64"
         CIBW_BUILD: 'cp*'
@@ -640,7 +640,7 @@ jobs:
       run: |
         Copy-Item -Verbose -Path "tmp\pnnx-${{ needs.setup.outputs.VERSION }}-windows\pnnx.exe" -Destination "ncnn\tools\pnnx\python\pnnx\"
     - name: Build wheels for windows
-      uses: pypa/cibuildwheel@v2.16.2
+      uses: pypa/cibuildwheel@v2.16.4
       env:
         CIBW_ARCHS_WINDOWS: "AMD64"
         CIBW_BUILD: 'cp*'
