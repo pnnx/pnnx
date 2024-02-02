@@ -96,7 +96,7 @@ jobs:
         lcov -r lcov.info '*/torch/include/*' -o lcov.info
         lcov --list lcov.info
     - name: codecov
-      uses: codecov/codecov-action@v3.1.4
+      uses: codecov/codecov-action@v4.0.1
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         file: ncnn/tools/pnnx/build/lcov.info
