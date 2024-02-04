@@ -24,7 +24,8 @@ jobs:
     steps:
     - name: get-version
       id: get_version
-      run: echo "VERSION=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_OUTPUT
+      # run: echo "VERSION=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_OUTPUT
+      run: echo "VERSION=20230203" >> $GITHUB_OUTPUT
 
   linux-deps:
     runs-on: ubuntu-20.04
@@ -589,7 +590,7 @@ jobs:
             -DProtobuf_LIBRARIES="$GITHUB_WORKSPACE/protobuf/lib/libprotobuf.a" \
             -DProtobuf_PROTOC_EXECUTABLE="$GITHUB_WORKSPACE/protobuf/bin/protoc" \
             ..
-        cmake --build . -j 4
+        cmake --build . -j 3
         cmake --build . --target install/strip
     - name: package
       run: |
