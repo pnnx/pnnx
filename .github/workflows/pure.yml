@@ -1,0 +1,130 @@
+name: release
+on: [pull_request]
+# on:
+#   push:
+#     tags:
+#       - '*'
+
+permissions:
+  contents: read
+
+jobs:
+  # setup:
+  #   permissions:
+  #     contents: none
+  #   runs-on: ubuntu-latest
+  #   outputs:
+  #     VERSION: ${{ steps.get_version.outputs.VERSION }}
+  #   steps:
+  #   - name: get-version
+  #     id: get_version
+  #     # run: echo "VERSION=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_OUTPUT
+  #     run: echo "VERSION=20240203" >> $GITHUB_OUTPUT
+
+  linux-python:
+    # needs: [setup, linux]
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+
+    - name: download-pnnx
+      run: |
+        wget https://github.com/pnnx/pnnx/releases/download/20240111/pnnx-20240111-linux.zip
+        unzip -q pnnx-20240111-linux.zip
+
+    - name: ncnn
+      uses: actions/checkout@v4
+      with:
+        repository: Tencent/ncnn
+        path: ncnn
+
+    - name: wheel
+      run: |
+        pip install pytest numpy torch torchvision
+        cp pnnx-20240111-linux/pnnx ncnn/tools/pnnx/python/pnnx/
+        cd ncnn/tools/pnnx/python
+        export PNNX_WHEEL_WITHOUT_BUILD=ON
+        python setup.py bdist_wheel --plat-name manylinux_2_17_x86_64.manylinux2014_x86_64
+        pip install dist/*.whl --user
+        pytest tests
+
+    - name: upload
+      uses: actions/upload-artifact@v4
+      with:
+        name: pnnx-${{ needs.setup.outputs.VERSION }}-linux-python
+        path: ncnn/tools/pnnx/python/dist/*.whl
+
+  macos-python:
+    # needs: [setup, macos]
+    runs-on: macos-13
+    steps:
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+
+    - name: download-pnnx
+      run: |
+        wget https://github.com/pnnx/pnnx/releases/download/20240111/pnnx-20240111-macos.zip
+        unzip -q pnnx-20240111-macos.zip
+
+    - name: ncnn
+      uses: actions/checkout@v4
+      with:
+        repository: Tencent/ncnn
+        path: ncnn
+
+    - name: wheel
+      run: |
+        pip install pytest numpy torch torchvision
+        cp pnnx-20240111-macos/pnnx ncnn/tools/pnnx/python/pnnx/
+        cd ncnn/tools/pnnx/python
+        export PNNX_WHEEL_WITHOUT_BUILD=ON
+        python setup.py bdist_wheel --plat-name macosx_10_9_universal2.macosx_10_9_x86_64.macosx_11_0_arm64
+        pip install dist/*.whl --user
+        pytest tests
+
+    - name: upload
+      uses: actions/upload-artifact@v4
+      with:
+        name: pnnx-${{ needs.setup.outputs.VERSION }}-linux-python
+        path: ncnn/tools/pnnx/python/dist/*.whl
+
+  windows-python:
+    # needs: [setup, windows]
+    runs-on: windows-2019
+    steps:
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+
+    - name: download-pnnx
+      run: |
+        wget https://github.com/pnnx/pnnx/releases/download/20240111/pnnx-20240111-windows.zip
+        unzip -q pnnx-20240111-windows.zip
+
+    - name: ncnn
+      uses: actions/checkout@v4
+      with:
+        repository: Tencent/ncnn
+        path: ncnn
+
+    - name: wheel
+      run: |
+        pip install pytest numpy torch torchvision
+
+        Copy-Item -Verbose -Path "pnnx-20240111-windows\pnnx.exe" -Destination "ncnn\tools\pnnx\python\pnnx\"
+
+        cd ncnn/tools/pnnx/python
+        export PNNX_WHEEL_WITHOUT_BUILD=ON
+        python setup.py bdist_wheel --plat-name win_arm64
+        pip install dist/*.whl --user
+        pytest tests
+
+    - name: upload
+      uses: actions/upload-artifact@v4
+      with:
+        name: pnnx-${{ needs.setup.outputs.VERSION }}-linux-python
+        path: ncnn/tools/pnnx/python/dist/*.whl
+
