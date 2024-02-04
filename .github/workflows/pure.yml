@@ -48,15 +48,15 @@ jobs:
         cp pnnx-20240111-linux/pnnx ncnn/tools/pnnx/python/pnnx/
         cd ncnn/tools/pnnx/python
         python -m build --wheel
-        wheel tags --remove --platform-tag=manylinux_2_17_x86_64.manylinux2014_x86_64 dist/pnnx-${{ needs.setup.outputs.VERSION }}-py3-none-any.whl
-        pip install dist/pnnx-${{ needs.setup.outputs.VERSION }}-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl --user
+        wheel tags --remove --platform-tag=manylinux_2_17_x86_64.manylinux2014_x86_64 dist/*.whl
+        pip install dist/*.whl --user
         pytest tests
 
     - name: upload
       uses: actions/upload-artifact@v4
       with:
         name: pnnx-${{ needs.setup.outputs.VERSION }}-linux-python
-        path: ncnn/tools/pnnx/python/dist/pnnx-${{ needs.setup.outputs.VERSION }}-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+        path: ncnn/tools/pnnx/python/dist/*.whl
 
   macos-python:
     needs: [setup]
@@ -85,15 +85,15 @@ jobs:
         cp pnnx-20240111-macos/pnnx ncnn/tools/pnnx/python/pnnx/
         cd ncnn/tools/pnnx/python
         python -m build --wheel
-        wheel tags --remove --platform-tag=macosx_10_9_universal2.macosx_10_9_x86_64.macosx_11_0_arm64 dist/pnnx-${{ needs.setup.outputs.VERSION }}-py3-none-any.whl
-        pip install dist/pnnx-${{ needs.setup.outputs.VERSION }}-py3-none-macosx_10_9_universal2.macosx_10_9_x86_64.macosx_11_0_arm64.whl --user
+        wheel tags --remove --platform-tag=macosx_10_9_universal2.macosx_10_9_x86_64.macosx_11_0_arm64 dist/*.whl
+        pip install dist/*.whl --user
         pytest tests
 
     - name: upload
       uses: actions/upload-artifact@v4
       with:
         name: pnnx-${{ needs.setup.outputs.VERSION }}-macos-python
-        path: ncnn/tools/pnnx/python/dist/pnnx-${{ needs.setup.outputs.VERSION }}-py3-none-macosx_10_9_universal2.macosx_10_9_x86_64.macosx_11_0_arm64.whl
+        path: ncnn/tools/pnnx/python/dist/*.whl
 
   windows-python:
     needs: [setup]
@@ -122,15 +122,13 @@ jobs:
         Copy-Item -Verbose -Path "pnnx-20240111-windows\pnnx.exe" -Destination "ncnn\tools\pnnx\python\pnnx\"
         cd ncnn/tools/pnnx/python
         python -m build --wheel
-        dir dist
-        dir dist\*
-        wheel tags --remove --platform-tag=win_arm64 dist/pnnx-${{ needs.setup.outputs.VERSION }}-py3-none-any.whl
-        pip install dist/pnnx-${{ needs.setup.outputs.VERSION }}-py3-none-win_arm64.whl --user
+        wheel tags --remove --platform-tag=win_amd64 (get-item .\dist\*.whl).FullName
+        pip install (get-item .\dist\*.whl).FullName --user
         pytest tests
 
     - name: upload
       uses: actions/upload-artifact@v4
       with:
         name: pnnx-${{ needs.setup.outputs.VERSION }}-windows-python
-        path: ncnn/tools/pnnx/python/dist/pnnx-${{ needs.setup.outputs.VERSION }}-py3-none-win_arm64.whl
+        path: ncnn/tools/pnnx/python/dist/*.whl
 
