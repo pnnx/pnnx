@@ -1,9 +1,9 @@
 name: release
-on: [pull_request]
-# on:
-#   push:
-#     tags:
-#       - '*'
+# on: [pull_request]
+on:
+  push:
+    tags:
+      - '*'
 
 env:
   LIBTORCH_VERSION: 2.2.0
@@ -24,8 +24,7 @@ jobs:
     steps:
     - name: get-version
       id: get_version
-      # run: echo "VERSION=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_OUTPUT
-      run: echo "VERSION=20230203" >> $GITHUB_OUTPUT
+      run: echo "VERSION=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_OUTPUT
 
   linux-deps:
     runs-on: ubuntu-20.04
@@ -627,8 +626,6 @@ jobs:
         path: artifacts
     - name: merge-universal-package
       run: |
-        ls artifacts
-        ls
         unzip artifacts/pnnx-${{ needs.setup.outputs.VERSION }}-macos-x64.zip
         unzip artifacts/pnnx-${{ needs.setup.outputs.VERSION }}-macos-arm64.zip
         mkdir ${{ env.PACKAGENAME }}
@@ -851,57 +848,57 @@ jobs:
         name: pnnx-${{ needs.setup.outputs.VERSION }}-windows-python
         path: wheelhouse/*.whl
 
-  # release:
-  #   permissions:
-  #     contents: write  # for softprops/action-gh-release to create a release
-  #   needs: [setup, linux, macos, windows]
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #   - name: download-linux
-  #     uses: actions/download-artifact@v4
-  #     with:
-  #       name: pnnx-${{ needs.setup.outputs.VERSION }}-linux
-  #       path: artifacts
-  #   - name: download-macos
-  #     uses: actions/download-artifact@v4
-  #     with:
-  #       name: pnnx-${{ needs.setup.outputs.VERSION }}-macos
-  #       path: artifacts
-  #   - name: download-windows
-  #     uses: actions/download-artifact@v4
-  #     with:
-  #       name: pnnx-${{ needs.setup.outputs.VERSION }}-windows
-  #       path: artifacts
-  #   - name: create-release
-  #     uses: softprops/action-gh-release@v1
-  #     with:
-  #       token: ${{ secrets.GITHUB_TOKEN }}
-  #       tag_name: ${{ needs.setup.outputs.VERSION }}
-  #       name: Release ${{ needs.setup.outputs.VERSION }}
-  #       files: artifacts/*.zip
+  release:
+    permissions:
+      contents: write  # for softprops/action-gh-release to create a release
+    needs: [setup, linux, macos, windows]
+    runs-on: ubuntu-latest
+    steps:
+    - name: download-linux
+      uses: actions/download-artifact@v4
+      with:
+        name: pnnx-${{ needs.setup.outputs.VERSION }}-linux
+        path: artifacts
+    - name: download-macos
+      uses: actions/download-artifact@v4
+      with:
+        name: pnnx-${{ needs.setup.outputs.VERSION }}-macos
+        path: artifacts
+    - name: download-windows
+      uses: actions/download-artifact@v4
+      with:
+        name: pnnx-${{ needs.setup.outputs.VERSION }}-windows
+        path: artifacts
+    - name: create-release
+      uses: softprops/action-gh-release@v1
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        tag_name: ${{ needs.setup.outputs.VERSION }}
+        name: Release ${{ needs.setup.outputs.VERSION }}
+        files: artifacts/*.zip
 
-  # release-python:
-  #   permissions:
-  #     contents: none
-  #   needs: [setup, linux-python, macos-python, windows-python]
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #   - name: download-linux
-  #     uses: actions/download-artifact@v4
-  #     with:
-  #       name: pnnx-${{ needs.setup.outputs.VERSION }}-linux-python
-  #       path: dist
-  #   - name: download-macos
-  #     uses: actions/download-artifact@v4
-  #     with:
-  #       name: pnnx-${{ needs.setup.outputs.VERSION }}-macos-python
-  #       path: dist
-  #   - name: download-windows
-  #     uses: actions/download-artifact@v4
-  #     with:
-  #       name: pnnx-${{ needs.setup.outputs.VERSION }}-windows-python
-  #       path: dist
-  #   - uses: pypa/gh-action-pypi-publish@release/v1
-  #     with:
-  #       user: __token__
-  #       password: ${{ secrets.PYPI_API_TOKEN }}
+  release-python:
+    permissions:
+      contents: none
+    needs: [setup, linux-python, macos-python, windows-python]
+    runs-on: ubuntu-latest
+    steps:
+    - name: download-linux
+      uses: actions/download-artifact@v4
+      with:
+        name: pnnx-${{ needs.setup.outputs.VERSION }}-linux-python
+        path: dist
+    - name: download-macos
+      uses: actions/download-artifact@v4
+      with:
+        name: pnnx-${{ needs.setup.outputs.VERSION }}-macos-python
+        path: dist
+    - name: download-windows
+      uses: actions/download-artifact@v4
+      with:
+        name: pnnx-${{ needs.setup.outputs.VERSION }}-windows-python
+        path: dist
+    - uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        user: __token__
+        password: ${{ secrets.PYPI_API_TOKEN }}
