@@ -122,6 +122,8 @@ jobs:
         Copy-Item -Verbose -Path "pnnx-20240111-windows\pnnx.exe" -Destination "ncnn\tools\pnnx\python\pnnx\"
         cd ncnn/tools/pnnx/python
         python -m build --wheel
+        dir dist
+        dir dist\*
         wheel tags --remove --platform-tag=win_arm64 dist\*.whl
         pip install dist\*.whl --user
         pytest tests
