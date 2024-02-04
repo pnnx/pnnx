@@ -605,7 +605,7 @@ jobs:
         path: ${{ env.PACKAGENAME }}.zip
 
   macos:
-    needs: [macos-x64, macos-arm64]
+    needs: [setup, macos-x64, macos-arm64]
     runs-on: macos-14
     env:
       PACKAGENAME: pnnx-${{ needs.setup.outputs.VERSION }}-macos
