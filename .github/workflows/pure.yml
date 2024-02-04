@@ -92,7 +92,7 @@ jobs:
     - name: upload
       uses: actions/upload-artifact@v4
       with:
-        name: pnnx-${{ needs.setup.outputs.VERSION }}-linux-python
+        name: pnnx-${{ needs.setup.outputs.VERSION }}-macos-python
         path: ncnn/tools/pnnx/python/dist/*.whl
 
   windows-python:
@@ -129,6 +129,6 @@ jobs:
     - name: upload
       uses: actions/upload-artifact@v4
       with:
-        name: pnnx-${{ needs.setup.outputs.VERSION }}-linux-python
+        name: pnnx-${{ needs.setup.outputs.VERSION }}-windows-python
         path: ncnn/tools/pnnx/python/dist/*.whl
 
