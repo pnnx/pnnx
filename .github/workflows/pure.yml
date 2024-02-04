@@ -9,20 +9,20 @@ permissions:
   contents: read
 
 jobs:
-  # setup:
-  #   permissions:
-  #     contents: none
-  #   runs-on: ubuntu-latest
-  #   outputs:
-  #     VERSION: ${{ steps.get_version.outputs.VERSION }}
-  #   steps:
-  #   - name: get-version
-  #     id: get_version
-  #     # run: echo "VERSION=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_OUTPUT
-  #     run: echo "VERSION=20240203" >> $GITHUB_OUTPUT
+  setup:
+    permissions:
+      contents: none
+    runs-on: ubuntu-latest
+    outputs:
+      VERSION: ${{ steps.get_version.outputs.VERSION }}
+    steps:
+    - name: get-version
+      id: get_version
+      # run: echo "VERSION=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_OUTPUT
+      run: echo "VERSION=20240111" >> $GITHUB_OUTPUT
 
   linux-python:
-    # needs: [setup, linux]
+    needs: [setup]
     runs-on: ubuntu-20.04
     steps:
     - uses: actions/setup-python@v5
@@ -48,18 +48,18 @@ jobs:
         cp pnnx-20240111-linux/pnnx ncnn/tools/pnnx/python/pnnx/
         cd ncnn/tools/pnnx/python
         python -m build --wheel
-        wheel tags --remove --platform-tag=manylinux_2_17_x86_64.manylinux2014_x86_64 dist/*.whl
-        pip install dist/*.whl --user
+        wheel tags --remove --platform-tag=manylinux_2_17_x86_64.manylinux2014_x86_64 dist/pnnx-${{ needs.setup.outputs.VERSION }}-py3-none-any.whl
+        pip install dist/pnnx-${{ needs.setup.outputs.VERSION }}-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl --user
         pytest tests
 
     - name: upload
       uses: actions/upload-artifact@v4
       with:
         name: pnnx-${{ needs.setup.outputs.VERSION }}-linux-python
-        path: ncnn/tools/pnnx/python/dist/*.whl
+        path: ncnn/tools/pnnx/python/dist/pnnx-${{ needs.setup.outputs.VERSION }}-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
 
   macos-python:
-    # needs: [setup, macos]
+    needs: [setup]
     runs-on: macos-13
     steps:
     - uses: actions/setup-python@v5
@@ -85,18 +85,18 @@ jobs:
         cp pnnx-20240111-macos/pnnx ncnn/tools/pnnx/python/pnnx/
         cd ncnn/tools/pnnx/python
         python -m build --wheel
-        wheel tags --remove --platform-tag=macosx_10_9_universal2.macosx_10_9_x86_64.macosx_11_0_arm64 dist/*.whl
-        pip install dist/*.whl --user
+        wheel tags --remove --platform-tag=macosx_10_9_universal2.macosx_10_9_x86_64.macosx_11_0_arm64 dist/pnnx-${{ needs.setup.outputs.VERSION }}-py3-none-any.whl
+        pip install dist/pnnx-${{ needs.setup.outputs.VERSION }}-py3-none-macosx_10_9_universal2.macosx_10_9_x86_64.macosx_11_0_arm64.whl --user
         pytest tests
 
     - name: upload
       uses: actions/upload-artifact@v4
       with:
         name: pnnx-${{ needs.setup.outputs.VERSION }}-macos-python
-        path: ncnn/tools/pnnx/python/dist/*.whl
+        path: ncnn/tools/pnnx/python/dist/pnnx-${{ needs.setup.outputs.VERSION }}-py3-none-macosx_10_9_universal2.macosx_10_9_x86_64.macosx_11_0_arm64.whl
 
   windows-python:
-    # needs: [setup, windows]
+    needs: [setup]
     runs-on: windows-2019
     steps:
     - uses: actions/setup-python@v5
@@ -124,13 +124,13 @@ jobs:
         python -m build --wheel
         dir dist
         dir dist\*
-        wheel tags --remove --platform-tag=win_arm64 dist\*.whl
-        pip install dist\*.whl --user
+        wheel tags --remove --platform-tag=win_arm64 dist/pnnx-${{ needs.setup.outputs.VERSION }}-py3-none-any.whl
+        pip install dist/pnnx-${{ needs.setup.outputs.VERSION }}-py3-none-win_arm64.whl --user
         pytest tests
 
     - name: upload
       uses: actions/upload-artifact@v4
       with:
         name: pnnx-${{ needs.setup.outputs.VERSION }}-windows-python
-        path: ncnn/tools/pnnx/python/dist/*.whl
+        path: ncnn/tools/pnnx/python/dist/pnnx-${{ needs.setup.outputs.VERSION }}-py3-none-win_arm64.whl
 
