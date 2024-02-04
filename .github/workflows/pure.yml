@@ -41,11 +41,12 @@ jobs:
         path: ncnn
 
     - name: wheel
+      env:
+        PNNX_WHEEL_WITHOUT_BUILD: ON
       run: |
         pip install pytest numpy torch torchvision wheel
         cp pnnx-20240111-linux/pnnx ncnn/tools/pnnx/python/pnnx/
         cd ncnn/tools/pnnx/python
-        export PNNX_WHEEL_WITHOUT_BUILD=ON
         python setup.py bdist_wheel --plat-name manylinux_2_17_x86_64.manylinux2014_x86_64
         pip install dist/*.whl --user
         pytest tests
@@ -76,11 +77,12 @@ jobs:
         path: ncnn
 
     - name: wheel
+      env:
+        PNNX_WHEEL_WITHOUT_BUILD: ON
       run: |
         pip install pytest numpy torch torchvision wheel
         cp pnnx-20240111-macos/pnnx ncnn/tools/pnnx/python/pnnx/
         cd ncnn/tools/pnnx/python
-        export PNNX_WHEEL_WITHOUT_BUILD=ON
         python setup.py bdist_wheel --plat-name macosx_10_9_universal2.macosx_10_9_x86_64.macosx_11_0_arm64
         pip install dist/*.whl --user
         pytest tests
@@ -111,11 +113,12 @@ jobs:
         path: ncnn
 
     - name: wheel
+      env:
+        PNNX_WHEEL_WITHOUT_BUILD: ON
       run: |
         pip install pytest numpy torch torchvision wheel
         Copy-Item -Verbose -Path "pnnx-20240111-windows\pnnx.exe" -Destination "ncnn\tools\pnnx\python\pnnx\"
         cd ncnn/tools/pnnx/python
-        export PNNX_WHEEL_WITHOUT_BUILD=ON
         python setup.py bdist_wheel --plat-name win_arm64
         pip install dist/*.whl --user
         pytest tests
