@@ -25,7 +25,7 @@ jobs:
   #   steps:
   #   - uses: actions/setup-python@v5
   #     with:
-  #       python-version: '3.10'
+  #       python-version: '3.11'
   #   - name: pnnx-patches
   #     uses: actions/checkout@v4
   #     with:
@@ -149,7 +149,7 @@ jobs:
   #   steps:
   #   - uses: actions/setup-python@v5
   #     with:
-  #       python-version: '3.10'
+  #       python-version: '3.11'
   #   - name: pnnx-patches
   #     uses: actions/checkout@v4
   #     with:
@@ -233,7 +233,7 @@ jobs:
     steps:
     - uses: actions/setup-python@v5
       with:
-        python-version: '3.10'
+        python-version: '3.11'
     - name: pnnx-patches
       uses: actions/checkout@v4
       with:
@@ -254,6 +254,7 @@ jobs:
         patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-mobile-build.patch
         patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-no-link-system-lib.patch
         patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-pocketfft-build.patch
+        patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-set-python-executable.patch
         mkdir -p build; cd build
         cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/libtorch" -DCMAKE_BUILD_TYPE=MinSizeRel -DBUILD_SHARED_LIBS=OFF \
             -DBUILD_CAFFE2_OPS=OFF \
@@ -319,7 +320,7 @@ jobs:
   #   steps:
   #   - uses: actions/setup-python@v5
   #     with:
-  #       python-version: '3.10'
+  #       python-version: '3.11'
   #   - name: pnnx-patches
   #     uses: actions/checkout@v4
   #     with:
