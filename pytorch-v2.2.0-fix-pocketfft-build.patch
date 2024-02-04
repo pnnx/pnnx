@@ -1,0 +1,16 @@
+diff -Nuarp pytorch-v2.2.0.orig/third_party/pocketfft/pocketfft_hdronly.h pytorch-v2.2.0/third_party/pocketfft/pocketfft_hdronly.h
+--- pytorch-v2.2.0.orig/third_party/pocketfft/pocketfft_hdronly.h	2024-01-31 09:04:43.000000000 +0800
++++ pytorch-v2.2.0/third_party/pocketfft/pocketfft_hdronly.h	2024-02-04 12:00:39.651695146 +0800
+@@ -149,7 +149,11 @@ template<> struct VLEN<double> { static
+ #endif
+ #endif
+ 
+-#if __cplusplus >= 201703L
++// the __MINGW32__ part in the conditional below works around the problem that
++// the standard C++ library on Windows does not provide aligned_alloc() even
++// though the MinGW compiler and MSVC may advertise C++17 compliance.
++// aligned_alloc is only supported from MacOS 10.15.
++#if (__cplusplus >= 201703L) && (!defined(__MINGW32__)) && (!defined(_MSC_VER)) && (MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_15)
+ inline void *aligned_alloc(size_t align, size_t size)
+   {
+   // aligned_alloc() requires that the requested size is a multiple of "align"

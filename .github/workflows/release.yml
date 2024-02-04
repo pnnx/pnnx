@@ -59,6 +59,7 @@ jobs:
           pip install -r requirements.txt &&
           patch -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-mobile-build.patch &&
           patch -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-no-link-system-lib.patch &&
+          patch -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-pocketfft-build.patch &&
           mkdir -p build && cd build &&
           cmake -DCMAKE_INSTALL_PREFIX="/host/tmp/libtorch" -DCMAKE_BUILD_TYPE=MinSizeRel -DBUILD_SHARED_LIBS=OFF
               -DBUILD_CAFFE2_OPS=OFF
@@ -74,6 +75,7 @@ jobs:
               -DUSE_KINETO=OFF
               -DUSE_LITE_INTERPRETER_PROFILER=OFF
               -DUSE_MKLDNN=OFF
+              -DUSE_MPS=OFF
               -DUSE_NUMPY=OFF
               -DUSE_OPENMP=OFF
               -DUSE_SOURCE_DEBUG_ON_MOBILE=OFF
@@ -173,6 +175,7 @@ jobs:
         pip3 install -r requirements.txt
         patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-mobile-build.patch
         patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-no-link-system-lib.patch
+        patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-pocketfft-build.patch
         mkdir -p build; cd build
         cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/libtorch" -DCMAKE_BUILD_TYPE=MinSizeRel -DBUILD_SHARED_LIBS=OFF \
             -DBUILD_CAFFE2_OPS=OFF \
@@ -188,6 +191,7 @@ jobs:
             -DUSE_KINETO=OFF \
             -DUSE_LITE_INTERPRETER_PROFILER=OFF \
             -DUSE_MKLDNN=OFF \
+            -DUSE_MPS=OFF \
             -DUSE_NUMPY=OFF \
             -DUSE_OPENMP=OFF \
             -DUSE_SOURCE_DEBUG_ON_MOBILE=OFF \
@@ -258,6 +262,7 @@ jobs:
         pip3 install -r requirements.txt
         C:\msys64\usr\bin\patch.exe -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\pytorch-v${{ env.LIBTORCH_VERSION }}-fix-mobile-build.patch
         C:\msys64\usr\bin\patch.exe -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\pytorch-v${{ env.LIBTORCH_VERSION }}-no-link-system-lib.patch
+        C:\msys64\usr\bin\patch.exe -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\pytorch-v${{ env.LIBTORCH_VERSION }}-fix-pocketfft-build.patch
         C:\msys64\usr\bin\patch.exe -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\pytorch-v${{ env.LIBTORCH_VERSION }}-set-python-executable.patch
         C:\msys64\usr\bin\patch.exe -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\pytorch-v${{ env.LIBTORCH_VERSION }}-no-mimalloc.patch
         mkdir -p build; cd build
@@ -275,6 +280,7 @@ jobs:
             -DUSE_KINETO=OFF `
             -DUSE_LITE_INTERPRETER_PROFILER=OFF `
             -DUSE_MKLDNN=OFF `
+            -DUSE_MPS=OFF `
             -DUSE_NUMPY=OFF `
             -DUSE_OPENMP=OFF `
             -DUSE_SOURCE_DEBUG_ON_MOBILE=OFF `
