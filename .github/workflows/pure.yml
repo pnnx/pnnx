@@ -44,7 +44,7 @@ jobs:
       env:
         PNNX_WHEEL_WITHOUT_BUILD: ON
       run: |
-        pip install pytest numpy torch torchvision wheel
+        pip install -U pytest numpy torch torchvision wheel setuptools
         cp pnnx-20240111-linux/pnnx ncnn/tools/pnnx/python/pnnx/
         cd ncnn/tools/pnnx/python
         python setup.py bdist_wheel
@@ -81,7 +81,7 @@ jobs:
       env:
         PNNX_WHEEL_WITHOUT_BUILD: ON
       run: |
-        pip install pytest numpy torch torchvision wheel
+        pip install -U pytest numpy torch torchvision wheel setuptools
         cp pnnx-20240111-macos/pnnx ncnn/tools/pnnx/python/pnnx/
         cd ncnn/tools/pnnx/python
         python setup.py bdist_wheel
@@ -118,7 +118,7 @@ jobs:
       env:
         PNNX_WHEEL_WITHOUT_BUILD: ON
       run: |
-        pip install pytest numpy torch torchvision wheel
+        pip install -U pytest numpy torch torchvision wheel setuptools
         Copy-Item -Verbose -Path "pnnx-20240111-windows\pnnx.exe" -Destination "ncnn\tools\pnnx\python\pnnx\"
         cd ncnn/tools/pnnx/python
         python setup.py bdist_wheel
