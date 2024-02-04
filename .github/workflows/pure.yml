@@ -19,7 +19,7 @@ jobs:
     - name: get-version
       id: get_version
       # run: echo "VERSION=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_OUTPUT
-      run: echo "VERSION=20240111" >> $GITHUB_OUTPUT
+      run: echo "VERSION=20240204" >> $GITHUB_OUTPUT
 
   linux-python:
     needs: [setup]
