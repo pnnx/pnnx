@@ -1,9 +1,9 @@
 name: release
-# on: [pull_request]
-on:
-  push:
-    tags:
-      - '*'
+on: [pull_request]
+# on:
+#   push:
+#     tags:
+#       - '*'
 
 env:
   LIBTORCH_VERSION: 2.2.0
@@ -713,12 +713,6 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: pnnx-${{ needs.setup.outputs.VERSION }}-linux
-        path: /tmp
-
-    - name: unzip-pnnx
-      run: |
-        cd /tmp
-        unzip -q pnnx-${{ needs.setup.outputs.VERSION }}-linux.zip
 
     - name: ncnn
       uses: actions/checkout@v4
@@ -726,27 +720,24 @@ jobs:
         repository: Tencent/ncnn
         path: ncnn
 
-    - name: Build wheel for manylinux
-      uses: pypa/cibuildwheel@v2.16.5
+    - name: wheel
       env:
-        CIBW_ARCHS_LINUX: "x86_64"
-        CIBW_BUILD: 'cp*-manylinux*'
-        CIBW_SKIP: cp36-*
-        CIBW_BUILD_VERBOSITY: 1
-        CIBW_BEFORE_ALL: cp /host/tmp/pnnx-${{ needs.setup.outputs.VERSION }}-linux/pnnx /project/ncnn/tools/pnnx/python/pnnx
-        CIBW_ENVIRONMENT: PNNX_WHEEL_WITHOUT_BUILD=ON
-        CIBW_BEFORE_TEST: pip install pytest numpy &&
-                          pip install torch torchvision
-        CIBW_TEST_COMMAND: "pytest {project}/ncnn/tools/pnnx/python/tests"
-      with:
-        package-dir: ./ncnn/tools/pnnx
-        output-dir: wheelhouse
+        PNNX_WHEEL_WITHOUT_BUILD: ON
+      run: |
+        unzip -q pnnx-${{ needs.setup.outputs.VERSION }}-linux.zip
+        pip install -U pytest numpy torch torchvision build wheel setuptools
+        cp pnnx-${{ needs.setup.outputs.VERSION }}-linux/pnnx ncnn/tools/pnnx/python/pnnx/
+        cd ncnn/tools/pnnx/python
+        python -m build --wheel
+        wheel tags --remove --platform-tag=manylinux_2_17_x86_64.manylinux2014_x86_64 dist/*.whl
+        pip install dist/*.whl --user
+        pytest tests
 
-    - name: Upload wheels
+    - name: upload
       uses: actions/upload-artifact@v4
       with:
         name: pnnx-${{ needs.setup.outputs.VERSION }}-linux-python
-        path: wheelhouse/*.whl
+        path: ncnn/tools/pnnx/python/dist/*.whl
 
   macos-python:
     needs: [setup, macos]
@@ -760,12 +751,6 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: pnnx-${{ needs.setup.outputs.VERSION }}-macos
-        path: tmp
-
-    - name: unzip-pnnx
-      run: |
-        cd tmp
-        unzip -q pnnx-${{ needs.setup.outputs.VERSION }}-macos.zip
 
     - name: ncnn
       uses: actions/checkout@v4
@@ -773,29 +758,24 @@ jobs:
         repository: Tencent/ncnn
         path: ncnn
 
-    - name: copy runtime
-      run: |
-        cp tmp/pnnx-${{ needs.setup.outputs.VERSION }}-macos/pnnx ncnn/tools/pnnx/python/pnnx
-    - name: Build wheels for macos
-      uses: pypa/cibuildwheel@v2.16.5
+    - name: wheel
       env:
-        CIBW_ARCHS_MACOS: "x86_64 universal2 arm64"
-        CIBW_BUILD: 'cp*'
-        CIBW_SKIP: cp36-*
-        CIBW_BUILD_VERBOSITY: 1
-        CIBW_ENVIRONMENT: PNNX_WHEEL_WITHOUT_BUILD=ON
-        CIBW_BEFORE_TEST: pip install pytest numpy &&
-                          pip install torch torchvision
-        CIBW_TEST_COMMAND: "pytest {project}/ncnn/tools/pnnx/python/tests"
-      with:
-        package-dir: ./ncnn/tools/pnnx
-        output-dir: wheelhouse
+        PNNX_WHEEL_WITHOUT_BUILD: ON
+      run: |
+        unzip -q pnnx-${{ needs.setup.outputs.VERSION }}-macos.zip
+        pip install -U pytest numpy torch torchvision build wheel setuptools
+        cp pnnx-${{ needs.setup.outputs.VERSION }}-macos/pnnx ncnn/tools/pnnx/python/pnnx/
+        cd ncnn/tools/pnnx/python
+        python -m build --wheel
+        wheel tags --remove --platform-tag=macosx_10_9_universal2.macosx_10_9_x86_64.macosx_11_0_arm64 dist/*.whl
+        pip install dist/*.whl --user
+        pytest tests
 
-    - name: Upload wheels
+    - name: upload
       uses: actions/upload-artifact@v4
       with:
         name: pnnx-${{ needs.setup.outputs.VERSION }}-macos-python
-        path: wheelhouse/*.whl
+        path: ncnn/tools/pnnx/python/dist/*.whl
 
   windows-python:
     needs: [setup, windows]
@@ -811,12 +791,6 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: pnnx-${{ needs.setup.outputs.VERSION }}-windows
-        path: tmp
-
-    - name: unzip-pnnx
-      run: |
-        cd tmp
-        7z x pnnx-${{ needs.setup.outputs.VERSION }}-windows.zip
 
     - name: ncnn
       uses: actions/checkout@v4
@@ -824,81 +798,76 @@ jobs:
         repository: Tencent/ncnn
         path: ncnn
 
-    - name: copy runtime
-      run: |
-        Copy-Item -Verbose -Path "tmp\pnnx-${{ needs.setup.outputs.VERSION }}-windows\pnnx.exe" -Destination "ncnn\tools\pnnx\python\pnnx\"
-    - name: Build wheels for windows
-      uses: pypa/cibuildwheel@v2.16.5
+    - name: wheel
       env:
-        CIBW_ARCHS_WINDOWS: "AMD64"
-        CIBW_BUILD: 'cp*'
-        CIBW_SKIP: cp36-*
-        CIBW_BUILD_VERBOSITY: 1
-        CIBW_ENVIRONMENT: PNNX_WHEEL_WITHOUT_BUILD=ON
-        CIBW_BEFORE_TEST: pip install pytest numpy &&
-                          pip install torch torchvision
-        CIBW_TEST_COMMAND: "pytest D:/a/pnnx/pnnx/ncnn/tools/pnnx/python/tests"
-      with:
-        package-dir: ./ncnn/tools/pnnx
-        output-dir: wheelhouse
+        PNNX_WHEEL_WITHOUT_BUILD: ON
+      run: |
+        7z x pnnx-${{ needs.setup.outputs.VERSION }}-windows.zip
+        pip install -U pytest numpy torch torchvision build wheel setuptools
+        Copy-Item -Verbose -Path "pnnx-${{ needs.setup.outputs.VERSION }}-windows\pnnx.exe" -Destination "ncnn\tools\pnnx\python\pnnx\"
+        cd ncnn/tools/pnnx/python
+        python -m build --wheel
+        wheel tags --remove --platform-tag=win_amd64 (get-item .\dist\*.whl).FullName
+        pip install (get-item .\dist\*.whl).FullName --user
+        pytest tests
 
-    - name: Upload wheels
+    - name: upload
       uses: actions/upload-artifact@v4
       with:
         name: pnnx-${{ needs.setup.outputs.VERSION }}-windows-python
-        path: wheelhouse/*.whl
+        path: ncnn/tools/pnnx/python/dist/*.whl
 
-  release:
-    permissions:
-      contents: write  # for softprops/action-gh-release to create a release
-    needs: [setup, linux, macos, windows]
-    runs-on: ubuntu-latest
-    steps:
-    - name: download-linux
-      uses: actions/download-artifact@v4
-      with:
-        name: pnnx-${{ needs.setup.outputs.VERSION }}-linux
-        path: artifacts
-    - name: download-macos
-      uses: actions/download-artifact@v4
-      with:
-        name: pnnx-${{ needs.setup.outputs.VERSION }}-macos
-        path: artifacts
-    - name: download-windows
-      uses: actions/download-artifact@v4
-      with:
-        name: pnnx-${{ needs.setup.outputs.VERSION }}-windows
-        path: artifacts
-    - name: create-release
-      uses: softprops/action-gh-release@v1
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        tag_name: ${{ needs.setup.outputs.VERSION }}
-        name: Release ${{ needs.setup.outputs.VERSION }}
-        files: artifacts/*.zip
+  # release:
+  #   permissions:
+  #     contents: write  # for softprops/action-gh-release to create a release
+  #   needs: [setup, linux, macos, windows]
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   - name: download-linux
+  #     uses: actions/download-artifact@v4
+  #     with:
+  #       name: pnnx-${{ needs.setup.outputs.VERSION }}-linux
+  #       path: artifacts
+  #   - name: download-macos
+  #     uses: actions/download-artifact@v4
+  #     with:
+  #       name: pnnx-${{ needs.setup.outputs.VERSION }}-macos
+  #       path: artifacts
+  #   - name: download-windows
+  #     uses: actions/download-artifact@v4
+  #     with:
+  #       name: pnnx-${{ needs.setup.outputs.VERSION }}-windows
+  #       path: artifacts
+  #   - name: create-release
+  #     uses: softprops/action-gh-release@v1
+  #     with:
+  #       token: ${{ secrets.GITHUB_TOKEN }}
+  #       tag_name: ${{ needs.setup.outputs.VERSION }}
+  #       name: Release ${{ needs.setup.outputs.VERSION }}
+  #       files: artifacts/*.zip
 
-  release-python:
-    permissions:
-      contents: none
-    needs: [setup, linux-python, macos-python, windows-python]
-    runs-on: ubuntu-latest
-    steps:
-    - name: download-linux
-      uses: actions/download-artifact@v4
-      with:
-        name: pnnx-${{ needs.setup.outputs.VERSION }}-linux-python
-        path: dist
-    - name: download-macos
-      uses: actions/download-artifact@v4
-      with:
-        name: pnnx-${{ needs.setup.outputs.VERSION }}-macos-python
-        path: dist
-    - name: download-windows
-      uses: actions/download-artifact@v4
-      with:
-        name: pnnx-${{ needs.setup.outputs.VERSION }}-windows-python
-        path: dist
-    - uses: pypa/gh-action-pypi-publish@release/v1
-      with:
-        user: __token__
-        password: ${{ secrets.PYPI_API_TOKEN }}
+  # release-python:
+  #   permissions:
+  #     contents: none
+  #   needs: [setup, linux-python, macos-python, windows-python]
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   - name: download-linux
+  #     uses: actions/download-artifact@v4
+  #     with:
+  #       name: pnnx-${{ needs.setup.outputs.VERSION }}-linux-python
+  #       path: dist
+  #   - name: download-macos
+  #     uses: actions/download-artifact@v4
+  #     with:
+  #       name: pnnx-${{ needs.setup.outputs.VERSION }}-macos-python
+  #       path: dist
+  #   - name: download-windows
+  #     uses: actions/download-artifact@v4
+  #     with:
+  #       name: pnnx-${{ needs.setup.outputs.VERSION }}-windows-python
+  #       path: dist
+  #   - uses: pypa/gh-action-pypi-publish@release/v1
+  #     with:
+  #       user: __token__
+  #       password: ${{ secrets.PYPI_API_TOKEN }}
