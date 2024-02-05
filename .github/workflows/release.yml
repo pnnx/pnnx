@@ -1,15 +1,15 @@
 name: release
-# on: [push]
+# on: [pull_request]
 on:
   push:
     tags:
       - '*'
 
 env:
-  LIBTORCH_VERSION: 2.1.2
-  TORCHVISION_VERSION: 0.16.2
+  LIBTORCH_VERSION: 2.2.0
+  TORCHVISION_VERSION: 0.17.0
   PROTOBUF_VERSION: 3.11.2
-  CACHE_DATE: 20231213
+  CACHE_DATE: 20240205
 
 permissions:
   contents: read
@@ -31,7 +31,7 @@ jobs:
     steps:
     - uses: actions/setup-python@v5
       with:
-        python-version: '3.10'
+        python-version: '3.11'
     - name: pnnx-patches
       uses: actions/checkout@v4
       with:
@@ -59,6 +59,7 @@ jobs:
           pip install -r requirements.txt &&
           patch -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-mobile-build.patch &&
           patch -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-no-link-system-lib.patch &&
+          patch -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-pocketfft-build.patch &&
           mkdir -p build && cd build &&
           cmake -DCMAKE_INSTALL_PREFIX="/host/tmp/libtorch" -DCMAKE_BUILD_TYPE=MinSizeRel -DBUILD_SHARED_LIBS=OFF
               -DBUILD_CAFFE2_OPS=OFF
@@ -74,6 +75,7 @@ jobs:
               -DUSE_KINETO=OFF
               -DUSE_LITE_INTERPRETER_PROFILER=OFF
               -DUSE_MKLDNN=OFF
+              -DUSE_MPS=OFF
               -DUSE_NUMPY=OFF
               -DUSE_OPENMP=OFF
               -DUSE_SOURCE_DEBUG_ON_MOBILE=OFF
@@ -81,7 +83,7 @@ jobs:
               -DCMAKE_CXX_COMPILER="/opt/rh/devtoolset-9/root/usr/bin/c++"
               -DCMAKE_C_COMPILER="/opt/rh/devtoolset-9/root/usr/bin/cc"
               .. &&
-          cmake --build . -j 2 &&
+          cmake --build . -j $(nproc) &&
           cmake --build . --target install/strip
       with:
         package-dir: pnnx-patches
@@ -114,7 +116,7 @@ jobs:
           -DCMAKE_BUILD_TYPE=MinSizeRel -DWITH_PNG=OFF
           -DCMAKE_C_COMPILER="/opt/rh/devtoolset-9/root/usr/bin/cc"
           -DCMAKE_CXX_COMPILER="/opt/rh/devtoolset-9/root/usr/bin/c++" -DWITH_JPEG=OFF ..  &&
-          cmake --build . -j 2  &&
+          cmake --build . -j $(nproc)  &&
           cmake --build . --target install/strip
       with:
         package-dir: pnnx-patches
@@ -142,18 +144,18 @@ jobs:
           mkdir -p build2 && cd build2 &&
           cmake -DCMAKE_INSTALL_PREFIX="/host/tmp/protobuf" -Dprotobuf_BUILD_TESTS=OFF -DCMAKE_C_COMPILER="/opt/rh/devtoolset-9/root/usr/bin/cc"
           -DCMAKE_CXX_COMPILER="/opt/rh/devtoolset-9/root/usr/bin/c++" -DCMAKE_BUILD_TYPE=MinSizeRel ../cmake &&
-          cmake --build . -j 2 &&
+          cmake --build . -j $(nproc) &&
           cmake --build . --target install/strip
       with:
         package-dir: pnnx-patches
         output-dir: wheelhouse3
 
-  macos-deps:
-    runs-on: macos-11
+  macos-x64-deps:
+    runs-on: macos-13
     steps:
     - uses: actions/setup-python@v5
       with:
-        python-version: '3.10'
+        python-version: '3.11'
     - name: pnnx-patches
       uses: actions/checkout@v4
       with:
@@ -163,7 +165,7 @@ jobs:
       uses: actions/cache@v4.0.0
       with:
         path: "libtorch"
-        key: libtorch-${{ env.LIBTORCH_VERSION }}-macos-${{ env.CACHE_DATE }}
+        key: libtorch-${{ env.LIBTORCH_VERSION }}-macos-x64-${{ env.CACHE_DATE }}
     - name: libtorch
       if: steps.cache-libtorch.outputs.cache-hit != 'true'
       run: |
@@ -173,6 +175,7 @@ jobs:
         pip3 install -r requirements.txt
         patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-mobile-build.patch
         patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-no-link-system-lib.patch
+        patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-pocketfft-build.patch
         mkdir -p build; cd build
         cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/libtorch" -DCMAKE_BUILD_TYPE=MinSizeRel -DBUILD_SHARED_LIBS=OFF \
             -DBUILD_CAFFE2_OPS=OFF \
@@ -188,6 +191,92 @@ jobs:
             -DUSE_KINETO=OFF \
             -DUSE_LITE_INTERPRETER_PROFILER=OFF \
             -DUSE_MKLDNN=OFF \
+            -DUSE_MPS=OFF \
+            -DUSE_NUMPY=OFF \
+            -DUSE_OPENMP=OFF \
+            -DUSE_SOURCE_DEBUG_ON_MOBILE=OFF \
+            -DUSE_XNNPACK=OFF \
+            ..
+        cmake --build . -j 4
+        cmake --build . --target install/strip
+    - name: cache-torchvision
+      id: cache-torchvision
+      uses: actions/cache@v4.0.0
+      with:
+        path: "torchvision"
+        key: torchvision-${{ env.TORCHVISION_VERSION }}-macos-x64-${{ env.CACHE_DATE }}
+    - name: torchvision
+      if: steps.cache-torchvision.outputs.cache-hit != 'true'
+      run: |
+        wget -q https://github.com/pytorch/vision/archive/refs/tags/v${{ env.TORCHVISION_VERSION }}.zip -O vision-${{ env.TORCHVISION_VERSION }}.zip
+        unzip -q vision-${{ env.TORCHVISION_VERSION }}.zip
+        cd vision-${{ env.TORCHVISION_VERSION }}
+        patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/vision-${{ env.TORCHVISION_VERSION }}-ops-only.patch
+        patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/vision-${{ env.TORCHVISION_VERSION }}-no-cuda-version.patch
+        mkdir -p build; cd build
+        cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/torchvision" -DTorch_DIR="$GITHUB_WORKSPACE/libtorch/share/cmake/Torch" -DCMAKE_BUILD_TYPE=MinSizeRel -DWITH_PNG=OFF -DWITH_JPEG=OFF ..
+        cmake --build . -j 4
+        cmake --build . --target install/strip
+    - name: cache-protobuf
+      id: cache-protobuf
+      uses: actions/cache@v4.0.0
+      with:
+        path: "protobuf"
+        key: protobuf-${{ env.PROTOBUF_VERSION }}-macos-x64-${{ env.CACHE_DATE }}
+    - name: protobuf
+      if: steps.cache-protobuf.outputs.cache-hit != 'true'
+      run: |
+        wget -q https://github.com/protocolbuffers/protobuf/archive/v${{ env.PROTOBUF_VERSION }}.zip -O protobuf-${{ env.PROTOBUF_VERSION }}.zip
+        unzip -q protobuf-${{ env.PROTOBUF_VERSION }}.zip
+        cd protobuf-${{ env.PROTOBUF_VERSION }}
+        mkdir -p build2; cd build2;
+        cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/protobuf" -Dprotobuf_BUILD_TESTS=OFF -DCMAKE_BUILD_TYPE=MinSizeRel ../cmake
+        cmake --build . -j 4
+        cmake --build . --target install/strip
+
+  macos-arm64-deps:
+    runs-on: macos-14
+    steps:
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+    - name: pnnx-patches
+      uses: actions/checkout@v4
+      with:
+        path: pnnx-patches
+    - name: cache-libtorch
+      id: cache-libtorch
+      uses: actions/cache@v4.0.0
+      with:
+        path: "libtorch"
+        key: libtorch-${{ env.LIBTORCH_VERSION }}-macos-arm64-${{ env.CACHE_DATE }}
+    - name: libtorch
+      if: steps.cache-libtorch.outputs.cache-hit != 'true'
+      run: |
+        wget -q https://github.com/pytorch/pytorch/releases/download/v${{ env.LIBTORCH_VERSION }}/pytorch-v${{ env.LIBTORCH_VERSION }}.tar.gz
+        tar -xf pytorch-v${{ env.LIBTORCH_VERSION }}.tar.gz
+        cd pytorch-v${{ env.LIBTORCH_VERSION }}
+        pip3 install -r requirements.txt
+        patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-mobile-build.patch
+        patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-no-link-system-lib.patch
+        patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-pocketfft-build.patch
+        patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-set-python-executable.patch
+        mkdir -p build; cd build
+        cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/libtorch" -DCMAKE_BUILD_TYPE=MinSizeRel -DBUILD_SHARED_LIBS=OFF \
+            -DBUILD_CAFFE2_OPS=OFF \
+            -DBUILD_CUSTOM_PROTOBUF=OFF \
+            -DBUILD_LITE_INTERPRETER=OFF \
+            -DBUILD_PYTHON=OFF \
+            -DINTERN_BUILD_MOBILE=ON \
+            -DINTERN_DISABLE_AUTOGRAD=ON \
+            -DINTERN_DISABLE_ONNX=ON \
+            -DUSE_CUDA=OFF \
+            -DUSE_DISTRIBUTED=OFF \
+            -DUSE_ITT=OFF \
+            -DUSE_KINETO=OFF \
+            -DUSE_LITE_INTERPRETER_PROFILER=OFF \
+            -DUSE_MKLDNN=OFF \
+            -DUSE_MPS=OFF \
             -DUSE_NUMPY=OFF \
             -DUSE_OPENMP=OFF \
             -DUSE_SOURCE_DEBUG_ON_MOBILE=OFF \
@@ -200,7 +289,7 @@ jobs:
       uses: actions/cache@v4.0.0
       with:
         path: "torchvision"
-        key: torchvision-${{ env.TORCHVISION_VERSION }}-macos-${{ env.CACHE_DATE }}
+        key: torchvision-${{ env.TORCHVISION_VERSION }}-macos-arm64-${{ env.CACHE_DATE }}
     - name: torchvision
       if: steps.cache-torchvision.outputs.cache-hit != 'true'
       run: |
@@ -218,7 +307,7 @@ jobs:
       uses: actions/cache@v4.0.0
       with:
         path: "protobuf"
-        key: protobuf-${{ env.PROTOBUF_VERSION }}-macos-${{ env.CACHE_DATE }}
+        key: protobuf-${{ env.PROTOBUF_VERSION }}-macos-arm64-${{ env.CACHE_DATE }}
     - name: protobuf
       if: steps.cache-protobuf.outputs.cache-hit != 'true'
       run: |
@@ -237,7 +326,7 @@ jobs:
     steps:
     - uses: actions/setup-python@v5
       with:
-        python-version: '3.10'
+        python-version: '3.11'
     - name: pnnx-patches
       uses: actions/checkout@v4
       with:
@@ -258,6 +347,7 @@ jobs:
         pip3 install -r requirements.txt
         C:\msys64\usr\bin\patch.exe -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\pytorch-v${{ env.LIBTORCH_VERSION }}-fix-mobile-build.patch
         C:\msys64\usr\bin\patch.exe -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\pytorch-v${{ env.LIBTORCH_VERSION }}-no-link-system-lib.patch
+        C:\msys64\usr\bin\patch.exe -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\pytorch-v${{ env.LIBTORCH_VERSION }}-fix-pocketfft-build.patch
         C:\msys64\usr\bin\patch.exe -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\pytorch-v${{ env.LIBTORCH_VERSION }}-set-python-executable.patch
         C:\msys64\usr\bin\patch.exe -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\pytorch-v${{ env.LIBTORCH_VERSION }}-no-mimalloc.patch
         mkdir -p build; cd build
@@ -275,12 +365,13 @@ jobs:
             -DUSE_KINETO=OFF `
             -DUSE_LITE_INTERPRETER_PROFILER=OFF `
             -DUSE_MKLDNN=OFF `
+            -DUSE_MPS=OFF `
             -DUSE_NUMPY=OFF `
             -DUSE_OPENMP=OFF `
             -DUSE_SOURCE_DEBUG_ON_MOBILE=OFF `
             -DUSE_XNNPACK=OFF `
             ..
-        cmake --build . --config MinSizeRel -j 2
+        cmake --build . --config MinSizeRel -j 4
         cmake --build . --config MinSizeRel --target install
     - name: cache-torchvision
       id: cache-torchvision
@@ -299,7 +390,7 @@ jobs:
         C:\msys64\usr\bin\patch.exe -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\vision-${{ env.TORCHVISION_VERSION }}-no-dll-export.patch
         mkdir -p build; cd build
         cmake -DCMAKE_INSTALL_PREFIX="$env:GITHUB_WORKSPACE/torchvision" -DTorch_DIR="$env:GITHUB_WORKSPACE/libtorch/share/cmake/Torch" -DCMAKE_BUILD_TYPE=MinSizeRel -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded -DWITH_PNG=OFF -DWITH_JPEG=OFF ..
-        cmake --build . --config MinSizeRel -j 2
+        cmake --build . --config MinSizeRel -j 4
         cmake --build . --config MinSizeRel --target install
     - name: cache-protobuf
       id: cache-protobuf
@@ -315,7 +406,7 @@ jobs:
         cd protobuf-${{ env.PROTOBUF_VERSION }}
         mkdir -p build2; cd build2;
         cmake -DCMAKE_INSTALL_PREFIX="$env:GITHUB_WORKSPACE/protobuf" -Dprotobuf_BUILD_TESTS=OFF -Dprotobuf_MSVC_STATIC_RUNTIME=ON -DCMAKE_BUILD_TYPE=MinSizeRel ../cmake
-        cmake --build . --config MinSizeRel -j 2
+        cmake --build . --config MinSizeRel -j 4
         cmake --build . --config MinSizeRel --target install
 
   linux:
@@ -326,7 +417,7 @@ jobs:
     steps:
     - uses: actions/setup-python@v5
       with:
-        python-version: '3.10'
+        python-version: '3.11'
     - name: pnnx-patches
       uses: actions/checkout@v4
       with:
@@ -376,7 +467,7 @@ jobs:
             -DCMAKE_CXX_COMPILER="/opt/rh/devtoolset-9/root/usr/bin/c++"
             -DCMAKE_C_COMPILER="/opt/rh/devtoolset-9/root/usr/bin/cc"
             .. &&
-          cmake --build . -j 2 &&
+          cmake --build . -j $(nproc) &&
           cmake --build . --target install/strip
       with:
         package-dir: pnnx-patches
@@ -394,15 +485,15 @@ jobs:
         name: ${{ env.PACKAGENAME }}
         path: ${{ env.PACKAGENAME }}.zip
 
-  macos:
-    needs: [setup, macos-deps]
-    runs-on: macos-11
+  macos-x64:
+    needs: [setup, macos-x64-deps]
+    runs-on: macos-13
     env:
-      PACKAGENAME: pnnx-${{ needs.setup.outputs.VERSION }}-macos
+      PACKAGENAME: pnnx-${{ needs.setup.outputs.VERSION }}-macos-x64
     steps:
     - uses: actions/setup-python@v5
       with:
-        python-version: '3.10'
+        python-version: '3.11'
     - name: checkout
       uses: actions/checkout@v4
     - name: cache-libtorch
@@ -410,19 +501,78 @@ jobs:
       uses: actions/cache@v4.0.0
       with:
         path: "libtorch"
-        key: libtorch-${{ env.LIBTORCH_VERSION }}-macos-${{ env.CACHE_DATE }}
+        key: libtorch-${{ env.LIBTORCH_VERSION }}-macos-x64-${{ env.CACHE_DATE }}
     - name: cache-torchvision
       id: cache-torchvision
       uses: actions/cache@v4.0.0
       with:
         path: "torchvision"
-        key: torchvision-${{ env.TORCHVISION_VERSION }}-macos-${{ env.CACHE_DATE }}
+        key: torchvision-${{ env.TORCHVISION_VERSION }}-macos-x64-${{ env.CACHE_DATE }}
     - name: cache-protobuf
       id: cache-protobuf
       uses: actions/cache@v4.0.0
       with:
         path: "protobuf"
-        key: protobuf-${{ env.PROTOBUF_VERSION }}-macos-${{ env.CACHE_DATE }}
+        key: protobuf-${{ env.PROTOBUF_VERSION }}-macos-x64-${{ env.CACHE_DATE }}
+    - name: ncnn
+      uses: actions/checkout@v4
+      with:
+        repository: Tencent/ncnn
+        path: ncnn
+    - name: build-pnnx
+      run: |
+        cd ncnn/tools/pnnx
+        mkdir build && cd build
+        cmake -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=MinSizeRel \
+            -DTorch_INSTALL_DIR="$GITHUB_WORKSPACE/libtorch" \
+            -DTorchVision_INSTALL_DIR="$GITHUB_WORKSPACE/torchvision" \
+            -DProtobuf_INCLUDE_DIR="$GITHUB_WORKSPACE/protobuf/include" \
+            -DProtobuf_LIBRARIES="$GITHUB_WORKSPACE/protobuf/lib/libprotobuf.a" \
+            -DProtobuf_PROTOC_EXECUTABLE="$GITHUB_WORKSPACE/protobuf/bin/protoc" \
+            ..
+        cmake --build . -j 4
+        cmake --build . --target install/strip
+    - name: package
+      run: |
+        mkdir ${{ env.PACKAGENAME }}
+        cp README.md ${{ env.PACKAGENAME }}
+        cp ncnn/tools/pnnx/build/install/bin/pnnx ${{ env.PACKAGENAME }}
+        zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
+    - name: upload
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ env.PACKAGENAME }}
+        path: ${{ env.PACKAGENAME }}.zip
+
+  macos-arm64:
+    needs: [setup, macos-arm64-deps]
+    runs-on: macos-14
+    env:
+      PACKAGENAME: pnnx-${{ needs.setup.outputs.VERSION }}-macos-arm64
+    steps:
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+    - name: checkout
+      uses: actions/checkout@v4
+    - name: cache-libtorch
+      id: cache-libtorch
+      uses: actions/cache@v4.0.0
+      with:
+        path: "libtorch"
+        key: libtorch-${{ env.LIBTORCH_VERSION }}-macos-arm64-${{ env.CACHE_DATE }}
+    - name: cache-torchvision
+      id: cache-torchvision
+      uses: actions/cache@v4.0.0
+      with:
+        path: "torchvision"
+        key: torchvision-${{ env.TORCHVISION_VERSION }}-macos-arm64-${{ env.CACHE_DATE }}
+    - name: cache-protobuf
+      id: cache-protobuf
+      uses: actions/cache@v4.0.0
+      with:
+        path: "protobuf"
+        key: protobuf-${{ env.PROTOBUF_VERSION }}-macos-arm64-${{ env.CACHE_DATE }}
     - name: ncnn
       uses: actions/checkout@v4
       with:
@@ -453,6 +603,44 @@ jobs:
         name: ${{ env.PACKAGENAME }}
         path: ${{ env.PACKAGENAME }}.zip
 
+  macos:
+    needs: [setup, macos-x64, macos-arm64]
+    runs-on: macos-14
+    env:
+      PACKAGENAME: pnnx-${{ needs.setup.outputs.VERSION }}-macos
+    steps:
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+    - name: checkout
+      uses: actions/checkout@v4
+    - name: download-macos-x64
+      uses: actions/download-artifact@v4
+      with:
+        name: pnnx-${{ needs.setup.outputs.VERSION }}-macos-x64
+        path: artifacts
+    - name: download-macos-arm64
+      uses: actions/download-artifact@v4
+      with:
+        name: pnnx-${{ needs.setup.outputs.VERSION }}-macos-arm64
+        path: artifacts
+    - name: merge-universal-package
+      run: |
+        unzip artifacts/pnnx-${{ needs.setup.outputs.VERSION }}-macos-x64.zip
+        unzip artifacts/pnnx-${{ needs.setup.outputs.VERSION }}-macos-arm64.zip
+        mkdir ${{ env.PACKAGENAME }}
+        cp README.md ${{ env.PACKAGENAME }}
+        lipo -create \
+            pnnx-${{ needs.setup.outputs.VERSION }}-macos-x64/pnnx \
+            pnnx-${{ needs.setup.outputs.VERSION }}-macos-arm64/pnnx \
+            -o ${{ env.PACKAGENAME }}/pnnx
+        zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
+    - name: upload
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ env.PACKAGENAME }}
+        path: ${{ env.PACKAGENAME }}.zip
+
   windows:
     needs: [setup, windows-deps]
     runs-on: windows-2019
@@ -462,7 +650,7 @@ jobs:
     steps:
     - uses: actions/setup-python@v5
       with:
-        python-version: '3.10'
+        python-version: '3.11'
     - name: checkout
       uses: actions/checkout@v4
     - name: cache-libtorch
@@ -499,7 +687,7 @@ jobs:
             -DProtobuf_LIBRARIES="$env:GITHUB_WORKSPACE/protobuf/lib/libprotobuf.lib" `
             -DProtobuf_PROTOC_EXECUTABLE="$env:GITHUB_WORKSPACE/protobuf/bin/protoc.exe" `
             ..
-        cmake --build . --config MinSizeRel -j 2
+        cmake --build . --config MinSizeRel -j 4
         cmake --build . --config MinSizeRel --target install
     - name: package
       run: |
@@ -519,18 +707,12 @@ jobs:
     steps:
     - uses: actions/setup-python@v5
       with:
-        python-version: '3.10'
+        python-version: '3.11'
 
     - name: download-pnnx
       uses: actions/download-artifact@v4
       with:
         name: pnnx-${{ needs.setup.outputs.VERSION }}-linux
-        path: /tmp
-
-    - name: unzip-pnnx
-      run: |
-        cd /tmp
-        unzip -q pnnx-${{ needs.setup.outputs.VERSION }}-linux.zip
 
     - name: ncnn
       uses: actions/checkout@v4
@@ -538,46 +720,37 @@ jobs:
         repository: Tencent/ncnn
         path: ncnn
 
-    - name: Build wheel for manylinux
-      uses: pypa/cibuildwheel@v2.16.5
+    - name: wheel
       env:
-        CIBW_ARCHS_LINUX: "x86_64"
-        CIBW_BUILD: 'cp*-manylinux*'
-        CIBW_SKIP: cp36-* cp312-*
-        CIBW_BUILD_VERBOSITY: 1
-        CIBW_BEFORE_ALL: cp /host/tmp/pnnx-${{ needs.setup.outputs.VERSION }}-linux/pnnx /project/ncnn/tools/pnnx/python/pnnx
-        CIBW_ENVIRONMENT: PNNX_WHEEL_WITHOUT_BUILD=ON
-        CIBW_BEFORE_TEST: pip install pytest numpy &&
-                          pip install torch torchvision
-        CIBW_TEST_COMMAND: "pytest {project}/ncnn/tools/pnnx/python/tests"
-      with:
-        package-dir: ./ncnn/tools/pnnx
-        output-dir: wheelhouse
+        PNNX_WHEEL_WITHOUT_BUILD: ON
+      run: |
+        unzip -q pnnx-${{ needs.setup.outputs.VERSION }}-linux.zip
+        pip install -U pytest numpy torch torchvision build wheel setuptools
+        cp pnnx-${{ needs.setup.outputs.VERSION }}-linux/pnnx ncnn/tools/pnnx/python/pnnx/
+        cd ncnn/tools/pnnx/python
+        python -m build --wheel
+        wheel tags --remove --platform-tag=manylinux_2_17_x86_64.manylinux2014_x86_64 dist/*.whl
+        pip install dist/*.whl --user
+        pytest tests
 
-    - name: Upload wheels
+    - name: upload
       uses: actions/upload-artifact@v4
       with:
         name: pnnx-${{ needs.setup.outputs.VERSION }}-linux-python
-        path: wheelhouse/*.whl
+        path: ncnn/tools/pnnx/python/dist/*.whl
 
   macos-python:
     needs: [setup, macos]
-    runs-on: macos-11
+    runs-on: macos-13
     steps:
     - uses: actions/setup-python@v5
       with:
-        python-version: '3.10'
+        python-version: '3.11'
 
     - name: download-pnnx
       uses: actions/download-artifact@v4
       with:
         name: pnnx-${{ needs.setup.outputs.VERSION }}-macos
-        path: tmp
-
-    - name: unzip-pnnx
-      run: |
-        cd tmp
-        unzip -q pnnx-${{ needs.setup.outputs.VERSION }}-macos.zip
 
     - name: ncnn
       uses: actions/checkout@v4
@@ -585,29 +758,24 @@ jobs:
         repository: Tencent/ncnn
         path: ncnn
 
-    - name: copy runtime
-      run: |
-        cp tmp/pnnx-${{ needs.setup.outputs.VERSION }}-macos/pnnx ncnn/tools/pnnx/python/pnnx
-    - name: Build wheels for macos
-      uses: pypa/cibuildwheel@v2.16.5
+    - name: wheel
       env:
-        CIBW_ARCHS_MACOS: "x86_64"
-        CIBW_BUILD: 'cp*'
-        CIBW_SKIP: cp36-* cp312-*
-        CIBW_BUILD_VERBOSITY: 1
-        CIBW_ENVIRONMENT: PNNX_WHEEL_WITHOUT_BUILD=ON
-        CIBW_BEFORE_TEST: pip install pytest numpy &&
-                          pip install torch torchvision
-        CIBW_TEST_COMMAND: "pytest {project}/ncnn/tools/pnnx/python/tests"
-      with:
-        package-dir: ./ncnn/tools/pnnx
-        output-dir: wheelhouse
+        PNNX_WHEEL_WITHOUT_BUILD: ON
+      run: |
+        unzip -q pnnx-${{ needs.setup.outputs.VERSION }}-macos.zip
+        pip install -U pytest numpy torch torchvision build wheel setuptools
+        cp pnnx-${{ needs.setup.outputs.VERSION }}-macos/pnnx ncnn/tools/pnnx/python/pnnx/
+        cd ncnn/tools/pnnx/python
+        python -m build --wheel
+        wheel tags --remove --platform-tag=macosx_10_9_universal2.macosx_10_9_x86_64.macosx_11_0_arm64 dist/*.whl
+        pip install dist/*.whl --user
+        pytest tests
 
-    - name: Upload wheels
+    - name: upload
       uses: actions/upload-artifact@v4
       with:
         name: pnnx-${{ needs.setup.outputs.VERSION }}-macos-python
-        path: wheelhouse/*.whl
+        path: ncnn/tools/pnnx/python/dist/*.whl
 
   windows-python:
     needs: [setup, windows]
@@ -617,18 +785,12 @@ jobs:
     steps:
     - uses: actions/setup-python@v5
       with:
-        python-version: '3.10'
+        python-version: '3.11'
 
     - name: download-pnnx
       uses: actions/download-artifact@v4
       with:
         name: pnnx-${{ needs.setup.outputs.VERSION }}-windows
-        path: tmp
-
-    - name: unzip-pnnx
-      run: |
-        cd tmp
-        7z x pnnx-${{ needs.setup.outputs.VERSION }}-windows.zip
 
     - name: ncnn
       uses: actions/checkout@v4
@@ -636,29 +798,24 @@ jobs:
         repository: Tencent/ncnn
         path: ncnn
 
-    - name: copy runtime
-      run: |
-        Copy-Item -Verbose -Path "tmp\pnnx-${{ needs.setup.outputs.VERSION }}-windows\pnnx.exe" -Destination "ncnn\tools\pnnx\python\pnnx\"
-    - name: Build wheels for windows
-      uses: pypa/cibuildwheel@v2.16.5
+    - name: wheel
       env:
-        CIBW_ARCHS_WINDOWS: "AMD64"
-        CIBW_BUILD: 'cp*'
-        CIBW_SKIP: cp36-* cp312-*
-        CIBW_BUILD_VERBOSITY: 1
-        CIBW_ENVIRONMENT: PNNX_WHEEL_WITHOUT_BUILD=ON
-        CIBW_BEFORE_TEST: pip install pytest numpy &&
-                          pip install torch torchvision
-        CIBW_TEST_COMMAND: "pytest D:/a/pnnx/pnnx/ncnn/tools/pnnx/python/tests"
-      with:
-        package-dir: ./ncnn/tools/pnnx
-        output-dir: wheelhouse
+        PNNX_WHEEL_WITHOUT_BUILD: ON
+      run: |
+        7z x pnnx-${{ needs.setup.outputs.VERSION }}-windows.zip
+        pip install -U pytest numpy torch torchvision build wheel setuptools
+        Copy-Item -Verbose -Path "pnnx-${{ needs.setup.outputs.VERSION }}-windows\pnnx.exe" -Destination "ncnn\tools\pnnx\python\pnnx\"
+        cd ncnn/tools/pnnx/python
+        python -m build --wheel
+        wheel tags --remove --platform-tag=win_amd64 (get-item .\dist\*.whl).FullName
+        pip install (get-item .\dist\*.whl).FullName --user
+        pytest tests
 
-    - name: Upload wheels
+    - name: upload
       uses: actions/upload-artifact@v4
       with:
         name: pnnx-${{ needs.setup.outputs.VERSION }}-windows-python
-        path: wheelhouse/*.whl
+        path: ncnn/tools/pnnx/python/dist/*.whl
 
   release:
     permissions:

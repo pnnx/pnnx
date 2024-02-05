@@ -1,7 +1,7 @@
-diff -Nuarp pytorch-v2.1.2.orig/CMakeLists.txt pytorch-v2.1.2/CMakeLists.txt
---- pytorch-v2.1.2.orig/CMakeLists.txt	2023-12-15 10:03:27.000000000 +0800
-+++ pytorch-v2.1.2/CMakeLists.txt	2023-12-15 15:33:50.638638754 +0800
-@@ -354,10 +354,6 @@ cmake_dependent_option(
+diff -Nuarp pytorch-v2.2.0.orig/CMakeLists.txt pytorch-v2.2.0/CMakeLists.txt
+--- pytorch-v2.2.0.orig/CMakeLists.txt	2024-01-31 08:58:01.000000000 +0800
++++ pytorch-v2.2.0/CMakeLists.txt	2024-02-04 11:19:59.509887231 +0800
+@@ -351,10 +351,6 @@ cmake_dependent_option(
      BUILD_FUNCTORCH "Build Functorch" ON "BUILD_PYTHON" OFF)
  
  option(USE_MIMALLOC "Use mimalloc" OFF)

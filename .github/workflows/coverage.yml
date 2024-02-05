@@ -21,8 +21,8 @@ jobs:
           - torch-version: 1.13.0
             torchvision-version: 0.14.0
 
-          - torch-version: 2.1.2
-            torchvision-version: 0.16.2
+          - torch-version: 2.2.0
+            torchvision-version: 0.17.0
 
     steps:
     - name: setup pytorch-${{ matrix.torch-version }}
@@ -48,7 +48,7 @@ jobs:
         cd vision
         mkdir -p build; cd build
         cmake -DCMAKE_INSTALL_PREFIX=$GITHUB_WORKSPACE/torchvision-${{ matrix.torchvision-version }}-install -DTorch_DIR=$HOME/.local/lib/python3.8/site-packages/torch/share/cmake/Torch -DCMAKE_BUILD_TYPE=Release ..
-        cmake --build . -j 2
+        cmake --build . -j $(nproc)
         cmake --build . --target install
 
     - name: lcov
@@ -68,7 +68,7 @@ jobs:
         cd ncnn
         mkdir build && cd build
         cmake -DCMAKE_BUILD_TYPE=Release -DNCNN_PYTHON=ON -DNCNN_BUILD_TOOLS=OFF -DNCNN_BUILD_EXAMPLES=OFF ..
-        cmake --build . -j 2
+        cmake --build . -j $(nproc)
         cd ..
         pip install .
 
@@ -77,7 +77,7 @@ jobs:
         cd ncnn/tools/pnnx
         mkdir build && cd build
         cmake -DTorch_INSTALL_DIR="$HOME/.local/lib/python3.8/site-packages/torch" -DTorchVision_INSTALL_DIR=$GITHUB_WORKSPACE/torchvision-${{ matrix.torchvision-version }}-install -DCMAKE_BUILD_TYPE=Debug -DPNNX_COVERAGE=ON ..
-        cmake --build . -j 2
+        cmake --build . -j $(nproc)
 
     - name: test
       run: |
