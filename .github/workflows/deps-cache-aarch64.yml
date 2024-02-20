@@ -49,6 +49,7 @@ jobs:
           patch -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-mobile-build.patch &&
           patch -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-no-link-system-lib.patch &&
           patch -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-pocketfft-build.patch &&
+          patch -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-set-python-executable.patch &&
           mkdir -p build && cd build &&
           cmake -DCMAKE_INSTALL_PREFIX="/host/tmp/libtorch" -DCMAKE_BUILD_TYPE=MinSizeRel -DBUILD_SHARED_LIBS=OFF
               -DBUILD_CAFFE2_OPS=OFF
