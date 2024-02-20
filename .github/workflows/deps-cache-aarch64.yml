@@ -24,6 +24,13 @@ jobs:
       with:
         path: "/tmp/libtorch"
         key: libtorch-${{ env.LIBTORCH_VERSION }}-linux-aarch64-${{ env.CACHE_DATE }}
+
+    - name: setup-qemu
+      if: steps.cache-libtorch.outputs.cache-hit != 'true'
+      uses: docker/setup-qemu-action@v3
+      with:
+        platforms: all
+
     - name: libtorch
       if: steps.cache-libtorch.outputs.cache-hit != 'true'
       uses: pypa/cibuildwheel@v2.16.5
