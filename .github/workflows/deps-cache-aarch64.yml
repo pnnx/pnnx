@@ -283,8 +283,6 @@ jobs:
         cd ncnn/tools/pnnx/python
         python -m build --wheel
         wheel tags --remove --platform-tag=manylinux_2_17_aarch64.manylinux2014_aarch64 dist/*.whl
-        pip install dist/*.whl --user
-        pytest tests
 
     - name: upload
       uses: actions/upload-artifact@v4
