@@ -96,8 +96,15 @@ This package includes all the binaries required. It is portable, so no CUDA or P
 </td>
 <td>
   <img src="https://github.com/marwin1991/profile-technology-icons/assets/76662862/2481dc48-be6b-4ebb-9e8c-3b957efe69fa" width="auto" height="60">
-  <br /><b>Linux</b><br />
+  <br /><b>Linux(x86_64)</b><br />
   <a href="https://github.com/pnnx/pnnx/releases/latest/download/pnnx-20231220-linux.zip">
+    <img src="https://img.shields.io/badge/download-blue?style=for-the-badge">
+  </a>
+</td>
+<td>
+  <img src="https://github.com/marwin1991/profile-technology-icons/assets/76662862/2481dc48-be6b-4ebb-9e8c-3b957efe69fa" width="auto" height="60">
+  <br /><b>Linux(aarch64)</b><br />
+  <a href="https://github.com/pnnx/pnnx/releases/latest/download/pnnx-20231220-linux-aarch64.zip">
     <img src="https://img.shields.io/badge/download-blue?style=for-the-badge">
   </a>
 </td>
