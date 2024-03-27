@@ -38,7 +38,7 @@ jobs:
         path: pnnx-patches
     - name: cache-libtorch
       id: cache-libtorch
-      uses: actions/cache@v4.0.0
+      uses: actions/cache@v4.0.2
       with:
         path: "/tmp/libtorch"
         key: libtorch-${{ env.LIBTORCH_VERSION }}-linux-${{ env.CACHE_DATE }}
@@ -90,7 +90,7 @@ jobs:
         output-dir: wheelhouse1
     - name: cache-torchvision
       id: cache-torchvision
-      uses: actions/cache@v4.0.0
+      uses: actions/cache@v4.0.2
       with:
         path: "/tmp/torchvision"
         key: torchvision-${{ env.TORCHVISION_VERSION }}-linux-${{ env.CACHE_DATE }}
@@ -123,7 +123,7 @@ jobs:
         output-dir: wheelhouse2
     - name: cache-protobuf
       id: cache-protobuf
-      uses: actions/cache@v4.0.0
+      uses: actions/cache@v4.0.2
       with:
         path: "/tmp/protobuf"
         key: protobuf-${{ env.PROTOBUF_VERSION }}-linux-${{ env.CACHE_DATE }}
@@ -163,7 +163,7 @@ jobs:
         path: pnnx-patches
     - name: cache-libtorch
       id: cache-libtorch
-      uses: actions/cache@v4.0.0
+      uses: actions/cache@v4.0.2
       with:
         path: "/tmp/libtorch"
         key: libtorch-${{ env.LIBTORCH_VERSION }}-linux-aarch64-${{ env.CACHE_DATE }}
@@ -235,14 +235,14 @@ jobs:
         path: pnnx-patches
     - name: cache-libtorch
       id: cache-libtorch
-      uses: actions/cache@v4.0.0
+      uses: actions/cache@v4.0.2
       with:
         path: "/tmp/libtorch"
         key: libtorch-${{ env.LIBTORCH_VERSION }}-linux-aarch64-${{ env.CACHE_DATE }}
 
     - name: cache-torchvision
       id: cache-torchvision
-      uses: actions/cache@v4.0.0
+      uses: actions/cache@v4.0.2
       with:
         path: "/tmp/torchvision"
         key: torchvision-${{ env.TORCHVISION_VERSION }}-linux-aarch64-${{ env.CACHE_DATE }}
@@ -282,7 +282,7 @@ jobs:
         output-dir: wheelhouse2
     - name: cache-protobuf
       id: cache-protobuf
-      uses: actions/cache@v4.0.0
+      uses: actions/cache@v4.0.2
       with:
         path: "/tmp/protobuf"
         key: protobuf-${{ env.PROTOBUF_VERSION }}-linux-aarch64-${{ env.CACHE_DATE }}
@@ -321,7 +321,7 @@ jobs:
         path: pnnx-patches
     - name: cache-libtorch
       id: cache-libtorch
-      uses: actions/cache@v4.0.0
+      uses: actions/cache@v4.0.2
       with:
         path: "libtorch"
         key: libtorch-${{ env.LIBTORCH_VERSION }}-macos-x64-${{ env.CACHE_DATE }}
@@ -360,7 +360,7 @@ jobs:
         cmake --build . --target install/strip
     - name: cache-torchvision
       id: cache-torchvision
-      uses: actions/cache@v4.0.0
+      uses: actions/cache@v4.0.2
       with:
         path: "torchvision"
         key: torchvision-${{ env.TORCHVISION_VERSION }}-macos-x64-${{ env.CACHE_DATE }}
@@ -378,7 +378,7 @@ jobs:
         cmake --build . --target install/strip
     - name: cache-protobuf
       id: cache-protobuf
-      uses: actions/cache@v4.0.0
+      uses: actions/cache@v4.0.2
       with:
         path: "protobuf"
         key: protobuf-${{ env.PROTOBUF_VERSION }}-macos-x64-${{ env.CACHE_DATE }}
@@ -405,7 +405,7 @@ jobs:
         path: pnnx-patches
     - name: cache-libtorch
       id: cache-libtorch
-      uses: actions/cache@v4.0.0
+      uses: actions/cache@v4.0.2
       with:
         path: "libtorch"
         key: libtorch-${{ env.LIBTORCH_VERSION }}-macos-arm64-${{ env.CACHE_DATE }}
@@ -445,7 +445,7 @@ jobs:
         cmake --build . --target install/strip
     - name: cache-torchvision
       id: cache-torchvision
-      uses: actions/cache@v4.0.0
+      uses: actions/cache@v4.0.2
       with:
         path: "torchvision"
         key: torchvision-${{ env.TORCHVISION_VERSION }}-macos-arm64-${{ env.CACHE_DATE }}
@@ -463,7 +463,7 @@ jobs:
         cmake --build . --target install/strip
     - name: cache-protobuf
       id: cache-protobuf
-      uses: actions/cache@v4.0.0
+      uses: actions/cache@v4.0.2
       with:
         path: "protobuf"
         key: protobuf-${{ env.PROTOBUF_VERSION }}-macos-arm64-${{ env.CACHE_DATE }}
@@ -492,7 +492,7 @@ jobs:
         path: pnnx-patches
     - name: cache-libtorch
       id: cache-libtorch
-      uses: actions/cache@v4.0.0
+      uses: actions/cache@v4.0.2
       with:
         path: "libtorch"
         key: libtorch-${{ env.LIBTORCH_VERSION }}-vs2019-${{ env.CACHE_DATE }}
@@ -534,7 +534,7 @@ jobs:
         cmake --build . --config MinSizeRel --target install
     - name: cache-torchvision
       id: cache-torchvision
-      uses: actions/cache@v4.0.0
+      uses: actions/cache@v4.0.2
       with:
         path: "torchvision"
         key: torchvision-${{ env.TORCHVISION_VERSION }}-vs2019-${{ env.CACHE_DATE }}
@@ -553,7 +553,7 @@ jobs:
         cmake --build . --config MinSizeRel --target install
     - name: cache-protobuf
       id: cache-protobuf
-      uses: actions/cache@v4.0.0
+      uses: actions/cache@v4.0.2
       with:
         path: "protobuf"
         key: protobuf-${{ env.PROTOBUF_VERSION }}-vs2019-${{ env.CACHE_DATE }}
@@ -583,19 +583,19 @@ jobs:
         path: pnnx-patches
     - name: cache-libtorch
       id: cache-libtorch
-      uses: actions/cache@v4.0.0
+      uses: actions/cache@v4.0.2
       with:
         path: "/tmp/libtorch"
         key: libtorch-${{ env.LIBTORCH_VERSION }}-linux-${{ env.CACHE_DATE }}
     - name: cache-torchvision
       id: cache-torchvision
-      uses: actions/cache@v4.0.0
+      uses: actions/cache@v4.0.2
       with:
         path: "/tmp/torchvision"
         key: torchvision-${{ env.TORCHVISION_VERSION }}-linux-${{ env.CACHE_DATE }}
     - name: cache-protobuf
       id: cache-protobuf
-      uses: actions/cache@v4.0.0
+      uses: actions/cache@v4.0.2
       with:
         path: "/tmp/protobuf"
         key: protobuf-${{ env.PROTOBUF_VERSION }}-linux-${{ env.CACHE_DATE }}
@@ -659,19 +659,19 @@ jobs:
         path: pnnx-patches
     - name: cache-libtorch
       id: cache-libtorch
-      uses: actions/cache@v4.0.0
+      uses: actions/cache@v4.0.2
       with:
         path: "/tmp/libtorch"
         key: libtorch-${{ env.LIBTORCH_VERSION }}-linux-aarch64-${{ env.CACHE_DATE }}
     - name: cache-torchvision
       id: cache-torchvision
-      uses: actions/cache@v4.0.0
+      uses: actions/cache@v4.0.2
       with:
         path: "/tmp/torchvision"
         key: torchvision-${{ env.TORCHVISION_VERSION }}-linux-aarch64-${{ env.CACHE_DATE }}
     - name: cache-protobuf
       id: cache-protobuf
-      uses: actions/cache@v4.0.0
+      uses: actions/cache@v4.0.2
       with:
         path: "/tmp/protobuf"
         key: protobuf-${{ env.PROTOBUF_VERSION }}-linux-aarch64-${{ env.CACHE_DATE }}
@@ -738,19 +738,19 @@ jobs:
       uses: actions/checkout@v4
     - name: cache-libtorch
       id: cache-libtorch
-      uses: actions/cache@v4.0.0
+      uses: actions/cache@v4.0.2
       with:
         path: "libtorch"
         key: libtorch-${{ env.LIBTORCH_VERSION }}-macos-x64-${{ env.CACHE_DATE }}
     - name: cache-torchvision
       id: cache-torchvision
-      uses: actions/cache@v4.0.0
+      uses: actions/cache@v4.0.2
       with:
         path: "torchvision"
         key: torchvision-${{ env.TORCHVISION_VERSION }}-macos-x64-${{ env.CACHE_DATE }}
     - name: cache-protobuf
       id: cache-protobuf
-      uses: actions/cache@v4.0.0
+      uses: actions/cache@v4.0.2
       with:
         path: "protobuf"
         key: protobuf-${{ env.PROTOBUF_VERSION }}-macos-x64-${{ env.CACHE_DATE }}
@@ -797,19 +797,19 @@ jobs:
       uses: actions/checkout@v4
     - name: cache-libtorch
       id: cache-libtorch
-      uses: actions/cache@v4.0.0
+      uses: actions/cache@v4.0.2
       with:
         path: "libtorch"
         key: libtorch-${{ env.LIBTORCH_VERSION }}-macos-arm64-${{ env.CACHE_DATE }}
     - name: cache-torchvision
       id: cache-torchvision
-      uses: actions/cache@v4.0.0
+      uses: actions/cache@v4.0.2
       with:
         path: "torchvision"
         key: torchvision-${{ env.TORCHVISION_VERSION }}-macos-arm64-${{ env.CACHE_DATE }}
     - name: cache-protobuf
       id: cache-protobuf
-      uses: actions/cache@v4.0.0
+      uses: actions/cache@v4.0.2
       with:
         path: "protobuf"
         key: protobuf-${{ env.PROTOBUF_VERSION }}-macos-arm64-${{ env.CACHE_DATE }}
@@ -895,19 +895,19 @@ jobs:
       uses: actions/checkout@v4
     - name: cache-libtorch
       id: cache-libtorch
-      uses: actions/cache@v4.0.0
+      uses: actions/cache@v4.0.2
       with:
         path: "libtorch"
         key: libtorch-${{ env.LIBTORCH_VERSION }}-vs2019-${{ env.CACHE_DATE }}
     - name: cache-torchvision
       id: cache-torchvision
-      uses: actions/cache@v4.0.0
+      uses: actions/cache@v4.0.2
       with:
         path: "torchvision"
         key: torchvision-${{ env.TORCHVISION_VERSION }}-vs2019-${{ env.CACHE_DATE }}
     - name: cache-protobuf
       id: cache-protobuf
-      uses: actions/cache@v4.0.0
+      uses: actions/cache@v4.0.2
       with:
         path: "protobuf"
         key: protobuf-${{ env.PROTOBUF_VERSION }}-vs2019-${{ env.CACHE_DATE }}
