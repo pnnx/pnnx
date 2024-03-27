@@ -1,6 +1,6 @@
-diff -Nuarp pytorch-v2.2.0.orig/torch/csrc/jit/serialization/import.cpp pytorch-v2.2.0/torch/csrc/jit/serialization/import.cpp
---- pytorch-v2.2.0.orig/torch/csrc/jit/serialization/import.cpp	2024-01-31 08:52:37.000000000 +0800
-+++ pytorch-v2.2.0/torch/csrc/jit/serialization/import.cpp	2024-02-04 11:15:10.215910003 +0800
+diff -Nuarp pytorch-v2.2.1.orig/torch/csrc/jit/serialization/import.cpp pytorch-v2.2.1/torch/csrc/jit/serialization/import.cpp
+--- pytorch-v2.2.1.orig/torch/csrc/jit/serialization/import.cpp	2024-02-24 04:02:21.000000000 +0800
++++ pytorch-v2.2.1/torch/csrc/jit/serialization/import.cpp	2024-03-27 19:44:49.067834688 +0800
 @@ -269,7 +269,7 @@ Module ScriptModuleDeserializer::deseria
      }
    }
@@ -10,9 +10,9 @@ diff -Nuarp pytorch-v2.2.0.orig/torch/csrc/jit/serialization/import.cpp pytorch-
      return torch::jit::LEGACY_deserialize(compilation_unit_, reader_, device_);
  #else
      AT_ERROR("Legacy model format is not supported on mobile.");
-diff -Nuarp pytorch-v2.2.0.orig/torch/csrc/jit/serialization/pickle.cpp pytorch-v2.2.0/torch/csrc/jit/serialization/pickle.cpp
---- pytorch-v2.2.0.orig/torch/csrc/jit/serialization/pickle.cpp	2024-01-31 08:52:37.000000000 +0800
-+++ pytorch-v2.2.0/torch/csrc/jit/serialization/pickle.cpp	2024-02-04 11:16:02.568905882 +0800
+diff -Nuarp pytorch-v2.2.1.orig/torch/csrc/jit/serialization/pickle.cpp pytorch-v2.2.1/torch/csrc/jit/serialization/pickle.cpp
+--- pytorch-v2.2.1.orig/torch/csrc/jit/serialization/pickle.cpp	2024-02-24 04:02:21.000000000 +0800
++++ pytorch-v2.2.1/torch/csrc/jit/serialization/pickle.cpp	2024-03-27 19:44:49.067834688 +0800
 @@ -36,7 +36,7 @@ std::vector<char> pickle(
  // This has to live here instead of the C++ API to mirror torch.save since the
  // mobile build excludes the C++ API
