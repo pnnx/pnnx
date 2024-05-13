@@ -58,22 +58,50 @@ jobs:
         package-dir: pnnx-patches
         output-dir: wheelhouse3
 
-  # linux-aarch64-deps:
-  #   runs-on: ubuntu-20.04
-  #   steps:
-  #   - uses: actions/setup-python@v5
-  #     with:
-  #       python-version: '3.11'
-  #   - name: pnnx-patches
-  #     uses: actions/checkout@v4
-  #     with:
-  #       path: pnnx-patches
-  #
-  #   - name: setup-qemu
-  #     if: steps.cache-torchvision.outputs.cache-hit != 'true'
-  #     uses: docker/setup-qemu-action@v3
-  #     with:
-  #       platforms: arm64
+  linux-aarch64-deps:
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+    - name: pnnx-patches
+      uses: actions/checkout@v4
+      with:
+        path: pnnx-patches
+
+    - name: setup-qemu
+      if: steps.cache-torchvision.outputs.cache-hit != 'true'
+      uses: docker/setup-qemu-action@v3
+      with:
+        platforms: arm64
+    - name: cache-onnxruntime
+      id: cache-onnxruntime
+      uses: actions/cache@v4.0.2
+      with:
+        path: "/tmp/onnxruntime"
+        key: onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-linux-aarch64-${{ env.CACHE_DATE }}
+    - name: onnxruntime
+      if: steps.cache-onnxruntime.outputs.cache-hit != 'true'
+      uses: pypa/cibuildwheel@v2.18.0
+      env:
+        CIBW_ARCHS_LINUX: "aarch64"
+        CIBW_BUILD: 'cp310-manylinux_aarch64'
+        CIBW_BUILD_VERBOSITY: 1
+        CIBW_REPAIR_WHEEL_COMMAND: ""
+        CIBW_BEFORE_ALL: yum install devtoolset-9 -y &&
+          yum install wget zip -y &&
+          wget -q https://github.com/microsoft/onnxruntime/archive/v${{ env.ONNXRUNTIME_VERSION }}.zip -O onnxruntime-${{ env.ONNXRUNTIME_VERSION }}.zip &&
+          unzip -q onnxruntime-${{ env.ONNXRUNTIME_VERSION }}.zip &&
+          cd onnxruntime-${{ env.ONNXRUNTIME_VERSION }} &&
+          patch -p1 -i /project/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-monolithic-static-library.patch &&
+          mkdir -p build2 && cd build2 &&
+          cmake -DCMAKE_INSTALL_PREFIX="/host/tmp/onnxruntime" -DCMAKE_C_COMPILER="/opt/rh/devtoolset-9/root/usr/bin/cc"
+          -DCMAKE_CXX_COMPILER="/opt/rh/devtoolset-9/root/usr/bin/c++" -DCMAKE_BUILD_TYPE=MinSizeRel -Donnxruntime_USE_FULL_PROTOBUF=ON -Donnxruntime_BUILD_SHARED_LIB=ON -Donnxruntime_BUILD_UNIT_TESTS=OFF -Donnxruntime_DISABLE_CONTRIB_OPS=ON -Donnxruntime_DISABLE_ML_OPS=ON -Donnxruntime_DISABLE_SPARSE_TENSORS=ON --compile-no-warning-as-error ../cmake &&
+          cmake --build . -j $(nproc) &&
+          cmake --build . --target install/strip
+      with:
+        package-dir: pnnx-patches
+        output-dir: wheelhouse3
 
   macos-x64-deps:
     runs-on: macos-13
