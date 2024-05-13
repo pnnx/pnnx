@@ -44,7 +44,7 @@ jobs:
         key: libtorch-${{ env.LIBTORCH_VERSION }}-linux-${{ env.CACHE_DATE }}
     - name: libtorch
       if: steps.cache-libtorch.outputs.cache-hit != 'true'
-      uses: pypa/cibuildwheel@v2.17.0
+      uses: pypa/cibuildwheel@v2.18.0
       env:
         CIBW_ARCHS_LINUX: "x86_64"
         CIBW_BUILD: 'cp310-manylinux_x86_64'
@@ -96,7 +96,7 @@ jobs:
         key: torchvision-${{ env.TORCHVISION_VERSION }}-linux-${{ env.CACHE_DATE }}
     - name: torchvision
       if: steps.cache-torchvision.outputs.cache-hit != 'true'
-      uses: pypa/cibuildwheel@v2.17.0
+      uses: pypa/cibuildwheel@v2.18.0
       env:
         CIBW_ARCHS_LINUX: "x86_64"
         CIBW_BUILD: 'cp310-manylinux_x86_64'
@@ -129,7 +129,7 @@ jobs:
         key: protobuf-${{ env.PROTOBUF_VERSION }}-linux-${{ env.CACHE_DATE }}
     - name: protobuf
       if: steps.cache-protobuf.outputs.cache-hit != 'true'
-      uses: pypa/cibuildwheel@v2.17.0
+      uses: pypa/cibuildwheel@v2.18.0
       env:
         CIBW_ARCHS_LINUX: "x86_64"
         CIBW_BUILD: 'cp310-manylinux_x86_64'
@@ -176,7 +176,7 @@ jobs:
 
     - name: libtorch
       if: steps.cache-libtorch.outputs.cache-hit != 'true'
-      uses: pypa/cibuildwheel@v2.17.0
+      uses: pypa/cibuildwheel@v2.18.0
       env:
         CIBW_ARCHS_LINUX: "aarch64"
         CIBW_BUILD: 'cp310-manylinux_aarch64'
@@ -255,7 +255,7 @@ jobs:
 
     - name: torchvision
       if: steps.cache-torchvision.outputs.cache-hit != 'true'
-      uses: pypa/cibuildwheel@v2.17.0
+      uses: pypa/cibuildwheel@v2.18.0
       env:
         CIBW_ARCHS_LINUX: "aarch64"
         CIBW_BUILD: 'cp310-manylinux_aarch64'
@@ -288,7 +288,7 @@ jobs:
         key: protobuf-${{ env.PROTOBUF_VERSION }}-linux-aarch64-${{ env.CACHE_DATE }}
     - name: protobuf
       if: steps.cache-protobuf.outputs.cache-hit != 'true'
-      uses: pypa/cibuildwheel@v2.17.0
+      uses: pypa/cibuildwheel@v2.18.0
       env:
         CIBW_ARCHS_LINUX: "aarch64"
         CIBW_BUILD: 'cp310-manylinux_aarch64'
@@ -606,7 +606,7 @@ jobs:
         path: ncnn
 
     - name: build-pnnx
-      uses: pypa/cibuildwheel@v2.17.0
+      uses: pypa/cibuildwheel@v2.18.0
       env:
         CIBW_ARCHS_LINUX: "x86_64"
         CIBW_BUILD: 'cp310-manylinux_x86_64'
@@ -687,7 +687,7 @@ jobs:
         platforms: arm64
 
     - name: build-pnnx
-      uses: pypa/cibuildwheel@v2.17.0
+      uses: pypa/cibuildwheel@v2.18.0
       env:
         CIBW_ARCHS_LINUX: "aarch64"
         CIBW_BUILD: 'cp310-manylinux_aarch64'
