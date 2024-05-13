@@ -43,7 +43,7 @@ jobs:
         CIBW_BUILD: 'cp310-manylinux_x86_64'
         CIBW_BUILD_VERBOSITY: 1
         CIBW_REPAIR_WHEEL_COMMAND: ""
-        CIBW_BEFORE_ALL: yum install devtoolset-11 -y &&
+        CIBW_BEFORE_ALL: yum install centos-release-scl -y && yum install devtoolset-11 -y &&
           yum install wget zip -y &&
           wget -q https://github.com/microsoft/onnxruntime/archive/v${{ env.ONNXRUNTIME_VERSION }}.zip -O onnxruntime-${{ env.ONNXRUNTIME_VERSION }}.zip &&
           unzip -q onnxruntime-${{ env.ONNXRUNTIME_VERSION }}.zip &&
@@ -88,7 +88,7 @@ jobs:
         CIBW_BUILD: 'cp310-manylinux_aarch64'
         CIBW_BUILD_VERBOSITY: 1
         CIBW_REPAIR_WHEEL_COMMAND: ""
-        CIBW_BEFORE_ALL: yum install devtoolset-11 -y &&
+        CIBW_BEFORE_ALL: yum install centos-release-scl -y && yum install devtoolset-11 -y &&
           yum install wget zip -y &&
           wget -q https://github.com/microsoft/onnxruntime/archive/v${{ env.ONNXRUNTIME_VERSION }}.zip -O onnxruntime-${{ env.ONNXRUNTIME_VERSION }}.zip &&
           unzip -q onnxruntime-${{ env.ONNXRUNTIME_VERSION }}.zip &&
