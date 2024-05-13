@@ -43,15 +43,15 @@ jobs:
         CIBW_BUILD: 'cp310-manylinux_x86_64'
         CIBW_BUILD_VERBOSITY: 1
         CIBW_REPAIR_WHEEL_COMMAND: ""
-        CIBW_BEFORE_ALL: yum install centos-release-scl -y && yum install devtoolset-11 -y &&
+        CIBW_BEFORE_ALL: yum install devtoolset-10 -y &&
           yum install wget zip -y &&
           wget -q https://github.com/microsoft/onnxruntime/archive/v${{ env.ONNXRUNTIME_VERSION }}.zip -O onnxruntime-${{ env.ONNXRUNTIME_VERSION }}.zip &&
           unzip -q onnxruntime-${{ env.ONNXRUNTIME_VERSION }}.zip &&
           cd onnxruntime-${{ env.ONNXRUNTIME_VERSION }} &&
           patch -p1 -i /project/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-monolithic-static-library.patch &&
           mkdir -p build2 && cd build2 &&
-          cmake -DCMAKE_INSTALL_PREFIX="/host/tmp/onnxruntime" -DCMAKE_C_COMPILER="/opt/rh/devtoolset-11/root/usr/bin/cc"
-          -DCMAKE_CXX_COMPILER="/opt/rh/devtoolset-11/root/usr/bin/c++" -DCMAKE_BUILD_TYPE=MinSizeRel -Donnxruntime_USE_FULL_PROTOBUF=ON -Donnxruntime_BUILD_SHARED_LIB=ON -Donnxruntime_BUILD_UNIT_TESTS=OFF -Donnxruntime_DISABLE_CONTRIB_OPS=ON -Donnxruntime_DISABLE_ML_OPS=ON -Donnxruntime_DISABLE_SPARSE_TENSORS=ON --compile-no-warning-as-error ../cmake &&
+          cmake -DCMAKE_INSTALL_PREFIX="/host/tmp/onnxruntime" -DCMAKE_C_COMPILER="/opt/rh/devtoolset-10/root/usr/bin/cc"
+          -DCMAKE_CXX_COMPILER="/opt/rh/devtoolset-10/root/usr/bin/c++" -DCMAKE_BUILD_TYPE=MinSizeRel -Donnxruntime_USE_FULL_PROTOBUF=ON -Donnxruntime_BUILD_SHARED_LIB=ON -Donnxruntime_BUILD_UNIT_TESTS=OFF -Donnxruntime_DISABLE_CONTRIB_OPS=ON -Donnxruntime_DISABLE_ML_OPS=ON -Donnxruntime_DISABLE_SPARSE_TENSORS=ON --compile-no-warning-as-error ../cmake &&
           cmake --build . -j $(nproc) &&
           cmake --build . --target install/strip
       with:
@@ -88,15 +88,15 @@ jobs:
         CIBW_BUILD: 'cp310-manylinux_aarch64'
         CIBW_BUILD_VERBOSITY: 1
         CIBW_REPAIR_WHEEL_COMMAND: ""
-        CIBW_BEFORE_ALL: yum install centos-release-scl -y && yum install devtoolset-11 -y &&
+        CIBW_BEFORE_ALL: yum install devtoolset-10 -y &&
           yum install wget zip -y &&
           wget -q https://github.com/microsoft/onnxruntime/archive/v${{ env.ONNXRUNTIME_VERSION }}.zip -O onnxruntime-${{ env.ONNXRUNTIME_VERSION }}.zip &&
           unzip -q onnxruntime-${{ env.ONNXRUNTIME_VERSION }}.zip &&
           cd onnxruntime-${{ env.ONNXRUNTIME_VERSION }} &&
           patch -p1 -i /project/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-monolithic-static-library.patch &&
           mkdir -p build2 && cd build2 &&
-          cmake -DCMAKE_INSTALL_PREFIX="/host/tmp/onnxruntime" -DCMAKE_C_COMPILER="/opt/rh/devtoolset-11/root/usr/bin/cc"
-          -DCMAKE_CXX_COMPILER="/opt/rh/devtoolset-11/root/usr/bin/c++" -DCMAKE_BUILD_TYPE=MinSizeRel -Donnxruntime_USE_FULL_PROTOBUF=ON -Donnxruntime_BUILD_SHARED_LIB=ON -Donnxruntime_BUILD_UNIT_TESTS=OFF -Donnxruntime_DISABLE_CONTRIB_OPS=ON -Donnxruntime_DISABLE_ML_OPS=ON -Donnxruntime_DISABLE_SPARSE_TENSORS=ON --compile-no-warning-as-error ../cmake &&
+          cmake -DCMAKE_INSTALL_PREFIX="/host/tmp/onnxruntime" -DCMAKE_C_COMPILER="/opt/rh/devtoolset-10/root/usr/bin/cc"
+          -DCMAKE_CXX_COMPILER="/opt/rh/devtoolset-10/root/usr/bin/c++" -DCMAKE_BUILD_TYPE=MinSizeRel -Donnxruntime_USE_FULL_PROTOBUF=ON -Donnxruntime_BUILD_SHARED_LIB=ON -Donnxruntime_BUILD_UNIT_TESTS=OFF -Donnxruntime_DISABLE_CONTRIB_OPS=ON -Donnxruntime_DISABLE_ML_OPS=ON -Donnxruntime_DISABLE_SPARSE_TENSORS=ON --compile-no-warning-as-error ../cmake &&
           cmake --build . -j $(nproc) &&
           cmake --build . --target install/strip
       with:
