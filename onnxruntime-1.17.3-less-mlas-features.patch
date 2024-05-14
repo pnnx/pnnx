@@ -1,0 +1,21 @@
+diff -Nuarp onnxruntime-1.17.3.orig/onnxruntime/core/mlas/inc/mlas.h onnxruntime-1.17.3/onnxruntime/core/mlas/inc/mlas.h
+--- onnxruntime-1.17.3.orig/onnxruntime/core/mlas/inc/mlas.h	2024-04-13 03:34:38.000000000 +0800
++++ onnxruntime-1.17.3/onnxruntime/core/mlas/inc/mlas.h	2024-05-14 09:49:34.015288053 +0800
+@@ -77,7 +77,7 @@ Abstract:
+ //
+ 
+ #if defined(MLAS_TARGET_AMD64) || defined (MLAS_TARGET_POWER)
+-#define MLAS_SUPPORTS_GEMM_DOUBLE
++// #define MLAS_SUPPORTS_GEMM_DOUBLE
+ #endif
+ 
+ #if (!defined(_MSC_VER)) || (_MSC_VER >= 1930)
+@@ -88,7 +88,7 @@ Abstract:
+ // When building an universial binary for APPLE, this flag would
+ // cause trouble for x64 target.
+ 
+-#define MLAS_F16VEC_INTRINSICS_SUPPORTED
++// #define MLAS_F16VEC_INTRINSICS_SUPPORTED
+ 
+ #endif //
+ #endif // ARM64
