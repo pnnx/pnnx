@@ -1,6 +1,6 @@
-diff -Nuarp pytorch-v2.2.1.orig/cmake/TorchConfig.cmake.in pytorch-v2.2.1/cmake/TorchConfig.cmake.in
---- pytorch-v2.2.1.orig/cmake/TorchConfig.cmake.in	2024-02-24 04:00:54.000000000 +0800
-+++ pytorch-v2.2.1/cmake/TorchConfig.cmake.in	2024-03-27 19:47:29.315834325 +0800
+diff -Nuarp pytorch-v2.3.0.orig/cmake/TorchConfig.cmake.in pytorch-v2.3.0/cmake/TorchConfig.cmake.in
+--- pytorch-v2.3.0.orig/cmake/TorchConfig.cmake.in	2024-04-25 00:15:17.000000000 +0800
++++ pytorch-v2.3.0/cmake/TorchConfig.cmake.in	2024-05-17 14:47:25.534660162 +0800
 @@ -15,7 +15,7 @@
  #   torch
  macro(append_torchlib_if_found)
