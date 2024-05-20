@@ -170,6 +170,7 @@ jobs:
 
     - name: libtorch
       if: steps.cache-libtorch.outputs.cache-hit != 'true'
+      timeout-minutes: 720
       uses: pypa/cibuildwheel@v2.18.0
       env:
         CIBW_ARCHS_LINUX: "aarch64"

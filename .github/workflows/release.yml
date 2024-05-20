@@ -176,6 +176,7 @@ jobs:
 
     - name: libtorch
       if: steps.cache-libtorch.outputs.cache-hit != 'true'
+      timeout-minutes: 720
       uses: pypa/cibuildwheel@v2.18.0
       env:
         CIBW_ARCHS_LINUX: "aarch64"
@@ -620,8 +621,7 @@ jobs:
           cmake -DCMAKE_INSTALL_PREFIX=/host/tmp/install -DCMAKE_BUILD_TYPE=MinSizeRel
             -DTorch_INSTALL_DIR="/host/tmp/libtorch"
             -DTorchVision_INSTALL_DIR="/host/tmp/torchvision"
-            -DProtobuf_INCLUDE_DIR="/host/tmp/protobuf/include"
-            -DProtobuf_LIBRARIES="/host/tmp/protobuf/lib64/libprotobuf.a"
+            -Dprotobuf_DIR="/host/tmp/protobuf/lib/cmake/protobuf"
             -DProtobuf_PROTOC_EXECUTABLE="/host/tmp/protobuf/bin/protoc"
             -DCMAKE_CXX_COMPILER="/opt/rh/devtoolset-10/root/usr/bin/c++"
             -DCMAKE_C_COMPILER="/opt/rh/devtoolset-10/root/usr/bin/cc"
@@ -701,8 +701,7 @@ jobs:
           cmake -DCMAKE_INSTALL_PREFIX=/host/tmp/install -DCMAKE_BUILD_TYPE=MinSizeRel
             -DTorch_INSTALL_DIR="/host/tmp/libtorch"
             -DTorchVision_INSTALL_DIR="/host/tmp/torchvision"
-            -DProtobuf_INCLUDE_DIR="/host/tmp/protobuf/include"
-            -DProtobuf_LIBRARIES="/host/tmp/protobuf/lib64/libprotobuf.a"
+            -Dprotobuf_DIR="/host/tmp/protobuf/lib/cmake/protobuf"
             -DProtobuf_PROTOC_EXECUTABLE="/host/tmp/protobuf/bin/protoc"
             -DCMAKE_CXX_COMPILER="/opt/rh/devtoolset-10/root/usr/bin/c++"
             -DCMAKE_C_COMPILER="/opt/rh/devtoolset-10/root/usr/bin/cc"
@@ -766,8 +765,7 @@ jobs:
         cmake -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=MinSizeRel \
             -DTorch_INSTALL_DIR="$GITHUB_WORKSPACE/libtorch" \
             -DTorchVision_INSTALL_DIR="$GITHUB_WORKSPACE/torchvision" \
-            -DProtobuf_INCLUDE_DIR="$GITHUB_WORKSPACE/protobuf/include" \
-            -DProtobuf_LIBRARIES="$GITHUB_WORKSPACE/protobuf/lib/libprotobuf.a" \
+            -Dprotobuf_DIR="$GITHUB_WORKSPACE/protobuf/lib/cmake/protobuf" \
             -DProtobuf_PROTOC_EXECUTABLE="$GITHUB_WORKSPACE/protobuf/bin/protoc" \
             ..
         cmake --build . -j 4
@@ -825,8 +823,7 @@ jobs:
         cmake -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=MinSizeRel \
             -DTorch_INSTALL_DIR="$GITHUB_WORKSPACE/libtorch" \
             -DTorchVision_INSTALL_DIR="$GITHUB_WORKSPACE/torchvision" \
-            -DProtobuf_INCLUDE_DIR="$GITHUB_WORKSPACE/protobuf/include" \
-            -DProtobuf_LIBRARIES="$GITHUB_WORKSPACE/protobuf/lib/libprotobuf.a" \
+            -Dprotobuf_DIR="$GITHUB_WORKSPACE/protobuf/lib/cmake/protobuf" \
             -DProtobuf_PROTOC_EXECUTABLE="$GITHUB_WORKSPACE/protobuf/bin/protoc" \
             ..
         cmake --build . -j 3
@@ -923,8 +920,7 @@ jobs:
         cmake -DCMAKE_INSTALL_PREFIX=install -DPNNX_BUILD_WITH_STATIC_CRT=ON `
             -DTorch_INSTALL_DIR="$env:GITHUB_WORKSPACE/libtorch" `
             -DTorchVision_INSTALL_DIR="$env:GITHUB_WORKSPACE/torchvision" `
-            -DProtobuf_INCLUDE_DIR="$env:GITHUB_WORKSPACE/protobuf/include" `
-            -DProtobuf_LIBRARIES="$env:GITHUB_WORKSPACE/protobuf/lib/libprotobuf.lib" `
+            -Dprotobuf_DIR="$env:GITHUB_WORKSPACE/protobuf/lib/cmake/protobuf" `
             -DProtobuf_PROTOC_EXECUTABLE="$env:GITHUB_WORKSPACE/protobuf/bin/protoc.exe" `
             ..
         cmake --build . --config MinSizeRel -j 4
