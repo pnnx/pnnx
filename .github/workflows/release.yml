@@ -27,7 +27,7 @@ jobs:
       run: echo "VERSION=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_OUTPUT
 
   linux-deps:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/setup-python@v5
       with:
@@ -152,7 +152,7 @@ jobs:
 
   # libtorch builds very slow, split it as one dedicated job
   linux-aarch64-deps-libtorch:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/setup-python@v5
       with:
@@ -225,7 +225,7 @@ jobs:
 
   linux-aarch64-deps:
     needs: [linux-aarch64-deps-libtorch]
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/setup-python@v5
       with:
@@ -571,7 +571,7 @@ jobs:
 
   linux:
     needs: [setup, linux-deps]
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     env:
       PACKAGENAME: pnnx-${{ needs.setup.outputs.VERSION }}-linux
     steps:
@@ -646,7 +646,7 @@ jobs:
 
   linux-aarch64:
     needs: [setup, linux-aarch64-deps]
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     env:
       PACKAGENAME: pnnx-${{ needs.setup.outputs.VERSION }}-linux-aarch64
     steps:
@@ -939,7 +939,7 @@ jobs:
 
   linux-python:
     needs: [setup, linux]
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/setup-python@v5
       with:
@@ -977,7 +977,7 @@ jobs:
 
   linux-aarch64-python:
     needs: [setup, linux-aarch64]
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/setup-python@v5
       with:
