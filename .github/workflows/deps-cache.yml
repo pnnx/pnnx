@@ -44,9 +44,7 @@ jobs:
         CIBW_BUILD: 'cp310-manylinux_x86_64'
         CIBW_BUILD_VERBOSITY: 1
         CIBW_REPAIR_WHEEL_COMMAND: ""
-        CIBW_BEFORE_ALL: yum install protobuf-devel -y &&
-          yum install devtoolset-10 -y &&
-          yum install wget zip -y &&
+        CIBW_BEFORE_ALL: yum install devtoolset-10 wget zip -y &&
           wget -q https://github.com/pytorch/pytorch/releases/download/v${{ env.LIBTORCH_VERSION }}/pytorch-v${{ env.LIBTORCH_VERSION }}.tar.gz &&
           tar -xf pytorch-v${{ env.LIBTORCH_VERSION }}.tar.gz &&
           cd pytorch-v${{ env.LIBTORCH_VERSION }} &&
@@ -96,9 +94,7 @@ jobs:
         CIBW_BUILD: 'cp310-manylinux_x86_64'
         CIBW_BUILD_VERBOSITY: 1
         CIBW_REPAIR_WHEEL_COMMAND: ""
-        CIBW_BEFORE_ALL: yum install protobuf-devel -y &&
-          yum install devtoolset-10 -y &&
-          yum install wget zip -y &&
+        CIBW_BEFORE_ALL: yum install devtoolset-10 wget zip -y &&
           wget -q https://github.com/pytorch/vision/archive/refs/tags/v${{ env.TORCHVISION_VERSION }}.zip -O vision-${{ env.TORCHVISION_VERSION }}.zip &&
           unzip -q vision-${{ env.TORCHVISION_VERSION }}.zip &&
           cd vision-${{ env.TORCHVISION_VERSION }} &&
@@ -129,9 +125,7 @@ jobs:
         CIBW_BUILD: 'cp310-manylinux_x86_64'
         CIBW_BUILD_VERBOSITY: 1
         CIBW_REPAIR_WHEEL_COMMAND: ""
-        CIBW_BEFORE_ALL: yum install protobuf-devel -y &&
-          yum install devtoolset-10 -y &&
-          yum install wget zip -y &&
+        CIBW_BEFORE_ALL: yum install devtoolset-10 wget zip -y &&
           wget -q https://github.com/protocolbuffers/protobuf/archive/v${{ env.PROTOBUF_VERSION }}.zip -O protobuf-${{ env.PROTOBUF_VERSION }}.zip &&
           unzip -q protobuf-${{ env.PROTOBUF_VERSION }}.zip &&
           cd protobuf-${{ env.PROTOBUF_VERSION }} &&
@@ -170,7 +164,7 @@ jobs:
 
     - name: libtorch-A
       if: steps.cache-libtorch.outputs.cache-hit != 'true'
-      timeout-minutes: 10
+      timeout-minutes: 15
       continue-on-error: true
       uses: pypa/cibuildwheel@v2.18.0
       env:
@@ -178,11 +172,9 @@ jobs:
         CIBW_BUILD: 'cp310-manylinux_aarch64'
         CIBW_BUILD_VERBOSITY: 1
         CIBW_REPAIR_WHEEL_COMMAND: ""
-        CIBW_BEFORE_ALL: yum install protobuf-devel -y &&
-          yum install devtoolset-10 -y &&
-          yum install wget zip -y &&
+        CIBW_BEFORE_ALL: yum install devtoolset-10 wget zip -y &&
           wget -q https://github.com/pytorch/pytorch/releases/download/v${{ env.LIBTORCH_VERSION }}/pytorch-v${{ env.LIBTORCH_VERSION }}.tar.gz &&
-          mv pytorch-v${{ env.LIBTORCH_VERSION }}.tar.gz /project/pnnx-patches/ && cd /project/pnnx-patches &&
+          mv pytorch-v${{ env.LIBTORCH_VERSION }}.tar.gz /host/tmp/ && cd /host/tmp &&
           tar -xf pytorch-v${{ env.LIBTORCH_VERSION }}.tar.gz &&
           cd pytorch-v${{ env.LIBTORCH_VERSION }} &&
           pip install -r requirements.txt &&
@@ -221,17 +213,15 @@ jobs:
 
     - name: libtorch-B
       if: steps.cache-libtorch.outputs.cache-hit != 'true'
-      timeout-minutes: 10
+      timeout-minutes: 360
       uses: pypa/cibuildwheel@v2.18.0
       env:
         CIBW_ARCHS_LINUX: "aarch64"
         CIBW_BUILD: 'cp310-manylinux_aarch64'
         CIBW_BUILD_VERBOSITY: 1
         CIBW_REPAIR_WHEEL_COMMAND: ""
-        CIBW_BEFORE_ALL: yum install protobuf-devel -y &&
-          yum install devtoolset-10 -y &&
-          yum install wget zip -y &&
-          cd /project/pnnx-patches &&
+        CIBW_BEFORE_ALL: yum install devtoolset-10 wget zip -y &&
+          cd /host/tmp &&
           cd pytorch-v${{ env.LIBTORCH_VERSION }} &&
           pip install -r requirements.txt &&
           cd build &&
@@ -280,9 +270,7 @@ jobs:
         CIBW_BUILD: 'cp310-manylinux_aarch64'
         CIBW_BUILD_VERBOSITY: 1
         CIBW_REPAIR_WHEEL_COMMAND: ""
-        CIBW_BEFORE_ALL: yum install protobuf-devel -y &&
-          yum install devtoolset-10 -y &&
-          yum install wget zip -y &&
+        CIBW_BEFORE_ALL: yum install devtoolset-10 wget zip -y &&
           wget -q https://github.com/pytorch/vision/archive/refs/tags/v${{ env.TORCHVISION_VERSION }}.zip -O vision-${{ env.TORCHVISION_VERSION }}.zip &&
           unzip -q vision-${{ env.TORCHVISION_VERSION }}.zip &&
           cd vision-${{ env.TORCHVISION_VERSION }} &&
@@ -313,9 +301,7 @@ jobs:
         CIBW_BUILD: 'cp310-manylinux_aarch64'
         CIBW_BUILD_VERBOSITY: 1
         CIBW_REPAIR_WHEEL_COMMAND: ""
-        CIBW_BEFORE_ALL: yum install protobuf-devel -y &&
-          yum install devtoolset-10 -y &&
-          yum install wget zip -y &&
+        CIBW_BEFORE_ALL: yum install devtoolset-10 wget zip -y &&
           wget -q https://github.com/protocolbuffers/protobuf/archive/v${{ env.PROTOBUF_VERSION }}.zip -O protobuf-${{ env.PROTOBUF_VERSION }}.zip &&
           unzip -q protobuf-${{ env.PROTOBUF_VERSION }}.zip &&
           cd protobuf-${{ env.PROTOBUF_VERSION }} &&
