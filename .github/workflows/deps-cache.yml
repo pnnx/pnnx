@@ -168,9 +168,10 @@ jobs:
       with:
         platforms: arm64
 
-    - name: libtorch
+    - name: libtorch-A
       if: steps.cache-libtorch.outputs.cache-hit != 'true'
-      timeout-minutes: 720
+      timeout-minutes: 10
+      continue-on-error: true
       uses: pypa/cibuildwheel@v2.18.0
       env:
         CIBW_ARCHS_LINUX: "aarch64"
@@ -181,6 +182,7 @@ jobs:
           yum install devtoolset-10 -y &&
           yum install wget zip -y &&
           wget -q https://github.com/pytorch/pytorch/releases/download/v${{ env.LIBTORCH_VERSION }}/pytorch-v${{ env.LIBTORCH_VERSION }}.tar.gz &&
+          mv pytorch-v${{ env.LIBTORCH_VERSION }}.tar.gz /project/pnnx-patches/ && cd /project/pnnx-patches &&
           tar -xf pytorch-v${{ env.LIBTORCH_VERSION }}.tar.gz &&
           cd pytorch-v${{ env.LIBTORCH_VERSION }} &&
           pip install -r requirements.txt &&
@@ -211,6 +213,28 @@ jobs:
               -DCMAKE_CXX_COMPILER="/opt/rh/devtoolset-10/root/usr/bin/c++"
               -DCMAKE_C_COMPILER="/opt/rh/devtoolset-10/root/usr/bin/cc"
               .. &&
+          cmake --build . -j $(nproc) &&
+          cmake --build . -j $(nproc) --target install/strip
+      with:
+        package-dir: pnnx-patches
+        output-dir: wheelhouse1
+
+    - name: libtorch-B
+      if: steps.cache-libtorch.outputs.cache-hit != 'true'
+      timeout-minutes: 10
+      uses: pypa/cibuildwheel@v2.18.0
+      env:
+        CIBW_ARCHS_LINUX: "aarch64"
+        CIBW_BUILD: 'cp310-manylinux_aarch64'
+        CIBW_BUILD_VERBOSITY: 1
+        CIBW_REPAIR_WHEEL_COMMAND: ""
+        CIBW_BEFORE_ALL: yum install protobuf-devel -y &&
+          yum install devtoolset-10 -y &&
+          yum install wget zip -y &&
+          cd /project/pnnx-patches &&
+          cd pytorch-v${{ env.LIBTORCH_VERSION }} &&
+          pip install -r requirements.txt &&
+          cd build &&
           cmake --build . -j $(nproc) &&
           cmake --build . -j $(nproc) --target install/strip
       with:
