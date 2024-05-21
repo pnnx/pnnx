@@ -6,10 +6,10 @@ on:
       - '*'
 
 env:
-  LIBTORCH_VERSION: 2.2.1
-  TORCHVISION_VERSION: 0.17.1
-  PROTOBUF_VERSION: 3.11.2
-  CACHE_DATE: 20240327
+  LIBTORCH_VERSION: 2.3.0
+  TORCHVISION_VERSION: 0.18.0
+  PROTOBUF_VERSION: 21.12
+  CACHE_DATE: 20240516
 
 permissions:
   contents: read
@@ -27,7 +27,7 @@ jobs:
       run: echo "VERSION=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_OUTPUT
 
   linux-deps:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/setup-python@v5
       with:
@@ -50,9 +50,7 @@ jobs:
         CIBW_BUILD: 'cp310-manylinux_x86_64'
         CIBW_BUILD_VERBOSITY: 1
         CIBW_REPAIR_WHEEL_COMMAND: ""
-        CIBW_BEFORE_ALL: yum install protobuf-devel -y &&
-          yum install devtoolset-9 -y &&
-          yum install wget zip -y &&
+        CIBW_BEFORE_ALL: yum install devtoolset-10 wget zip -y &&
           wget -q https://github.com/pytorch/pytorch/releases/download/v${{ env.LIBTORCH_VERSION }}/pytorch-v${{ env.LIBTORCH_VERSION }}.tar.gz &&
           tar -xf pytorch-v${{ env.LIBTORCH_VERSION }}.tar.gz &&
           cd pytorch-v${{ env.LIBTORCH_VERSION }} &&
@@ -80,11 +78,11 @@ jobs:
               -DUSE_OPENMP=OFF
               -DUSE_SOURCE_DEBUG_ON_MOBILE=OFF
               -DUSE_XNNPACK=OFF
-              -DCMAKE_CXX_COMPILER="/opt/rh/devtoolset-9/root/usr/bin/c++"
-              -DCMAKE_C_COMPILER="/opt/rh/devtoolset-9/root/usr/bin/cc"
+              -DCMAKE_CXX_COMPILER="/opt/rh/devtoolset-10/root/usr/bin/c++"
+              -DCMAKE_C_COMPILER="/opt/rh/devtoolset-10/root/usr/bin/cc"
               .. &&
           cmake --build . -j $(nproc) &&
-          cmake --build . --target install/strip
+          cmake --build . -j $(nproc) --target install/strip
       with:
         package-dir: pnnx-patches
         output-dir: wheelhouse1
@@ -102,9 +100,7 @@ jobs:
         CIBW_BUILD: 'cp310-manylinux_x86_64'
         CIBW_BUILD_VERBOSITY: 1
         CIBW_REPAIR_WHEEL_COMMAND: ""
-        CIBW_BEFORE_ALL: yum install protobuf-devel -y &&
-          yum install devtoolset-9 -y &&
-          yum install wget zip -y &&
+        CIBW_BEFORE_ALL: yum install devtoolset-10 wget zip -y &&
           wget -q https://github.com/pytorch/vision/archive/refs/tags/v${{ env.TORCHVISION_VERSION }}.zip -O vision-${{ env.TORCHVISION_VERSION }}.zip &&
           unzip -q vision-${{ env.TORCHVISION_VERSION }}.zip &&
           cd vision-${{ env.TORCHVISION_VERSION }} &&
@@ -114,10 +110,10 @@ jobs:
           cmake -DCMAKE_INSTALL_PREFIX="/host/tmp/torchvision"
           -DTorch_DIR="/host/tmp/libtorch/share/cmake/Torch"
           -DCMAKE_BUILD_TYPE=MinSizeRel -DWITH_PNG=OFF
-          -DCMAKE_C_COMPILER="/opt/rh/devtoolset-9/root/usr/bin/cc"
-          -DCMAKE_CXX_COMPILER="/opt/rh/devtoolset-9/root/usr/bin/c++" -DWITH_JPEG=OFF ..  &&
+          -DCMAKE_C_COMPILER="/opt/rh/devtoolset-10/root/usr/bin/cc"
+          -DCMAKE_CXX_COMPILER="/opt/rh/devtoolset-10/root/usr/bin/c++" -DWITH_JPEG=OFF ..  &&
           cmake --build . -j $(nproc)  &&
-          cmake --build . --target install/strip
+          cmake --build . -j $(nproc) --target install/strip
       with:
         package-dir: pnnx-patches
         output-dir: wheelhouse2
@@ -135,24 +131,23 @@ jobs:
         CIBW_BUILD: 'cp310-manylinux_x86_64'
         CIBW_BUILD_VERBOSITY: 1
         CIBW_REPAIR_WHEEL_COMMAND: ""
-        CIBW_BEFORE_ALL: yum install protobuf-devel -y &&
-          yum install devtoolset-9 -y &&
-          yum install wget zip -y &&
+        CIBW_BEFORE_ALL: yum install devtoolset-10 wget zip -y &&
           wget -q https://github.com/protocolbuffers/protobuf/archive/v${{ env.PROTOBUF_VERSION }}.zip -O protobuf-${{ env.PROTOBUF_VERSION }}.zip &&
           unzip -q protobuf-${{ env.PROTOBUF_VERSION }}.zip &&
           cd protobuf-${{ env.PROTOBUF_VERSION }} &&
           mkdir -p build2 && cd build2 &&
-          cmake -DCMAKE_INSTALL_PREFIX="/host/tmp/protobuf" -Dprotobuf_BUILD_TESTS=OFF -DCMAKE_C_COMPILER="/opt/rh/devtoolset-9/root/usr/bin/cc"
-          -DCMAKE_CXX_COMPILER="/opt/rh/devtoolset-9/root/usr/bin/c++" -DCMAKE_BUILD_TYPE=MinSizeRel ../cmake &&
+          cmake -DCMAKE_INSTALL_PREFIX="/host/tmp/protobuf" -Dprotobuf_BUILD_TESTS=OFF -DCMAKE_C_COMPILER="/opt/rh/devtoolset-10/root/usr/bin/cc"
+          -DCMAKE_CXX_COMPILER="/opt/rh/devtoolset-10/root/usr/bin/c++" -DCMAKE_BUILD_TYPE=MinSizeRel -DCMAKE_POSITION_INDEPENDENT_CODE=ON ../cmake &&
           cmake --build . -j $(nproc) &&
-          cmake --build . --target install/strip
+          cmake --build . -j $(nproc) --target install/strip
       with:
         package-dir: pnnx-patches
         output-dir: wheelhouse3
 
   # libtorch builds very slow, split it as one dedicated job
   linux-aarch64-deps-libtorch:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
+    timeout-minutes: 720
     steps:
     - uses: actions/setup-python@v5
       with:
@@ -182,9 +177,7 @@ jobs:
         CIBW_BUILD: 'cp310-manylinux_aarch64'
         CIBW_BUILD_VERBOSITY: 1
         CIBW_REPAIR_WHEEL_COMMAND: ""
-        CIBW_BEFORE_ALL: yum install protobuf-devel -y &&
-          yum install devtoolset-9 -y &&
-          yum install wget zip -y &&
+        CIBW_BEFORE_ALL: yum install devtoolset-10 wget zip -y &&
           wget -q https://github.com/pytorch/pytorch/releases/download/v${{ env.LIBTORCH_VERSION }}/pytorch-v${{ env.LIBTORCH_VERSION }}.tar.gz &&
           tar -xf pytorch-v${{ env.LIBTORCH_VERSION }}.tar.gz &&
           cd pytorch-v${{ env.LIBTORCH_VERSION }} &&
@@ -213,18 +206,18 @@ jobs:
               -DUSE_OPENMP=OFF
               -DUSE_SOURCE_DEBUG_ON_MOBILE=OFF
               -DUSE_XNNPACK=OFF
-              -DCMAKE_CXX_COMPILER="/opt/rh/devtoolset-9/root/usr/bin/c++"
-              -DCMAKE_C_COMPILER="/opt/rh/devtoolset-9/root/usr/bin/cc"
+              -DCMAKE_CXX_COMPILER="/opt/rh/devtoolset-10/root/usr/bin/c++"
+              -DCMAKE_C_COMPILER="/opt/rh/devtoolset-10/root/usr/bin/cc"
               .. &&
           cmake --build . -j $(nproc) &&
-          cmake --build . --target install/strip
+          cmake --build . -j $(nproc) --target install/strip
       with:
         package-dir: pnnx-patches
         output-dir: wheelhouse1
 
   linux-aarch64-deps:
     needs: [linux-aarch64-deps-libtorch]
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/setup-python@v5
       with:
@@ -261,9 +254,7 @@ jobs:
         CIBW_BUILD: 'cp310-manylinux_aarch64'
         CIBW_BUILD_VERBOSITY: 1
         CIBW_REPAIR_WHEEL_COMMAND: ""
-        CIBW_BEFORE_ALL: yum install protobuf-devel -y &&
-          yum install devtoolset-9 -y &&
-          yum install wget zip -y &&
+        CIBW_BEFORE_ALL: yum install devtoolset-10 wget zip -y &&
           wget -q https://github.com/pytorch/vision/archive/refs/tags/v${{ env.TORCHVISION_VERSION }}.zip -O vision-${{ env.TORCHVISION_VERSION }}.zip &&
           unzip -q vision-${{ env.TORCHVISION_VERSION }}.zip &&
           cd vision-${{ env.TORCHVISION_VERSION }} &&
@@ -273,10 +264,10 @@ jobs:
           cmake -DCMAKE_INSTALL_PREFIX="/host/tmp/torchvision"
           -DTorch_DIR="/host/tmp/libtorch/share/cmake/Torch"
           -DCMAKE_BUILD_TYPE=MinSizeRel -DWITH_PNG=OFF
-          -DCMAKE_C_COMPILER="/opt/rh/devtoolset-9/root/usr/bin/cc"
-          -DCMAKE_CXX_COMPILER="/opt/rh/devtoolset-9/root/usr/bin/c++" -DWITH_JPEG=OFF ..  &&
+          -DCMAKE_C_COMPILER="/opt/rh/devtoolset-10/root/usr/bin/cc"
+          -DCMAKE_CXX_COMPILER="/opt/rh/devtoolset-10/root/usr/bin/c++" -DWITH_JPEG=OFF ..  &&
           cmake --build . -j $(nproc)  &&
-          cmake --build . --target install/strip
+          cmake --build . -j $(nproc) --target install/strip
       with:
         package-dir: pnnx-patches
         output-dir: wheelhouse2
@@ -294,17 +285,15 @@ jobs:
         CIBW_BUILD: 'cp310-manylinux_aarch64'
         CIBW_BUILD_VERBOSITY: 1
         CIBW_REPAIR_WHEEL_COMMAND: ""
-        CIBW_BEFORE_ALL: yum install protobuf-devel -y &&
-          yum install devtoolset-9 -y &&
-          yum install wget zip -y &&
+        CIBW_BEFORE_ALL: yum install devtoolset-10 wget zip -y &&
           wget -q https://github.com/protocolbuffers/protobuf/archive/v${{ env.PROTOBUF_VERSION }}.zip -O protobuf-${{ env.PROTOBUF_VERSION }}.zip &&
           unzip -q protobuf-${{ env.PROTOBUF_VERSION }}.zip &&
           cd protobuf-${{ env.PROTOBUF_VERSION }} &&
           mkdir -p build2 && cd build2 &&
-          cmake -DCMAKE_INSTALL_PREFIX="/host/tmp/protobuf" -Dprotobuf_BUILD_TESTS=OFF -DCMAKE_C_COMPILER="/opt/rh/devtoolset-9/root/usr/bin/cc"
-          -DCMAKE_CXX_COMPILER="/opt/rh/devtoolset-9/root/usr/bin/c++" -DCMAKE_BUILD_TYPE=MinSizeRel ../cmake &&
+          cmake -DCMAKE_INSTALL_PREFIX="/host/tmp/protobuf" -Dprotobuf_BUILD_TESTS=OFF -DCMAKE_C_COMPILER="/opt/rh/devtoolset-10/root/usr/bin/cc"
+          -DCMAKE_CXX_COMPILER="/opt/rh/devtoolset-10/root/usr/bin/c++" -DCMAKE_BUILD_TYPE=MinSizeRel -DCMAKE_POSITION_INDEPENDENT_CODE=ON ../cmake &&
           cmake --build . -j $(nproc) &&
-          cmake --build . --target install/strip
+          cmake --build . -j $(nproc) --target install/strip
       with:
         package-dir: pnnx-patches
         output-dir: wheelhouse3
@@ -357,7 +346,7 @@ jobs:
             -DUSE_XNNPACK=OFF \
             ..
         cmake --build . -j 4
-        cmake --build . --target install/strip
+        cmake --build . -j 4 --target install/strip
     - name: cache-torchvision
       id: cache-torchvision
       uses: actions/cache@v4.0.2
@@ -375,7 +364,7 @@ jobs:
         mkdir -p build; cd build
         cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/torchvision" -DTorch_DIR="$GITHUB_WORKSPACE/libtorch/share/cmake/Torch" -DCMAKE_BUILD_TYPE=MinSizeRel -DWITH_PNG=OFF -DWITH_JPEG=OFF ..
         cmake --build . -j 4
-        cmake --build . --target install/strip
+        cmake --build . -j 4 --target install/strip
     - name: cache-protobuf
       id: cache-protobuf
       uses: actions/cache@v4.0.2
@@ -389,9 +378,9 @@ jobs:
         unzip -q protobuf-${{ env.PROTOBUF_VERSION }}.zip
         cd protobuf-${{ env.PROTOBUF_VERSION }}
         mkdir -p build2; cd build2;
-        cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/protobuf" -Dprotobuf_BUILD_TESTS=OFF -DCMAKE_BUILD_TYPE=MinSizeRel ../cmake
+        cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/protobuf" -Dprotobuf_BUILD_TESTS=OFF -DCMAKE_BUILD_TYPE=MinSizeRel -DCMAKE_POSITION_INDEPENDENT_CODE=ON ../cmake
         cmake --build . -j 4
-        cmake --build . --target install/strip
+        cmake --build . -j 4 --target install/strip
 
   macos-arm64-deps:
     runs-on: macos-14
@@ -442,7 +431,7 @@ jobs:
             -DUSE_XNNPACK=OFF \
             ..
         cmake --build . -j 3
-        cmake --build . --target install/strip
+        cmake --build . -j 3 --target install/strip
     - name: cache-torchvision
       id: cache-torchvision
       uses: actions/cache@v4.0.2
@@ -460,7 +449,7 @@ jobs:
         mkdir -p build; cd build
         cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/torchvision" -DTorch_DIR="$GITHUB_WORKSPACE/libtorch/share/cmake/Torch" -DCMAKE_BUILD_TYPE=MinSizeRel -DWITH_PNG=OFF -DWITH_JPEG=OFF ..
         cmake --build . -j 3
-        cmake --build . --target install/strip
+        cmake --build . -j 3 --target install/strip
     - name: cache-protobuf
       id: cache-protobuf
       uses: actions/cache@v4.0.2
@@ -474,9 +463,9 @@ jobs:
         unzip -q protobuf-${{ env.PROTOBUF_VERSION }}.zip
         cd protobuf-${{ env.PROTOBUF_VERSION }}
         mkdir -p build2; cd build2;
-        cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/protobuf" -Dprotobuf_BUILD_TESTS=OFF -DCMAKE_BUILD_TYPE=MinSizeRel ../cmake
+        cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/protobuf" -Dprotobuf_BUILD_TESTS=OFF -DCMAKE_BUILD_TYPE=MinSizeRel -DCMAKE_POSITION_INDEPENDENT_CODE=ON ../cmake
         cmake --build . -j 3
-        cmake --build . --target install/strip
+        cmake --build . -j 3 --target install/strip
 
   windows-deps:
     runs-on: windows-2019
@@ -531,7 +520,7 @@ jobs:
             -DUSE_XNNPACK=OFF `
             ..
         cmake --build . --config MinSizeRel -j 4
-        cmake --build . --config MinSizeRel --target install
+        cmake --build . --config MinSizeRel -j 4 --target install
     - name: cache-torchvision
       id: cache-torchvision
       uses: actions/cache@v4.0.2
@@ -550,7 +539,7 @@ jobs:
         mkdir -p build; cd build
         cmake -DCMAKE_INSTALL_PREFIX="$env:GITHUB_WORKSPACE/torchvision" -DTorch_DIR="$env:GITHUB_WORKSPACE/libtorch/share/cmake/Torch" -DCMAKE_BUILD_TYPE=MinSizeRel -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded -DWITH_PNG=OFF -DWITH_JPEG=OFF ..
         cmake --build . --config MinSizeRel -j 4
-        cmake --build . --config MinSizeRel --target install
+        cmake --build . --config MinSizeRel -j 4 --target install
     - name: cache-protobuf
       id: cache-protobuf
       uses: actions/cache@v4.0.2
@@ -564,13 +553,13 @@ jobs:
         7z x ./protobuf-${{ env.PROTOBUF_VERSION }}.zip
         cd protobuf-${{ env.PROTOBUF_VERSION }}
         mkdir -p build2; cd build2;
-        cmake -DCMAKE_INSTALL_PREFIX="$env:GITHUB_WORKSPACE/protobuf" -Dprotobuf_BUILD_TESTS=OFF -Dprotobuf_MSVC_STATIC_RUNTIME=ON -DCMAKE_BUILD_TYPE=MinSizeRel ../cmake
+        cmake -DCMAKE_INSTALL_PREFIX="$env:GITHUB_WORKSPACE/protobuf" -Dprotobuf_BUILD_TESTS=OFF -Dprotobuf_MSVC_STATIC_RUNTIME=ON -DCMAKE_BUILD_TYPE=MinSizeRel -DCMAKE_POSITION_INDEPENDENT_CODE=ON ../cmake
         cmake --build . --config MinSizeRel -j 4
-        cmake --build . --config MinSizeRel --target install
+        cmake --build . --config MinSizeRel -j 4 --target install
 
   linux:
     needs: [setup, linux-deps]
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     env:
       PACKAGENAME: pnnx-${{ needs.setup.outputs.VERSION }}-linux
     steps:
@@ -613,18 +602,17 @@ jobs:
         CIBW_BUILD_VERBOSITY: 1
         CIBW_REPAIR_WHEEL_COMMAND: ""
         CIBW_BEFORE_ALL: yum install protobuf-devel -y &&
-          yum install devtoolset-9 -y &&
+          yum install devtoolset-10 -y &&
           yum install wget zip -y &&
           cd /project/ncnn/tools/pnnx/ &&
           mkdir build && cd build &&
           cmake -DCMAKE_INSTALL_PREFIX=/host/tmp/install -DCMAKE_BUILD_TYPE=MinSizeRel
             -DTorch_INSTALL_DIR="/host/tmp/libtorch"
             -DTorchVision_INSTALL_DIR="/host/tmp/torchvision"
-            -DProtobuf_INCLUDE_DIR="/host/tmp/protobuf/include"
-            -DProtobuf_LIBRARIES="/host/tmp/protobuf/lib64/libprotobuf.a"
+            -Dprotobuf_DIR="/host/tmp/protobuf/lib/cmake/protobuf"
             -DProtobuf_PROTOC_EXECUTABLE="/host/tmp/protobuf/bin/protoc"
-            -DCMAKE_CXX_COMPILER="/opt/rh/devtoolset-9/root/usr/bin/c++"
-            -DCMAKE_C_COMPILER="/opt/rh/devtoolset-9/root/usr/bin/cc"
+            -DCMAKE_CXX_COMPILER="/opt/rh/devtoolset-10/root/usr/bin/c++"
+            -DCMAKE_C_COMPILER="/opt/rh/devtoolset-10/root/usr/bin/cc"
             .. &&
           cmake --build . -j $(nproc) &&
           cmake --build . --target install/strip
@@ -646,7 +634,7 @@ jobs:
 
   linux-aarch64:
     needs: [setup, linux-aarch64-deps]
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     env:
       PACKAGENAME: pnnx-${{ needs.setup.outputs.VERSION }}-linux-aarch64
     steps:
@@ -694,18 +682,17 @@ jobs:
         CIBW_BUILD_VERBOSITY: 1
         CIBW_REPAIR_WHEEL_COMMAND: ""
         CIBW_BEFORE_ALL: yum install protobuf-devel -y &&
-          yum install devtoolset-9 -y &&
+          yum install devtoolset-10 -y &&
           yum install wget zip -y &&
           cd /project/ncnn/tools/pnnx/ &&
           mkdir build && cd build &&
           cmake -DCMAKE_INSTALL_PREFIX=/host/tmp/install -DCMAKE_BUILD_TYPE=MinSizeRel
             -DTorch_INSTALL_DIR="/host/tmp/libtorch"
             -DTorchVision_INSTALL_DIR="/host/tmp/torchvision"
-            -DProtobuf_INCLUDE_DIR="/host/tmp/protobuf/include"
-            -DProtobuf_LIBRARIES="/host/tmp/protobuf/lib64/libprotobuf.a"
+            -Dprotobuf_DIR="/host/tmp/protobuf/lib/cmake/protobuf"
             -DProtobuf_PROTOC_EXECUTABLE="/host/tmp/protobuf/bin/protoc"
-            -DCMAKE_CXX_COMPILER="/opt/rh/devtoolset-9/root/usr/bin/c++"
-            -DCMAKE_C_COMPILER="/opt/rh/devtoolset-9/root/usr/bin/cc"
+            -DCMAKE_CXX_COMPILER="/opt/rh/devtoolset-10/root/usr/bin/c++"
+            -DCMAKE_C_COMPILER="/opt/rh/devtoolset-10/root/usr/bin/cc"
             .. &&
           cmake --build . -j $(nproc) &&
           cmake --build . --target install/strip
@@ -766,8 +753,7 @@ jobs:
         cmake -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=MinSizeRel \
             -DTorch_INSTALL_DIR="$GITHUB_WORKSPACE/libtorch" \
             -DTorchVision_INSTALL_DIR="$GITHUB_WORKSPACE/torchvision" \
-            -DProtobuf_INCLUDE_DIR="$GITHUB_WORKSPACE/protobuf/include" \
-            -DProtobuf_LIBRARIES="$GITHUB_WORKSPACE/protobuf/lib/libprotobuf.a" \
+            -Dprotobuf_DIR="$GITHUB_WORKSPACE/protobuf/lib/cmake/protobuf" \
             -DProtobuf_PROTOC_EXECUTABLE="$GITHUB_WORKSPACE/protobuf/bin/protoc" \
             ..
         cmake --build . -j 4
@@ -825,8 +811,7 @@ jobs:
         cmake -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=MinSizeRel \
             -DTorch_INSTALL_DIR="$GITHUB_WORKSPACE/libtorch" \
             -DTorchVision_INSTALL_DIR="$GITHUB_WORKSPACE/torchvision" \
-            -DProtobuf_INCLUDE_DIR="$GITHUB_WORKSPACE/protobuf/include" \
-            -DProtobuf_LIBRARIES="$GITHUB_WORKSPACE/protobuf/lib/libprotobuf.a" \
+            -Dprotobuf_DIR="$GITHUB_WORKSPACE/protobuf/lib/cmake/protobuf" \
             -DProtobuf_PROTOC_EXECUTABLE="$GITHUB_WORKSPACE/protobuf/bin/protoc" \
             ..
         cmake --build . -j 3
@@ -923,8 +908,7 @@ jobs:
         cmake -DCMAKE_INSTALL_PREFIX=install -DPNNX_BUILD_WITH_STATIC_CRT=ON `
             -DTorch_INSTALL_DIR="$env:GITHUB_WORKSPACE/libtorch" `
             -DTorchVision_INSTALL_DIR="$env:GITHUB_WORKSPACE/torchvision" `
-            -DProtobuf_INCLUDE_DIR="$env:GITHUB_WORKSPACE/protobuf/include" `
-            -DProtobuf_LIBRARIES="$env:GITHUB_WORKSPACE/protobuf/lib/libprotobuf.lib" `
+            -Dprotobuf_DIR="$env:GITHUB_WORKSPACE/protobuf/lib/cmake/protobuf" `
             -DProtobuf_PROTOC_EXECUTABLE="$env:GITHUB_WORKSPACE/protobuf/bin/protoc.exe" `
             ..
         cmake --build . --config MinSizeRel -j 4
@@ -943,7 +927,7 @@ jobs:
 
   linux-python:
     needs: [setup, linux]
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/setup-python@v5
       with:
@@ -981,7 +965,7 @@ jobs:
 
   linux-aarch64-python:
     needs: [setup, linux-aarch64]
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/setup-python@v5
       with:
