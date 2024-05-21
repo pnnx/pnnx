@@ -140,8 +140,7 @@ jobs:
 
   # libtorch builds very slow, split it as one dedicated job
   linux-aarch64-deps-libtorch:
-    runs-on: ubuntu-latest
-    timeout-minutes: 720
+    runs-on: macos-14
     steps:
     - uses: actions/setup-python@v5
       with:
@@ -211,7 +210,7 @@ jobs:
 
   linux-aarch64-deps:
     needs: [linux-aarch64-deps-libtorch]
-    runs-on: ubuntu-latest
+    runs-on: macos-14
     steps:
     - uses: actions/setup-python@v5
       with:
