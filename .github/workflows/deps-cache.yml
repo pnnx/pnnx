@@ -141,6 +141,7 @@ jobs:
   # libtorch builds very slow, split it as one dedicated job
   linux-aarch64-deps-libtorch:
     runs-on: ubuntu-latest
+    timeout-minutes: 720
     steps:
     - uses: actions/setup-python@v5
       with:
@@ -162,10 +163,8 @@ jobs:
       with:
         platforms: arm64
 
-    - name: libtorch-A
+    - name: libtorch
       if: steps.cache-libtorch.outputs.cache-hit != 'true'
-      timeout-minutes: 300
-      continue-on-error: true
       uses: pypa/cibuildwheel@v2.18.0
       env:
         CIBW_ARCHS_LINUX: "aarch64"
@@ -174,7 +173,6 @@ jobs:
         CIBW_REPAIR_WHEEL_COMMAND: ""
         CIBW_BEFORE_ALL: yum install devtoolset-10 wget zip -y &&
           wget -q https://github.com/pytorch/pytorch/releases/download/v${{ env.LIBTORCH_VERSION }}/pytorch-v${{ env.LIBTORCH_VERSION }}.tar.gz &&
-          mv pytorch-v${{ env.LIBTORCH_VERSION }}.tar.gz /host/tmp/ && cd /host/tmp &&
           tar -xf pytorch-v${{ env.LIBTORCH_VERSION }}.tar.gz &&
           cd pytorch-v${{ env.LIBTORCH_VERSION }} &&
           pip install -r requirements.txt &&
@@ -205,25 +203,6 @@ jobs:
               -DCMAKE_CXX_COMPILER="/opt/rh/devtoolset-10/root/usr/bin/c++"
               -DCMAKE_C_COMPILER="/opt/rh/devtoolset-10/root/usr/bin/cc"
               .. &&
-          cmake --build . -j $(nproc) &&
-          cmake --build . -j $(nproc) --target install/strip
-      with:
-        package-dir: pnnx-patches
-        output-dir: wheelhouse1
-
-    - name: libtorch-B
-      if: steps.cache-libtorch.outputs.cache-hit != 'true'
-      uses: pypa/cibuildwheel@v2.18.0
-      env:
-        CIBW_ARCHS_LINUX: "aarch64"
-        CIBW_BUILD: 'cp310-manylinux_aarch64'
-        CIBW_BUILD_VERBOSITY: 1
-        CIBW_REPAIR_WHEEL_COMMAND: ""
-        CIBW_BEFORE_ALL: yum install devtoolset-10 wget zip -y &&
-          cd /host/tmp &&
-          cd pytorch-v${{ env.LIBTORCH_VERSION }} &&
-          pip install -r requirements.txt &&
-          cd build &&
           cmake --build . -j $(nproc) &&
           cmake --build . -j $(nproc) --target install/strip
       with:
