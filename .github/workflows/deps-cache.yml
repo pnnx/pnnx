@@ -164,6 +164,7 @@ jobs:
 
     - name: libtorch-A
       if: steps.cache-libtorch.outputs.cache-hit != 'true'
+      timeout-minutes: 30
       continue-on-error: true
       uses: pypa/cibuildwheel@v2.18.0
       env:
