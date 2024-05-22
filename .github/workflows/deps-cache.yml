@@ -138,10 +138,10 @@ jobs:
         package-dir: pnnx-patches
         output-dir: wheelhouse3
 
-  # libtorch builds very slow, split it as one dedicated job
-  linux-aarch64-deps-libtorch:
-    runs-on: ubuntu-latest
-    timeout-minutes: 720
+  # libtorch builds very slow even on self-hosted runner
+  linux-aarch64-deps:
+    runs-on: self-hosted
+    timeout-minutes: 1800
     steps:
     - uses: actions/setup-python@v5
       with:
@@ -209,36 +209,12 @@ jobs:
         package-dir: pnnx-patches
         output-dir: wheelhouse1
 
-  linux-aarch64-deps:
-    needs: [linux-aarch64-deps-libtorch]
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/setup-python@v5
-      with:
-        python-version: '3.11'
-    - name: pnnx-patches
-      uses: actions/checkout@v4
-      with:
-        path: pnnx-patches
-    - name: cache-libtorch
-      id: cache-libtorch
-      uses: actions/cache@v4.0.2
-      with:
-        path: "/tmp/libtorch"
-        key: libtorch-${{ env.LIBTORCH_VERSION }}-linux-aarch64-${{ env.CACHE_DATE }}
-
     - name: cache-torchvision
       id: cache-torchvision
       uses: actions/cache@v4.0.2
       with:
         path: "/tmp/torchvision"
         key: torchvision-${{ env.TORCHVISION_VERSION }}-linux-aarch64-${{ env.CACHE_DATE }}
-
-    - name: setup-qemu
-      if: steps.cache-torchvision.outputs.cache-hit != 'true'
-      uses: docker/setup-qemu-action@v3
-      with:
-        platforms: arm64
 
     - name: torchvision
       if: steps.cache-torchvision.outputs.cache-hit != 'true'
