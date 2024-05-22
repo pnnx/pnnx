@@ -141,6 +141,7 @@ jobs:
   # libtorch builds very slow, split it as one dedicated job
   linux-aarch64-deps:
     runs-on: self-hosted
+    timeout-minutes: 1800
     steps:
     - uses: actions/setup-python@v5
       with:
