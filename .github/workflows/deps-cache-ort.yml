@@ -14,12 +14,13 @@ on:
     - cron: '0 12 * * *'
 
 env:
+  PROTOBUF_VERSION: 21.12
   ONNXRUNTIME_VERSION: 1.17.3
-  CACHE_DATE: 20240504
+  CACHE_DATE: 20240505
 
 jobs:
   linux-deps:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/setup-python@v5
       with:
@@ -43,8 +44,16 @@ jobs:
         CIBW_BUILD: 'cp310-manylinux_x86_64'
         CIBW_BUILD_VERBOSITY: 1
         CIBW_REPAIR_WHEEL_COMMAND: ""
-        CIBW_BEFORE_ALL: yum install devtoolset-10 -y &&
-          yum install wget zip -y &&
+        CIBW_BEFORE_ALL: yum install devtoolset-10 wget zip -y &&
+          wget -q https://github.com/protocolbuffers/protobuf/archive/v${{ env.PROTOBUF_VERSION }}.zip -O protobuf-${{ env.PROTOBUF_VERSION }}.zip &&
+          unzip -q protobuf-${{ env.PROTOBUF_VERSION }}.zip &&
+          cd protobuf-${{ env.PROTOBUF_VERSION }} &&
+          mkdir -p build2 && cd build2 &&
+          cmake -DCMAKE_INSTALL_PREFIX="/host/tmp/onnxruntime" -Dprotobuf_BUILD_TESTS=OFF -DCMAKE_C_COMPILER="/opt/rh/devtoolset-10/root/usr/bin/cc"
+          -DCMAKE_CXX_COMPILER="/opt/rh/devtoolset-10/root/usr/bin/c++" -DCMAKE_BUILD_TYPE=MinSizeRel -DCMAKE_POSITION_INDEPENDENT_CODE=ON ../cmake &&
+          cmake --build . -j $(nproc) &&
+          cmake --build . -j $(nproc) --target install/strip &&
+          cd ../../ &&
           wget -q https://github.com/microsoft/onnxruntime/archive/v${{ env.ONNXRUNTIME_VERSION }}.zip -O onnxruntime-${{ env.ONNXRUNTIME_VERSION }}.zip &&
           unzip -q onnxruntime-${{ env.ONNXRUNTIME_VERSION }}.zip &&
           cd onnxruntime-${{ env.ONNXRUNTIME_VERSION }} &&
@@ -52,15 +61,15 @@ jobs:
           patch -p1 -i /project/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-monolithic-static-library.patch &&
           mkdir -p build2 && cd build2 &&
           cmake -DCMAKE_INSTALL_PREFIX="/host/tmp/onnxruntime" -DCMAKE_C_COMPILER="/opt/rh/devtoolset-10/root/usr/bin/cc"
-          -DCMAKE_CXX_COMPILER="/opt/rh/devtoolset-10/root/usr/bin/c++" -DCMAKE_BUILD_TYPE=MinSizeRel -Donnxruntime_USE_FULL_PROTOBUF=ON -Donnxruntime_BUILD_SHARED_LIB=ON -Donnxruntime_BUILD_UNIT_TESTS=OFF -Donnxruntime_ENABLE_CPUINFO=OFF -Donnxruntime_DISABLE_CONTRIB_OPS=ON -Donnxruntime_DISABLE_ML_OPS=ON -Donnxruntime_DISABLE_SPARSE_TENSORS=ON --compile-no-warning-as-error ../cmake &&
+          -DCMAKE_CXX_COMPILER="/opt/rh/devtoolset-10/root/usr/bin/c++" -DCMAKE_BUILD_TYPE=MinSizeRel -Donnxruntime_USE_FULL_PROTOBUF=ON -Donnxruntime_BUILD_SHARED_LIB=ON -Donnxruntime_BUILD_UNIT_TESTS=OFF -Donnxruntime_ENABLE_CPUINFO=OFF -Donnxruntime_DISABLE_CONTRIB_OPS=ON -Donnxruntime_DISABLE_ML_OPS=ON -Donnxruntime_DISABLE_SPARSE_TENSORS=ON --compile-no-warning-as-error -DCMAKE_POSITION_INDEPENDENT_CODE=ON ../cmake &&
           cmake --build . -j $(nproc) &&
-          cmake --build . --target install/strip
+          cmake --build . -j $(nproc) --target install/strip
       with:
         package-dir: pnnx-patches
         output-dir: wheelhouse3
 
   linux-aarch64-deps:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/setup-python@v5
       with:
@@ -89,8 +98,16 @@ jobs:
         CIBW_BUILD: 'cp310-manylinux_aarch64'
         CIBW_BUILD_VERBOSITY: 1
         CIBW_REPAIR_WHEEL_COMMAND: ""
-        CIBW_BEFORE_ALL: yum install devtoolset-10 -y &&
-          yum install wget zip -y &&
+        CIBW_BEFORE_ALL: yum install devtoolset-10 wget zip -y &&
+          wget -q https://github.com/protocolbuffers/protobuf/archive/v${{ env.PROTOBUF_VERSION }}.zip -O protobuf-${{ env.PROTOBUF_VERSION }}.zip &&
+          unzip -q protobuf-${{ env.PROTOBUF_VERSION }}.zip &&
+          cd protobuf-${{ env.PROTOBUF_VERSION }} &&
+          mkdir -p build2 && cd build2 &&
+          cmake -DCMAKE_INSTALL_PREFIX="/host/tmp/onnxruntime" -Dprotobuf_BUILD_TESTS=OFF -DCMAKE_C_COMPILER="/opt/rh/devtoolset-10/root/usr/bin/cc"
+          -DCMAKE_CXX_COMPILER="/opt/rh/devtoolset-10/root/usr/bin/c++" -DCMAKE_BUILD_TYPE=MinSizeRel -DCMAKE_POSITION_INDEPENDENT_CODE=ON ../cmake &&
+          cmake --build . -j $(nproc) &&
+          cmake --build . -j $(nproc) --target install/strip &&
+          cd ../../ &&
           wget -q https://github.com/microsoft/onnxruntime/archive/v${{ env.ONNXRUNTIME_VERSION }}.zip -O onnxruntime-${{ env.ONNXRUNTIME_VERSION }}.zip &&
           unzip -q onnxruntime-${{ env.ONNXRUNTIME_VERSION }}.zip &&
           cd onnxruntime-${{ env.ONNXRUNTIME_VERSION }} &&
@@ -98,9 +115,9 @@ jobs:
           patch -p1 -i /project/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-monolithic-static-library.patch &&
           mkdir -p build2 && cd build2 &&
           cmake -DCMAKE_INSTALL_PREFIX="/host/tmp/onnxruntime" -DCMAKE_C_COMPILER="/opt/rh/devtoolset-10/root/usr/bin/cc"
-          -DCMAKE_CXX_COMPILER="/opt/rh/devtoolset-10/root/usr/bin/c++" -DCMAKE_BUILD_TYPE=MinSizeRel -Donnxruntime_USE_FULL_PROTOBUF=ON -Donnxruntime_BUILD_SHARED_LIB=ON -Donnxruntime_BUILD_UNIT_TESTS=OFF -Donnxruntime_ENABLE_CPUINFO=OFF -Donnxruntime_DISABLE_CONTRIB_OPS=ON -Donnxruntime_DISABLE_ML_OPS=ON -Donnxruntime_DISABLE_SPARSE_TENSORS=ON --compile-no-warning-as-error ../cmake &&
+          -DCMAKE_CXX_COMPILER="/opt/rh/devtoolset-10/root/usr/bin/c++" -DCMAKE_BUILD_TYPE=MinSizeRel -Donnxruntime_USE_FULL_PROTOBUF=ON -Donnxruntime_BUILD_SHARED_LIB=ON -Donnxruntime_BUILD_UNIT_TESTS=OFF -Donnxruntime_ENABLE_CPUINFO=OFF -Donnxruntime_DISABLE_CONTRIB_OPS=ON -Donnxruntime_DISABLE_ML_OPS=ON -Donnxruntime_DISABLE_SPARSE_TENSORS=ON --compile-no-warning-as-error -DCMAKE_POSITION_INDEPENDENT_CODE=ON ../cmake &&
           cmake --build . -j $(nproc) &&
-          cmake --build . --target install/strip
+          cmake --build . -j $(nproc) --target install/strip
       with:
         package-dir: pnnx-patches
         output-dir: wheelhouse3
@@ -125,15 +142,23 @@ jobs:
     - name: onnxruntime
       if: steps.cache-onnxruntime.outputs.cache-hit != 'true'
       run: |
+        wget -q https://github.com/protocolbuffers/protobuf/archive/v${{ env.PROTOBUF_VERSION }}.zip -O protobuf-${{ env.PROTOBUF_VERSION }}.zip
+        unzip -q protobuf-${{ env.PROTOBUF_VERSION }}.zip
+        cd protobuf-${{ env.PROTOBUF_VERSION }}
+        mkdir -p build2; cd build2;
+        cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/onnxruntime" -Dprotobuf_BUILD_TESTS=OFF -DCMAKE_BUILD_TYPE=MinSizeRel -DCMAKE_POSITION_INDEPENDENT_CODE=ON ../cmake
+        cmake --build . -j 4
+        cmake --build . -j 4 --target install/strip
+        cd ../../
         wget -q https://github.com/microsoft/onnxruntime/archive/v${{ env.ONNXRUNTIME_VERSION }}.zip -O onnxruntime-${{ env.ONNXRUNTIME_VERSION }}.zip
         ditto -V -x -k --sequesterRsrc --rsrc onnxruntime-${{ env.ONNXRUNTIME_VERSION }}.zip ./
         cd onnxruntime-${{ env.ONNXRUNTIME_VERSION }}
         patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-less-mlas-features.patch
         patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-monolithic-static-library.patch
         mkdir -p build2; cd build2;
-        cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/onnxruntime" -DCMAKE_BUILD_TYPE=MinSizeRel -Donnxruntime_USE_FULL_PROTOBUF=ON -Donnxruntime_BUILD_SHARED_LIB=ON -Donnxruntime_BUILD_UNIT_TESTS=OFF -Donnxruntime_ENABLE_CPUINFO=OFF -Donnxruntime_DISABLE_CONTRIB_OPS=ON -Donnxruntime_DISABLE_SPARSE_TENSORS=ON --compile-no-warning-as-error ../cmake
+        cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/onnxruntime" -DCMAKE_BUILD_TYPE=MinSizeRel -Donnxruntime_USE_FULL_PROTOBUF=ON -Donnxruntime_BUILD_SHARED_LIB=ON -Donnxruntime_BUILD_UNIT_TESTS=OFF -Donnxruntime_ENABLE_CPUINFO=OFF -Donnxruntime_DISABLE_CONTRIB_OPS=ON -Donnxruntime_DISABLE_SPARSE_TENSORS=ON --compile-no-warning-as-error -DCMAKE_POSITION_INDEPENDENT_CODE=ON ../cmake
         cmake --build . -j 4
-        cmake --build . --target install/strip
+        cmake --build . -j 4 --target install/strip
 
   macos-arm64-deps:
     runs-on: macos-14
@@ -155,15 +180,23 @@ jobs:
     - name: onnxruntime
       if: steps.cache-onnxruntime.outputs.cache-hit != 'true'
       run: |
+        wget -q https://github.com/protocolbuffers/protobuf/archive/v${{ env.PROTOBUF_VERSION }}.zip -O protobuf-${{ env.PROTOBUF_VERSION }}.zip
+        unzip -q protobuf-${{ env.PROTOBUF_VERSION }}.zip
+        cd protobuf-${{ env.PROTOBUF_VERSION }}
+        mkdir -p build2; cd build2;
+        cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/onnxruntime" -Dprotobuf_BUILD_TESTS=OFF -DCMAKE_BUILD_TYPE=MinSizeRel -DCMAKE_POSITION_INDEPENDENT_CODE=ON ../cmake
+        cmake --build . -j 3
+        cmake --build . -j 3 --target install/strip
+        cd ../../
         wget -q https://github.com/microsoft/onnxruntime/archive/v${{ env.ONNXRUNTIME_VERSION }}.zip -O onnxruntime-${{ env.ONNXRUNTIME_VERSION }}.zip
         ditto -V -x -k --sequesterRsrc --rsrc onnxruntime-${{ env.ONNXRUNTIME_VERSION }}.zip ./
         cd onnxruntime-${{ env.ONNXRUNTIME_VERSION }}
         patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-less-mlas-features.patch
         patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-monolithic-static-library.patch
         mkdir -p build2; cd build2;
-        cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/onnxruntime" -DCMAKE_BUILD_TYPE=MinSizeRel -Donnxruntime_USE_FULL_PROTOBUF=ON -Donnxruntime_BUILD_SHARED_LIB=ON -Donnxruntime_BUILD_UNIT_TESTS=OFF -Donnxruntime_ENABLE_CPUINFO=OFF -Donnxruntime_DISABLE_CONTRIB_OPS=ON -Donnxruntime_DISABLE_SPARSE_TENSORS=ON --compile-no-warning-as-error ../cmake
+        cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/onnxruntime" -DCMAKE_BUILD_TYPE=MinSizeRel -Donnxruntime_USE_FULL_PROTOBUF=ON -Donnxruntime_BUILD_SHARED_LIB=ON -Donnxruntime_BUILD_UNIT_TESTS=OFF -Donnxruntime_ENABLE_CPUINFO=OFF -Donnxruntime_DISABLE_CONTRIB_OPS=ON -Donnxruntime_DISABLE_SPARSE_TENSORS=ON --compile-no-warning-as-error -DCMAKE_POSITION_INDEPENDENT_CODE=ON ../cmake
         cmake --build . -j 3
-        cmake --build . --target install/strip
+        cmake --build . -j 3 --target install/strip
 
   windows-deps:
     runs-on: windows-2019
@@ -187,12 +220,20 @@ jobs:
     - name: onnxruntime
       if: steps.cache-onnxruntime.outputs.cache-hit != 'true'
       run: |
+        Invoke-WebRequest -Uri https://github.com/protocolbuffers/protobuf/archive/v${{ env.PROTOBUF_VERSION }}.zip -OutFile protobuf-${{ env.PROTOBUF_VERSION }}.zip
+        7z x ./protobuf-${{ env.PROTOBUF_VERSION }}.zip
+        cd protobuf-${{ env.PROTOBUF_VERSION }}
+        mkdir -p build2; cd build2;
+        cmake -DCMAKE_INSTALL_PREFIX="$env:GITHUB_WORKSPACE/onnxruntime" -Dprotobuf_BUILD_TESTS=OFF -Dprotobuf_MSVC_STATIC_RUNTIME=ON -DCMAKE_BUILD_TYPE=MinSizeRel -DCMAKE_POSITION_INDEPENDENT_CODE=ON ../cmake
+        cmake --build . --config MinSizeRel -j 4
+        cmake --build . --config MinSizeRel -j 4 --target install
+        cd ../../
         Invoke-WebRequest -Uri https://github.com/microsoft/onnxruntime/archive/v${{ env.ONNXRUNTIME_VERSION }}.zip -OutFile onnxruntime-${{ env.ONNXRUNTIME_VERSION }}.zip
         7z x ./onnxruntime-${{ env.ONNXRUNTIME_VERSION }}.zip
         cd onnxruntime-${{ env.ONNXRUNTIME_VERSION }}
         C:\msys64\usr\bin\patch.exe -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-less-mlas-features.patch
         C:\msys64\usr\bin\patch.exe -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-monolithic-static-library.patch
         mkdir -p build2; cd build2;
-        cmake -DCMAKE_INSTALL_PREFIX="$env:GITHUB_WORKSPACE/onnxruntime" -DCMAKE_BUILD_TYPE=MinSizeRel -Donnxruntime_USE_FULL_PROTOBUF=ON -Donnxruntime_BUILD_SHARED_LIB=ON -Donnxruntime_BUILD_UNIT_TESTS=OFF -Donnxruntime_ENABLE_CPUINFO=OFF -Donnxruntime_DISABLE_CONTRIB_OPS=ON -Donnxruntime_DISABLE_SPARSE_TENSORS=ON --compile-no-warning-as-error -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded -DONNX_USE_MSVC_STATIC_RUNTIME=ON -Dprotobuf_MSVC_STATIC_RUNTIME=ON ../cmake
+        cmake -DCMAKE_INSTALL_PREFIX="$env:GITHUB_WORKSPACE/onnxruntime" -DCMAKE_BUILD_TYPE=MinSizeRel -Donnxruntime_USE_FULL_PROTOBUF=ON -Donnxruntime_BUILD_SHARED_LIB=ON -Donnxruntime_BUILD_UNIT_TESTS=OFF -Donnxruntime_ENABLE_CPUINFO=OFF -Donnxruntime_DISABLE_CONTRIB_OPS=ON -Donnxruntime_DISABLE_SPARSE_TENSORS=ON --compile-no-warning-as-error -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded -DONNX_USE_MSVC_STATIC_RUNTIME=ON -Dprotobuf_MSVC_STATIC_RUNTIME=ON -DCMAKE_POSITION_INDEPENDENT_CODE=ON ../cmake
         cmake --build . --config MinSizeRel -j 4
-        cmake --build . --config MinSizeRel --target install
+        cmake --build . --config MinSizeRel -j 4 --target install
