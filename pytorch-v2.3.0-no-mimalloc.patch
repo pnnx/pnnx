@@ -1,7 +1,7 @@
-diff -Nuarp pytorch-v2.2.1.orig/CMakeLists.txt pytorch-v2.2.1/CMakeLists.txt
---- pytorch-v2.2.1.orig/CMakeLists.txt	2024-02-24 04:02:20.000000000 +0800
-+++ pytorch-v2.2.1/CMakeLists.txt	2024-03-27 19:47:55.212834267 +0800
-@@ -353,10 +353,6 @@ cmake_dependent_option(
+diff -Nuarp pytorch-v2.3.0.orig/CMakeLists.txt pytorch-v2.3.0/CMakeLists.txt
+--- pytorch-v2.3.0.orig/CMakeLists.txt	2024-04-25 00:15:16.000000000 +0800
++++ pytorch-v2.3.0/CMakeLists.txt	2024-05-17 14:47:57.829660089 +0800
+@@ -355,10 +355,6 @@ cmake_dependent_option(
      BUILD_BUNDLE_PTXAS "Bundle PTX into torch/bin fodler" OFF "USE_CUDA" OFF)
  
  option(USE_MIMALLOC "Use mimalloc" OFF)
