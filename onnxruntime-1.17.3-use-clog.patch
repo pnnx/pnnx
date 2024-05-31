@@ -1,0 +1,53 @@
+diff -Nuarp onnxruntime-1.17.3.orig/cmake/onnxruntime_common.cmake onnxruntime-1.17.3/cmake/onnxruntime_common.cmake
+--- onnxruntime-1.17.3.orig/cmake/onnxruntime_common.cmake	2024-04-12 12:34:38.000000000 +0800
++++ onnxruntime-1.17.3/cmake/onnxruntime_common.cmake	2024-05-31 19:31:14.395350266 +0800
+@@ -46,20 +46,6 @@ else()
+             "${ONNXRUNTIME_ROOT}/core/platform/posix/logging/*.cc"
+         )
+     endif()
+-
+-    if (CMAKE_SYSTEM_NAME STREQUAL "Android")
+-        list(APPEND onnxruntime_common_src_patterns
+-            "${ONNXRUNTIME_ROOT}/core/platform/android/logging/*.h"
+-            "${ONNXRUNTIME_ROOT}/core/platform/android/logging/*.cc"
+-        )
+-    endif()
+-
+-    if (APPLE)
+-        list(APPEND onnxruntime_common_src_patterns
+-            "${ONNXRUNTIME_ROOT}/core/platform/apple/logging/*.h"
+-            "${ONNXRUNTIME_ROOT}/core/platform/apple/logging/*.mm"
+-            )
+-    endif()
+ endif()
+ 
+ if(onnxruntime_target_platform STREQUAL "ARM64EC")
+diff -Nuarp onnxruntime-1.17.3.orig/onnxruntime/core/platform/logging/make_platform_default_log_sink.cc onnxruntime-1.17.3/onnxruntime/core/platform/logging/make_platform_default_log_sink.cc
+--- onnxruntime-1.17.3.orig/onnxruntime/core/platform/logging/make_platform_default_log_sink.cc	2024-04-12 12:34:38.000000000 +0800
++++ onnxruntime-1.17.3/onnxruntime/core/platform/logging/make_platform_default_log_sink.cc	2024-05-31 19:27:53.039353390 +0800
+@@ -3,25 +3,13 @@
+ 
+ #include "core/platform/logging/make_platform_default_log_sink.h"
+ 
+-#if defined(__ANDROID__)
+-#include "core/platform/android/logging/android_log_sink.h"
+-#elif defined(__APPLE__)
+-#include "core/platform/apple/logging/apple_log_sink.h"
+-#else
+ #include "core/common/logging/sinks/clog_sink.h"
+-#endif
+ 
+ namespace onnxruntime {
+ namespace logging {
+ 
+ std::unique_ptr<ISink> MakePlatformDefaultLogSink() {
+-#if defined(__ANDROID__)
+-  return std::make_unique<AndroidLogSink>();
+-#elif defined(__APPLE__)
+-  return std::make_unique<AppleLogSink>();
+-#else
+   return std::make_unique<CLogSink>();
+-#endif
+ }
+ 
+ }  // namespace logging
