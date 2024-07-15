@@ -158,6 +158,9 @@ model = models.resnet18(pretrained=True)
 x = torch.rand(1, 3, 224, 224)
 
 opt_model = pnnx.export(model, "resnet18.pt", x)
+
+# use tuple for model with multiple inputs
+# opt_model = pnnx.export(model, "resnet18.pt", (x, y, z))
 ```
 
 2. use optimized module just like the normal one
@@ -196,10 +199,25 @@ torch.onnx.export(net, x, 'resnet18.onnx')
 
 ```shell
 ./pnnx resnet18.pt inputshape=[1,3,224,224]
+./pnnx resnet18.onnx inputshape=[1,3,224,224]
 ```
 
+macOS zsh user may need double quotes to prevent ambiguity
+
 ```shell
-./pnnx resnet18.onnx inputshape=[1,3,224,224]
+./pnnx resnet18.pt "inputshape=[1,3,224,224]"
+```
+
+For model with multiple inputs, use list
+
+```shell
+./pnnx resnet18.pt inputshape=[1,3,224,224],[1,32]
+```
+
+For model with non-fp32 input data type, add type suffix
+
+```shell
+./pnnx resnet18.pt inputshape=[1,3,224,224]f32,[1,32]i64
 ```
 
 3. pick resnet18_pnnx.py for pnnx-optimized torch model
