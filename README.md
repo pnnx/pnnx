@@ -30,7 +30,7 @@ PyTorch Neural Network eXchange(PNNX) is an open standard for PyTorch model inte
 <tr>
 <td>
 
-* convert torchscript back to python
+* convert torchscript / onnx back to python
 
 <img src="https://github.com/pnnx/pnnx/blob/main/images/pnnx2.jpg?raw=true" height="160">
 
@@ -48,7 +48,9 @@ PyTorch Neural Network eXchange(PNNX) is an open standard for PyTorch model inte
 ```mermaid
 flowchart TD
     torchmodel["torch model\ntorchvision.models.resnet18()"]
+    othermodel["caffe, mxnet\nkeras, tensorflow\npaddlepaddle, etc."]
     torchscript["torchscript file\nresnet18.pt"]
+    onnx["onnx file\nresnet18.onnx"]
     optmodel["optimized torch model\nresnet18_pnnx.Model()"]
     ncnnmodel["ncnn model\nresnet18.ncnn.param/bin"]
     onnxzeromodel["onnx-zero model\nresnet18.pnnx.onnx"]
@@ -60,8 +62,11 @@ flowchart TD
     end
 
     torchmodel -->|"mod = torch.jit.trace(model, x)\nmod.save('resnet18.pt')"| torchscript
+    torchmodel -->|"torch.onnx.export(model, x, 'resnet18.onnx')"| onnx
+    othermodel -->|"export to onnx"| onnx
     torchmodel -->|"pnnx.export(model, 'resnet18.pt', x)"| pnnx
     torchscript -->|"pnnx.convert('resnet18.pt', x)"| pnnx
+    onnx -->|"pnnx.convert('resnet18.onnx', x)"| pnnx
 
 ```
 
@@ -153,6 +158,9 @@ model = models.resnet18(pretrained=True)
 x = torch.rand(1, 3, 224, 224)
 
 opt_model = pnnx.export(model, "resnet18.pt", x)
+
+# use tuple for model with multiple inputs
+# opt_model = pnnx.export(model, "resnet18.pt", (x, y, z))
 ```
 
 2. use optimized module just like the normal one
@@ -166,7 +174,7 @@ result = opt_model(x)
 
 ### ----- B. command line
 
-1. export your torch model to torchscript
+1. export your torch model to torchscript / onnx
 
 ```python
 import torch
@@ -182,12 +190,34 @@ x = torch.rand(1, 3, 224, 224)
 mod = torch.jit.trace(net, x)
 
 mod.save("resnet18.pt")
+
+# You could also try exporting to the good-old onnx
+torch.onnx.export(net, x, 'resnet18.onnx')
 ```
 
-2. pnnx convert torchscript to optimized pnnx model and ncnn model files
+2. pnnx convert torchscript / onnx to optimized pnnx model and ncnn model files
 
 ```shell
 ./pnnx resnet18.pt inputshape=[1,3,224,224]
+./pnnx resnet18.onnx inputshape=[1,3,224,224]
+```
+
+macOS zsh user may need double quotes to prevent ambiguity
+
+```shell
+./pnnx resnet18.pt "inputshape=[1,3,224,224]"
+```
+
+For model with multiple inputs, use list
+
+```shell
+./pnnx resnet18.pt inputshape=[1,3,224,224],[1,32]
+```
+
+For model with non-fp32 input data type, add type suffix
+
+```shell
+./pnnx resnet18.pt inputshape=[1,3,224,224]f32,[1,32]i64
 ```
 
 3. pick resnet18_pnnx.py for pnnx-optimized torch model
@@ -267,9 +297,9 @@ Sample usage: pnnx mobilenet_v2.pt inputshape=[1,3,224,224]
 |ncnnpy|*_ncnn.py|pyncnn script for inference|
 |fp16|1|save ncnn weight and onnx in fp16 data type|
 |optlevel|2|graph optimization level<br />0 = do not apply optimization<br />1 = optimize for inference<br />2 = optimize more for inference|
-|device|cpu|device type for the input in TorchScript model, cpu or gpu|
+|device|cpu|device type for the input in torchscript model, ignored for onnx model, cpu or gpu|
 |inputshape|*(optional)*|shapes of model inputs. It is used to resolve tensor shapes in model graph. for example, `[1,3,224,224]` for the model with only 1 input, `[1,3,224,224],[1,3,224,224]` for the model that have 2 inputs.<br />shape tuple can be optionally decorated by a typename, like `[1,3,224,224]f32` for float32 type.<br />f32 = torch.float32 or torch.float<br />f64 = torch.float64 or torch.double<br />f16 = torch.float16 or torch.half<br />u8 = torch.uint8<br />i8 = torch.int8<br />i16 = torch.int16 or torch.short<br />i32 = torch.int32 or torch.int<br />i64 = torch.int64 or torch.long<br />c32 = torch.complex32<br />c64 = torch.complex64<br />c128 = torch.complex128<br />|
 |inputshape2|*(optional)*|shapes of alternative model inputs, the format is identical to `inputshape`. Usually, it is used with `inputshape` to resolve dynamic shape (-1) in model graph.|
-|customop|*(optional)*|list of Torch extensions (dynamic library) for custom operators, separated by ",". For example, `/home/nihui/.cache/torch_extensions/fused/fused.so,...`|
-|moduleop|*(optional)*|list of modules to keep as one big operator, separated by ",". for example, `models.common.Focus,models.yolo.Detect`|
+|customop|*(optional)*|list of Torch extensions (dynamic library) for custom operators, ignored for onnx model, separated by ",". For example, `/home/nihui/.cache/torch_extensions/fused/fused.so,...`|
+|moduleop|*(optional)*|list of modules to keep as one big operator, ignored for onnx model, separated by ",". for example, `models.common.Focus,models.yolo.Detect`|
 
