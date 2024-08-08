@@ -1,6 +1,6 @@
-diff -Nuarp pytorch-v2.3.0.orig/cmake/Codegen.cmake pytorch-v2.3.0/cmake/Codegen.cmake
---- pytorch-v2.3.0.orig/cmake/Codegen.cmake	2024-04-25 00:15:17.000000000 +0800
-+++ pytorch-v2.3.0/cmake/Codegen.cmake	2024-05-17 14:48:44.620659983 +0800
+diff -Nuarp pytorch-v2.4.0.orig/cmake/Codegen.cmake pytorch-v2.4.0/cmake/Codegen.cmake
+--- pytorch-v2.4.0.orig/cmake/Codegen.cmake	2024-08-08 14:37:20.215270466 +0800
++++ pytorch-v2.4.0/cmake/Codegen.cmake	2024-08-08 14:46:23.645296379 +0800
 @@ -52,6 +52,11 @@ endif()
  install(FILES ${CMAKE_BINARY_DIR}/caffe2/core/macros.h
          DESTINATION include/caffe2/core)
