@@ -1,0 +1,30 @@
+diff -Nuarp pytorch-v2.4.0.orig/CMakeLists.txt pytorch-v2.4.0/CMakeLists.txt
+--- pytorch-v2.4.0.orig/CMakeLists.txt	2024-08-08 14:37:20.072270459 +0800
++++ pytorch-v2.4.0/CMakeLists.txt	2024-08-08 15:21:34.991397056 +0800
+@@ -894,14 +894,6 @@ endif()
+ 
+ if(USE_SLEEF_FOR_ARM_VEC256)
+   string(APPEND CMAKE_CXX_FLAGS " -DAT_BUILD_ARM_VEC256_WITH_SLEEF")
+-  add_definitions(-DAT_BUILD_ARM_VEC256_WITH_SLEEF)
+-endif()
+-
+-# Enable sleef on macOS with Apple silicon by default
+-if((${CMAKE_SYSTEM_NAME} STREQUAL "Darwin") AND ("${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "arm64"))
+-  message(STATUS "Running on macOS with Apple silicon")
+-  string(APPEND CMAKE_CXX_FLAGS " -DAT_BUILD_ARM_VEC256_WITH_SLEEF")
+-  add_definitions(-DAT_BUILD_ARM_VEC256_WITH_SLEEF)
+ endif()
+ 
+ if(USE_XNNPACK)
+diff -Nuarp pytorch-v2.4.0.orig/torch/_inductor/codecache.py pytorch-v2.4.0/torch/_inductor/codecache.py
+--- pytorch-v2.4.0.orig/torch/_inductor/codecache.py	2024-08-08 14:37:20.150270463 +0800
++++ pytorch-v2.4.0/torch/_inductor/codecache.py	2024-08-08 15:21:14.920396099 +0800
+@@ -1361,8 +1361,6 @@ cdll.LoadLibrary("__lib_path__")
+ class VecNEON(VecISA):
+     _bit_width = 256  # This is required to leverage the compute implemented in aten/src/ATen/cpu/vec/vec256/vec256_float_neon.h
+     _macro = ["CPU_CAPABILITY_NEON"]
+-    if sys.platform == "darwin" and platform.processor() == "arm":
+-        _macro.append("AT_BUILD_ARM_VEC256_WITH_SLEEF")
+     _arch_flags = ""  # Unused
+     _dtype_nelements = {torch.float: 8, torch.bfloat16: 16, torch.float16: 16}
+ 

@@ -420,6 +420,7 @@ jobs:
         patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-no-link-system-lib.patch
         patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-pocketfft-build.patch
         patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-set-python-executable.patch
+        patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-no-macos-arm64-sleef.patch
         mkdir -p build; cd build
         cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/libtorch" -DCMAKE_BUILD_TYPE=MinSizeRel -DBUILD_SHARED_LIBS=OFF \
             -DBUILD_CAFFE2_OPS=OFF \
