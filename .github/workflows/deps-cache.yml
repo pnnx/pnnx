@@ -14,11 +14,11 @@ on:
     - cron: '0 12 * * *'
 
 env:
-  LIBTORCH_VERSION: 2.3.0
-  TORCHVISION_VERSION: 0.18.0
+  LIBTORCH_VERSION: 2.4.0
+  TORCHVISION_VERSION: 0.19.0
   PROTOBUF_VERSION: 21.12
-  ONNXRUNTIME_VERSION: 1.17.3
-  CACHE_DATE: 20240516
+  ONNXRUNTIME_VERSION: 1.18.1
+  CACHE_DATE: 20240804
 
 jobs:
   linux-deps:
@@ -154,8 +154,8 @@ jobs:
 
   # libtorch builds very slow even on self-hosted runner
   linux-aarch64-deps:
-    #runs-on: self-hosted
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
+    #runs-on: ubuntu-latest
     timeout-minutes: 1800
     steps:
     - uses: actions/setup-python@v5
@@ -420,6 +420,7 @@ jobs:
         patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-no-link-system-lib.patch
         patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-pocketfft-build.patch
         patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-set-python-executable.patch
+        patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-no-macos-arm64-sleef.patch
         mkdir -p build; cd build
         cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/libtorch" -DCMAKE_BUILD_TYPE=MinSizeRel -DBUILD_SHARED_LIBS=OFF \
             -DBUILD_CAFFE2_OPS=OFF \
