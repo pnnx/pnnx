@@ -115,7 +115,7 @@ This package includes all the binaries required. It is portable, so no CUDA or P
 </td>
 <td>
   <img src="https://user-images.githubusercontent.com/25181517/186884152-ae609cca-8cf1-4175-8d60-1ce1fa078ca2.png" width="auto" height="60">
-  <br /><b>macOS</b><br />
+  <br /><b>macOS(universal)</b><br />
   <a href="https://github.com/pnnx/pnnx/releases/latest/download/pnnx-20240815-macos.zip">
     <img src="https://img.shields.io/badge/download-blue?style=for-the-badge">
   </a>
