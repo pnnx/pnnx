@@ -95,28 +95,28 @@ This package includes all the binaries required. It is portable, so no CUDA or P
 <td>
   <img src="https://user-images.githubusercontent.com/25181517/186884150-05e9ff6d-340e-4802-9533-2c3f02363ee3.png" width="auto" height="60">
   <br /><b>Windows</b><br />
-  <a href="https://github.com/pnnx/pnnx/releases/latest/download/pnnx-20231220-windows.zip">
+  <a href="https://github.com/pnnx/pnnx/releases/latest/download/pnnx-20240815-windows.zip">
     <img src="https://img.shields.io/badge/download-blue?style=for-the-badge">
   </a>
 </td>
 <td>
   <img src="https://github.com/marwin1991/profile-technology-icons/assets/76662862/2481dc48-be6b-4ebb-9e8c-3b957efe69fa" width="auto" height="60">
   <br /><b>Linux(x86_64)</b><br />
-  <a href="https://github.com/pnnx/pnnx/releases/latest/download/pnnx-20231220-linux.zip">
+  <a href="https://github.com/pnnx/pnnx/releases/latest/download/pnnx-20240815-linux.zip">
     <img src="https://img.shields.io/badge/download-blue?style=for-the-badge">
   </a>
 </td>
 <td>
   <img src="https://github.com/marwin1991/profile-technology-icons/assets/76662862/2481dc48-be6b-4ebb-9e8c-3b957efe69fa" width="auto" height="60">
   <br /><b>Linux(aarch64)</b><br />
-  <a href="https://github.com/pnnx/pnnx/releases/latest/download/pnnx-20231220-linux-aarch64.zip">
+  <a href="https://github.com/pnnx/pnnx/releases/latest/download/pnnx-20240815-linux-aarch64.zip">
     <img src="https://img.shields.io/badge/download-blue?style=for-the-badge">
   </a>
 </td>
 <td>
   <img src="https://user-images.githubusercontent.com/25181517/186884152-ae609cca-8cf1-4175-8d60-1ce1fa078ca2.png" width="auto" height="60">
   <br /><b>macOS</b><br />
-  <a href="https://github.com/pnnx/pnnx/releases/latest/download/pnnx-20231220-macos.zip">
+  <a href="https://github.com/pnnx/pnnx/releases/latest/download/pnnx-20240815-macos.zip">
     <img src="https://img.shields.io/badge/download-blue?style=for-the-badge">
   </a>
 </td>
