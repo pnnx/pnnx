@@ -39,7 +39,7 @@ jobs:
         path: pnnx-patches
     - name: cache-libtorch
       id: cache-libtorch
-      uses: actions/cache@v4.0.2
+      uses: actions/cache@v4.1.1
       with:
         path: "/tmp/libtorch"
         key: libtorch-${{ env.LIBTORCH_VERSION }}-linux-${{ env.CACHE_DATE }}
@@ -89,7 +89,7 @@ jobs:
         output-dir: wheelhouse1
     - name: cache-torchvision
       id: cache-torchvision
-      uses: actions/cache@v4.0.2
+      uses: actions/cache@v4.1.1
       with:
         path: "/tmp/torchvision"
         key: torchvision-${{ env.TORCHVISION_VERSION }}-linux-${{ env.CACHE_DATE }}
@@ -121,7 +121,7 @@ jobs:
 
     - name: cache-onnxruntime
       id: cache-onnxruntime
-      uses: actions/cache@v4.0.2
+      uses: actions/cache@v4.1.1
       with:
         path: "/tmp/onnxruntime"
         key: onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-linux-${{ env.CACHE_DATE }}
@@ -173,21 +173,21 @@ jobs:
         path: pnnx-patches
     - name: cache-libtorch
       id: cache-libtorch
-      uses: actions/cache@v4.0.2
+      uses: actions/cache@v4.1.1
       with:
         path: "/tmp/libtorch"
         key: libtorch-${{ env.LIBTORCH_VERSION }}-linux-aarch64-${{ env.CACHE_DATE }}
 
     - name: cache-torchvision
       id: cache-torchvision
-      uses: actions/cache@v4.0.2
+      uses: actions/cache@v4.1.1
       with:
         path: "/tmp/torchvision"
         key: torchvision-${{ env.TORCHVISION_VERSION }}-linux-aarch64-${{ env.CACHE_DATE }}
 
     - name: cache-onnxruntime
       id: cache-onnxruntime
-      uses: actions/cache@v4.0.2
+      uses: actions/cache@v4.1.1
       with:
         path: "/tmp/onnxruntime"
         key: onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-linux-aarch64-${{ env.CACHE_DATE }}
@@ -315,7 +315,7 @@ jobs:
         path: pnnx-patches
     - name: cache-libtorch
       id: cache-libtorch
-      uses: actions/cache@v4.0.2
+      uses: actions/cache@v4.1.1
       with:
         path: "libtorch"
         key: libtorch-${{ env.LIBTORCH_VERSION }}-macos-x64-${{ env.CACHE_DATE }}
@@ -354,7 +354,7 @@ jobs:
         cmake --build . -j 4 --target install/strip
     - name: cache-torchvision
       id: cache-torchvision
-      uses: actions/cache@v4.0.2
+      uses: actions/cache@v4.1.1
       with:
         path: "torchvision"
         key: torchvision-${{ env.TORCHVISION_VERSION }}-macos-x64-${{ env.CACHE_DATE }}
@@ -373,7 +373,7 @@ jobs:
 
     - name: cache-onnxruntime
       id: cache-onnxruntime
-      uses: actions/cache@v4.0.2
+      uses: actions/cache@v4.1.1
       with:
         path: "onnxruntime"
         key: onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-macos-x64-${{ env.CACHE_DATE }}
@@ -411,7 +411,7 @@ jobs:
         path: pnnx-patches
     - name: cache-libtorch
       id: cache-libtorch
-      uses: actions/cache@v4.0.2
+      uses: actions/cache@v4.1.1
       with:
         path: "libtorch"
         key: libtorch-${{ env.LIBTORCH_VERSION }}-macos-arm64-${{ env.CACHE_DATE }}
@@ -452,7 +452,7 @@ jobs:
         cmake --build . -j 3 --target install/strip
     - name: cache-torchvision
       id: cache-torchvision
-      uses: actions/cache@v4.0.2
+      uses: actions/cache@v4.1.1
       with:
         path: "torchvision"
         key: torchvision-${{ env.TORCHVISION_VERSION }}-macos-arm64-${{ env.CACHE_DATE }}
@@ -471,7 +471,7 @@ jobs:
 
     - name: cache-onnxruntime
       id: cache-onnxruntime
-      uses: actions/cache@v4.0.2
+      uses: actions/cache@v4.1.1
       with:
         path: "onnxruntime"
         key: onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-macos-arm64-${{ env.CACHE_DATE }}
@@ -511,7 +511,7 @@ jobs:
         path: pnnx-patches
     - name: cache-libtorch
       id: cache-libtorch
-      uses: actions/cache@v4.0.2
+      uses: actions/cache@v4.1.1
       with:
         path: "libtorch"
         key: libtorch-${{ env.LIBTORCH_VERSION }}-vs2019-${{ env.CACHE_DATE }}
@@ -553,7 +553,7 @@ jobs:
         cmake --build . --config MinSizeRel -j 4 --target install
     - name: cache-torchvision
       id: cache-torchvision
-      uses: actions/cache@v4.0.2
+      uses: actions/cache@v4.1.1
       with:
         path: "torchvision"
         key: torchvision-${{ env.TORCHVISION_VERSION }}-vs2019-${{ env.CACHE_DATE }}
@@ -573,7 +573,7 @@ jobs:
 
     - name: cache-onnxruntime
       id: cache-onnxruntime
-      uses: actions/cache@v4.0.2
+      uses: actions/cache@v4.1.1
       with:
         path: "onnxruntime"
         key: onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-vs2019-${{ env.CACHE_DATE }}
@@ -615,19 +615,19 @@ jobs:
         path: pnnx-patches
     - name: cache-libtorch
       id: cache-libtorch
-      uses: actions/cache@v4.0.2
+      uses: actions/cache@v4.1.1
       with:
         path: "/tmp/libtorch"
         key: libtorch-${{ env.LIBTORCH_VERSION }}-linux-${{ env.CACHE_DATE }}
     - name: cache-torchvision
       id: cache-torchvision
-      uses: actions/cache@v4.0.2
+      uses: actions/cache@v4.1.1
       with:
         path: "/tmp/torchvision"
         key: torchvision-${{ env.TORCHVISION_VERSION }}-linux-${{ env.CACHE_DATE }}
     - name: cache-onnxruntime
       id: cache-onnxruntime
-      uses: actions/cache@v4.0.2
+      uses: actions/cache@v4.1.1
       with:
         path: "/tmp/onnxruntime"
         key: onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-linux-${{ env.CACHE_DATE }}
@@ -690,19 +690,19 @@ jobs:
         path: pnnx-patches
     - name: cache-libtorch
       id: cache-libtorch
-      uses: actions/cache@v4.0.2
+      uses: actions/cache@v4.1.1
       with:
         path: "/tmp/libtorch"
         key: libtorch-${{ env.LIBTORCH_VERSION }}-linux-aarch64-${{ env.CACHE_DATE }}
     - name: cache-torchvision
       id: cache-torchvision
-      uses: actions/cache@v4.0.2
+      uses: actions/cache@v4.1.1
       with:
         path: "/tmp/torchvision"
         key: torchvision-${{ env.TORCHVISION_VERSION }}-linux-aarch64-${{ env.CACHE_DATE }}
     - name: cache-onnxruntime
       id: cache-onnxruntime
-      uses: actions/cache@v4.0.2
+      uses: actions/cache@v4.1.1
       with:
         path: "/tmp/onnxruntime"
         key: onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-linux-aarch64-${{ env.CACHE_DATE }}
@@ -768,19 +768,19 @@ jobs:
       uses: actions/checkout@v4
     - name: cache-libtorch
       id: cache-libtorch
-      uses: actions/cache@v4.0.2
+      uses: actions/cache@v4.1.1
       with:
         path: "libtorch"
         key: libtorch-${{ env.LIBTORCH_VERSION }}-macos-x64-${{ env.CACHE_DATE }}
     - name: cache-torchvision
       id: cache-torchvision
-      uses: actions/cache@v4.0.2
+      uses: actions/cache@v4.1.1
       with:
         path: "torchvision"
         key: torchvision-${{ env.TORCHVISION_VERSION }}-macos-x64-${{ env.CACHE_DATE }}
     - name: cache-onnxruntime
       id: cache-onnxruntime
-      uses: actions/cache@v4.0.2
+      uses: actions/cache@v4.1.1
       with:
         path: "onnxruntime"
         key: onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-macos-x64-${{ env.CACHE_DATE }}
@@ -828,19 +828,19 @@ jobs:
       uses: actions/checkout@v4
     - name: cache-libtorch
       id: cache-libtorch
-      uses: actions/cache@v4.0.2
+      uses: actions/cache@v4.1.1
       with:
         path: "libtorch"
         key: libtorch-${{ env.LIBTORCH_VERSION }}-macos-arm64-${{ env.CACHE_DATE }}
     - name: cache-torchvision
       id: cache-torchvision
-      uses: actions/cache@v4.0.2
+      uses: actions/cache@v4.1.1
       with:
         path: "torchvision"
         key: torchvision-${{ env.TORCHVISION_VERSION }}-macos-arm64-${{ env.CACHE_DATE }}
     - name: cache-onnxruntime
       id: cache-onnxruntime
-      uses: actions/cache@v4.0.2
+      uses: actions/cache@v4.1.1
       with:
         path: "onnxruntime"
         key: onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-macos-arm64-${{ env.CACHE_DATE }}
@@ -927,19 +927,19 @@ jobs:
       uses: actions/checkout@v4
     - name: cache-libtorch
       id: cache-libtorch
-      uses: actions/cache@v4.0.2
+      uses: actions/cache@v4.1.1
       with:
         path: "libtorch"
         key: libtorch-${{ env.LIBTORCH_VERSION }}-vs2019-${{ env.CACHE_DATE }}
     - name: cache-torchvision
       id: cache-torchvision
-      uses: actions/cache@v4.0.2
+      uses: actions/cache@v4.1.1
       with:
         path: "torchvision"
         key: torchvision-${{ env.TORCHVISION_VERSION }}-vs2019-${{ env.CACHE_DATE }}
     - name: cache-onnxruntime
       id: cache-onnxruntime
-      uses: actions/cache@v4.0.2
+      uses: actions/cache@v4.1.1
       with:
         path: "onnxruntime"
         key: onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-vs2019-${{ env.CACHE_DATE }}
