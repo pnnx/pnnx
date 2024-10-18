@@ -1,6 +1,6 @@
-diff -Nuarp vision-0.19.0.orig/cmake/TorchVisionConfig.cmake.in vision-0.19.0/cmake/TorchVisionConfig.cmake.in
---- vision-0.19.0.orig/cmake/TorchVisionConfig.cmake.in	2024-08-08 14:47:07.562298473 +0800
-+++ vision-0.19.0/cmake/TorchVisionConfig.cmake.in	2024-08-08 14:50:48.549309010 +0800
+diff -Nuarp vision-0.20.0.orig/cmake/TorchVisionConfig.cmake.in vision-0.20.0/cmake/TorchVisionConfig.cmake.in
+--- vision-0.20.0.orig/cmake/TorchVisionConfig.cmake.in	2024-10-04 15:47:50.000000000 +0800
++++ vision-0.20.0/cmake/TorchVisionConfig.cmake.in	2024-10-18 16:05:53.875325456 +0800
 @@ -31,7 +31,9 @@ if(@WITH_CUDA@)
    target_compile_definitions(${PN}::${PN} INTERFACE WITH_CUDA)
  endif()
@@ -12,10 +12,10 @@ diff -Nuarp vision-0.19.0.orig/cmake/TorchVisionConfig.cmake.in vision-0.19.0/cm
  target_link_libraries(${PN}::${PN} INTERFACE torch)
  
  if(@WITH_PNG@)
-diff -Nuarp vision-0.19.0.orig/CMakeLists.txt vision-0.19.0/CMakeLists.txt
---- vision-0.19.0.orig/CMakeLists.txt	2024-08-08 14:47:07.559298473 +0800
-+++ vision-0.19.0/CMakeLists.txt	2024-08-08 14:51:46.747311786 +0800
-@@ -21,6 +21,7 @@ if(WITH_MPS)
+diff -Nuarp vision-0.20.0.orig/CMakeLists.txt vision-0.20.0/CMakeLists.txt
+--- vision-0.20.0.orig/CMakeLists.txt	2024-10-04 15:47:50.000000000 +0800
++++ vision-0.20.0/CMakeLists.txt	2024-10-18 16:06:42.720327786 +0800
+@@ -27,6 +27,7 @@ if(WITH_MPS)
  endif()
  
  find_package(Torch REQUIRED)
@@ -23,7 +23,7 @@ diff -Nuarp vision-0.19.0.orig/CMakeLists.txt vision-0.19.0/CMakeLists.txt
  
  if (WITH_PNG)
      add_definitions(-DPNG_FOUND)
-@@ -74,8 +75,8 @@ include(GNUInstallDirs)
+@@ -90,8 +91,8 @@ include(GNUInstallDirs)
  include(CMakePackageConfigHelpers)
  
  set(TVCPP torchvision/csrc)
@@ -34,7 +34,7 @@ diff -Nuarp vision-0.19.0.orig/CMakeLists.txt vision-0.19.0/CMakeLists.txt
  if(WITH_CUDA)
      list(APPEND ALLOW_LISTED ${TVCPP}/ops/cuda ${TVCPP}/ops/autocast)
  endif()
-@@ -87,7 +88,7 @@ FOREACH(DIR ${ALLOW_LISTED})
+@@ -103,7 +104,7 @@ FOREACH(DIR ${ALLOW_LISTED})
      file(GLOB ALL_SOURCES ${ALL_SOURCES} ${DIR}/*.*)
  ENDFOREACH()
  

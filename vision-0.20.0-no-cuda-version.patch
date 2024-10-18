@@ -1,0 +1,11 @@
+diff -Nuarp vision-0.20.0.orig/torchvision/csrc/vision.h vision-0.20.0/torchvision/csrc/vision.h
+--- vision-0.20.0.orig/torchvision/csrc/vision.h	2024-10-04 15:47:50.000000000 +0800
++++ vision-0.20.0/torchvision/csrc/vision.h	2024-10-18 16:03:50.676319582 +0800
+@@ -6,7 +6,4 @@
+ namespace vision {
+ VISION_API int64_t cuda_version();
+ 
+-namespace detail {
+-extern "C" inline auto _register_ops = &cuda_version;
+-} // namespace detail
+ } // namespace vision
