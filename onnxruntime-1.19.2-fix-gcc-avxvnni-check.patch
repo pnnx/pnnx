@@ -1,0 +1,12 @@
+diff -Nuarp onnxruntime-1.19.2.orig/cmake/onnxruntime_mlas.cmake onnxruntime-1.19.2/cmake/onnxruntime_mlas.cmake
+--- onnxruntime-1.19.2.orig/cmake/onnxruntime_mlas.cmake	2024-08-31 06:02:31.000000000 +0800
++++ onnxruntime-1.19.2/cmake/onnxruntime_mlas.cmake	2024-10-18 18:47:08.170786763 +0800
+@@ -559,7 +559,7 @@ else()
+ message(STATUS "CMAKE_CXX_COMPILER_ID: ${CMAKE_CXX_COMPILER_ID}")
+ message(STATUS "CMAKE_CXX_COMPILER_VERSION: ${CMAKE_CXX_COMPILER_VERSION}")
+ 
+-if(NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" OR CMAKE_CXX_COMPILER_VERSION VERSION_GREATER "10")
++if(NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" OR CMAKE_CXX_COMPILER_VERSION VERSION_GREATER "11")
+           message(STATUS "Using -mavx2 -mfma -mavxvnni flags")
+           set_source_files_properties(${mlas_platform_srcs_avx2} PROPERTIES COMPILE_FLAGS "-mavx2 -mfma -mavxvnni")
+ else()
