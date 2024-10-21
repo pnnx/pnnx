@@ -6,11 +6,11 @@ on:
       - '*'
 
 env:
-  LIBTORCH_VERSION: 2.4.0
-  TORCHVISION_VERSION: 0.19.0
+  LIBTORCH_VERSION: 2.5.0
+  TORCHVISION_VERSION: 0.20.0
   PROTOBUF_VERSION: 21.12
-  ONNXRUNTIME_VERSION: 1.18.1
-  CACHE_DATE: 20240804
+  ONNXRUNTIME_VERSION: 1.19.2
+  CACHE_DATE: 20241018
 
 permissions:
   contents: read
@@ -149,6 +149,7 @@ jobs:
           patch -p1 -i /project/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-less-mlas-features.patch &&
           patch -p1 -i /project/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-monolithic-static-library.patch &&
           patch -p1 -i /project/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-use-clog.patch &&
+          patch -p1 -i /project/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-fix-gcc-avxvnni-check.patch &&
           mkdir -p build2 && cd build2 &&
           cmake -DCMAKE_INSTALL_PREFIX="/host/tmp/onnxruntime" -DCMAKE_C_COMPILER="/opt/rh/devtoolset-10/root/usr/bin/cc"
           -DCMAKE_CXX_COMPILER="/opt/rh/devtoolset-10/root/usr/bin/c++" -DCMAKE_BUILD_TYPE=MinSizeRel -Donnxruntime_USE_FULL_PROTOBUF=ON -Donnxruntime_BUILD_SHARED_LIB=ON -Donnxruntime_BUILD_UNIT_TESTS=OFF -Donnxruntime_ENABLE_CPUINFO=OFF -Donnxruntime_DISABLE_CONTRIB_OPS=ON -Donnxruntime_DISABLE_ML_OPS=ON -Donnxruntime_DISABLE_SPARSE_TENSORS=ON --compile-no-warning-as-error -DCMAKE_POSITION_INDEPENDENT_CODE=ON ../cmake &&
@@ -160,8 +161,8 @@ jobs:
 
   # libtorch builds very slow even on self-hosted runner
   linux-aarch64-deps:
-    #runs-on: self-hosted
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
+    #runs-on: ubuntu-latest
     timeout-minutes: 1800
     steps:
     - uses: actions/setup-python@v5
@@ -294,6 +295,7 @@ jobs:
           patch -p1 -i /project/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-less-mlas-features.patch &&
           patch -p1 -i /project/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-monolithic-static-library.patch &&
           patch -p1 -i /project/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-use-clog.patch &&
+          patch -p1 -i /project/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-fix-gcc-avxvnni-check.patch &&
           mkdir -p build2 && cd build2 &&
           cmake -DCMAKE_INSTALL_PREFIX="/host/tmp/onnxruntime" -DCMAKE_C_COMPILER="/opt/rh/devtoolset-10/root/usr/bin/cc"
           -DCMAKE_CXX_COMPILER="/opt/rh/devtoolset-10/root/usr/bin/c++" -DCMAKE_BUILD_TYPE=MinSizeRel -Donnxruntime_USE_FULL_PROTOBUF=ON -Donnxruntime_BUILD_SHARED_LIB=ON -Donnxruntime_BUILD_UNIT_TESTS=OFF -Donnxruntime_ENABLE_CPUINFO=OFF -Donnxruntime_DISABLE_CONTRIB_OPS=ON -Donnxruntime_DISABLE_ML_OPS=ON -Donnxruntime_DISABLE_SPARSE_TENSORS=ON --compile-no-warning-as-error -DCMAKE_POSITION_INDEPENDENT_CODE=ON ../cmake &&
@@ -394,6 +396,7 @@ jobs:
         patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-less-mlas-features.patch
         patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-monolithic-static-library.patch
         patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-use-clog.patch
+        patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-fix-gcc-avxvnni-check.patch
         mkdir -p build2; cd build2;
         cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/onnxruntime" -DCMAKE_BUILD_TYPE=MinSizeRel -Donnxruntime_USE_FULL_PROTOBUF=ON -Donnxruntime_BUILD_SHARED_LIB=ON -Donnxruntime_BUILD_UNIT_TESTS=OFF -Donnxruntime_ENABLE_CPUINFO=OFF -Donnxruntime_DISABLE_CONTRIB_OPS=ON -Donnxruntime_DISABLE_SPARSE_TENSORS=ON --compile-no-warning-as-error -DCMAKE_POSITION_INDEPENDENT_CODE=ON ../cmake
         cmake --build . -j 4
@@ -492,6 +495,7 @@ jobs:
         patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-less-mlas-features.patch
         patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-monolithic-static-library.patch
         patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-use-clog.patch
+        patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-fix-gcc-avxvnni-check.patch
         mkdir -p build2; cd build2;
         cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/onnxruntime" -DCMAKE_BUILD_TYPE=MinSizeRel -Donnxruntime_USE_FULL_PROTOBUF=ON -Donnxruntime_BUILD_SHARED_LIB=ON -Donnxruntime_BUILD_UNIT_TESTS=OFF -Donnxruntime_ENABLE_CPUINFO=OFF -Donnxruntime_DISABLE_CONTRIB_OPS=ON -Donnxruntime_DISABLE_SPARSE_TENSORS=ON --compile-no-warning-as-error -DCMAKE_POSITION_INDEPENDENT_CODE=ON ../cmake
         cmake --build . -j 3
@@ -594,6 +598,7 @@ jobs:
         C:\msys64\usr\bin\patch.exe -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-less-mlas-features.patch
         C:\msys64\usr\bin\patch.exe -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-monolithic-static-library.patch
         C:\msys64\usr\bin\patch.exe -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-use-clog.patch
+        C:\msys64\usr\bin\patch.exe -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-fix-gcc-avxvnni-check.patch
         mkdir -p build2; cd build2;
         cmake -DCMAKE_INSTALL_PREFIX="$env:GITHUB_WORKSPACE/onnxruntime" -DCMAKE_BUILD_TYPE=MinSizeRel -Donnxruntime_USE_FULL_PROTOBUF=ON -Donnxruntime_BUILD_SHARED_LIB=ON -Donnxruntime_BUILD_UNIT_TESTS=OFF -Donnxruntime_ENABLE_CPUINFO=OFF -Donnxruntime_DISABLE_CONTRIB_OPS=ON -Donnxruntime_DISABLE_SPARSE_TENSORS=ON --compile-no-warning-as-error -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded -DONNX_USE_MSVC_STATIC_RUNTIME=ON -Dprotobuf_MSVC_STATIC_RUNTIME=ON -DCMAKE_POSITION_INDEPENDENT_CODE=ON ../cmake
         cmake --build . --config MinSizeRel -j 4
