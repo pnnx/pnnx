@@ -55,6 +55,7 @@ jobs:
           patch -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-pocketfft-build.patch &&
           mkdir -p build && cd build &&
           cmake -DCMAKE_INSTALL_PREFIX="/host/tmp/libtorch" -DCMAKE_BUILD_TYPE=MinSizeRel -DBUILD_SHARED_LIBS=OFF
+              -DCMAKE_POLICY_VERSION_MINIMUM=3.5
               -DBUILD_CAFFE2_OPS=OFF
               -DBUILD_CUSTOM_PROTOBUF=OFF
               -DBUILD_LITE_INTERPRETER=OFF
@@ -212,6 +213,7 @@ jobs:
           patch -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-set-python-executable.patch &&
           mkdir -p build && cd build &&
           cmake -DCMAKE_INSTALL_PREFIX="/host/tmp/libtorch" -DCMAKE_BUILD_TYPE=MinSizeRel -DBUILD_SHARED_LIBS=OFF
+              -DCMAKE_POLICY_VERSION_MINIMUM=3.5
               -DBUILD_CAFFE2_OPS=OFF
               -DBUILD_CUSTOM_PROTOBUF=OFF
               -DBUILD_LITE_INTERPRETER=OFF
@@ -327,6 +329,7 @@ jobs:
         patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-pocketfft-build.patch
         mkdir -p build; cd build
         cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/libtorch" -DCMAKE_BUILD_TYPE=MinSizeRel -DBUILD_SHARED_LIBS=OFF \
+            -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
             -DBUILD_CAFFE2_OPS=OFF \
             -DBUILD_CUSTOM_PROTOBUF=OFF \
             -DBUILD_LITE_INTERPRETER=OFF \
@@ -425,6 +428,7 @@ jobs:
         patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-set-python-executable.patch
         mkdir -p build; cd build
         cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/libtorch" -DCMAKE_BUILD_TYPE=MinSizeRel -DBUILD_SHARED_LIBS=OFF \
+            -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
             -DBUILD_CAFFE2_OPS=OFF \
             -DBUILD_CUSTOM_PROTOBUF=OFF \
             -DBUILD_LITE_INTERPRETER=OFF \
@@ -527,6 +531,7 @@ jobs:
         & "C:\Program Files\Git\usr\bin\patch.exe" -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\pytorch-v${{ env.LIBTORCH_VERSION }}-no-mimalloc.patch
         mkdir -p build; cd build
         cmake -DCMAKE_INSTALL_PREFIX="$env:GITHUB_WORKSPACE/libtorch" -DCMAKE_BUILD_TYPE=MinSizeRel -DBUILD_SHARED_LIBS=OFF -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded `
+            -DCMAKE_POLICY_VERSION_MINIMUM=3.5 `
             -DBUILD_CAFFE2_OPS=OFF `
             -DBUILD_CUSTOM_PROTOBUF=OFF `
             -DBUILD_LITE_INTERPRETER=OFF `
