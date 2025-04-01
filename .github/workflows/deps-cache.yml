@@ -17,7 +17,7 @@ env:
   LIBTORCH_VERSION: 2.6.0
   TORCHVISION_VERSION: 0.21.0
   PROTOBUF_VERSION: 21.12
-  ONNXRUNTIME_VERSION: 1.19.2
+  ONNXRUNTIME_VERSION: 1.21.0
   CACHE_DATE: 20250401
 
 jobs:
@@ -82,82 +82,81 @@ jobs:
       with:
         package-dir: pnnx-patches
         output-dir: wheelhouse1
-    # - name: cache-torchvision
-    #   id: cache-torchvision
-    #   uses: actions/cache@v4.2.3
-    #   with:
-    #     path: "/tmp/torchvision"
-    #     key: torchvision-${{ env.TORCHVISION_VERSION }}-linux-${{ env.CACHE_DATE }}
-    # - name: torchvision
-    #   if: steps.cache-torchvision.outputs.cache-hit != 'true'
-    #   uses: pypa/cibuildwheel@v2.23.2
-    #   env:
-    #     CIBW_ARCHS_LINUX: "x86_64"
-    #     CIBW_BUILD: 'cp310-manylinux_x86_64'
-    #     CIBW_BUILD_VERBOSITY: 1
-    #     CIBW_REPAIR_WHEEL_COMMAND: ""
-    #     CIBW_BEFORE_ALL: yum install devtoolset-10 wget zip -y &&
-    #       wget -q https://github.com/pytorch/vision/archive/refs/tags/v${{ env.TORCHVISION_VERSION }}.zip -O vision-${{ env.TORCHVISION_VERSION }}.zip &&
-    #       unzip -q vision-${{ env.TORCHVISION_VERSION }}.zip &&
-    #       cd vision-${{ env.TORCHVISION_VERSION }} &&
-    #       patch -p1 -i /project/pnnx-patches/vision-${{ env.TORCHVISION_VERSION }}-ops-only.patch  &&
-    #       patch -p1 -i /project/pnnx-patches/vision-${{ env.TORCHVISION_VERSION }}-no-cuda-version.patch  &&
-    #       mkdir -p build && cd build  &&
-    #       cmake -DCMAKE_INSTALL_PREFIX="/host/tmp/torchvision"
-    #       -DTorch_DIR="/host/tmp/libtorch/share/cmake/Torch"
-    #       -DCMAKE_BUILD_TYPE=MinSizeRel -DWITH_PNG=OFF
-    #       -DCMAKE_C_COMPILER="/opt/rh/devtoolset-10/root/usr/bin/cc"
-    #       -DCMAKE_CXX_COMPILER="/opt/rh/devtoolset-10/root/usr/bin/c++" -DWITH_JPEG=OFF ..  &&
-    #       cmake --build . -j $(nproc)  &&
-    #       cmake --build . -j $(nproc) --target install/strip
-    #   with:
-    #     package-dir: pnnx-patches
-    #     output-dir: wheelhouse2
-    #
-    # - name: cache-onnxruntime
-    #   id: cache-onnxruntime
-    #   uses: actions/cache@v4.2.3
-    #   with:
-    #     path: "/tmp/onnxruntime"
-    #     key: onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-linux-${{ env.CACHE_DATE }}
-    # - name: onnxruntime
-    #   if: steps.cache-onnxruntime.outputs.cache-hit != 'true'
-    #   uses: pypa/cibuildwheel@v2.23.2
-    #   env:
-    #     CIBW_ARCHS_LINUX: "x86_64"
-    #     CIBW_BUILD: 'cp310-manylinux_x86_64'
-    #     CIBW_BUILD_VERBOSITY: 1
-    #     CIBW_REPAIR_WHEEL_COMMAND: ""
-    #     CIBW_BEFORE_ALL: yum install devtoolset-10 wget zip -y &&
-    #       wget -q https://github.com/protocolbuffers/protobuf/archive/v${{ env.PROTOBUF_VERSION }}.zip -O protobuf-${{ env.PROTOBUF_VERSION }}.zip &&
-    #       unzip -q protobuf-${{ env.PROTOBUF_VERSION }}.zip &&
-    #       cd protobuf-${{ env.PROTOBUF_VERSION }} &&
-    #       mkdir -p build2 && cd build2 &&
-    #       cmake -DCMAKE_INSTALL_PREFIX="/host/tmp/onnxruntime" -Dprotobuf_BUILD_TESTS=OFF -DCMAKE_C_COMPILER="/opt/rh/devtoolset-10/root/usr/bin/cc"
-    #       -DCMAKE_CXX_COMPILER="/opt/rh/devtoolset-10/root/usr/bin/c++" -DCMAKE_BUILD_TYPE=MinSizeRel -DCMAKE_POSITION_INDEPENDENT_CODE=ON .. &&
-    #       cmake --build . -j $(nproc) &&
-    #       cmake --build . -j $(nproc) --target install/strip &&
-    #       cd ../../ &&
-    #       wget -q https://github.com/microsoft/onnxruntime/archive/v${{ env.ONNXRUNTIME_VERSION }}.zip -O onnxruntime-${{ env.ONNXRUNTIME_VERSION }}.zip &&
-    #       unzip -q onnxruntime-${{ env.ONNXRUNTIME_VERSION }}.zip &&
-    #       cd onnxruntime-${{ env.ONNXRUNTIME_VERSION }} &&
-    #       patch -p1 -i /project/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-less-mlas-features.patch &&
-    #       patch -p1 -i /project/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-monolithic-static-library.patch &&
-    #       patch -p1 -i /project/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-use-clog.patch &&
-    #       patch -p1 -i /project/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-fix-gcc-avxvnni-check.patch &&
-    #       mkdir -p build2 && cd build2 &&
-    #       cmake -DCMAKE_INSTALL_PREFIX="/host/tmp/onnxruntime" -DCMAKE_C_COMPILER="/opt/rh/devtoolset-10/root/usr/bin/cc"
-    #       -DCMAKE_CXX_COMPILER="/opt/rh/devtoolset-10/root/usr/bin/c++" -DCMAKE_BUILD_TYPE=MinSizeRel -Donnxruntime_USE_FULL_PROTOBUF=ON -Donnxruntime_BUILD_SHARED_LIB=ON -Donnxruntime_BUILD_UNIT_TESTS=OFF -Donnxruntime_ENABLE_CPUINFO=OFF -Donnxruntime_DISABLE_CONTRIB_OPS=ON -Donnxruntime_DISABLE_ML_OPS=ON -Donnxruntime_DISABLE_SPARSE_TENSORS=ON --compile-no-warning-as-error -DCMAKE_POSITION_INDEPENDENT_CODE=ON ../cmake &&
-    #       cmake --build . -j $(nproc) &&
-    #       cmake --build . -j $(nproc) --target install/strip
-    #   with:
-    #     package-dir: pnnx-patches
-    #     output-dir: wheelhouse3
+    - name: cache-torchvision
+      id: cache-torchvision
+      uses: actions/cache@v4.2.3
+      with:
+        path: "/tmp/torchvision"
+        key: torchvision-${{ env.TORCHVISION_VERSION }}-linux-${{ env.CACHE_DATE }}
+    - name: torchvision
+      if: steps.cache-torchvision.outputs.cache-hit != 'true'
+      uses: pypa/cibuildwheel@v2.23.2
+      env:
+        CIBW_ARCHS_LINUX: "x86_64"
+        CIBW_BUILD: 'cp310-manylinux_x86_64'
+        CIBW_BUILD_VERBOSITY: 1
+        CIBW_REPAIR_WHEEL_COMMAND: ""
+        CIBW_BEFORE_ALL: yum install devtoolset-10 wget zip -y &&
+          wget -q https://github.com/pytorch/vision/archive/refs/tags/v${{ env.TORCHVISION_VERSION }}.zip -O vision-${{ env.TORCHVISION_VERSION }}.zip &&
+          unzip -q vision-${{ env.TORCHVISION_VERSION }}.zip &&
+          cd vision-${{ env.TORCHVISION_VERSION }} &&
+          patch -p1 -i /project/pnnx-patches/vision-${{ env.TORCHVISION_VERSION }}-ops-only.patch  &&
+          patch -p1 -i /project/pnnx-patches/vision-${{ env.TORCHVISION_VERSION }}-no-cuda-version.patch  &&
+          mkdir -p build && cd build  &&
+          cmake -DCMAKE_INSTALL_PREFIX="/host/tmp/torchvision"
+          -DTorch_DIR="/host/tmp/libtorch/share/cmake/Torch"
+          -DCMAKE_BUILD_TYPE=MinSizeRel -DWITH_PNG=OFF
+          -DCMAKE_C_COMPILER="/opt/rh/devtoolset-10/root/usr/bin/cc"
+          -DCMAKE_CXX_COMPILER="/opt/rh/devtoolset-10/root/usr/bin/c++" -DWITH_JPEG=OFF ..  &&
+          cmake --build . -j $(nproc)  &&
+          cmake --build . -j $(nproc) --target install/strip
+      with:
+        package-dir: pnnx-patches
+        output-dir: wheelhouse2
+
+    - name: cache-onnxruntime
+      id: cache-onnxruntime
+      uses: actions/cache@v4.2.3
+      with:
+        path: "/tmp/onnxruntime"
+        key: onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-linux-${{ env.CACHE_DATE }}
+    - name: onnxruntime
+      if: steps.cache-onnxruntime.outputs.cache-hit != 'true'
+      uses: pypa/cibuildwheel@v2.23.2
+      env:
+        CIBW_ARCHS_LINUX: "x86_64"
+        CIBW_BUILD: 'cp310-manylinux_x86_64'
+        CIBW_BUILD_VERBOSITY: 1
+        CIBW_REPAIR_WHEEL_COMMAND: ""
+        CIBW_BEFORE_ALL: yum install devtoolset-10 wget zip -y &&
+          wget -q https://github.com/protocolbuffers/protobuf/archive/v${{ env.PROTOBUF_VERSION }}.zip -O protobuf-${{ env.PROTOBUF_VERSION }}.zip &&
+          unzip -q protobuf-${{ env.PROTOBUF_VERSION }}.zip &&
+          cd protobuf-${{ env.PROTOBUF_VERSION }} &&
+          mkdir -p build2 && cd build2 &&
+          cmake -DCMAKE_INSTALL_PREFIX="/host/tmp/onnxruntime" -Dprotobuf_BUILD_TESTS=OFF -DCMAKE_C_COMPILER="/opt/rh/devtoolset-10/root/usr/bin/cc"
+          -DCMAKE_CXX_COMPILER="/opt/rh/devtoolset-10/root/usr/bin/c++" -DCMAKE_BUILD_TYPE=MinSizeRel -DCMAKE_POSITION_INDEPENDENT_CODE=ON .. &&
+          cmake --build . -j $(nproc) &&
+          cmake --build . -j $(nproc) --target install/strip &&
+          cd ../../ &&
+          wget -q https://github.com/microsoft/onnxruntime/archive/v${{ env.ONNXRUNTIME_VERSION }}.zip -O onnxruntime-${{ env.ONNXRUNTIME_VERSION }}.zip &&
+          unzip -q onnxruntime-${{ env.ONNXRUNTIME_VERSION }}.zip &&
+          cd onnxruntime-${{ env.ONNXRUNTIME_VERSION }} &&
+          patch -p1 -i /project/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-less-mlas-features.patch &&
+          patch -p1 -i /project/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-monolithic-static-library.patch &&
+          patch -p1 -i /project/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-use-clog.patch &&
+          mkdir -p build2 && cd build2 &&
+          cmake -DCMAKE_INSTALL_PREFIX="/host/tmp/onnxruntime" -DCMAKE_C_COMPILER="/opt/rh/devtoolset-10/root/usr/bin/cc"
+          -DCMAKE_CXX_COMPILER="/opt/rh/devtoolset-10/root/usr/bin/c++" -DCMAKE_BUILD_TYPE=MinSizeRel -Donnxruntime_USE_FULL_PROTOBUF=ON -Donnxruntime_BUILD_SHARED_LIB=ON -Donnxruntime_BUILD_UNIT_TESTS=OFF -Donnxruntime_ENABLE_CPUINFO=OFF -Donnxruntime_DISABLE_CONTRIB_OPS=ON -Donnxruntime_DISABLE_ML_OPS=ON -Donnxruntime_DISABLE_SPARSE_TENSORS=ON --compile-no-warning-as-error -DCMAKE_POSITION_INDEPENDENT_CODE=ON ../cmake &&
+          cmake --build . -j $(nproc) &&
+          cmake --build . -j $(nproc) --target install/strip
+      with:
+        package-dir: pnnx-patches
+        output-dir: wheelhouse3
 
   # libtorch builds very slow even on self-hosted runner
   linux-aarch64-deps:
-    #runs-on: self-hosted
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
+    # runs-on: ubuntu-latest
     timeout-minutes: 1800
     steps:
     - uses: actions/setup-python@v5
@@ -242,65 +241,64 @@ jobs:
         package-dir: pnnx-patches
         output-dir: wheelhouse1
 
-    # - name: torchvision
-    #   if: steps.cache-torchvision.outputs.cache-hit != 'true'
-    #   uses: pypa/cibuildwheel@v2.23.2
-    #   env:
-    #     CIBW_ARCHS_LINUX: "aarch64"
-    #     CIBW_BUILD: 'cp310-manylinux_aarch64'
-    #     CIBW_BUILD_VERBOSITY: 1
-    #     CIBW_REPAIR_WHEEL_COMMAND: ""
-    #     CIBW_BEFORE_ALL: yum install devtoolset-10 wget zip -y &&
-    #       wget -q https://github.com/pytorch/vision/archive/refs/tags/v${{ env.TORCHVISION_VERSION }}.zip -O vision-${{ env.TORCHVISION_VERSION }}.zip &&
-    #       unzip -q vision-${{ env.TORCHVISION_VERSION }}.zip &&
-    #       cd vision-${{ env.TORCHVISION_VERSION }} &&
-    #       patch -p1 -i /project/pnnx-patches/vision-${{ env.TORCHVISION_VERSION }}-ops-only.patch  &&
-    #       patch -p1 -i /project/pnnx-patches/vision-${{ env.TORCHVISION_VERSION }}-no-cuda-version.patch  &&
-    #       mkdir -p build && cd build  &&
-    #       cmake -DCMAKE_INSTALL_PREFIX="/host/tmp/torchvision"
-    #       -DTorch_DIR="/host/tmp/libtorch/share/cmake/Torch"
-    #       -DCMAKE_BUILD_TYPE=MinSizeRel -DWITH_PNG=OFF
-    #       -DCMAKE_C_COMPILER="/opt/rh/devtoolset-10/root/usr/bin/cc"
-    #       -DCMAKE_CXX_COMPILER="/opt/rh/devtoolset-10/root/usr/bin/c++" -DWITH_JPEG=OFF ..  &&
-    #       cmake --build . -j $(nproc)  &&
-    #       cmake --build . -j $(nproc) --target install/strip
-    #   with:
-    #     package-dir: pnnx-patches
-    #     output-dir: wheelhouse2
-    #
-    # - name: onnxruntime
-    #   if: steps.cache-onnxruntime.outputs.cache-hit != 'true'
-    #   uses: pypa/cibuildwheel@v2.23.2
-    #   env:
-    #     CIBW_ARCHS_LINUX: "aarch64"
-    #     CIBW_BUILD: 'cp310-manylinux_aarch64'
-    #     CIBW_BUILD_VERBOSITY: 1
-    #     CIBW_REPAIR_WHEEL_COMMAND: ""
-    #     CIBW_BEFORE_ALL: yum install devtoolset-10 wget zip -y &&
-    #       wget -q https://github.com/protocolbuffers/protobuf/archive/v${{ env.PROTOBUF_VERSION }}.zip -O protobuf-${{ env.PROTOBUF_VERSION }}.zip &&
-    #       unzip -q protobuf-${{ env.PROTOBUF_VERSION }}.zip &&
-    #       cd protobuf-${{ env.PROTOBUF_VERSION }} &&
-    #       mkdir -p build2 && cd build2 &&
-    #       cmake -DCMAKE_INSTALL_PREFIX="/host/tmp/onnxruntime" -Dprotobuf_BUILD_TESTS=OFF -DCMAKE_C_COMPILER="/opt/rh/devtoolset-10/root/usr/bin/cc"
-    #       -DCMAKE_CXX_COMPILER="/opt/rh/devtoolset-10/root/usr/bin/c++" -DCMAKE_BUILD_TYPE=MinSizeRel -DCMAKE_POSITION_INDEPENDENT_CODE=ON .. &&
-    #       cmake --build . -j $(nproc) &&
-    #       cmake --build . -j $(nproc) --target install/strip &&
-    #       cd ../../ &&
-    #       wget -q https://github.com/microsoft/onnxruntime/archive/v${{ env.ONNXRUNTIME_VERSION }}.zip -O onnxruntime-${{ env.ONNXRUNTIME_VERSION }}.zip &&
-    #       unzip -q onnxruntime-${{ env.ONNXRUNTIME_VERSION }}.zip &&
-    #       cd onnxruntime-${{ env.ONNXRUNTIME_VERSION }} &&
-    #       patch -p1 -i /project/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-less-mlas-features.patch &&
-    #       patch -p1 -i /project/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-monolithic-static-library.patch &&
-    #       patch -p1 -i /project/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-use-clog.patch &&
-    #       patch -p1 -i /project/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-fix-gcc-avxvnni-check.patch &&
-    #       mkdir -p build2 && cd build2 &&
-    #       cmake -DCMAKE_INSTALL_PREFIX="/host/tmp/onnxruntime" -DCMAKE_C_COMPILER="/opt/rh/devtoolset-10/root/usr/bin/cc"
-    #       -DCMAKE_CXX_COMPILER="/opt/rh/devtoolset-10/root/usr/bin/c++" -DCMAKE_BUILD_TYPE=MinSizeRel -Donnxruntime_USE_FULL_PROTOBUF=ON -Donnxruntime_BUILD_SHARED_LIB=ON -Donnxruntime_BUILD_UNIT_TESTS=OFF -Donnxruntime_ENABLE_CPUINFO=OFF -Donnxruntime_DISABLE_CONTRIB_OPS=ON -Donnxruntime_DISABLE_ML_OPS=ON -Donnxruntime_DISABLE_SPARSE_TENSORS=ON --compile-no-warning-as-error -DCMAKE_POSITION_INDEPENDENT_CODE=ON ../cmake &&
-    #       cmake --build . -j $(nproc) &&
-    #       cmake --build . -j $(nproc) --target install/strip
-    #   with:
-    #     package-dir: pnnx-patches
-    #     output-dir: wheelhouse3
+    - name: torchvision
+      if: steps.cache-torchvision.outputs.cache-hit != 'true'
+      uses: pypa/cibuildwheel@v2.23.2
+      env:
+        CIBW_ARCHS_LINUX: "aarch64"
+        CIBW_BUILD: 'cp310-manylinux_aarch64'
+        CIBW_BUILD_VERBOSITY: 1
+        CIBW_REPAIR_WHEEL_COMMAND: ""
+        CIBW_BEFORE_ALL: yum install devtoolset-10 wget zip -y &&
+          wget -q https://github.com/pytorch/vision/archive/refs/tags/v${{ env.TORCHVISION_VERSION }}.zip -O vision-${{ env.TORCHVISION_VERSION }}.zip &&
+          unzip -q vision-${{ env.TORCHVISION_VERSION }}.zip &&
+          cd vision-${{ env.TORCHVISION_VERSION }} &&
+          patch -p1 -i /project/pnnx-patches/vision-${{ env.TORCHVISION_VERSION }}-ops-only.patch  &&
+          patch -p1 -i /project/pnnx-patches/vision-${{ env.TORCHVISION_VERSION }}-no-cuda-version.patch  &&
+          mkdir -p build && cd build  &&
+          cmake -DCMAKE_INSTALL_PREFIX="/host/tmp/torchvision"
+          -DTorch_DIR="/host/tmp/libtorch/share/cmake/Torch"
+          -DCMAKE_BUILD_TYPE=MinSizeRel -DWITH_PNG=OFF
+          -DCMAKE_C_COMPILER="/opt/rh/devtoolset-10/root/usr/bin/cc"
+          -DCMAKE_CXX_COMPILER="/opt/rh/devtoolset-10/root/usr/bin/c++" -DWITH_JPEG=OFF ..  &&
+          cmake --build . -j $(nproc)  &&
+          cmake --build . -j $(nproc) --target install/strip
+      with:
+        package-dir: pnnx-patches
+        output-dir: wheelhouse2
+
+    - name: onnxruntime
+      if: steps.cache-onnxruntime.outputs.cache-hit != 'true'
+      uses: pypa/cibuildwheel@v2.23.2
+      env:
+        CIBW_ARCHS_LINUX: "aarch64"
+        CIBW_BUILD: 'cp310-manylinux_aarch64'
+        CIBW_BUILD_VERBOSITY: 1
+        CIBW_REPAIR_WHEEL_COMMAND: ""
+        CIBW_BEFORE_ALL: yum install devtoolset-10 wget zip -y &&
+          wget -q https://github.com/protocolbuffers/protobuf/archive/v${{ env.PROTOBUF_VERSION }}.zip -O protobuf-${{ env.PROTOBUF_VERSION }}.zip &&
+          unzip -q protobuf-${{ env.PROTOBUF_VERSION }}.zip &&
+          cd protobuf-${{ env.PROTOBUF_VERSION }} &&
+          mkdir -p build2 && cd build2 &&
+          cmake -DCMAKE_INSTALL_PREFIX="/host/tmp/onnxruntime" -Dprotobuf_BUILD_TESTS=OFF -DCMAKE_C_COMPILER="/opt/rh/devtoolset-10/root/usr/bin/cc"
+          -DCMAKE_CXX_COMPILER="/opt/rh/devtoolset-10/root/usr/bin/c++" -DCMAKE_BUILD_TYPE=MinSizeRel -DCMAKE_POSITION_INDEPENDENT_CODE=ON .. &&
+          cmake --build . -j $(nproc) &&
+          cmake --build . -j $(nproc) --target install/strip &&
+          cd ../../ &&
+          wget -q https://github.com/microsoft/onnxruntime/archive/v${{ env.ONNXRUNTIME_VERSION }}.zip -O onnxruntime-${{ env.ONNXRUNTIME_VERSION }}.zip &&
+          unzip -q onnxruntime-${{ env.ONNXRUNTIME_VERSION }}.zip &&
+          cd onnxruntime-${{ env.ONNXRUNTIME_VERSION }} &&
+          patch -p1 -i /project/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-less-mlas-features.patch &&
+          patch -p1 -i /project/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-monolithic-static-library.patch &&
+          patch -p1 -i /project/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-use-clog.patch &&
+          mkdir -p build2 && cd build2 &&
+          cmake -DCMAKE_INSTALL_PREFIX="/host/tmp/onnxruntime" -DCMAKE_C_COMPILER="/opt/rh/devtoolset-10/root/usr/bin/cc"
+          -DCMAKE_CXX_COMPILER="/opt/rh/devtoolset-10/root/usr/bin/c++" -DCMAKE_BUILD_TYPE=MinSizeRel -Donnxruntime_USE_FULL_PROTOBUF=ON -Donnxruntime_BUILD_SHARED_LIB=ON -Donnxruntime_BUILD_UNIT_TESTS=OFF -Donnxruntime_ENABLE_CPUINFO=OFF -Donnxruntime_DISABLE_CONTRIB_OPS=ON -Donnxruntime_DISABLE_ML_OPS=ON -Donnxruntime_DISABLE_SPARSE_TENSORS=ON --compile-no-warning-as-error -DCMAKE_POSITION_INDEPENDENT_CODE=ON ../cmake &&
+          cmake --build . -j $(nproc) &&
+          cmake --build . -j $(nproc) --target install/strip
+      with:
+        package-dir: pnnx-patches
+        output-dir: wheelhouse3
 
   macos-x64-deps:
     runs-on: macos-13
@@ -352,53 +350,52 @@ jobs:
             ..
         cmake --build . -j 4
         cmake --build . -j 4 --target install/strip
-    # - name: cache-torchvision
-    #   id: cache-torchvision
-    #   uses: actions/cache@v4.2.3
-    #   with:
-    #     path: "torchvision"
-    #     key: torchvision-${{ env.TORCHVISION_VERSION }}-macos-x64-${{ env.CACHE_DATE }}
-    # - name: torchvision
-    #   if: steps.cache-torchvision.outputs.cache-hit != 'true'
-    #   run: |
-    #     wget -q https://github.com/pytorch/vision/archive/refs/tags/v${{ env.TORCHVISION_VERSION }}.zip -O vision-${{ env.TORCHVISION_VERSION }}.zip
-    #     unzip -q vision-${{ env.TORCHVISION_VERSION }}.zip
-    #     cd vision-${{ env.TORCHVISION_VERSION }}
-    #     patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/vision-${{ env.TORCHVISION_VERSION }}-ops-only.patch
-    #     patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/vision-${{ env.TORCHVISION_VERSION }}-no-cuda-version.patch
-    #     mkdir -p build; cd build
-    #     cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/torchvision" -DTorch_DIR="$GITHUB_WORKSPACE/libtorch/share/cmake/Torch" -DCMAKE_BUILD_TYPE=MinSizeRel -DWITH_PNG=OFF -DWITH_JPEG=OFF ..
-    #     cmake --build . -j 4
-    #     cmake --build . -j 4 --target install/strip
-    #
-    # - name: cache-onnxruntime
-    #   id: cache-onnxruntime
-    #   uses: actions/cache@v4.2.3
-    #   with:
-    #     path: "onnxruntime"
-    #     key: onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-macos-x64-${{ env.CACHE_DATE }}
-    # - name: onnxruntime
-    #   if: steps.cache-onnxruntime.outputs.cache-hit != 'true'
-    #   run: |
-    #     wget -q https://github.com/protocolbuffers/protobuf/archive/v${{ env.PROTOBUF_VERSION }}.zip -O protobuf-${{ env.PROTOBUF_VERSION }}.zip
-    #     unzip -q protobuf-${{ env.PROTOBUF_VERSION }}.zip
-    #     cd protobuf-${{ env.PROTOBUF_VERSION }}
-    #     mkdir -p build2; cd build2;
-    #     cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/onnxruntime" -Dprotobuf_BUILD_TESTS=OFF -DCMAKE_BUILD_TYPE=MinSizeRel -DCMAKE_POSITION_INDEPENDENT_CODE=ON ..
-    #     cmake --build . -j 4
-    #     cmake --build . -j 4 --target install/strip
-    #     cd ../../
-    #     wget -q https://github.com/microsoft/onnxruntime/archive/v${{ env.ONNXRUNTIME_VERSION }}.zip -O onnxruntime-${{ env.ONNXRUNTIME_VERSION }}.zip
-    #     ditto -V -x -k --sequesterRsrc --rsrc onnxruntime-${{ env.ONNXRUNTIME_VERSION }}.zip ./
-    #     cd onnxruntime-${{ env.ONNXRUNTIME_VERSION }}
-    #     patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-less-mlas-features.patch
-    #     patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-monolithic-static-library.patch
-    #     patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-use-clog.patch
-    #     patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-fix-gcc-avxvnni-check.patch
-    #     mkdir -p build2; cd build2;
-    #     cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/onnxruntime" -DCMAKE_BUILD_TYPE=MinSizeRel -Donnxruntime_USE_FULL_PROTOBUF=ON -Donnxruntime_BUILD_SHARED_LIB=ON -Donnxruntime_BUILD_UNIT_TESTS=OFF -Donnxruntime_ENABLE_CPUINFO=OFF -Donnxruntime_DISABLE_CONTRIB_OPS=ON -Donnxruntime_DISABLE_SPARSE_TENSORS=ON --compile-no-warning-as-error -DCMAKE_POSITION_INDEPENDENT_CODE=ON ../cmake
-    #     cmake --build . -j 4
-    #     cmake --build . -j 4 --target install/strip
+    - name: cache-torchvision
+      id: cache-torchvision
+      uses: actions/cache@v4.2.3
+      with:
+        path: "torchvision"
+        key: torchvision-${{ env.TORCHVISION_VERSION }}-macos-x64-${{ env.CACHE_DATE }}
+    - name: torchvision
+      if: steps.cache-torchvision.outputs.cache-hit != 'true'
+      run: |
+        wget -q https://github.com/pytorch/vision/archive/refs/tags/v${{ env.TORCHVISION_VERSION }}.zip -O vision-${{ env.TORCHVISION_VERSION }}.zip
+        unzip -q vision-${{ env.TORCHVISION_VERSION }}.zip
+        cd vision-${{ env.TORCHVISION_VERSION }}
+        patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/vision-${{ env.TORCHVISION_VERSION }}-ops-only.patch
+        patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/vision-${{ env.TORCHVISION_VERSION }}-no-cuda-version.patch
+        mkdir -p build; cd build
+        cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/torchvision" -DTorch_DIR="$GITHUB_WORKSPACE/libtorch/share/cmake/Torch" -DCMAKE_BUILD_TYPE=MinSizeRel -DWITH_PNG=OFF -DWITH_JPEG=OFF ..
+        cmake --build . -j 4
+        cmake --build . -j 4 --target install/strip
+
+    - name: cache-onnxruntime
+      id: cache-onnxruntime
+      uses: actions/cache@v4.2.3
+      with:
+        path: "onnxruntime"
+        key: onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-macos-x64-${{ env.CACHE_DATE }}
+    - name: onnxruntime
+      if: steps.cache-onnxruntime.outputs.cache-hit != 'true'
+      run: |
+        wget -q https://github.com/protocolbuffers/protobuf/archive/v${{ env.PROTOBUF_VERSION }}.zip -O protobuf-${{ env.PROTOBUF_VERSION }}.zip
+        unzip -q protobuf-${{ env.PROTOBUF_VERSION }}.zip
+        cd protobuf-${{ env.PROTOBUF_VERSION }}
+        mkdir -p build2; cd build2;
+        cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/onnxruntime" -Dprotobuf_BUILD_TESTS=OFF -DCMAKE_BUILD_TYPE=MinSizeRel -DCMAKE_POSITION_INDEPENDENT_CODE=ON ..
+        cmake --build . -j 4
+        cmake --build . -j 4 --target install/strip
+        cd ../../
+        wget -q https://github.com/microsoft/onnxruntime/archive/v${{ env.ONNXRUNTIME_VERSION }}.zip -O onnxruntime-${{ env.ONNXRUNTIME_VERSION }}.zip
+        ditto -V -x -k --sequesterRsrc --rsrc onnxruntime-${{ env.ONNXRUNTIME_VERSION }}.zip ./
+        cd onnxruntime-${{ env.ONNXRUNTIME_VERSION }}
+        patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-less-mlas-features.patch
+        patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-monolithic-static-library.patch
+        patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-use-clog.patch
+        mkdir -p build2; cd build2;
+        cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/onnxruntime" -DCMAKE_BUILD_TYPE=MinSizeRel -Donnxruntime_USE_FULL_PROTOBUF=ON -Donnxruntime_BUILD_SHARED_LIB=ON -Donnxruntime_BUILD_UNIT_TESTS=OFF -Donnxruntime_ENABLE_CPUINFO=OFF -Donnxruntime_DISABLE_CONTRIB_OPS=ON -Donnxruntime_DISABLE_SPARSE_TENSORS=ON --compile-no-warning-as-error -DCMAKE_POSITION_INDEPENDENT_CODE=ON ../cmake
+        cmake --build . -j 4
+        cmake --build . -j 4 --target install/strip
 
   macos-arm64-deps:
     runs-on: macos-14
@@ -452,53 +449,52 @@ jobs:
             ..
         cmake --build . -j 3
         cmake --build . -j 3 --target install/strip
-    # - name: cache-torchvision
-    #   id: cache-torchvision
-    #   uses: actions/cache@v4.2.3
-    #   with:
-    #     path: "torchvision"
-    #     key: torchvision-${{ env.TORCHVISION_VERSION }}-macos-arm64-${{ env.CACHE_DATE }}
-    # - name: torchvision
-    #   if: steps.cache-torchvision.outputs.cache-hit != 'true'
-    #   run: |
-    #     wget -q https://github.com/pytorch/vision/archive/refs/tags/v${{ env.TORCHVISION_VERSION }}.zip -O vision-${{ env.TORCHVISION_VERSION }}.zip
-    #     unzip -q vision-${{ env.TORCHVISION_VERSION }}.zip
-    #     cd vision-${{ env.TORCHVISION_VERSION }}
-    #     patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/vision-${{ env.TORCHVISION_VERSION }}-ops-only.patch
-    #     patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/vision-${{ env.TORCHVISION_VERSION }}-no-cuda-version.patch
-    #     mkdir -p build; cd build
-    #     cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/torchvision" -DTorch_DIR="$GITHUB_WORKSPACE/libtorch/share/cmake/Torch" -DCMAKE_BUILD_TYPE=MinSizeRel -DWITH_PNG=OFF -DWITH_JPEG=OFF ..
-    #     cmake --build . -j 3
-    #     cmake --build . -j 3 --target install/strip
-    #
-    # - name: cache-onnxruntime
-    #   id: cache-onnxruntime
-    #   uses: actions/cache@v4.2.3
-    #   with:
-    #     path: "onnxruntime"
-    #     key: onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-macos-arm64-${{ env.CACHE_DATE }}
-    # - name: onnxruntime
-    #   if: steps.cache-onnxruntime.outputs.cache-hit != 'true'
-    #   run: |
-    #     wget -q https://github.com/protocolbuffers/protobuf/archive/v${{ env.PROTOBUF_VERSION }}.zip -O protobuf-${{ env.PROTOBUF_VERSION }}.zip
-    #     unzip -q protobuf-${{ env.PROTOBUF_VERSION }}.zip
-    #     cd protobuf-${{ env.PROTOBUF_VERSION }}
-    #     mkdir -p build2; cd build2;
-    #     cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/onnxruntime" -Dprotobuf_BUILD_TESTS=OFF -DCMAKE_BUILD_TYPE=MinSizeRel -DCMAKE_POSITION_INDEPENDENT_CODE=ON ..
-    #     cmake --build . -j 3
-    #     cmake --build . -j 3 --target install/strip
-    #     cd ../../
-    #     wget -q https://github.com/microsoft/onnxruntime/archive/v${{ env.ONNXRUNTIME_VERSION }}.zip -O onnxruntime-${{ env.ONNXRUNTIME_VERSION }}.zip
-    #     ditto -V -x -k --sequesterRsrc --rsrc onnxruntime-${{ env.ONNXRUNTIME_VERSION }}.zip ./
-    #     cd onnxruntime-${{ env.ONNXRUNTIME_VERSION }}
-    #     patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-less-mlas-features.patch
-    #     patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-monolithic-static-library.patch
-    #     patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-use-clog.patch
-    #     patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-fix-gcc-avxvnni-check.patch
-    #     mkdir -p build2; cd build2;
-    #     cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/onnxruntime" -DCMAKE_BUILD_TYPE=MinSizeRel -Donnxruntime_USE_FULL_PROTOBUF=ON -Donnxruntime_BUILD_SHARED_LIB=ON -Donnxruntime_BUILD_UNIT_TESTS=OFF -Donnxruntime_ENABLE_CPUINFO=OFF -Donnxruntime_DISABLE_CONTRIB_OPS=ON -Donnxruntime_DISABLE_SPARSE_TENSORS=ON --compile-no-warning-as-error -DCMAKE_POSITION_INDEPENDENT_CODE=ON ../cmake
-    #     cmake --build . -j 3
-    #     cmake --build . -j 3 --target install/strip
+    - name: cache-torchvision
+      id: cache-torchvision
+      uses: actions/cache@v4.2.3
+      with:
+        path: "torchvision"
+        key: torchvision-${{ env.TORCHVISION_VERSION }}-macos-arm64-${{ env.CACHE_DATE }}
+    - name: torchvision
+      if: steps.cache-torchvision.outputs.cache-hit != 'true'
+      run: |
+        wget -q https://github.com/pytorch/vision/archive/refs/tags/v${{ env.TORCHVISION_VERSION }}.zip -O vision-${{ env.TORCHVISION_VERSION }}.zip
+        unzip -q vision-${{ env.TORCHVISION_VERSION }}.zip
+        cd vision-${{ env.TORCHVISION_VERSION }}
+        patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/vision-${{ env.TORCHVISION_VERSION }}-ops-only.patch
+        patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/vision-${{ env.TORCHVISION_VERSION }}-no-cuda-version.patch
+        mkdir -p build; cd build
+        cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/torchvision" -DTorch_DIR="$GITHUB_WORKSPACE/libtorch/share/cmake/Torch" -DCMAKE_BUILD_TYPE=MinSizeRel -DWITH_PNG=OFF -DWITH_JPEG=OFF ..
+        cmake --build . -j 3
+        cmake --build . -j 3 --target install/strip
+
+    - name: cache-onnxruntime
+      id: cache-onnxruntime
+      uses: actions/cache@v4.2.3
+      with:
+        path: "onnxruntime"
+        key: onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-macos-arm64-${{ env.CACHE_DATE }}
+    - name: onnxruntime
+      if: steps.cache-onnxruntime.outputs.cache-hit != 'true'
+      run: |
+        wget -q https://github.com/protocolbuffers/protobuf/archive/v${{ env.PROTOBUF_VERSION }}.zip -O protobuf-${{ env.PROTOBUF_VERSION }}.zip
+        unzip -q protobuf-${{ env.PROTOBUF_VERSION }}.zip
+        cd protobuf-${{ env.PROTOBUF_VERSION }}
+        mkdir -p build2; cd build2;
+        cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/onnxruntime" -Dprotobuf_BUILD_TESTS=OFF -DCMAKE_BUILD_TYPE=MinSizeRel -DCMAKE_POSITION_INDEPENDENT_CODE=ON ..
+        cmake --build . -j 3
+        cmake --build . -j 3 --target install/strip
+        cd ../../
+        wget -q https://github.com/microsoft/onnxruntime/archive/v${{ env.ONNXRUNTIME_VERSION }}.zip -O onnxruntime-${{ env.ONNXRUNTIME_VERSION }}.zip
+        ditto -V -x -k --sequesterRsrc --rsrc onnxruntime-${{ env.ONNXRUNTIME_VERSION }}.zip ./
+        cd onnxruntime-${{ env.ONNXRUNTIME_VERSION }}
+        patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-less-mlas-features.patch
+        patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-monolithic-static-library.patch
+        patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-use-clog.patch
+        mkdir -p build2; cd build2;
+        cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/onnxruntime" -DCMAKE_BUILD_TYPE=MinSizeRel -Donnxruntime_USE_FULL_PROTOBUF=ON -Donnxruntime_BUILD_SHARED_LIB=ON -Donnxruntime_BUILD_UNIT_TESTS=OFF -Donnxruntime_ENABLE_CPUINFO=OFF -Donnxruntime_DISABLE_CONTRIB_OPS=ON -Donnxruntime_DISABLE_SPARSE_TENSORS=ON --compile-no-warning-as-error -DCMAKE_POSITION_INDEPENDENT_CODE=ON ../cmake
+        cmake --build . -j 3
+        cmake --build . -j 3 --target install/strip
 
   windows-deps:
     runs-on: windows-2019
@@ -555,51 +551,50 @@ jobs:
             ..
         cmake --build . --config MinSizeRel -j 4
         cmake --build . --config MinSizeRel -j 4 --target install
-    # - name: cache-torchvision
-    #   id: cache-torchvision
-    #   uses: actions/cache@v4.2.3
-    #   with:
-    #     path: "torchvision"
-    #     key: torchvision-${{ env.TORCHVISION_VERSION }}-vs2019-${{ env.CACHE_DATE }}
-    # - name: torchvision
-    #   if: steps.cache-torchvision.outputs.cache-hit != 'true'
-    #   run: |
-    #     Invoke-WebRequest -Uri https://github.com/pytorch/vision/archive/refs/tags/v${{ env.TORCHVISION_VERSION }}.zip -OutFile vision-${{ env.TORCHVISION_VERSION }}.zip
-    #     7z x vision-${{ env.TORCHVISION_VERSION }}.zip
-    #     cd vision-${{ env.TORCHVISION_VERSION }}
-    #     & "C:\Program Files\Git\usr\bin\patch.exe" -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\vision-${{ env.TORCHVISION_VERSION }}-ops-only.patch
-    #     & "C:\Program Files\Git\usr\bin\patch.exe" -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\vision-${{ env.TORCHVISION_VERSION }}-no-cuda-version.patch
-    #     & "C:\Program Files\Git\usr\bin\patch.exe" -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\vision-${{ env.TORCHVISION_VERSION }}-no-dll-export.patch
-    #     mkdir -p build; cd build
-    #     cmake -DCMAKE_INSTALL_PREFIX="$env:GITHUB_WORKSPACE/torchvision" -DTorch_DIR="$env:GITHUB_WORKSPACE/libtorch/share/cmake/Torch" -DCMAKE_BUILD_TYPE=MinSizeRel -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded -DWITH_PNG=OFF -DWITH_JPEG=OFF ..
-    #     cmake --build . --config MinSizeRel -j 4
-    #     cmake --build . --config MinSizeRel -j 4 --target install
-    #
-    # - name: cache-onnxruntime
-    #   id: cache-onnxruntime
-    #   uses: actions/cache@v4.2.3
-    #   with:
-    #     path: "onnxruntime"
-    #     key: onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-vs2019-${{ env.CACHE_DATE }}
-    # - name: onnxruntime
-    #   if: steps.cache-onnxruntime.outputs.cache-hit != 'true'
-    #   run: |
-    #     Invoke-WebRequest -Uri https://github.com/protocolbuffers/protobuf/archive/v${{ env.PROTOBUF_VERSION }}.zip -OutFile protobuf-${{ env.PROTOBUF_VERSION }}.zip
-    #     7z x ./protobuf-${{ env.PROTOBUF_VERSION }}.zip
-    #     cd protobuf-${{ env.PROTOBUF_VERSION }}
-    #     mkdir -p build2; cd build2;
-    #     cmake -DCMAKE_INSTALL_PREFIX="$env:GITHUB_WORKSPACE/onnxruntime" -Dprotobuf_BUILD_TESTS=OFF -Dprotobuf_MSVC_STATIC_RUNTIME=ON -DCMAKE_BUILD_TYPE=MinSizeRel -DCMAKE_POSITION_INDEPENDENT_CODE=ON -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded ..
-    #     cmake --build . --config MinSizeRel -j 4
-    #     cmake --build . --config MinSizeRel -j 4 --target install
-    #     cd ../../
-    #     Invoke-WebRequest -Uri https://github.com/microsoft/onnxruntime/archive/v${{ env.ONNXRUNTIME_VERSION }}.zip -OutFile onnxruntime-${{ env.ONNXRUNTIME_VERSION }}.zip
-    #     7z x ./onnxruntime-${{ env.ONNXRUNTIME_VERSION }}.zip
-    #     cd onnxruntime-${{ env.ONNXRUNTIME_VERSION }}
-    #     & "C:\Program Files\Git\usr\bin\patch.exe" -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-less-mlas-features.patch
-    #     & "C:\Program Files\Git\usr\bin\patch.exe" -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-monolithic-static-library.patch
-    #     & "C:\Program Files\Git\usr\bin\patch.exe" -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-use-clog.patch
-    #     & "C:\Program Files\Git\usr\bin\patch.exe" -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-fix-gcc-avxvnni-check.patch
-    #     mkdir -p build2; cd build2;
-    #     cmake -DCMAKE_INSTALL_PREFIX="$env:GITHUB_WORKSPACE/onnxruntime" -DCMAKE_BUILD_TYPE=MinSizeRel -Donnxruntime_USE_FULL_PROTOBUF=ON -Donnxruntime_BUILD_SHARED_LIB=ON -Donnxruntime_BUILD_UNIT_TESTS=OFF -Donnxruntime_ENABLE_CPUINFO=OFF -Donnxruntime_DISABLE_CONTRIB_OPS=ON -Donnxruntime_DISABLE_SPARSE_TENSORS=ON --compile-no-warning-as-error -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded -DONNX_USE_MSVC_STATIC_RUNTIME=ON -Dprotobuf_MSVC_STATIC_RUNTIME=ON -DCMAKE_POSITION_INDEPENDENT_CODE=ON ../cmake
-    #     cmake --build . --config MinSizeRel -j 4
-    #     cmake --build . --config MinSizeRel -j 4 --target install
+    - name: cache-torchvision
+      id: cache-torchvision
+      uses: actions/cache@v4.2.3
+      with:
+        path: "torchvision"
+        key: torchvision-${{ env.TORCHVISION_VERSION }}-vs2019-${{ env.CACHE_DATE }}
+    - name: torchvision
+      if: steps.cache-torchvision.outputs.cache-hit != 'true'
+      run: |
+        Invoke-WebRequest -Uri https://github.com/pytorch/vision/archive/refs/tags/v${{ env.TORCHVISION_VERSION }}.zip -OutFile vision-${{ env.TORCHVISION_VERSION }}.zip
+        7z x vision-${{ env.TORCHVISION_VERSION }}.zip
+        cd vision-${{ env.TORCHVISION_VERSION }}
+        & "C:\Program Files\Git\usr\bin\patch.exe" -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\vision-${{ env.TORCHVISION_VERSION }}-ops-only.patch
+        & "C:\Program Files\Git\usr\bin\patch.exe" -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\vision-${{ env.TORCHVISION_VERSION }}-no-cuda-version.patch
+        & "C:\Program Files\Git\usr\bin\patch.exe" -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\vision-${{ env.TORCHVISION_VERSION }}-no-dll-export.patch
+        mkdir -p build; cd build
+        cmake -DCMAKE_INSTALL_PREFIX="$env:GITHUB_WORKSPACE/torchvision" -DTorch_DIR="$env:GITHUB_WORKSPACE/libtorch/share/cmake/Torch" -DCMAKE_BUILD_TYPE=MinSizeRel -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded -DWITH_PNG=OFF -DWITH_JPEG=OFF ..
+        cmake --build . --config MinSizeRel -j 4
+        cmake --build . --config MinSizeRel -j 4 --target install
+
+    - name: cache-onnxruntime
+      id: cache-onnxruntime
+      uses: actions/cache@v4.2.3
+      with:
+        path: "onnxruntime"
+        key: onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-vs2019-${{ env.CACHE_DATE }}
+    - name: onnxruntime
+      if: steps.cache-onnxruntime.outputs.cache-hit != 'true'
+      run: |
+        Invoke-WebRequest -Uri https://github.com/protocolbuffers/protobuf/archive/v${{ env.PROTOBUF_VERSION }}.zip -OutFile protobuf-${{ env.PROTOBUF_VERSION }}.zip
+        7z x ./protobuf-${{ env.PROTOBUF_VERSION }}.zip
+        cd protobuf-${{ env.PROTOBUF_VERSION }}
+        mkdir -p build2; cd build2;
+        cmake -DCMAKE_INSTALL_PREFIX="$env:GITHUB_WORKSPACE/onnxruntime" -Dprotobuf_BUILD_TESTS=OFF -Dprotobuf_MSVC_STATIC_RUNTIME=ON -DCMAKE_BUILD_TYPE=MinSizeRel -DCMAKE_POSITION_INDEPENDENT_CODE=ON -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded ..
+        cmake --build . --config MinSizeRel -j 4
+        cmake --build . --config MinSizeRel -j 4 --target install
+        cd ../../
+        Invoke-WebRequest -Uri https://github.com/microsoft/onnxruntime/archive/v${{ env.ONNXRUNTIME_VERSION }}.zip -OutFile onnxruntime-${{ env.ONNXRUNTIME_VERSION }}.zip
+        7z x ./onnxruntime-${{ env.ONNXRUNTIME_VERSION }}.zip
+        cd onnxruntime-${{ env.ONNXRUNTIME_VERSION }}
+        & "C:\Program Files\Git\usr\bin\patch.exe" -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-less-mlas-features.patch
+        & "C:\Program Files\Git\usr\bin\patch.exe" -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-monolithic-static-library.patch
+        & "C:\Program Files\Git\usr\bin\patch.exe" -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-use-clog.patch
+        mkdir -p build2; cd build2;
+        cmake -DCMAKE_INSTALL_PREFIX="$env:GITHUB_WORKSPACE/onnxruntime" -DCMAKE_BUILD_TYPE=MinSizeRel -Donnxruntime_USE_FULL_PROTOBUF=ON -Donnxruntime_BUILD_SHARED_LIB=ON -Donnxruntime_BUILD_UNIT_TESTS=OFF -Donnxruntime_ENABLE_CPUINFO=OFF -Donnxruntime_DISABLE_CONTRIB_OPS=ON -Donnxruntime_DISABLE_SPARSE_TENSORS=ON --compile-no-warning-as-error -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded -DONNX_USE_MSVC_STATIC_RUNTIME=ON -Dprotobuf_MSVC_STATIC_RUNTIME=ON -DCMAKE_POSITION_INDEPENDENT_CODE=ON ../cmake
+        cmake --build . --config MinSizeRel -j 4
+        cmake --build . --config MinSizeRel -j 4 --target install
