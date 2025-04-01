@@ -526,7 +526,6 @@ jobs:
         7z x pytorch-v${{ env.LIBTORCH_VERSION }}.tar
         cd pytorch-v${{ env.LIBTORCH_VERSION }}
         pip3 install -r requirements.txt
-        pip3 install yaml
         & "C:\Program Files\Git\usr\bin\patch.exe" -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\pytorch-v${{ env.LIBTORCH_VERSION }}-fix-mobile-build.patch
         & "C:\Program Files\Git\usr\bin\patch.exe" -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\pytorch-v${{ env.LIBTORCH_VERSION }}-no-link-system-lib.patch
         & "C:\Program Files\Git\usr\bin\patch.exe" -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\pytorch-v${{ env.LIBTORCH_VERSION }}-fix-pocketfft-build.patch
@@ -534,7 +533,7 @@ jobs:
         & "C:\Program Files\Git\usr\bin\patch.exe" -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\pytorch-v${{ env.LIBTORCH_VERSION }}-no-mimalloc.patch
         mkdir -p build; cd build
         cmake -DCMAKE_INSTALL_PREFIX="$env:GITHUB_WORKSPACE/libtorch" -DCMAKE_BUILD_TYPE=MinSizeRel -DBUILD_SHARED_LIBS=OFF -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded `
-            -DCMAKE_POLICY_VERSION_MINIMUM=3.5 `
+            "-DCMAKE_POLICY_VERSION_MINIMUM=3.5" `
             -DBUILD_CAFFE2_OPS=OFF `
             -DBUILD_CUSTOM_PROTOBUF=OFF `
             -DBUILD_LITE_INTERPRETER=OFF `
