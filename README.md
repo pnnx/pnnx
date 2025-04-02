@@ -51,6 +51,7 @@ flowchart TD
     othermodel["caffe, mxnet<br>keras, tensorflow<br>paddlepaddle, etc."]
     torchscript["torchscript file<br>resnet18.pt"]
     onnx["onnx file<br>resnet18.onnx"]
+    tnn["tnn file<br>resnet18.tnnproto/tnnmodel"]
     optmodel["optimized torch model<br>resnet18_pnnx.Model()"]
     ncnnmodel["ncnn model<br>resnet18.ncnn.param/bin"]
     onnxzeromodel["onnx-zero model<br>resnet18.pnnx.onnx"]
@@ -67,6 +68,7 @@ flowchart TD
     torchmodel -->|"pnnx.export(model, 'resnet18.pt', x)"| pnnx
     torchscript -->|"pnnx.convert('resnet18.pt', x)"| pnnx
     onnx -->|"pnnx.convert('resnet18.onnx', x)"| pnnx
+    tnn -->|"pnnx.convert('resnet18.tnnproto', x)"| pnnx
 
 ```
 
@@ -200,6 +202,7 @@ torch.onnx.export(net, x, 'resnet18.onnx')
 ```shell
 ./pnnx resnet18.pt inputshape=[1,3,224,224]
 ./pnnx resnet18.onnx inputshape=[1,3,224,224]
+./pnnx resnet18.tnnproto inputshape=[1,3,224,224]
 ```
 
 macOS zsh user may need double quotes to prevent ambiguity
@@ -287,7 +290,7 @@ Sample usage: pnnx mobilenet_v2.pt inputshape=[1,3,224,224]
 
 |paramter|default value|description|
 |:---:|:---:|:---|
-|model.pt|**(required)**|The torchscript file path|
+|model.pt<br>model.onnx<br>model.tnnproto|**(required)**|The torchscript / onnx / tnn file path|
 |pnnxparam|*.pnnx.param<br />(\* is the model name)|PNNX graph definition file|
 |pnnxbin|*.pnnx.bin|PNNX model weight|
 |pnnxpy|*_pnnx.py|PyTorch script for inference, including model construction and weight initialization code|
