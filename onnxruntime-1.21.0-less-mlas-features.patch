@@ -1,6 +1,18 @@
+diff -Nuarp onnxruntime-1.21.0.orig/cmake/onnxruntime_mlas.cmake onnxruntime-1.21.0/cmake/onnxruntime_mlas.cmake
+--- onnxruntime-1.21.0.orig/cmake/onnxruntime_mlas.cmake	2025-03-06 08:37:52.000000000 +0800
++++ onnxruntime-1.21.0/cmake/onnxruntime_mlas.cmake	2025-04-02 14:18:04.618189960 +0800
+@@ -390,7 +390,7 @@ else()
+         )
+         set_source_files_properties(${MLAS_SRC_DIR}/sqnbitgemm_kernel_neon_int8.cpp
+                                     PROPERTIES COMPILE_FLAGS " -march=armv8.2-a+dotprod")
+-        if (NOT APPLE)
++        if (TRUE)
+           set(mlas_platform_srcs
+             ${mlas_platform_srcs}
+             ${MLAS_SRC_DIR}/aarch64/HalfGemmKernelNeon.S
 diff -Nuarp onnxruntime-1.21.0.orig/onnxruntime/core/mlas/inc/mlas.h onnxruntime-1.21.0/onnxruntime/core/mlas/inc/mlas.h
 --- onnxruntime-1.21.0.orig/onnxruntime/core/mlas/inc/mlas.h	2025-03-06 08:37:52.000000000 +0800
-+++ onnxruntime-1.21.0/onnxruntime/core/mlas/inc/mlas.h	2025-04-01 16:46:01.011675470 +0800
++++ onnxruntime-1.21.0/onnxruntime/core/mlas/inc/mlas.h	2025-04-02 14:17:54.339646265 +0800
 @@ -78,7 +78,7 @@ Abstract:
  //
  
