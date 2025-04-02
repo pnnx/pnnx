@@ -47,13 +47,13 @@ PyTorch Neural Network eXchange(PNNX) is an open standard for PyTorch model inte
 
 ```mermaid
 flowchart TD
-    torchmodel["torch model\ntorchvision.models.resnet18()"]
-    othermodel["caffe, mxnet\nkeras, tensorflow\npaddlepaddle, etc."]
-    torchscript["torchscript file\nresnet18.pt"]
-    onnx["onnx file\nresnet18.onnx"]
-    optmodel["optimized torch model\nresnet18_pnnx.Model()"]
-    ncnnmodel["ncnn model\nresnet18.ncnn.param/bin"]
-    onnxzeromodel["onnx-zero model\nresnet18.pnnx.onnx"]
+    torchmodel["torch model<br>torchvision.models.resnet18()"]
+    othermodel["caffe, mxnet<br>keras, tensorflow<br>paddlepaddle, etc."]
+    torchscript["torchscript file<br>resnet18.pt"]
+    onnx["onnx file<br>resnet18.onnx"]
+    optmodel["optimized torch model<br>resnet18_pnnx.Model()"]
+    ncnnmodel["ncnn model<br>resnet18.ncnn.param/bin"]
+    onnxzeromodel["onnx-zero model<br>resnet18.pnnx.onnx"]
 
     subgraph pnnx
         optmodel
@@ -61,7 +61,7 @@ flowchart TD
         onnxzeromodel
     end
 
-    torchmodel -->|"mod = torch.jit.trace(model, x)\nmod.save('resnet18.pt')"| torchscript
+    torchmodel -->|"mod = torch.jit.trace(model, x)<br>mod.save('resnet18.pt')"| torchscript
     torchmodel -->|"torch.onnx.export(model, x, 'resnet18.onnx')"| onnx
     othermodel -->|"export to onnx"| onnx
     torchmodel -->|"pnnx.export(model, 'resnet18.pt', x)"| pnnx
