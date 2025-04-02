@@ -6,7 +6,7 @@ diff -Nuarp onnxruntime-1.21.0.orig/cmake/onnxruntime_mlas.cmake onnxruntime-1.2
          set_source_files_properties(${MLAS_SRC_DIR}/sqnbitgemm_kernel_neon_int8.cpp
                                      PROPERTIES COMPILE_FLAGS " -march=armv8.2-a+dotprod")
 -        if (NOT APPLE)
-+        if (TRUE)
++        if (FALSE)
            set(mlas_platform_srcs
              ${mlas_platform_srcs}
              ${MLAS_SRC_DIR}/aarch64/HalfGemmKernelNeon.S
