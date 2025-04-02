@@ -31,3 +31,15 @@ diff -Nuarp onnxruntime-1.21.0.orig/onnxruntime/core/mlas/inc/mlas.h onnxruntime
  
  #endif //
  #endif // ARM64
+diff -Nuarp onnxruntime-1.21.0.orig/onnxruntime/core/mlas/lib/platform.cpp onnxruntime-1.21.0/onnxruntime/core/mlas/lib/platform.cpp
+--- onnxruntime-1.21.0.orig/onnxruntime/core/mlas/lib/platform.cpp	2025-03-06 08:37:52.000000000 +0800
++++ onnxruntime-1.21.0/onnxruntime/core/mlas/lib/platform.cpp	2025-04-02 16:26:11.670808102 +0800
+@@ -578,7 +578,7 @@ Return Value:
+         this->ConvSymS8S8Dispatch = &MlasConvSymS8DispatchDot;
+     }
+ 
+-#if defined(__linux__)
++#if 0//defined(__linux__)
+     //
+     // Check if the processor supports ASIMD I8MM instructions.
+     //
