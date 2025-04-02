@@ -161,8 +161,8 @@ jobs:
 
   # libtorch builds very slow even on self-hosted runner
   linux-aarch64-deps:
-    runs-on: self-hosted
-    # runs-on: ubuntu-latest
+    # runs-on: self-hosted
+    runs-on: ubuntu-latest
     timeout-minutes: 1800
     steps:
     - uses: actions/setup-python@v5
