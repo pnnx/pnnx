@@ -1,0 +1,159 @@
+diff -Nuarp onnxruntime-1.21.0.orig/cmake/onnxruntime_mlas.cmake onnxruntime-1.21.0/cmake/onnxruntime_mlas.cmake
+--- onnxruntime-1.21.0.orig/cmake/onnxruntime_mlas.cmake	2025-03-06 08:37:52.000000000 +0800
++++ onnxruntime-1.21.0/cmake/onnxruntime_mlas.cmake	2025-04-02 17:05:41.029696454 +0800
+@@ -390,7 +390,7 @@ else()
+         )
+         set_source_files_properties(${MLAS_SRC_DIR}/sqnbitgemm_kernel_neon_int8.cpp
+                                     PROPERTIES COMPILE_FLAGS " -march=armv8.2-a+dotprod")
+-        if (NOT APPLE)
++        if (FALSE)
+           set(mlas_platform_srcs
+             ${mlas_platform_srcs}
+             ${MLAS_SRC_DIR}/aarch64/HalfGemmKernelNeon.S
+diff -Nuarp onnxruntime-1.21.0.orig/onnxruntime/core/mlas/inc/mlas.h onnxruntime-1.21.0/onnxruntime/core/mlas/inc/mlas.h
+--- onnxruntime-1.21.0.orig/onnxruntime/core/mlas/inc/mlas.h	2025-03-06 08:37:52.000000000 +0800
++++ onnxruntime-1.21.0/onnxruntime/core/mlas/inc/mlas.h	2025-04-02 17:08:42.112271210 +0800
+@@ -78,7 +78,7 @@ Abstract:
+ //
+ 
+ #if defined(MLAS_TARGET_AMD64) || defined (MLAS_TARGET_POWER)
+-#define MLAS_SUPPORTS_GEMM_DOUBLE
++// #define MLAS_SUPPORTS_GEMM_DOUBLE
+ #endif
+ 
+ #if (!defined(_MSC_VER)) || (_MSC_VER >= 1930)
+@@ -89,7 +89,7 @@ Abstract:
+ // When building an universial binary for APPLE, this flag would
+ // cause trouble for x64 target.
+ 
+-#define MLAS_F16VEC_INTRINSICS_SUPPORTED
++// #define MLAS_F16VEC_INTRINSICS_SUPPORTED
+ 
+ #endif //
+ #endif // ARM64
+@@ -1790,7 +1790,7 @@ MlasHalfGemmConvertPackB(
+     void* PackedB
+     );
+ 
+-#if defined(__aarch64__) && defined(__linux__)
++#if 0//defined(__aarch64__) && defined(__linux__)
+ /**
+  * @brief Whether current CPU supports Bfloat16(bf16) acceleration.
+  */
+diff -Nuarp onnxruntime-1.21.0.orig/onnxruntime/core/mlas/lib/mlasi.h onnxruntime-1.21.0/onnxruntime/core/mlas/lib/mlasi.h
+--- onnxruntime-1.21.0.orig/onnxruntime/core/mlas/lib/mlasi.h	2025-03-06 08:37:52.000000000 +0800
++++ onnxruntime-1.21.0/onnxruntime/core/mlas/lib/mlasi.h	2025-04-02 17:09:10.097313712 +0800
+@@ -379,7 +379,7 @@ size_t
+ 
+ #else
+ 
+-#if defined(__aarch64__) && defined(__linux__)
++#if 0//defined(__aarch64__) && defined(__linux__)
+ typedef size_t(MLASCALL MLAS_SBGEMM_FLOAT_KERNEL)(
+     const float* A,
+     const bfloat16_t* B,
+@@ -798,7 +798,7 @@ extern "C" {
+ #else
+     MLAS_GEMM_FLOAT_KERNEL MlasSgemmKernelZero;
+     MLAS_GEMM_FLOAT_KERNEL MlasSgemmKernelAdd;
+-#if defined(__aarch64__) && defined(__linux__)
++#if 0//defined(__aarch64__) && defined(__linux__)
+     MLAS_SBGEMM_FLOAT_KERNEL MlasSbgemmKernelZero;
+     MLAS_SBGEMM_FLOAT_KERNEL MlasSbgemmKernelAdd;
+ #endif
+@@ -949,7 +949,7 @@ extern "C" {
+ #define MLAS_QGEMM_THREAD_COMPLEXITY                65536
+ #define MLAS_HGEMM_THREAD_COMPLEXITY                65536
+ 
+-#if defined(__aarch64__) && defined(__linux__)
++#if 0//defined(__aarch64__) && defined(__linux__)
+ #define MLAS_SBGEMM_THREAD_COMPLEXITY (size_t(64) * size_t(1024))
+ #endif
+ 
+diff -Nuarp onnxruntime-1.21.0.orig/onnxruntime/core/mlas/lib/platform.cpp onnxruntime-1.21.0/onnxruntime/core/mlas/lib/platform.cpp
+--- onnxruntime-1.21.0.orig/onnxruntime/core/mlas/lib/platform.cpp	2025-03-06 08:37:52.000000000 +0800
++++ onnxruntime-1.21.0/onnxruntime/core/mlas/lib/platform.cpp	2025-04-02 17:06:01.731635953 +0800
+@@ -578,7 +578,7 @@ Return Value:
+         this->ConvSymS8S8Dispatch = &MlasConvSymS8DispatchDot;
+     }
+ 
+-#if defined(__linux__)
++#if 0//defined(__linux__)
+     //
+     // Check if the processor supports ASIMD I8MM instructions.
+     //
+diff -Nuarp onnxruntime-1.21.0.orig/onnxruntime/core/mlas/lib/sbgemm.h onnxruntime-1.21.0/onnxruntime/core/mlas/lib/sbgemm.h
+--- onnxruntime-1.21.0.orig/onnxruntime/core/mlas/lib/sbgemm.h	2025-03-06 08:37:52.000000000 +0800
++++ onnxruntime-1.21.0/onnxruntime/core/mlas/lib/sbgemm.h	2025-04-02 17:09:18.599198734 +0800
+@@ -30,7 +30,7 @@ Abstract:
+         MLAS_SBGEMM_STRIDES Strides{128, 128, 256};
+ --*/
+ 
+-#if defined(__aarch64__) && defined(__linux__)
++#if 0//defined(__aarch64__) && defined(__linux__)
+ 
+ #pragma once
+ 
+diff -Nuarp onnxruntime-1.21.0.orig/onnxruntime/core/mlas/lib/sbgemm_kernel_neon.cpp onnxruntime-1.21.0/onnxruntime/core/mlas/lib/sbgemm_kernel_neon.cpp
+--- onnxruntime-1.21.0.orig/onnxruntime/core/mlas/lib/sbgemm_kernel_neon.cpp	2025-03-06 08:37:52.000000000 +0800
++++ onnxruntime-1.21.0/onnxruntime/core/mlas/lib/sbgemm_kernel_neon.cpp	2025-04-02 17:09:27.366212763 +0800
+@@ -15,7 +15,7 @@ Abstract:
+ 
+ --*/
+ 
+-#if defined(__aarch64__) && defined(__linux__)
++#if 0//defined(__aarch64__) && defined(__linux__)
+ 
+ #include "arm_neon.h"
+ #include "mlasi.h"
+diff -Nuarp onnxruntime-1.21.0.orig/onnxruntime/core/providers/cpu/math/matmul.cc onnxruntime-1.21.0/onnxruntime/core/providers/cpu/math/matmul.cc
+--- onnxruntime-1.21.0.orig/onnxruntime/core/providers/cpu/math/matmul.cc	2025-03-06 08:37:52.000000000 +0800
++++ onnxruntime-1.21.0/onnxruntime/core/providers/cpu/math/matmul.cc	2025-04-02 17:07:55.700871480 +0800
+@@ -133,7 +133,7 @@ Status MatMul<T>::Compute(OpKernelContex
+ 
+   return Status::OK();
+ }
+-#if defined(__aarch64__) && defined(__linux__)
++#if 0//defined(__aarch64__) && defined(__linux__)
+ bool GemmPackBBfloat16(AllocatorPtr& alloc,
+                        const Tensor& tensor_b,
+                        bool trans_b,
+@@ -180,7 +180,7 @@ Status MatMul<float>::PrePack(const Tens
+   // only pack Matrix B
+   if (input_idx == 1) {
+     size_t packed_b_size;
+-#if defined(__aarch64__) && defined(__linux__)
++#if 0//defined(__aarch64__) && defined(__linux__)
+     size_t dim1 = 0;
+     size_t dim2 = 0;
+     TensorShape b_shape = tensor.Shape();
+@@ -258,7 +258,7 @@ Status MatMul<float>::Compute(OpKernelCo
+   const size_t K = static_cast<size_t>(helper.K());
+   const size_t lda = helper.Lda(trans_a);
+   const size_t ldb = helper.Ldb(trans_b);
+-#if defined(__aarch64__) && defined(__linux__)
++#if 0//defined(__aarch64__) && defined(__linux__)
+   if (use_fastmath_mode_ && !trans_b && ((N * K) >= kFastMathModeKernelsizeThreshold)) {
+     std::vector<MLAS_SBGEMM_DATA_PARAMS> data(max_len);
+     for (size_t i = 0; i < max_len; i++) {
+diff -Nuarp onnxruntime-1.21.0.orig/onnxruntime/core/providers/cpu/math/matmul.h onnxruntime-1.21.0/onnxruntime/core/providers/cpu/math/matmul.h
+--- onnxruntime-1.21.0.orig/onnxruntime/core/providers/cpu/math/matmul.h	2025-03-06 08:37:52.000000000 +0800
++++ onnxruntime-1.21.0/onnxruntime/core/providers/cpu/math/matmul.h	2025-04-02 17:07:22.383891080 +0800
+@@ -30,7 +30,7 @@ class MatMul<float> final : public OpKer
+     trans_batch_a_ = trans_batch_a_attr != 0;
+     trans_batch_b_ = trans_batch_b_attr != 0;
+ 
+-#if defined(__aarch64__) && defined(__linux__)
++#if 0//defined(__aarch64__) && defined(__linux__)
+     auto config_ops = info.GetConfigOptions().GetConfigEntry(kOrtSessionOptionsMlasGemmFastMathArm64Bfloat16);
+     use_fastmath_mode_ = (config_ops == "1") && MlasBf16AccelerationSupported();
+ #endif
+@@ -56,7 +56,7 @@ class MatMul<float> final : public OpKer
+   bool trans_batch_a_;
+   bool trans_batch_b_;
+ 
+-#if defined(__aarch64__) && defined(__linux__)
++#if 0//defined(__aarch64__) && defined(__linux__)
+   // fastmath mode state
+   bool use_fastmath_mode_;
+   // sbgemm kernel is implemented as 8x8 blocks with weights pre-packed to 4 blocks of 4x2

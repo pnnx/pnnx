@@ -1,0 +1,45 @@
+diff -Nuarp pytorch-v2.6.0.orig/CMakeLists.txt pytorch-v2.6.0/CMakeLists.txt
+--- pytorch-v2.6.0.orig/CMakeLists.txt	2025-01-30 01:20:52.000000000 +0800
++++ pytorch-v2.6.0/CMakeLists.txt	2025-04-01 16:21:01.186951819 +0800
+@@ -907,21 +907,6 @@ if(USE_PYTORCH_QNNPACK)
+   string(APPEND CMAKE_CXX_FLAGS " -DUSE_PYTORCH_QNNPACK")
+ endif()
+ 
+-# Enable sleef on macOS with Apple silicon by default
+-if((${CMAKE_SYSTEM_NAME} STREQUAL "Darwin") AND ("${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "arm64"))
+-  message(STATUS "Running on macOS with Apple silicon")
+-  string(APPEND CMAKE_CXX_FLAGS " -DAT_BUILD_ARM_VEC256_WITH_SLEEF")
+-  add_definitions(-DAT_BUILD_ARM_VEC256_WITH_SLEEF)
+-endif()
+-
+-# Enable sleef on Arm(R) architecture by default (except Android)
+-if((NOT ${CMAKE_SYSTEM_NAME} STREQUAL "Android")
+-  AND("${CMAKE_SYSTEM_PROCESSOR}" MATCHES "aarch64"))
+-  string(APPEND CMAKE_CXX_FLAGS " -DAT_BUILD_ARM_VEC256_WITH_SLEEF")
+-  add_definitions(-DAT_BUILD_ARM_VEC256_WITH_SLEEF)
+-endif()
+-
+-
+ if(USE_XNNPACK)
+   string(APPEND CMAKE_CXX_FLAGS " -DUSE_XNNPACK")
+ endif()
+diff -Nuarp pytorch-v2.6.0.orig/torch/_inductor/cpu_vec_isa.py pytorch-v2.6.0/torch/_inductor/cpu_vec_isa.py
+--- pytorch-v2.6.0.orig/torch/_inductor/cpu_vec_isa.py	2025-01-30 01:20:57.000000000 +0800
++++ pytorch-v2.6.0/torch/_inductor/cpu_vec_isa.py	2025-04-01 16:21:35.246039120 +0800
+@@ -155,7 +155,7 @@ cdll.LoadLibrary("__lib_path__")
+ @dataclasses.dataclass
+ class VecNEON(VecISA):
+     _bit_width = 128  # This is required to leverage the compute implemented in aten/src/ATen/cpu/vec/vec128/vec128_float_neon.h
+-    _macro = ["CPU_CAPABILITY_NEON", "AT_BUILD_ARM_VEC256_WITH_SLEEF"]
++    _macro = ["CPU_CAPABILITY_NEON"]
+     _arch_flags = ""  # Unused
+     _dtype_nelements = {torch.float: 4, torch.bfloat16: 8, torch.float16: 8}
+ 
+@@ -172,7 +172,6 @@ class VecSVE(VecISA):
+     _macro = [
+         "CPU_CAPABILITY_SVE",
+         "CPU_CAPABILITY_SVE256",
+-        "AT_BUILD_ARM_VEC256_WITH_SLEEF",
+     ]
+     _arch_flags = "-march=armv8-a+sve -msve-vector-bits=256"
+     _dtype_nelements = {torch.float: 8, torch.bfloat16: 16, torch.float16: 16}

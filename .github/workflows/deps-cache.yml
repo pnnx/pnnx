@@ -14,11 +14,11 @@ on:
     - cron: '0 12 * * *'
 
 env:
-  LIBTORCH_VERSION: 2.5.0
-  TORCHVISION_VERSION: 0.20.0
+  LIBTORCH_VERSION: 2.6.0
+  TORCHVISION_VERSION: 0.21.0
   PROTOBUF_VERSION: 21.12
-  ONNXRUNTIME_VERSION: 1.19.2
-  CACHE_DATE: 20241018
+  ONNXRUNTIME_VERSION: 1.21.0
+  CACHE_DATE: 20250401
 
 jobs:
   linux-deps:
@@ -55,6 +55,7 @@ jobs:
           patch -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-pocketfft-build.patch &&
           mkdir -p build && cd build &&
           cmake -DCMAKE_INSTALL_PREFIX="/host/tmp/libtorch" -DCMAKE_BUILD_TYPE=MinSizeRel -DBUILD_SHARED_LIBS=OFF
+              -DCMAKE_POLICY_VERSION_MINIMUM=3.5
               -DBUILD_CAFFE2_OPS=OFF
               -DBUILD_CUSTOM_PROTOBUF=OFF
               -DBUILD_LITE_INTERPRETER=OFF
@@ -143,7 +144,6 @@ jobs:
           patch -p1 -i /project/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-less-mlas-features.patch &&
           patch -p1 -i /project/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-monolithic-static-library.patch &&
           patch -p1 -i /project/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-use-clog.patch &&
-          patch -p1 -i /project/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-fix-gcc-avxvnni-check.patch &&
           mkdir -p build2 && cd build2 &&
           cmake -DCMAKE_INSTALL_PREFIX="/host/tmp/onnxruntime" -DCMAKE_C_COMPILER="/opt/rh/devtoolset-10/root/usr/bin/cc"
           -DCMAKE_CXX_COMPILER="/opt/rh/devtoolset-10/root/usr/bin/c++" -DCMAKE_BUILD_TYPE=MinSizeRel -Donnxruntime_USE_FULL_PROTOBUF=ON -Donnxruntime_BUILD_SHARED_LIB=ON -Donnxruntime_BUILD_UNIT_TESTS=OFF -Donnxruntime_ENABLE_CPUINFO=OFF -Donnxruntime_DISABLE_CONTRIB_OPS=ON -Donnxruntime_DISABLE_ML_OPS=ON -Donnxruntime_DISABLE_SPARSE_TENSORS=ON --compile-no-warning-as-error -DCMAKE_POSITION_INDEPENDENT_CODE=ON ../cmake &&
@@ -155,8 +155,8 @@ jobs:
 
   # libtorch builds very slow even on self-hosted runner
   linux-aarch64-deps:
-    #runs-on: self-hosted
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
+    # runs-on: ubuntu-latest
     timeout-minutes: 1800
     steps:
     - uses: actions/setup-python@v5
@@ -210,8 +210,10 @@ jobs:
           patch -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-no-link-system-lib.patch &&
           patch -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-pocketfft-build.patch &&
           patch -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-set-python-executable.patch &&
+          patch -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-no-arm64-sleef.patch &&
           mkdir -p build && cd build &&
           cmake -DCMAKE_INSTALL_PREFIX="/host/tmp/libtorch" -DCMAKE_BUILD_TYPE=MinSizeRel -DBUILD_SHARED_LIBS=OFF
+              -DCMAKE_POLICY_VERSION_MINIMUM=3.5
               -DBUILD_CAFFE2_OPS=OFF
               -DBUILD_CUSTOM_PROTOBUF=OFF
               -DBUILD_LITE_INTERPRETER=OFF
@@ -289,7 +291,6 @@ jobs:
           patch -p1 -i /project/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-less-mlas-features.patch &&
           patch -p1 -i /project/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-monolithic-static-library.patch &&
           patch -p1 -i /project/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-use-clog.patch &&
-          patch -p1 -i /project/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-fix-gcc-avxvnni-check.patch &&
           mkdir -p build2 && cd build2 &&
           cmake -DCMAKE_INSTALL_PREFIX="/host/tmp/onnxruntime" -DCMAKE_C_COMPILER="/opt/rh/devtoolset-10/root/usr/bin/cc"
           -DCMAKE_CXX_COMPILER="/opt/rh/devtoolset-10/root/usr/bin/c++" -DCMAKE_BUILD_TYPE=MinSizeRel -Donnxruntime_USE_FULL_PROTOBUF=ON -Donnxruntime_BUILD_SHARED_LIB=ON -Donnxruntime_BUILD_UNIT_TESTS=OFF -Donnxruntime_ENABLE_CPUINFO=OFF -Donnxruntime_DISABLE_CONTRIB_OPS=ON -Donnxruntime_DISABLE_ML_OPS=ON -Donnxruntime_DISABLE_SPARSE_TENSORS=ON --compile-no-warning-as-error -DCMAKE_POSITION_INDEPENDENT_CODE=ON ../cmake &&
@@ -327,6 +328,7 @@ jobs:
         patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-pocketfft-build.patch
         mkdir -p build; cd build
         cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/libtorch" -DCMAKE_BUILD_TYPE=MinSizeRel -DBUILD_SHARED_LIBS=OFF \
+            -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
             -DBUILD_CAFFE2_OPS=OFF \
             -DBUILD_CUSTOM_PROTOBUF=OFF \
             -DBUILD_LITE_INTERPRETER=OFF \
@@ -390,7 +392,6 @@ jobs:
         patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-less-mlas-features.patch
         patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-monolithic-static-library.patch
         patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-use-clog.patch
-        patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-fix-gcc-avxvnni-check.patch
         mkdir -p build2; cd build2;
         cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/onnxruntime" -DCMAKE_BUILD_TYPE=MinSizeRel -Donnxruntime_USE_FULL_PROTOBUF=ON -Donnxruntime_BUILD_SHARED_LIB=ON -Donnxruntime_BUILD_UNIT_TESTS=OFF -Donnxruntime_ENABLE_CPUINFO=OFF -Donnxruntime_DISABLE_CONTRIB_OPS=ON -Donnxruntime_DISABLE_SPARSE_TENSORS=ON --compile-no-warning-as-error -DCMAKE_POSITION_INDEPENDENT_CODE=ON ../cmake
         cmake --build . -j 4
@@ -423,9 +424,10 @@ jobs:
         patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-no-link-system-lib.patch
         patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-pocketfft-build.patch
         patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-set-python-executable.patch
-        patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-no-macos-arm64-sleef.patch
+        patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-no-arm64-sleef.patch
         mkdir -p build; cd build
         cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/libtorch" -DCMAKE_BUILD_TYPE=MinSizeRel -DBUILD_SHARED_LIBS=OFF \
+            -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
             -DBUILD_CAFFE2_OPS=OFF \
             -DBUILD_CUSTOM_PROTOBUF=OFF \
             -DBUILD_LITE_INTERPRETER=OFF \
@@ -489,7 +491,6 @@ jobs:
         patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-less-mlas-features.patch
         patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-monolithic-static-library.patch
         patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-use-clog.patch
-        patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-fix-gcc-avxvnni-check.patch
         mkdir -p build2; cd build2;
         cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/onnxruntime" -DCMAKE_BUILD_TYPE=MinSizeRel -Donnxruntime_USE_FULL_PROTOBUF=ON -Donnxruntime_BUILD_SHARED_LIB=ON -Donnxruntime_BUILD_UNIT_TESTS=OFF -Donnxruntime_ENABLE_CPUINFO=OFF -Donnxruntime_DISABLE_CONTRIB_OPS=ON -Donnxruntime_DISABLE_SPARSE_TENSORS=ON --compile-no-warning-as-error -DCMAKE_POSITION_INDEPENDENT_CODE=ON ../cmake
         cmake --build . -j 3
@@ -521,13 +522,14 @@ jobs:
         7z x pytorch-v${{ env.LIBTORCH_VERSION }}.tar
         cd pytorch-v${{ env.LIBTORCH_VERSION }}
         pip3 install -r requirements.txt
-        C:\msys64\usr\bin\patch.exe -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\pytorch-v${{ env.LIBTORCH_VERSION }}-fix-mobile-build.patch
-        C:\msys64\usr\bin\patch.exe -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\pytorch-v${{ env.LIBTORCH_VERSION }}-no-link-system-lib.patch
-        C:\msys64\usr\bin\patch.exe -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\pytorch-v${{ env.LIBTORCH_VERSION }}-fix-pocketfft-build.patch
-        C:\msys64\usr\bin\patch.exe -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\pytorch-v${{ env.LIBTORCH_VERSION }}-set-python-executable.patch
-        C:\msys64\usr\bin\patch.exe -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\pytorch-v${{ env.LIBTORCH_VERSION }}-no-mimalloc.patch
+        & "C:\Program Files\Git\usr\bin\patch.exe" -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\pytorch-v${{ env.LIBTORCH_VERSION }}-fix-mobile-build.patch
+        & "C:\Program Files\Git\usr\bin\patch.exe" -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\pytorch-v${{ env.LIBTORCH_VERSION }}-no-link-system-lib.patch
+        & "C:\Program Files\Git\usr\bin\patch.exe" -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\pytorch-v${{ env.LIBTORCH_VERSION }}-fix-pocketfft-build.patch
+        & "C:\Program Files\Git\usr\bin\patch.exe" -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\pytorch-v${{ env.LIBTORCH_VERSION }}-set-python-executable.patch
+        & "C:\Program Files\Git\usr\bin\patch.exe" -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\pytorch-v${{ env.LIBTORCH_VERSION }}-no-mimalloc.patch
         mkdir -p build; cd build
         cmake -DCMAKE_INSTALL_PREFIX="$env:GITHUB_WORKSPACE/libtorch" -DCMAKE_BUILD_TYPE=MinSizeRel -DBUILD_SHARED_LIBS=OFF -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded `
+            "-DCMAKE_POLICY_VERSION_MINIMUM=3.5" `
             -DBUILD_CAFFE2_OPS=OFF `
             -DBUILD_CUSTOM_PROTOBUF=OFF `
             -DBUILD_LITE_INTERPRETER=OFF `
@@ -561,9 +563,9 @@ jobs:
         Invoke-WebRequest -Uri https://github.com/pytorch/vision/archive/refs/tags/v${{ env.TORCHVISION_VERSION }}.zip -OutFile vision-${{ env.TORCHVISION_VERSION }}.zip
         7z x vision-${{ env.TORCHVISION_VERSION }}.zip
         cd vision-${{ env.TORCHVISION_VERSION }}
-        C:\msys64\usr\bin\patch.exe -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\vision-${{ env.TORCHVISION_VERSION }}-ops-only.patch
-        C:\msys64\usr\bin\patch.exe -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\vision-${{ env.TORCHVISION_VERSION }}-no-cuda-version.patch
-        C:\msys64\usr\bin\patch.exe -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\vision-${{ env.TORCHVISION_VERSION }}-no-dll-export.patch
+        & "C:\Program Files\Git\usr\bin\patch.exe" -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\vision-${{ env.TORCHVISION_VERSION }}-ops-only.patch
+        & "C:\Program Files\Git\usr\bin\patch.exe" -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\vision-${{ env.TORCHVISION_VERSION }}-no-cuda-version.patch
+        & "C:\Program Files\Git\usr\bin\patch.exe" -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\vision-${{ env.TORCHVISION_VERSION }}-no-dll-export.patch
         mkdir -p build; cd build
         cmake -DCMAKE_INSTALL_PREFIX="$env:GITHUB_WORKSPACE/torchvision" -DTorch_DIR="$env:GITHUB_WORKSPACE/libtorch/share/cmake/Torch" -DCMAKE_BUILD_TYPE=MinSizeRel -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded -DWITH_PNG=OFF -DWITH_JPEG=OFF ..
         cmake --build . --config MinSizeRel -j 4
@@ -582,18 +584,17 @@ jobs:
         7z x ./protobuf-${{ env.PROTOBUF_VERSION }}.zip
         cd protobuf-${{ env.PROTOBUF_VERSION }}
         mkdir -p build2; cd build2;
-        cmake -DCMAKE_INSTALL_PREFIX="$env:GITHUB_WORKSPACE/onnxruntime" -Dprotobuf_BUILD_TESTS=OFF -Dprotobuf_MSVC_STATIC_RUNTIME=ON -DCMAKE_BUILD_TYPE=MinSizeRel -DCMAKE_POSITION_INDEPENDENT_CODE=ON -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded ..
+        cmake -DCMAKE_INSTALL_PREFIX="$env:GITHUB_WORKSPACE/onnxruntime" -DCMAKE_BUILD_TYPE=MinSizeRel -Dprotobuf_BUILD_TESTS=OFF -Dprotobuf_MSVC_STATIC_RUNTIME=ON -DABSL_MSVC_STATIC_RUNTIME=ON -DCMAKE_POSITION_INDEPENDENT_CODE=ON -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded ..
         cmake --build . --config MinSizeRel -j 4
         cmake --build . --config MinSizeRel -j 4 --target install
         cd ../../
         Invoke-WebRequest -Uri https://github.com/microsoft/onnxruntime/archive/v${{ env.ONNXRUNTIME_VERSION }}.zip -OutFile onnxruntime-${{ env.ONNXRUNTIME_VERSION }}.zip
         7z x ./onnxruntime-${{ env.ONNXRUNTIME_VERSION }}.zip
         cd onnxruntime-${{ env.ONNXRUNTIME_VERSION }}
-        C:\msys64\usr\bin\patch.exe -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-less-mlas-features.patch
-        C:\msys64\usr\bin\patch.exe -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-monolithic-static-library.patch
-        C:\msys64\usr\bin\patch.exe -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-use-clog.patch
-        C:\msys64\usr\bin\patch.exe -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-fix-gcc-avxvnni-check.patch
+        & "C:\Program Files\Git\usr\bin\patch.exe" -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-less-mlas-features.patch
+        & "C:\Program Files\Git\usr\bin\patch.exe" -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-monolithic-static-library.patch
+        & "C:\Program Files\Git\usr\bin\patch.exe" -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-use-clog.patch
         mkdir -p build2; cd build2;
-        cmake -DCMAKE_INSTALL_PREFIX="$env:GITHUB_WORKSPACE/onnxruntime" -DCMAKE_BUILD_TYPE=MinSizeRel -Donnxruntime_USE_FULL_PROTOBUF=ON -Donnxruntime_BUILD_SHARED_LIB=ON -Donnxruntime_BUILD_UNIT_TESTS=OFF -Donnxruntime_ENABLE_CPUINFO=OFF -Donnxruntime_DISABLE_CONTRIB_OPS=ON -Donnxruntime_DISABLE_SPARSE_TENSORS=ON --compile-no-warning-as-error -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded -DONNX_USE_MSVC_STATIC_RUNTIME=ON -Dprotobuf_MSVC_STATIC_RUNTIME=ON -DCMAKE_POSITION_INDEPENDENT_CODE=ON ../cmake
+        cmake -DCMAKE_INSTALL_PREFIX="$env:GITHUB_WORKSPACE/onnxruntime" -DCMAKE_BUILD_TYPE=MinSizeRel -Donnxruntime_USE_FULL_PROTOBUF=ON -Donnxruntime_BUILD_SHARED_LIB=ON -Donnxruntime_BUILD_UNIT_TESTS=OFF -Donnxruntime_ENABLE_CPUINFO=OFF -Donnxruntime_DISABLE_CONTRIB_OPS=ON -Donnxruntime_DISABLE_SPARSE_TENSORS=ON --compile-no-warning-as-error -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded -DONNX_USE_MSVC_STATIC_RUNTIME=ON -Dprotobuf_MSVC_STATIC_RUNTIME=ON -DABSL_MSVC_STATIC_RUNTIME=ON -DCMAKE_POSITION_INDEPENDENT_CODE=ON ../cmake
         cmake --build . --config MinSizeRel -j 4
         cmake --build . --config MinSizeRel -j 4 --target install
