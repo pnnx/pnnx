@@ -6,11 +6,11 @@ on:
       - '*'
 
 env:
-  LIBTORCH_VERSION: 2.6.0
-  TORCHVISION_VERSION: 0.21.0
+  LIBTORCH_VERSION: 2.7.0
+  TORCHVISION_VERSION: 0.22.0
   PROTOBUF_VERSION: 21.12
-  ONNXRUNTIME_VERSION: 1.21.0
-  CACHE_DATE: 20250402
+  ONNXRUNTIME_VERSION: 1.21.1
+  CACHE_DATE: 20250423
 
 permissions:
   contents: read
@@ -62,7 +62,6 @@ jobs:
           mkdir -p build && cd build &&
           cmake -DCMAKE_INSTALL_PREFIX="/host/tmp/libtorch" -DCMAKE_BUILD_TYPE=MinSizeRel -DBUILD_SHARED_LIBS=OFF
               -DCMAKE_POLICY_VERSION_MINIMUM=3.5
-              -DBUILD_CAFFE2_OPS=OFF
               -DBUILD_CUSTOM_PROTOBUF=OFF
               -DBUILD_LITE_INTERPRETER=OFF
               -DBUILD_PYTHON=OFF
@@ -162,7 +161,8 @@ jobs:
   # libtorch builds very slow even on self-hosted runner
   linux-aarch64-deps:
     # runs-on: self-hosted
-    runs-on: ubuntu-latest
+    # runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04-arm
     timeout-minutes: 1800
     steps:
     - uses: actions/setup-python@v5
@@ -193,12 +193,6 @@ jobs:
         path: "/tmp/onnxruntime"
         key: onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-linux-aarch64-${{ env.CACHE_DATE }}
 
-    - name: setup-qemu
-      if: steps.cache-libtorch.outputs.cache-hit != 'true' || steps.cache-torchvision.outputs.cache-hit != 'true' || steps.cache-onnxruntime.outputs.cache-hit != 'true'
-      uses: docker/setup-qemu-action@v3
-      with:
-        platforms: arm64
-
     - name: libtorch
       if: steps.cache-libtorch.outputs.cache-hit != 'true'
       uses: pypa/cibuildwheel@v2.23.2
@@ -221,7 +215,6 @@ jobs:
           mkdir -p build && cd build &&
           cmake -DCMAKE_INSTALL_PREFIX="/host/tmp/libtorch" -DCMAKE_BUILD_TYPE=MinSizeRel -DBUILD_SHARED_LIBS=OFF
               -DCMAKE_POLICY_VERSION_MINIMUM=3.5
-              -DBUILD_CAFFE2_OPS=OFF
               -DBUILD_CUSTOM_PROTOBUF=OFF
               -DBUILD_LITE_INTERPRETER=OFF
               -DBUILD_PYTHON=OFF
@@ -336,7 +329,6 @@ jobs:
         mkdir -p build; cd build
         cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/libtorch" -DCMAKE_BUILD_TYPE=MinSizeRel -DBUILD_SHARED_LIBS=OFF \
             -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
-            -DBUILD_CAFFE2_OPS=OFF \
             -DBUILD_CUSTOM_PROTOBUF=OFF \
             -DBUILD_LITE_INTERPRETER=OFF \
             -DBUILD_PYTHON=OFF \
@@ -436,7 +428,6 @@ jobs:
         mkdir -p build; cd build
         cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/libtorch" -DCMAKE_BUILD_TYPE=MinSizeRel -DBUILD_SHARED_LIBS=OFF \
             -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
-            -DBUILD_CAFFE2_OPS=OFF \
             -DBUILD_CUSTOM_PROTOBUF=OFF \
             -DBUILD_LITE_INTERPRETER=OFF \
             -DBUILD_PYTHON=OFF \
@@ -538,7 +529,6 @@ jobs:
         mkdir -p build; cd build
         cmake -DCMAKE_INSTALL_PREFIX="$env:GITHUB_WORKSPACE/libtorch" -DCMAKE_BUILD_TYPE=MinSizeRel -DBUILD_SHARED_LIBS=OFF -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded `
             "-DCMAKE_POLICY_VERSION_MINIMUM=3.5" `
-            -DBUILD_CAFFE2_OPS=OFF `
             -DBUILD_CUSTOM_PROTOBUF=OFF `
             -DBUILD_LITE_INTERPRETER=OFF `
             -DBUILD_PYTHON=OFF `
@@ -685,7 +675,8 @@ jobs:
 
   linux-aarch64:
     needs: [setup, linux-aarch64-deps]
-    runs-on: ubuntu-latest
+    # runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04-arm
     env:
       PACKAGENAME: pnnx-${{ needs.setup.outputs.VERSION }}-linux-aarch64
     steps:
@@ -719,11 +710,6 @@ jobs:
       with:
         repository: Tencent/ncnn
         path: ncnn
-
-    - name: setup-qemu
-      uses: docker/setup-qemu-action@v3
-      with:
-        platforms: arm64
 
     - name: build-pnnx
       uses: pypa/cibuildwheel@v2.23.2
