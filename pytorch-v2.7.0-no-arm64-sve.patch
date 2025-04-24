@@ -1,6 +1,6 @@
-diff -Nuarp pytorch-v2.6.0.orig/cmake/Modules/FindARM.cmake pytorch-v2.6.0/cmake/Modules/FindARM.cmake
---- pytorch-v2.6.0.orig/cmake/Modules/FindARM.cmake	2025-01-30 01:20:53.000000000 +0800
-+++ pytorch-v2.6.0/cmake/Modules/FindARM.cmake	2025-04-03 10:28:54.469883596 +0800
+diff -Nuarp pytorch-v2.7.0.orig/cmake/Modules/FindARM.cmake pytorch-v2.7.0/cmake/Modules/FindARM.cmake
+--- pytorch-v2.7.0.orig/cmake/Modules/FindARM.cmake	2025-04-24 00:19:36.000000000 +0800
++++ pytorch-v2.7.0/cmake/Modules/FindARM.cmake	2025-04-24 10:52:11.887247709 +0800
 @@ -142,7 +142,7 @@ IF(CMAKE_SYSTEM_NAME MATCHES "Linux")
      ENDMACRO()
  

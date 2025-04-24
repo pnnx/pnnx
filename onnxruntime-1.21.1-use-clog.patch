@@ -1,6 +1,6 @@
-diff -Nuarp onnxruntime-1.21.0.orig/cmake/onnxruntime_common.cmake onnxruntime-1.21.0/cmake/onnxruntime_common.cmake
---- onnxruntime-1.21.0.orig/cmake/onnxruntime_common.cmake	2025-03-06 08:37:52.000000000 +0800
-+++ onnxruntime-1.21.0/cmake/onnxruntime_common.cmake	2025-04-01 16:47:12.502314731 +0800
+diff -Nuarp onnxruntime-1.21.1.orig/cmake/onnxruntime_common.cmake onnxruntime-1.21.1/cmake/onnxruntime_common.cmake
+--- onnxruntime-1.21.1.orig/cmake/onnxruntime_common.cmake	2025-04-19 03:12:09.000000000 +0800
++++ onnxruntime-1.21.1/cmake/onnxruntime_common.cmake	2025-04-24 11:00:59.077780438 +0800
 @@ -46,20 +46,6 @@ else()
              "${ONNXRUNTIME_ROOT}/core/platform/posix/logging/*.cc"
          )
@@ -22,9 +22,9 @@ diff -Nuarp onnxruntime-1.21.0.orig/cmake/onnxruntime_common.cmake onnxruntime-1
  endif()
  
  if(onnxruntime_target_platform STREQUAL "ARM64EC")
-diff -Nuarp onnxruntime-1.21.0.orig/onnxruntime/core/platform/logging/make_platform_default_log_sink.cc onnxruntime-1.21.0/onnxruntime/core/platform/logging/make_platform_default_log_sink.cc
---- onnxruntime-1.21.0.orig/onnxruntime/core/platform/logging/make_platform_default_log_sink.cc	2025-03-06 08:37:52.000000000 +0800
-+++ onnxruntime-1.21.0/onnxruntime/core/platform/logging/make_platform_default_log_sink.cc	2025-04-01 16:47:12.502488005 +0800
+diff -Nuarp onnxruntime-1.21.1.orig/onnxruntime/core/platform/logging/make_platform_default_log_sink.cc onnxruntime-1.21.1/onnxruntime/core/platform/logging/make_platform_default_log_sink.cc
+--- onnxruntime-1.21.1.orig/onnxruntime/core/platform/logging/make_platform_default_log_sink.cc	2025-04-19 03:12:09.000000000 +0800
++++ onnxruntime-1.21.1/onnxruntime/core/platform/logging/make_platform_default_log_sink.cc	2025-04-24 11:00:59.078254772 +0800
 @@ -3,25 +3,13 @@
  
  #include "core/platform/logging/make_platform_default_log_sink.h"
