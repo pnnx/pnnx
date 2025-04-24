@@ -6,11 +6,11 @@ on:
       - '*'
 
 env:
-  LIBTORCH_VERSION: 2.6.0
-  TORCHVISION_VERSION: 0.21.0
+  LIBTORCH_VERSION: 2.7.0
+  TORCHVISION_VERSION: 0.22.0
   PROTOBUF_VERSION: 21.12
-  ONNXRUNTIME_VERSION: 1.21.0
-  CACHE_DATE: 20250402
+  ONNXRUNTIME_VERSION: 1.21.1
+  CACHE_DATE: 20250423
 
 permissions:
   contents: read
@@ -62,7 +62,6 @@ jobs:
           mkdir -p build && cd build &&
           cmake -DCMAKE_INSTALL_PREFIX="/host/tmp/libtorch" -DCMAKE_BUILD_TYPE=MinSizeRel -DBUILD_SHARED_LIBS=OFF
               -DCMAKE_POLICY_VERSION_MINIMUM=3.5
-              -DBUILD_CAFFE2_OPS=OFF
               -DBUILD_CUSTOM_PROTOBUF=OFF
               -DBUILD_LITE_INTERPRETER=OFF
               -DBUILD_PYTHON=OFF
@@ -221,7 +220,6 @@ jobs:
           mkdir -p build && cd build &&
           cmake -DCMAKE_INSTALL_PREFIX="/host/tmp/libtorch" -DCMAKE_BUILD_TYPE=MinSizeRel -DBUILD_SHARED_LIBS=OFF
               -DCMAKE_POLICY_VERSION_MINIMUM=3.5
-              -DBUILD_CAFFE2_OPS=OFF
               -DBUILD_CUSTOM_PROTOBUF=OFF
               -DBUILD_LITE_INTERPRETER=OFF
               -DBUILD_PYTHON=OFF
@@ -336,7 +334,6 @@ jobs:
         mkdir -p build; cd build
         cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/libtorch" -DCMAKE_BUILD_TYPE=MinSizeRel -DBUILD_SHARED_LIBS=OFF \
             -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
-            -DBUILD_CAFFE2_OPS=OFF \
             -DBUILD_CUSTOM_PROTOBUF=OFF \
             -DBUILD_LITE_INTERPRETER=OFF \
             -DBUILD_PYTHON=OFF \
@@ -436,7 +433,6 @@ jobs:
         mkdir -p build; cd build
         cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/libtorch" -DCMAKE_BUILD_TYPE=MinSizeRel -DBUILD_SHARED_LIBS=OFF \
             -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
-            -DBUILD_CAFFE2_OPS=OFF \
             -DBUILD_CUSTOM_PROTOBUF=OFF \
             -DBUILD_LITE_INTERPRETER=OFF \
             -DBUILD_PYTHON=OFF \
@@ -538,7 +534,6 @@ jobs:
         mkdir -p build; cd build
         cmake -DCMAKE_INSTALL_PREFIX="$env:GITHUB_WORKSPACE/libtorch" -DCMAKE_BUILD_TYPE=MinSizeRel -DBUILD_SHARED_LIBS=OFF -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded `
             "-DCMAKE_POLICY_VERSION_MINIMUM=3.5" `
-            -DBUILD_CAFFE2_OPS=OFF `
             -DBUILD_CUSTOM_PROTOBUF=OFF `
             -DBUILD_LITE_INTERPRETER=OFF `
             -DBUILD_PYTHON=OFF `
