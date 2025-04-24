@@ -187,12 +187,6 @@ jobs:
         path: "/tmp/onnxruntime"
         key: onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-linux-aarch64-${{ env.CACHE_DATE }}
 
-    - name: setup-qemu
-      if: steps.cache-libtorch.outputs.cache-hit != 'true' || steps.cache-torchvision.outputs.cache-hit != 'true' || steps.cache-onnxruntime.outputs.cache-hit != 'true'
-      uses: docker/setup-qemu-action@v3
-      with:
-        platforms: arm64
-
     - name: libtorch
       if: steps.cache-libtorch.outputs.cache-hit != 'true'
       uses: pypa/cibuildwheel@v2.23.2
