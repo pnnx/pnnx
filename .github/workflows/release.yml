@@ -161,7 +161,8 @@ jobs:
   # libtorch builds very slow even on self-hosted runner
   linux-aarch64-deps:
     # runs-on: self-hosted
-    runs-on: ubuntu-latest
+    # runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04-arm
     timeout-minutes: 1800
     steps:
     - uses: actions/setup-python@v5
@@ -680,7 +681,8 @@ jobs:
 
   linux-aarch64:
     needs: [setup, linux-aarch64-deps]
-    runs-on: ubuntu-latest
+    # runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04-arm
     env:
       PACKAGENAME: pnnx-${{ needs.setup.outputs.VERSION }}-linux-aarch64
     steps:
