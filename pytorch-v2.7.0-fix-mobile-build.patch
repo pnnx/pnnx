@@ -1,6 +1,18 @@
+diff -Nuarp pytorch-v2.7.0.orig/torch/csrc/inductor/aoti_torch/shim_common.cpp pytorch-v2.7.0/torch/csrc/inductor/aoti_torch/shim_common.cpp
+--- pytorch-v2.7.0.orig/torch/csrc/inductor/aoti_torch/shim_common.cpp	2025-04-24 00:19:40.000000000 +0800
++++ pytorch-v2.7.0/torch/csrc/inductor/aoti_torch/shim_common.cpp	2025-04-24 11:16:27.206874692 +0800
+@@ -237,7 +237,7 @@ AOTI_TORCH_SCALAR_TO_TENSOR_IMPL(
+     ComplexDouble)
+ #undef AOTI_TORCH_SCALAR_TO_TENSOR_IMPL
+ 
+-#ifndef C10_MOBILE
++#if 0//ndef C10_MOBILE
+ #include <torch/version.h>
+ uint64_t aoti_torch_abi_version() {
+   return TORCH_ABI_VERSION;
 diff -Nuarp pytorch-v2.7.0.orig/torch/csrc/jit/serialization/pickle.cpp pytorch-v2.7.0/torch/csrc/jit/serialization/pickle.cpp
 --- pytorch-v2.7.0.orig/torch/csrc/jit/serialization/pickle.cpp	2025-04-24 00:19:40.000000000 +0800
-+++ pytorch-v2.7.0/torch/csrc/jit/serialization/pickle.cpp	2025-04-24 10:48:33.976337973 +0800
++++ pytorch-v2.7.0/torch/csrc/jit/serialization/pickle.cpp	2025-04-24 11:16:16.386488348 +0800
 @@ -66,7 +66,7 @@ std::vector<char> pickle(
  // This has to live here instead of the C++ API to mirror torch.save since the
  // mobile build excludes the C++ API
@@ -39,7 +51,7 @@ diff -Nuarp pytorch-v2.7.0.orig/torch/csrc/jit/serialization/pickle.cpp pytorch-
    return torch::jit::readArchiveAndTensors(
 diff -Nuarp pytorch-v2.7.0.orig/torch/csrc/jit/serialization/pickle.h pytorch-v2.7.0/torch/csrc/jit/serialization/pickle.h
 --- pytorch-v2.7.0.orig/torch/csrc/jit/serialization/pickle.h	2025-04-24 00:19:40.000000000 +0800
-+++ pytorch-v2.7.0/torch/csrc/jit/serialization/pickle.h	2025-04-24 10:48:33.976593461 +0800
++++ pytorch-v2.7.0/torch/csrc/jit/serialization/pickle.h	2025-04-24 11:16:16.386653507 +0800
 @@ -106,7 +106,7 @@ TORCH_API IValue unpickle(
      c10::TypePtr (*type_parser)(const std::string&) =
          Unpickler::defaultTypeParser);
