@@ -51,7 +51,7 @@ jobs:
         CIBW_BUILD: 'cp310-manylinux_x86_64'
         CIBW_BUILD_VERBOSITY: 1
         CIBW_REPAIR_WHEEL_COMMAND: ""
-        CIBW_BEFORE_ALL: yum install gcc-toolset-10 wget zip -y &&
+        CIBW_BEFORE_ALL: yum install gcc-toolset-11 wget zip -y &&
           wget -q https://github.com/pytorch/pytorch/releases/download/v${{ env.LIBTORCH_VERSION }}/pytorch-v${{ env.LIBTORCH_VERSION }}.tar.gz &&
           tar -xf pytorch-v${{ env.LIBTORCH_VERSION }}.tar.gz &&
           cd pytorch-v${{ env.LIBTORCH_VERSION }} &&
@@ -79,8 +79,8 @@ jobs:
               -DUSE_OPENMP=OFF
               -DUSE_SOURCE_DEBUG_ON_MOBILE=OFF
               -DUSE_XNNPACK=OFF
-              -DCMAKE_CXX_COMPILER="/opt/rh/gcc-toolset-10/root/usr/bin/c++"
-              -DCMAKE_C_COMPILER="/opt/rh/gcc-toolset-10/root/usr/bin/cc"
+              -DCMAKE_CXX_COMPILER="/opt/rh/gcc-toolset-11/root/usr/bin/c++"
+              -DCMAKE_C_COMPILER="/opt/rh/gcc-toolset-11/root/usr/bin/cc"
               .. &&
           cmake --build . -j $(nproc) &&
           cmake --build . -j $(nproc) --target install/strip
@@ -101,7 +101,7 @@ jobs:
         CIBW_BUILD: 'cp310-manylinux_x86_64'
         CIBW_BUILD_VERBOSITY: 1
         CIBW_REPAIR_WHEEL_COMMAND: ""
-        CIBW_BEFORE_ALL: yum install gcc-toolset-10 wget zip -y &&
+        CIBW_BEFORE_ALL: yum install gcc-toolset-11 wget zip -y &&
           wget -q https://github.com/pytorch/vision/archive/refs/tags/v${{ env.TORCHVISION_VERSION }}.zip -O vision-${{ env.TORCHVISION_VERSION }}.zip &&
           unzip -q vision-${{ env.TORCHVISION_VERSION }}.zip &&
           cd vision-${{ env.TORCHVISION_VERSION }} &&
@@ -111,8 +111,8 @@ jobs:
           cmake -DCMAKE_INSTALL_PREFIX="/host/tmp/torchvision"
           -DTorch_DIR="/host/tmp/libtorch/share/cmake/Torch"
           -DCMAKE_BUILD_TYPE=MinSizeRel -DWITH_PNG=OFF
-          -DCMAKE_C_COMPILER="/opt/rh/gcc-toolset-10/root/usr/bin/cc"
-          -DCMAKE_CXX_COMPILER="/opt/rh/gcc-toolset-10/root/usr/bin/c++" -DWITH_JPEG=OFF ..  &&
+          -DCMAKE_C_COMPILER="/opt/rh/gcc-toolset-11/root/usr/bin/cc"
+          -DCMAKE_CXX_COMPILER="/opt/rh/gcc-toolset-11/root/usr/bin/c++" -DWITH_JPEG=OFF ..  &&
           cmake --build . -j $(nproc)  &&
           cmake --build . -j $(nproc) --target install/strip
       with:
@@ -133,13 +133,13 @@ jobs:
         CIBW_BUILD: 'cp310-manylinux_x86_64'
         CIBW_BUILD_VERBOSITY: 1
         CIBW_REPAIR_WHEEL_COMMAND: ""
-        CIBW_BEFORE_ALL: yum install gcc-toolset-10 wget zip -y &&
+        CIBW_BEFORE_ALL: yum install gcc-toolset-11 wget zip -y &&
           wget -q https://github.com/protocolbuffers/protobuf/archive/v${{ env.PROTOBUF_VERSION }}.zip -O protobuf-${{ env.PROTOBUF_VERSION }}.zip &&
           unzip -q protobuf-${{ env.PROTOBUF_VERSION }}.zip &&
           cd protobuf-${{ env.PROTOBUF_VERSION }} &&
           mkdir -p build2 && cd build2 &&
-          cmake -DCMAKE_INSTALL_PREFIX="/host/tmp/onnxruntime" -Dprotobuf_BUILD_TESTS=OFF -DCMAKE_C_COMPILER="/opt/rh/gcc-toolset-10/root/usr/bin/cc"
-          -DCMAKE_CXX_COMPILER="/opt/rh/gcc-toolset-10/root/usr/bin/c++" -DCMAKE_BUILD_TYPE=MinSizeRel -DCMAKE_POSITION_INDEPENDENT_CODE=ON .. &&
+          cmake -DCMAKE_INSTALL_PREFIX="/host/tmp/onnxruntime" -Dprotobuf_BUILD_TESTS=OFF -DCMAKE_C_COMPILER="/opt/rh/gcc-toolset-11/root/usr/bin/cc"
+          -DCMAKE_CXX_COMPILER="/opt/rh/gcc-toolset-11/root/usr/bin/c++" -DCMAKE_BUILD_TYPE=MinSizeRel -DCMAKE_POSITION_INDEPENDENT_CODE=ON .. &&
           cmake --build . -j $(nproc) &&
           cmake --build . -j $(nproc) --target install/strip &&
           cd ../../ &&
@@ -150,8 +150,8 @@ jobs:
           patch -p1 -i /project/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-monolithic-static-library.patch &&
           patch -p1 -i /project/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-use-clog.patch &&
           mkdir -p build2 && cd build2 &&
-          cmake -DCMAKE_INSTALL_PREFIX="/host/tmp/onnxruntime" -DCMAKE_C_COMPILER="/opt/rh/gcc-toolset-10/root/usr/bin/cc"
-          -DCMAKE_CXX_COMPILER="/opt/rh/gcc-toolset-10/root/usr/bin/c++" -DCMAKE_BUILD_TYPE=MinSizeRel -Donnxruntime_USE_FULL_PROTOBUF=ON -Donnxruntime_BUILD_SHARED_LIB=ON -Donnxruntime_BUILD_UNIT_TESTS=OFF -Donnxruntime_ENABLE_CPUINFO=OFF -Donnxruntime_DISABLE_CONTRIB_OPS=ON -Donnxruntime_DISABLE_ML_OPS=ON -Donnxruntime_DISABLE_SPARSE_TENSORS=ON --compile-no-warning-as-error -DCMAKE_POSITION_INDEPENDENT_CODE=ON ../cmake &&
+          cmake -DCMAKE_INSTALL_PREFIX="/host/tmp/onnxruntime" -DCMAKE_C_COMPILER="/opt/rh/gcc-toolset-11/root/usr/bin/cc"
+          -DCMAKE_CXX_COMPILER="/opt/rh/gcc-toolset-11/root/usr/bin/c++" -DCMAKE_BUILD_TYPE=MinSizeRel -Donnxruntime_USE_FULL_PROTOBUF=ON -Donnxruntime_BUILD_SHARED_LIB=ON -Donnxruntime_BUILD_UNIT_TESTS=OFF -Donnxruntime_ENABLE_CPUINFO=OFF -Donnxruntime_DISABLE_CONTRIB_OPS=ON -Donnxruntime_DISABLE_ML_OPS=ON -Donnxruntime_DISABLE_SPARSE_TENSORS=ON --compile-no-warning-as-error -DCMAKE_POSITION_INDEPENDENT_CODE=ON ../cmake &&
           cmake --build . -j $(nproc) &&
           cmake --build . -j $(nproc) --target install/strip
       with:
@@ -201,7 +201,7 @@ jobs:
         CIBW_BUILD: 'cp310-manylinux_aarch64'
         CIBW_BUILD_VERBOSITY: 1
         CIBW_REPAIR_WHEEL_COMMAND: ""
-        CIBW_BEFORE_ALL: yum install gcc-toolset-10 wget zip -y &&
+        CIBW_BEFORE_ALL: yum install gcc-toolset-11 wget zip -y &&
           wget -q https://github.com/pytorch/pytorch/releases/download/v${{ env.LIBTORCH_VERSION }}/pytorch-v${{ env.LIBTORCH_VERSION }}.tar.gz &&
           tar -xf pytorch-v${{ env.LIBTORCH_VERSION }}.tar.gz &&
           cd pytorch-v${{ env.LIBTORCH_VERSION }} &&
@@ -232,8 +232,8 @@ jobs:
               -DUSE_OPENMP=OFF
               -DUSE_SOURCE_DEBUG_ON_MOBILE=OFF
               -DUSE_XNNPACK=OFF
-              -DCMAKE_CXX_COMPILER="/opt/rh/gcc-toolset-10/root/usr/bin/c++"
-              -DCMAKE_C_COMPILER="/opt/rh/gcc-toolset-10/root/usr/bin/cc"
+              -DCMAKE_CXX_COMPILER="/opt/rh/gcc-toolset-11/root/usr/bin/c++"
+              -DCMAKE_C_COMPILER="/opt/rh/gcc-toolset-11/root/usr/bin/cc"
               .. &&
           cmake --build . -j $(nproc) &&
           cmake --build . -j $(nproc) --target install/strip
@@ -249,7 +249,7 @@ jobs:
         CIBW_BUILD: 'cp310-manylinux_aarch64'
         CIBW_BUILD_VERBOSITY: 1
         CIBW_REPAIR_WHEEL_COMMAND: ""
-        CIBW_BEFORE_ALL: yum install gcc-toolset-10 wget zip -y &&
+        CIBW_BEFORE_ALL: yum install gcc-toolset-11 wget zip -y &&
           wget -q https://github.com/pytorch/vision/archive/refs/tags/v${{ env.TORCHVISION_VERSION }}.zip -O vision-${{ env.TORCHVISION_VERSION }}.zip &&
           unzip -q vision-${{ env.TORCHVISION_VERSION }}.zip &&
           cd vision-${{ env.TORCHVISION_VERSION }} &&
@@ -259,8 +259,8 @@ jobs:
           cmake -DCMAKE_INSTALL_PREFIX="/host/tmp/torchvision"
           -DTorch_DIR="/host/tmp/libtorch/share/cmake/Torch"
           -DCMAKE_BUILD_TYPE=MinSizeRel -DWITH_PNG=OFF
-          -DCMAKE_C_COMPILER="/opt/rh/gcc-toolset-10/root/usr/bin/cc"
-          -DCMAKE_CXX_COMPILER="/opt/rh/gcc-toolset-10/root/usr/bin/c++" -DWITH_JPEG=OFF ..  &&
+          -DCMAKE_C_COMPILER="/opt/rh/gcc-toolset-11/root/usr/bin/cc"
+          -DCMAKE_CXX_COMPILER="/opt/rh/gcc-toolset-11/root/usr/bin/c++" -DWITH_JPEG=OFF ..  &&
           cmake --build . -j $(nproc)  &&
           cmake --build . -j $(nproc) --target install/strip
       with:
@@ -275,13 +275,13 @@ jobs:
         CIBW_BUILD: 'cp310-manylinux_aarch64'
         CIBW_BUILD_VERBOSITY: 1
         CIBW_REPAIR_WHEEL_COMMAND: ""
-        CIBW_BEFORE_ALL: yum install gcc-toolset-10 wget zip -y &&
+        CIBW_BEFORE_ALL: yum install gcc-toolset-11 wget zip -y &&
           wget -q https://github.com/protocolbuffers/protobuf/archive/v${{ env.PROTOBUF_VERSION }}.zip -O protobuf-${{ env.PROTOBUF_VERSION }}.zip &&
           unzip -q protobuf-${{ env.PROTOBUF_VERSION }}.zip &&
           cd protobuf-${{ env.PROTOBUF_VERSION }} &&
           mkdir -p build2 && cd build2 &&
-          cmake -DCMAKE_INSTALL_PREFIX="/host/tmp/onnxruntime" -Dprotobuf_BUILD_TESTS=OFF -DCMAKE_C_COMPILER="/opt/rh/gcc-toolset-10/root/usr/bin/cc"
-          -DCMAKE_CXX_COMPILER="/opt/rh/gcc-toolset-10/root/usr/bin/c++" -DCMAKE_BUILD_TYPE=MinSizeRel -DCMAKE_POSITION_INDEPENDENT_CODE=ON .. &&
+          cmake -DCMAKE_INSTALL_PREFIX="/host/tmp/onnxruntime" -Dprotobuf_BUILD_TESTS=OFF -DCMAKE_C_COMPILER="/opt/rh/gcc-toolset-11/root/usr/bin/cc"
+          -DCMAKE_CXX_COMPILER="/opt/rh/gcc-toolset-11/root/usr/bin/c++" -DCMAKE_BUILD_TYPE=MinSizeRel -DCMAKE_POSITION_INDEPENDENT_CODE=ON .. &&
           cmake --build . -j $(nproc) &&
           cmake --build . -j $(nproc) --target install/strip &&
           cd ../../ &&
@@ -292,8 +292,8 @@ jobs:
           patch -p1 -i /project/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-monolithic-static-library.patch &&
           patch -p1 -i /project/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-use-clog.patch &&
           mkdir -p build2 && cd build2 &&
-          cmake -DCMAKE_INSTALL_PREFIX="/host/tmp/onnxruntime" -DCMAKE_C_COMPILER="/opt/rh/gcc-toolset-10/root/usr/bin/cc"
-          -DCMAKE_CXX_COMPILER="/opt/rh/gcc-toolset-10/root/usr/bin/c++" -DCMAKE_BUILD_TYPE=MinSizeRel -Donnxruntime_USE_FULL_PROTOBUF=ON -Donnxruntime_BUILD_SHARED_LIB=ON -Donnxruntime_BUILD_UNIT_TESTS=OFF -Donnxruntime_ENABLE_CPUINFO=OFF -Donnxruntime_DISABLE_CONTRIB_OPS=ON -Donnxruntime_DISABLE_ML_OPS=ON -Donnxruntime_DISABLE_SPARSE_TENSORS=ON --compile-no-warning-as-error -DCMAKE_POSITION_INDEPENDENT_CODE=ON ../cmake &&
+          cmake -DCMAKE_INSTALL_PREFIX="/host/tmp/onnxruntime" -DCMAKE_C_COMPILER="/opt/rh/gcc-toolset-11/root/usr/bin/cc"
+          -DCMAKE_CXX_COMPILER="/opt/rh/gcc-toolset-11/root/usr/bin/c++" -DCMAKE_BUILD_TYPE=MinSizeRel -Donnxruntime_USE_FULL_PROTOBUF=ON -Donnxruntime_BUILD_SHARED_LIB=ON -Donnxruntime_BUILD_UNIT_TESTS=OFF -Donnxruntime_ENABLE_CPUINFO=OFF -Donnxruntime_DISABLE_CONTRIB_OPS=ON -Donnxruntime_DISABLE_ML_OPS=ON -Donnxruntime_DISABLE_SPARSE_TENSORS=ON --compile-no-warning-as-error -DCMAKE_POSITION_INDEPENDENT_CODE=ON ../cmake &&
           cmake --build . -j $(nproc) &&
           cmake --build . -j $(nproc) --target install/strip
       with:
@@ -642,7 +642,7 @@ jobs:
         CIBW_BUILD: 'cp310-manylinux_x86_64'
         CIBW_BUILD_VERBOSITY: 1
         CIBW_REPAIR_WHEEL_COMMAND: ""
-        CIBW_BEFORE_ALL: yum install gcc-toolset-10 wget zip -y &&
+        CIBW_BEFORE_ALL: yum install gcc-toolset-11 wget zip -y &&
           cd /project/ncnn/tools/pnnx/ &&
           mkdir build && cd build &&
           cmake -DCMAKE_INSTALL_PREFIX=/host/tmp/install -DCMAKE_BUILD_TYPE=MinSizeRel
@@ -652,8 +652,8 @@ jobs:
             -DProtobuf_INCLUDE_DIR="/host/tmp/onnxruntime/include"
             -DProtobuf_LIBRARIES="/host/tmp/onnxruntime/lib64/libprotobuf.a"
             -DProtobuf_PROTOC_EXECUTABLE="/host/tmp/onnxruntime/bin/protoc"
-            -DCMAKE_CXX_COMPILER="/opt/rh/gcc-toolset-10/root/usr/bin/c++"
-            -DCMAKE_C_COMPILER="/opt/rh/gcc-toolset-10/root/usr/bin/cc"
+            -DCMAKE_CXX_COMPILER="/opt/rh/gcc-toolset-11/root/usr/bin/c++"
+            -DCMAKE_C_COMPILER="/opt/rh/gcc-toolset-11/root/usr/bin/cc"
             .. &&
           cmake --build . -j $(nproc) &&
           cmake --build . --target install/strip
@@ -718,7 +718,7 @@ jobs:
         CIBW_BUILD: 'cp310-manylinux_aarch64'
         CIBW_BUILD_VERBOSITY: 1
         CIBW_REPAIR_WHEEL_COMMAND: ""
-        CIBW_BEFORE_ALL: yum install gcc-toolset-10 wget zip -y &&
+        CIBW_BEFORE_ALL: yum install gcc-toolset-11 wget zip -y &&
           cd /project/ncnn/tools/pnnx/ &&
           mkdir build && cd build &&
           cmake -DCMAKE_INSTALL_PREFIX=/host/tmp/install -DCMAKE_BUILD_TYPE=MinSizeRel
@@ -728,8 +728,8 @@ jobs:
             -DProtobuf_INCLUDE_DIR="/host/tmp/onnxruntime/include"
             -DProtobuf_LIBRARIES="/host/tmp/onnxruntime/lib64/libprotobuf.a"
             -DProtobuf_PROTOC_EXECUTABLE="/host/tmp/onnxruntime/bin/protoc"
-            -DCMAKE_CXX_COMPILER="/opt/rh/gcc-toolset-10/root/usr/bin/c++"
-            -DCMAKE_C_COMPILER="/opt/rh/gcc-toolset-10/root/usr/bin/cc"
+            -DCMAKE_CXX_COMPILER="/opt/rh/gcc-toolset-11/root/usr/bin/c++"
+            -DCMAKE_C_COMPILER="/opt/rh/gcc-toolset-11/root/usr/bin/cc"
             .. &&
           cmake --build . -j $(nproc) &&
           cmake --build . --target install/strip
