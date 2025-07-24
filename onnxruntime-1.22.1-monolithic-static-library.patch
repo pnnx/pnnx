@@ -1,6 +1,6 @@
-diff -Nuarp onnxruntime-1.21.1.orig/cmake/bundle_static_library.cmake onnxruntime-1.21.1/cmake/bundle_static_library.cmake
---- onnxruntime-1.21.1.orig/cmake/bundle_static_library.cmake	1970-01-01 08:00:00.000000000 +0800
-+++ onnxruntime-1.21.1/cmake/bundle_static_library.cmake	2025-04-24 11:00:13.301481287 +0800
+diff -Nuarp onnxruntime-1.22.1.orig/cmake/bundle_static_library.cmake onnxruntime-1.22.1/cmake/bundle_static_library.cmake
+--- onnxruntime-1.22.1.orig/cmake/bundle_static_library.cmake	1970-01-01 08:00:00.000000000 +0800
++++ onnxruntime-1.22.1/cmake/bundle_static_library.cmake	2025-07-24 16:57:58.518064989 +0800
 @@ -0,0 +1,145 @@
 +# References:
 +# - https://github.com/microsoft/onnxruntime/blob/main/cmake/onnxruntime_webassembly.cmake
@@ -147,10 +147,10 @@ diff -Nuarp onnxruntime-1.21.1.orig/cmake/bundle_static_library.cmake onnxruntim
 +
 +    add_dependencies(${bundled_target_name} bundling_${bundled_target_name})
 +endfunction()
-diff -Nuarp onnxruntime-1.21.1.orig/cmake/CMakeLists.txt onnxruntime-1.21.1/cmake/CMakeLists.txt
---- onnxruntime-1.21.1.orig/cmake/CMakeLists.txt	2025-04-19 03:12:09.000000000 +0800
-+++ onnxruntime-1.21.1/cmake/CMakeLists.txt	2025-04-24 11:00:13.301646786 +0800
-@@ -1915,7 +1915,7 @@ if (onnxruntime_ENABLE_EXTERNAL_CUSTOM_O
+diff -Nuarp onnxruntime-1.22.1.orig/cmake/CMakeLists.txt onnxruntime-1.22.1/cmake/CMakeLists.txt
+--- onnxruntime-1.22.1.orig/cmake/CMakeLists.txt	2025-06-28 01:02:30.000000000 +0800
++++ onnxruntime-1.22.1/cmake/CMakeLists.txt	2025-07-24 16:57:58.518376405 +0800
+@@ -1909,7 +1909,7 @@ if (onnxruntime_ENABLE_EXTERNAL_CUSTOM_O
    )
  endif()
  
@@ -159,7 +159,7 @@ diff -Nuarp onnxruntime-1.21.1.orig/cmake/CMakeLists.txt onnxruntime-1.21.1/cmak
  # Install
    include(GNUInstallDirs)
    include(CMakePackageConfigHelpers)
-@@ -1954,3 +1954,19 @@ if(DEFINED BUILD_AS_ARM64X)
+@@ -1948,3 +1948,19 @@ if(DEFINED BUILD_AS_ARM64X)
  
    include("${CMAKE_CURRENT_SOURCE_DIR}/arm64x.cmake")
  endif()
@@ -179,9 +179,9 @@ diff -Nuarp onnxruntime-1.21.1.orig/cmake/CMakeLists.txt onnxruntime-1.21.1/cmak
 +    RENAME ${CMAKE_STATIC_LIBRARY_PREFIX}onnxruntime${CMAKE_STATIC_LIBRARY_SUFFIX}
 +    TYPE LIB
 +)
-diff -Nuarp onnxruntime-1.21.1.orig/cmake/onnxruntime.cmake onnxruntime-1.21.1/cmake/onnxruntime.cmake
---- onnxruntime-1.21.1.orig/cmake/onnxruntime.cmake	2025-04-19 03:12:09.000000000 +0800
-+++ onnxruntime-1.21.1/cmake/onnxruntime.cmake	2025-04-24 11:00:13.301813558 +0800
+diff -Nuarp onnxruntime-1.22.1.orig/cmake/onnxruntime.cmake onnxruntime-1.22.1/cmake/onnxruntime.cmake
+--- onnxruntime-1.22.1.orig/cmake/onnxruntime.cmake	2025-06-28 01:02:30.000000000 +0800
++++ onnxruntime-1.22.1/cmake/onnxruntime.cmake	2025-07-24 16:57:58.518603881 +0800
 @@ -283,13 +283,6 @@ else()
      VERSION ${ORT_VERSION}
      FOLDER "ONNXRuntime")
@@ -196,9 +196,9 @@ diff -Nuarp onnxruntime-1.21.1.orig/cmake/onnxruntime.cmake onnxruntime-1.21.1/c
  
  
  if (WIN32 AND NOT CMAKE_CXX_STANDARD_LIBRARIES MATCHES kernel32.lib)
-diff -Nuarp onnxruntime-1.21.1.orig/cmake/onnxruntime_providers_cpu.cmake onnxruntime-1.21.1/cmake/onnxruntime_providers_cpu.cmake
---- onnxruntime-1.21.1.orig/cmake/onnxruntime_providers_cpu.cmake	2025-04-19 03:12:09.000000000 +0800
-+++ onnxruntime-1.21.1/cmake/onnxruntime_providers_cpu.cmake	2025-04-24 11:00:13.301923343 +0800
+diff -Nuarp onnxruntime-1.22.1.orig/cmake/onnxruntime_providers_cpu.cmake onnxruntime-1.22.1/cmake/onnxruntime_providers_cpu.cmake
+--- onnxruntime-1.22.1.orig/cmake/onnxruntime_providers_cpu.cmake	2025-06-28 01:02:30.000000000 +0800
++++ onnxruntime-1.22.1/cmake/onnxruntime_providers_cpu.cmake	2025-07-24 16:57:58.518732912 +0800
 @@ -259,11 +259,6 @@ if (NOT onnxruntime_MINIMAL_BUILD AND NO
    message(FATAL_ERROR "onnxruntime_providers_shared unknown platform, need to specify shared library exports for it")
    endif()

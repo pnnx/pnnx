@@ -1,6 +1,6 @@
-diff -Nuarp pytorch-v2.7.0.orig/cmake/Codegen.cmake pytorch-v2.7.0/cmake/Codegen.cmake
---- pytorch-v2.7.0.orig/cmake/Codegen.cmake	2025-04-24 00:19:36.000000000 +0800
-+++ pytorch-v2.7.0/cmake/Codegen.cmake	2025-04-24 10:54:17.706548291 +0800
+diff -Nuarp pytorch-v2.7.1.orig/cmake/Codegen.cmake pytorch-v2.7.1/cmake/Codegen.cmake
+--- pytorch-v2.7.1.orig/cmake/Codegen.cmake	2025-06-05 02:15:52.000000000 +0800
++++ pytorch-v2.7.1/cmake/Codegen.cmake	2025-07-24 16:52:03.349633860 +0800
 @@ -59,6 +59,11 @@ endif()
  install(FILES ${CMAKE_BINARY_DIR}/caffe2/core/macros.h
          DESTINATION include/caffe2/core)
@@ -13,9 +13,9 @@ diff -Nuarp pytorch-v2.7.0.orig/cmake/Codegen.cmake pytorch-v2.7.0/cmake/Codegen
  # ---[ ATen specific
  if(INTERN_BUILD_ATEN_OPS)
    if(MSVC)
-diff -Nuarp pytorch-v2.7.0.orig/CMakeLists.txt pytorch-v2.7.0/CMakeLists.txt
---- pytorch-v2.7.0.orig/CMakeLists.txt	2025-04-24 00:19:35.000000000 +0800
-+++ pytorch-v2.7.0/CMakeLists.txt	2025-04-24 10:53:44.220572419 +0800
+diff -Nuarp pytorch-v2.7.1.orig/CMakeLists.txt pytorch-v2.7.1/CMakeLists.txt
+--- pytorch-v2.7.1.orig/CMakeLists.txt	2025-06-05 02:15:51.000000000 +0800
++++ pytorch-v2.7.1/CMakeLists.txt	2025-07-24 16:52:03.349815810 +0800
 @@ -380,15 +380,6 @@ option(USE_MIMALLOC "Use mimalloc" OFF)
  # Enable third party mimalloc library to improve memory allocation performance
  # on Windows.
