@@ -496,7 +496,7 @@ jobs:
         cmake --build . -j 3 --target install/strip
 
   windows-deps:
-    runs-on: windows-2019
+    runs-on: windows-2022
     env:
       UseMultiToolTask: true
     steps:
@@ -909,7 +909,7 @@ jobs:
 
   windows:
     needs: [setup, windows-deps]
-    runs-on: windows-2019
+    runs-on: windows-2022
     env:
       PACKAGENAME: pnnx-${{ needs.setup.outputs.VERSION }}-windows
       UseMultiToolTask: true
@@ -1082,7 +1082,7 @@ jobs:
 
   windows-python:
     needs: [setup, windows]
-    runs-on: windows-2019
+    runs-on: windows-2022
     env:
       UseMultiToolTask: true
     steps:
