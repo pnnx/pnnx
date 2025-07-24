@@ -1,6 +1,6 @@
-diff -Nuarp pytorch-v2.7.0.orig/third_party/pocketfft/pocketfft_hdronly.h pytorch-v2.7.0/third_party/pocketfft/pocketfft_hdronly.h
---- pytorch-v2.7.0.orig/third_party/pocketfft/pocketfft_hdronly.h	2025-04-24 00:19:40.000000000 +0800
-+++ pytorch-v2.7.0/third_party/pocketfft/pocketfft_hdronly.h	2025-04-24 10:49:29.082689991 +0800
+diff -Nuarp pytorch-v2.7.1.orig/third_party/pocketfft/pocketfft_hdronly.h pytorch-v2.7.1/third_party/pocketfft/pocketfft_hdronly.h
+--- pytorch-v2.7.1.orig/third_party/pocketfft/pocketfft_hdronly.h	2025-06-05 02:15:56.000000000 +0800
++++ pytorch-v2.7.1/third_party/pocketfft/pocketfft_hdronly.h	2025-07-24 16:50:07.665128428 +0800
 @@ -152,7 +152,7 @@ template<> struct VLEN<double> { static
  // the __MINGW32__ part in the conditional below works around the problem that
  // the standard C++ library on Windows does not provide aligned_alloc() even
