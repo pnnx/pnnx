@@ -881,12 +881,12 @@ jobs:
     - name: checkout
       uses: actions/checkout@v4
     - name: download-macos-x64
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v5
       with:
         name: pnnx-${{ needs.setup.outputs.VERSION }}-macos-x64
         path: artifacts
     - name: download-macos-arm64
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v5
       with:
         name: pnnx-${{ needs.setup.outputs.VERSION }}-macos-arm64
         path: artifacts
@@ -977,7 +977,7 @@ jobs:
         python-version: '3.11'
 
     - name: download-pnnx
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v5
       with:
         name: pnnx-${{ needs.setup.outputs.VERSION }}-linux
 
@@ -1015,7 +1015,7 @@ jobs:
         python-version: '3.11'
 
     - name: download-pnnx
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v5
       with:
         name: pnnx-${{ needs.setup.outputs.VERSION }}-linux-aarch64
 
@@ -1051,7 +1051,7 @@ jobs:
         python-version: '3.11'
 
     - name: download-pnnx
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v5
       with:
         name: pnnx-${{ needs.setup.outputs.VERSION }}-macos
 
@@ -1091,7 +1091,7 @@ jobs:
         python-version: '3.11'
 
     - name: download-pnnx
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v5
       with:
         name: pnnx-${{ needs.setup.outputs.VERSION }}-windows
 
@@ -1127,22 +1127,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: download-linux
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v5
       with:
         name: pnnx-${{ needs.setup.outputs.VERSION }}-linux
         path: artifacts
     - name: download-linux-aarch64
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v5
       with:
         name: pnnx-${{ needs.setup.outputs.VERSION }}-linux-aarch64
         path: artifacts
     - name: download-macos
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v5
       with:
         name: pnnx-${{ needs.setup.outputs.VERSION }}-macos
         path: artifacts
     - name: download-windows
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v5
       with:
         name: pnnx-${{ needs.setup.outputs.VERSION }}-windows
         path: artifacts
@@ -1161,22 +1161,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: download-linux
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v5
       with:
         name: pnnx-${{ needs.setup.outputs.VERSION }}-linux-python
         path: dist
     - name: download-linux-aarch64
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v5
       with:
         name: pnnx-${{ needs.setup.outputs.VERSION }}-linux-aarch64-python
         path: dist
     - name: download-macos
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v5
       with:
         name: pnnx-${{ needs.setup.outputs.VERSION }}-macos-python
         path: dist
     - name: download-windows
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v5
       with:
         name: pnnx-${{ needs.setup.outputs.VERSION }}-windows-python
         path: dist
