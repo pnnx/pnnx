@@ -1,6 +1,6 @@
-diff -Nuarp vision-0.22.1.orig/cmake/TorchVisionConfig.cmake.in vision-0.22.1/cmake/TorchVisionConfig.cmake.in
---- vision-0.22.1.orig/cmake/TorchVisionConfig.cmake.in	2025-05-09 21:43:46.000000000 +0800
-+++ vision-0.22.1/cmake/TorchVisionConfig.cmake.in	2025-07-24 16:54:36.610110452 +0800
+diff -Nuarp vision-0.23.0.orig/cmake/TorchVisionConfig.cmake.in vision-0.23.0/cmake/TorchVisionConfig.cmake.in
+--- vision-0.23.0.orig/cmake/TorchVisionConfig.cmake.in	2025-07-18 05:23:54.000000000 +0800
++++ vision-0.23.0/cmake/TorchVisionConfig.cmake.in	2025-08-07 10:36:17.772060352 +0800
 @@ -31,7 +31,9 @@ if(@WITH_CUDA@)
    target_compile_definitions(${PN}::${PN} INTERFACE WITH_CUDA)
  endif()
@@ -12,9 +12,9 @@ diff -Nuarp vision-0.22.1.orig/cmake/TorchVisionConfig.cmake.in vision-0.22.1/cm
  target_link_libraries(${PN}::${PN} INTERFACE torch)
  
  if(@WITH_PNG@)
-diff -Nuarp vision-0.22.1.orig/CMakeLists.txt vision-0.22.1/CMakeLists.txt
---- vision-0.22.1.orig/CMakeLists.txt	2025-05-09 21:43:46.000000000 +0800
-+++ vision-0.22.1/CMakeLists.txt	2025-07-24 16:54:36.610250845 +0800
+diff -Nuarp vision-0.23.0.orig/CMakeLists.txt vision-0.23.0/CMakeLists.txt
+--- vision-0.23.0.orig/CMakeLists.txt	2025-07-18 05:23:54.000000000 +0800
++++ vision-0.23.0/CMakeLists.txt	2025-08-07 10:36:17.772205354 +0800
 @@ -27,6 +27,7 @@ if(WITH_MPS)
  endif()
  

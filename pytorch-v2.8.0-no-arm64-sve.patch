@@ -1,0 +1,14 @@
+diff -Nuarp pytorch-v2.8.0.orig/cmake/Modules/FindARM.cmake pytorch-v2.8.0/cmake/Modules/FindARM.cmake
+--- pytorch-v2.8.0.orig/cmake/Modules/FindARM.cmake	2025-08-07 01:08:00.000000000 +0800
++++ pytorch-v2.8.0/cmake/Modules/FindARM.cmake	2025-08-07 10:31:46.160791774 +0800
+@@ -152,8 +152,8 @@ IF(CMAKE_SYSTEM_NAME MATCHES "Linux")
+     ENDMACRO()
+ 
+     # Check for SVE256 vector length
+-    CHECK_COMPILES(CXX "SVE256" "-march=armv8.2-a+sve -msve-vector-bits=256" "${SVE_CODE}")
+-    CHECK_COMPILES(CXX "ARM_BF16" "-march=armv8.2-a+sve+bf16 -msve-vector-bits=256" "${ARM_BF16_CODE}")
++    # CHECK_COMPILES(CXX "SVE256" "-march=armv8.2-a+sve -msve-vector-bits=256" "${SVE_CODE}")
++    # CHECK_COMPILES(CXX "ARM_BF16" "-march=armv8.2-a+sve+bf16 -msve-vector-bits=256" "${ARM_BF16_CODE}")
+ 
+     # If SVE256 support is not found, set CXX_SVE_FOUND to FALSE and notify the user
+     if(NOT CXX_SVE256_FOUND)
