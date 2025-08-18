@@ -37,7 +37,7 @@ jobs:
         key: torchvision-${{ matrix.torchvision-version }}-linux-install-20211228
     - name: checkout-torchvision-${{ matrix.torchvision-version }}
       if: steps.cache-torchvision.outputs.cache-hit != 'true'
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
       with:
         repository: pytorch/vision
         path: vision
@@ -55,7 +55,7 @@ jobs:
       run: sudo apt-get install lcov
 
     - name: ncnn
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
       with:
         repository: Tencent/ncnn
         path: ncnn
