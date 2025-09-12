@@ -24,7 +24,7 @@ jobs:
   linux-deps:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/setup-python@v5
+    - uses: actions/setup-python@v6
       with:
         python-version: '3.11'
     - name: pnnx-patches
@@ -152,7 +152,7 @@ jobs:
     runs-on: ubuntu-24.04-arm
     timeout-minutes: 1800
     steps:
-    - uses: actions/setup-python@v5
+    - uses: actions/setup-python@v6
       with:
         python-version: '3.11'
     - name: pnnx-patches
@@ -284,7 +284,7 @@ jobs:
   macos-x64-deps:
     runs-on: macos-13
     steps:
-    - uses: actions/setup-python@v5
+    - uses: actions/setup-python@v6
       with:
         python-version: '3.11'
     - name: pnnx-patches
@@ -379,7 +379,7 @@ jobs:
   macos-arm64-deps:
     runs-on: macos-14
     steps:
-    - uses: actions/setup-python@v5
+    - uses: actions/setup-python@v6
       with:
         python-version: '3.11'
     - name: pnnx-patches
@@ -479,7 +479,7 @@ jobs:
     env:
       UseMultiToolTask: true
     steps:
-    - uses: actions/setup-python@v5
+    - uses: actions/setup-python@v6
       with:
         python-version: '3.11'
     - name: pnnx-patches

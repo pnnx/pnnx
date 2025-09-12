@@ -30,7 +30,7 @@ jobs:
   linux-deps:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/setup-python@v5
+    - uses: actions/setup-python@v6
       with:
         python-version: '3.11'
     - name: pnnx-patches
@@ -158,7 +158,7 @@ jobs:
     runs-on: ubuntu-24.04-arm
     timeout-minutes: 1800
     steps:
-    - uses: actions/setup-python@v5
+    - uses: actions/setup-python@v6
       with:
         python-version: '3.11'
     - name: pnnx-patches
@@ -290,7 +290,7 @@ jobs:
   macos-x64-deps:
     runs-on: macos-13
     steps:
-    - uses: actions/setup-python@v5
+    - uses: actions/setup-python@v6
       with:
         python-version: '3.11'
     - name: pnnx-patches
@@ -385,7 +385,7 @@ jobs:
   macos-arm64-deps:
     runs-on: macos-14
     steps:
-    - uses: actions/setup-python@v5
+    - uses: actions/setup-python@v6
       with:
         python-version: '3.11'
     - name: pnnx-patches
@@ -485,7 +485,7 @@ jobs:
     env:
       UseMultiToolTask: true
     steps:
-    - uses: actions/setup-python@v5
+    - uses: actions/setup-python@v6
       with:
         python-version: '3.11'
     - name: pnnx-patches
@@ -589,7 +589,7 @@ jobs:
     env:
       PACKAGENAME: pnnx-${{ needs.setup.outputs.VERSION }}-linux
     steps:
-    - uses: actions/setup-python@v5
+    - uses: actions/setup-python@v6
       with:
         python-version: '3.11'
     - name: pnnx-patches
@@ -663,7 +663,7 @@ jobs:
     env:
       PACKAGENAME: pnnx-${{ needs.setup.outputs.VERSION }}-linux-aarch64
     steps:
-    - uses: actions/setup-python@v5
+    - uses: actions/setup-python@v6
       with:
         python-version: '3.11'
     - name: pnnx-patches
@@ -736,7 +736,7 @@ jobs:
     env:
       PACKAGENAME: pnnx-${{ needs.setup.outputs.VERSION }}-macos-x64
     steps:
-    - uses: actions/setup-python@v5
+    - uses: actions/setup-python@v6
       with:
         python-version: '3.11'
     - name: checkout
@@ -796,7 +796,7 @@ jobs:
     env:
       PACKAGENAME: pnnx-${{ needs.setup.outputs.VERSION }}-macos-arm64
     steps:
-    - uses: actions/setup-python@v5
+    - uses: actions/setup-python@v6
       with:
         python-version: '3.11'
     - name: checkout
@@ -856,7 +856,7 @@ jobs:
     env:
       PACKAGENAME: pnnx-${{ needs.setup.outputs.VERSION }}-macos
     steps:
-    - uses: actions/setup-python@v5
+    - uses: actions/setup-python@v6
       with:
         python-version: '3.11'
     - name: checkout
@@ -895,7 +895,7 @@ jobs:
       PACKAGENAME: pnnx-${{ needs.setup.outputs.VERSION }}-windows
       UseMultiToolTask: true
     steps:
-    - uses: actions/setup-python@v5
+    - uses: actions/setup-python@v6
       with:
         python-version: '3.11'
     - name: checkout
@@ -953,7 +953,7 @@ jobs:
     needs: [setup, linux]
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/setup-python@v5
+    - uses: actions/setup-python@v6
       with:
         python-version: '3.11'
 
@@ -991,7 +991,7 @@ jobs:
     needs: [setup, linux-aarch64]
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/setup-python@v5
+    - uses: actions/setup-python@v6
       with:
         python-version: '3.11'
 
@@ -1027,7 +1027,7 @@ jobs:
     needs: [setup, macos]
     runs-on: macos-13
     steps:
-    - uses: actions/setup-python@v5
+    - uses: actions/setup-python@v6
       with:
         python-version: '3.11'
 
@@ -1067,7 +1067,7 @@ jobs:
     env:
       UseMultiToolTask: true
     steps:
-    - uses: actions/setup-python@v5
+    - uses: actions/setup-python@v6
       with:
         python-version: '3.11'
 
