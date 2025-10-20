@@ -1,6 +1,6 @@
-diff -Nuarp vision-0.23.0.orig/torchvision/csrc/macros.h vision-0.23.0/torchvision/csrc/macros.h
---- vision-0.23.0.orig/torchvision/csrc/macros.h	2025-07-18 05:23:54.000000000 +0800
-+++ vision-0.23.0/torchvision/csrc/macros.h	2025-08-07 10:35:49.531524052 +0800
+diff -Nuarp vision-0.24.0.orig/torchvision/csrc/macros.h vision-0.24.0/torchvision/csrc/macros.h
+--- vision-0.24.0.orig/torchvision/csrc/macros.h	2025-10-10 12:10:42.000000000 +0800
++++ vision-0.24.0/torchvision/csrc/macros.h	2025-10-20 17:34:52.436287603 +0800
 @@ -1,11 +1,3 @@
  #pragma once
  

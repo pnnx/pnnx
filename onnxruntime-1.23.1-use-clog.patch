@@ -1,12 +1,12 @@
-diff -Nuarp onnxruntime-1.22.1.orig/cmake/onnxruntime_common.cmake onnxruntime-1.22.1/cmake/onnxruntime_common.cmake
---- onnxruntime-1.22.1.orig/cmake/onnxruntime_common.cmake	2025-06-28 01:02:30.000000000 +0800
-+++ onnxruntime-1.22.1/cmake/onnxruntime_common.cmake	2025-07-24 16:55:47.719920600 +0800
-@@ -48,20 +48,6 @@ else()
+diff -Nuarp onnxruntime-1.23.1.orig/cmake/onnxruntime_common.cmake onnxruntime-1.23.1/cmake/onnxruntime_common.cmake
+--- onnxruntime-1.23.1.orig/cmake/onnxruntime_common.cmake	2025-09-27 11:28:08.000000000 +0800
++++ onnxruntime-1.23.1/cmake/onnxruntime_common.cmake	2025-10-20 19:30:29.971768980 +0800
+@@ -62,20 +62,6 @@ else()
              "${ONNXRUNTIME_ROOT}/core/platform/posix/logging/*.cc"
          )
      endif()
 -
--    if (CMAKE_SYSTEM_NAME STREQUAL "Android")
+-    if (ANDROID)
 -        list(APPEND onnxruntime_common_src_patterns
 -            "${ONNXRUNTIME_ROOT}/core/platform/android/logging/*.h"
 -            "${ONNXRUNTIME_ROOT}/core/platform/android/logging/*.cc"
@@ -21,10 +21,10 @@ diff -Nuarp onnxruntime-1.22.1.orig/cmake/onnxruntime_common.cmake onnxruntime-1
 -    endif()
  endif()
  
- if(onnxruntime_target_platform STREQUAL "ARM64EC")
-diff -Nuarp onnxruntime-1.22.1.orig/onnxruntime/core/platform/logging/make_platform_default_log_sink.cc onnxruntime-1.22.1/onnxruntime/core/platform/logging/make_platform_default_log_sink.cc
---- onnxruntime-1.22.1.orig/onnxruntime/core/platform/logging/make_platform_default_log_sink.cc	2025-06-28 01:02:30.000000000 +0800
-+++ onnxruntime-1.22.1/onnxruntime/core/platform/logging/make_platform_default_log_sink.cc	2025-07-24 16:55:47.720047497 +0800
+ # platform-specific device discovery files
+diff -Nuarp onnxruntime-1.23.1.orig/onnxruntime/core/platform/logging/make_platform_default_log_sink.cc onnxruntime-1.23.1/onnxruntime/core/platform/logging/make_platform_default_log_sink.cc
+--- onnxruntime-1.23.1.orig/onnxruntime/core/platform/logging/make_platform_default_log_sink.cc	2025-09-27 11:28:08.000000000 +0800
++++ onnxruntime-1.23.1/onnxruntime/core/platform/logging/make_platform_default_log_sink.cc	2025-10-20 19:30:53.176802573 +0800
 @@ -3,25 +3,13 @@
  
  #include "core/platform/logging/make_platform_default_log_sink.h"

@@ -6,11 +6,11 @@ on:
       - '*'
 
 env:
-  LIBTORCH_VERSION: 2.8.0
-  TORCHVISION_VERSION: 0.23.0
+  LIBTORCH_VERSION: 2.9.0
+  TORCHVISION_VERSION: 0.24.0
   PROTOBUF_VERSION: 21.12
-  ONNXRUNTIME_VERSION: 1.22.1
-  CACHE_DATE: 20250818
+  ONNXRUNTIME_VERSION: 1.23.1
+  CACHE_DATE: 20251020
 
 permissions:
   contents: read
@@ -204,7 +204,6 @@ jobs:
           patch -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-set-python-executable.patch &&
           patch -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-no-arm64-sleef.patch &&
           patch -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-no-arm64-sve.patch &&
-          patch -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-arm-gcc14-build.patch &&
           mkdir -p build && cd build &&
           cmake -DCMAKE_INSTALL_PREFIX="/host/tmp/libtorch" -DCMAKE_BUILD_TYPE=MinSizeRel -DBUILD_SHARED_LIBS=OFF
               -DCMAKE_POLICY_VERSION_MINIMUM=3.5

@@ -1,18 +1,18 @@
-diff -Nuarp onnxruntime-1.22.1.orig/cmake/onnxruntime_mlas.cmake onnxruntime-1.22.1/cmake/onnxruntime_mlas.cmake
---- onnxruntime-1.22.1.orig/cmake/onnxruntime_mlas.cmake	2025-06-28 01:02:30.000000000 +0800
-+++ onnxruntime-1.22.1/cmake/onnxruntime_mlas.cmake	2025-07-24 16:56:39.683179372 +0800
-@@ -428,7 +428,7 @@ else()
-         endif()
-         set_source_files_properties(${MLAS_SRC_DIR}/sqnbitgemm_kernel_neon_int8.cpp
-                                     PROPERTIES COMPILE_FLAGS " -march=armv8.2-a+dotprod")
+diff -Nuarp onnxruntime-1.23.1.orig/cmake/onnxruntime_mlas.cmake onnxruntime-1.23.1/cmake/onnxruntime_mlas.cmake
+--- onnxruntime-1.23.1.orig/cmake/onnxruntime_mlas.cmake	2025-09-27 11:28:08.000000000 +0800
++++ onnxruntime-1.23.1/cmake/onnxruntime_mlas.cmake	2025-10-20 19:18:18.278639722 +0800
+@@ -440,7 +440,7 @@ else()
+         set_source_files_properties(${MLAS_SRC_DIR}/sqnbitgemm_kernel_neon_int8_i8mm.cpp 
+ 				    PROPERTIES COMPILE_FLAGS " -march=armv8.2-a+i8mm ")
+ 
 -        if (NOT APPLE)
 +        if (FALSE)
            set(mlas_platform_srcs
              ${mlas_platform_srcs}
              ${MLAS_SRC_DIR}/aarch64/HalfGemmKernelNeon.S
-diff -Nuarp onnxruntime-1.22.1.orig/onnxruntime/core/mlas/inc/mlas.h onnxruntime-1.22.1/onnxruntime/core/mlas/inc/mlas.h
---- onnxruntime-1.22.1.orig/onnxruntime/core/mlas/inc/mlas.h	2025-06-28 01:02:30.000000000 +0800
-+++ onnxruntime-1.22.1/onnxruntime/core/mlas/inc/mlas.h	2025-07-24 16:56:39.683378204 +0800
+diff -Nuarp onnxruntime-1.23.1.orig/onnxruntime/core/mlas/inc/mlas.h onnxruntime-1.23.1/onnxruntime/core/mlas/inc/mlas.h
+--- onnxruntime-1.23.1.orig/onnxruntime/core/mlas/inc/mlas.h	2025-09-27 11:28:08.000000000 +0800
++++ onnxruntime-1.23.1/onnxruntime/core/mlas/inc/mlas.h	2025-10-20 19:17:42.394580578 +0800
 @@ -81,7 +81,7 @@ Abstract:
  //
  
@@ -31,7 +31,7 @@ diff -Nuarp onnxruntime-1.22.1.orig/onnxruntime/core/mlas/inc/mlas.h onnxruntime
  
  #endif //
  #endif // ARM64
-@@ -1769,7 +1769,7 @@ MlasHalfGemmConvertPackB(
+@@ -1865,7 +1865,7 @@ MlasHalfGemmConvertPackB(
      void* PackedB
      );
  
@@ -40,10 +40,10 @@ diff -Nuarp onnxruntime-1.22.1.orig/onnxruntime/core/mlas/inc/mlas.h onnxruntime
  /**
   * @brief Whether current CPU supports Bfloat16(bf16) acceleration.
   */
-diff -Nuarp onnxruntime-1.22.1.orig/onnxruntime/core/mlas/lib/mlasi.h onnxruntime-1.22.1/onnxruntime/core/mlas/lib/mlasi.h
---- onnxruntime-1.22.1.orig/onnxruntime/core/mlas/lib/mlasi.h	2025-06-28 01:02:30.000000000 +0800
-+++ onnxruntime-1.22.1/onnxruntime/core/mlas/lib/mlasi.h	2025-07-24 16:56:39.683517204 +0800
-@@ -379,7 +379,7 @@ size_t
+diff -Nuarp onnxruntime-1.23.1.orig/onnxruntime/core/mlas/lib/mlasi.h onnxruntime-1.23.1/onnxruntime/core/mlas/lib/mlasi.h
+--- onnxruntime-1.23.1.orig/onnxruntime/core/mlas/lib/mlasi.h	2025-09-27 11:28:08.000000000 +0800
++++ onnxruntime-1.23.1/onnxruntime/core/mlas/lib/mlasi.h	2025-10-20 19:17:42.394738183 +0800
+@@ -396,7 +396,7 @@ size_t
  
  #else
  
@@ -52,7 +52,7 @@ diff -Nuarp onnxruntime-1.22.1.orig/onnxruntime/core/mlas/lib/mlasi.h onnxruntim
  typedef size_t(MLASCALL MLAS_SBGEMM_FLOAT_KERNEL)(
      const float* A,
      const bfloat16_t* B,
-@@ -798,7 +798,7 @@ extern "C" {
+@@ -946,7 +946,7 @@ extern "C" {
  #else
      MLAS_GEMM_FLOAT_KERNEL MlasSgemmKernelZero;
      MLAS_GEMM_FLOAT_KERNEL MlasSgemmKernelAdd;
@@ -61,7 +61,7 @@ diff -Nuarp onnxruntime-1.22.1.orig/onnxruntime/core/mlas/lib/mlasi.h onnxruntim
      MLAS_SBGEMM_FLOAT_KERNEL MlasSbgemmKernelZero;
      MLAS_SBGEMM_FLOAT_KERNEL MlasSbgemmKernelAdd;
  #endif
-@@ -949,7 +949,7 @@ extern "C" {
+@@ -1099,7 +1099,7 @@ extern "C" {
  #define MLAS_QGEMM_THREAD_COMPLEXITY                65536
  #define MLAS_HGEMM_THREAD_COMPLEXITY                65536
  
@@ -70,21 +70,21 @@ diff -Nuarp onnxruntime-1.22.1.orig/onnxruntime/core/mlas/lib/mlasi.h onnxruntim
  #define MLAS_SBGEMM_THREAD_COMPLEXITY (size_t(64) * size_t(1024))
  #endif
  
-diff -Nuarp onnxruntime-1.22.1.orig/onnxruntime/core/mlas/lib/platform.cpp onnxruntime-1.22.1/onnxruntime/core/mlas/lib/platform.cpp
---- onnxruntime-1.22.1.orig/onnxruntime/core/mlas/lib/platform.cpp	2025-06-28 01:02:30.000000000 +0800
-+++ onnxruntime-1.22.1/onnxruntime/core/mlas/lib/platform.cpp	2025-07-24 16:56:39.683702140 +0800
-@@ -578,7 +578,7 @@ Return Value:
+diff -Nuarp onnxruntime-1.23.1.orig/onnxruntime/core/mlas/lib/platform.cpp onnxruntime-1.23.1/onnxruntime/core/mlas/lib/platform.cpp
+--- onnxruntime-1.23.1.orig/onnxruntime/core/mlas/lib/platform.cpp	2025-09-27 11:28:08.000000000 +0800
++++ onnxruntime-1.23.1/onnxruntime/core/mlas/lib/platform.cpp	2025-10-20 19:20:25.591114687 +0800
+@@ -598,7 +598,7 @@ Return Value:
  
-     this->QNBitGemmDispatch = &GetMlasQNBitGemmDispatchNeon(HasDotProductInstructions);
- 
+     const bool HasI8MMInstructions = MLAS_CPUIDINFO::GetCPUIDInfo().HasArmNeon_I8MM();
+     if (HasI8MMInstructions) {
 -#if defined(__linux__)
 +#if 0//defined(__linux__)
-     //
-     // Check if the processor supports ASIMD I8MM instructions.
-     //
-diff -Nuarp onnxruntime-1.22.1.orig/onnxruntime/core/mlas/lib/sbgemm.h onnxruntime-1.22.1/onnxruntime/core/mlas/lib/sbgemm.h
---- onnxruntime-1.22.1.orig/onnxruntime/core/mlas/lib/sbgemm.h	2025-06-28 01:02:30.000000000 +0800
-+++ onnxruntime-1.22.1/onnxruntime/core/mlas/lib/sbgemm.h	2025-07-24 16:56:39.683782730 +0800
+ 
+         this->GemmU8U8Dispatch = &MlasGemmU8X8DispatchUmmla;
+         this->GemmU8S8Dispatch = &MlasGemmU8X8DispatchUmmla;
+diff -Nuarp onnxruntime-1.23.1.orig/onnxruntime/core/mlas/lib/sbgemm.h onnxruntime-1.23.1/onnxruntime/core/mlas/lib/sbgemm.h
+--- onnxruntime-1.23.1.orig/onnxruntime/core/mlas/lib/sbgemm.h	2025-09-27 11:28:08.000000000 +0800
++++ onnxruntime-1.23.1/onnxruntime/core/mlas/lib/sbgemm.h	2025-10-20 19:17:42.394993009 +0800
 @@ -30,7 +30,7 @@ Abstract:
          MLAS_SBGEMM_STRIDES Strides{128, 128, 256};
  --*/
@@ -94,9 +94,9 @@ diff -Nuarp onnxruntime-1.22.1.orig/onnxruntime/core/mlas/lib/sbgemm.h onnxrunti
  
  #pragma once
  
-diff -Nuarp onnxruntime-1.22.1.orig/onnxruntime/core/mlas/lib/sbgemm_kernel_neon.cpp onnxruntime-1.22.1/onnxruntime/core/mlas/lib/sbgemm_kernel_neon.cpp
---- onnxruntime-1.22.1.orig/onnxruntime/core/mlas/lib/sbgemm_kernel_neon.cpp	2025-06-28 01:02:30.000000000 +0800
-+++ onnxruntime-1.22.1/onnxruntime/core/mlas/lib/sbgemm_kernel_neon.cpp	2025-07-24 16:56:39.683848904 +0800
+diff -Nuarp onnxruntime-1.23.1.orig/onnxruntime/core/mlas/lib/sbgemm_kernel_neon.cpp onnxruntime-1.23.1/onnxruntime/core/mlas/lib/sbgemm_kernel_neon.cpp
+--- onnxruntime-1.23.1.orig/onnxruntime/core/mlas/lib/sbgemm_kernel_neon.cpp	2025-09-27 11:28:08.000000000 +0800
++++ onnxruntime-1.23.1/onnxruntime/core/mlas/lib/sbgemm_kernel_neon.cpp	2025-10-20 19:17:42.395084090 +0800
 @@ -15,7 +15,7 @@ Abstract:
  
  --*/
@@ -106,9 +106,9 @@ diff -Nuarp onnxruntime-1.22.1.orig/onnxruntime/core/mlas/lib/sbgemm_kernel_neon
  
  #include "arm_neon.h"
  #include "mlasi.h"
-diff -Nuarp onnxruntime-1.22.1.orig/onnxruntime/core/providers/cpu/math/matmul.cc onnxruntime-1.22.1/onnxruntime/core/providers/cpu/math/matmul.cc
---- onnxruntime-1.22.1.orig/onnxruntime/core/providers/cpu/math/matmul.cc	2025-06-28 01:02:30.000000000 +0800
-+++ onnxruntime-1.22.1/onnxruntime/core/providers/cpu/math/matmul.cc	2025-07-24 16:56:39.683907143 +0800
+diff -Nuarp onnxruntime-1.23.1.orig/onnxruntime/core/providers/cpu/math/matmul.cc onnxruntime-1.23.1/onnxruntime/core/providers/cpu/math/matmul.cc
+--- onnxruntime-1.23.1.orig/onnxruntime/core/providers/cpu/math/matmul.cc	2025-09-27 11:28:08.000000000 +0800
++++ onnxruntime-1.23.1/onnxruntime/core/providers/cpu/math/matmul.cc	2025-10-20 19:17:42.395142238 +0800
 @@ -133,7 +133,7 @@ Status MatMul<T>::Compute(OpKernelContex
  
    return Status::OK();
@@ -136,9 +136,9 @@ diff -Nuarp onnxruntime-1.22.1.orig/onnxruntime/core/providers/cpu/math/matmul.c
    if (use_fastmath_mode_ && !trans_b && ((N * K) >= kFastMathModeKernelsizeThreshold)) {
      std::vector<MLAS_SBGEMM_DATA_PARAMS> data(max_len);
      for (size_t i = 0; i < max_len; i++) {
-diff -Nuarp onnxruntime-1.22.1.orig/onnxruntime/core/providers/cpu/math/matmul.h onnxruntime-1.22.1/onnxruntime/core/providers/cpu/math/matmul.h
---- onnxruntime-1.22.1.orig/onnxruntime/core/providers/cpu/math/matmul.h	2025-06-28 01:02:30.000000000 +0800
-+++ onnxruntime-1.22.1/onnxruntime/core/providers/cpu/math/matmul.h	2025-07-24 16:56:39.683953430 +0800
+diff -Nuarp onnxruntime-1.23.1.orig/onnxruntime/core/providers/cpu/math/matmul.h onnxruntime-1.23.1/onnxruntime/core/providers/cpu/math/matmul.h
+--- onnxruntime-1.23.1.orig/onnxruntime/core/providers/cpu/math/matmul.h	2025-09-27 11:28:08.000000000 +0800
++++ onnxruntime-1.23.1/onnxruntime/core/providers/cpu/math/matmul.h	2025-10-20 19:17:42.395197251 +0800
 @@ -30,7 +30,7 @@ class MatMul<float> final : public OpKer
      trans_batch_a_ = trans_batch_a_attr != 0;
      trans_batch_b_ = trans_batch_b_attr != 0;
