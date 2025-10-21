@@ -1,7 +1,7 @@
-diff -Nuarp pytorch-v2.8.0.orig/CMakeLists.txt pytorch-v2.8.0/CMakeLists.txt
---- pytorch-v2.8.0.orig/CMakeLists.txt	2025-08-07 01:08:00.000000000 +0800
-+++ pytorch-v2.8.0/CMakeLists.txt	2025-08-18 11:28:06.671166516 +0800
-@@ -378,15 +378,6 @@ option(USE_MIMALLOC "Use mimalloc" OFF)
+diff -Nuarp pytorch-v2.9.0.orig/CMakeLists.txt pytorch-v2.9.0/CMakeLists.txt
+--- pytorch-v2.9.0.orig/CMakeLists.txt	2025-10-16 01:15:02.000000000 +0800
++++ pytorch-v2.9.0/CMakeLists.txt	2025-10-20 19:42:10.157337219 +0800
+@@ -383,15 +383,6 @@ option(USE_MIMALLOC "Use mimalloc" OFF)
  # Enable third party mimalloc library to improve memory allocation performance
  # on Windows.
  option(USE_MIMALLOC_ON_MKL "Use mimalloc on MKL" OFF)

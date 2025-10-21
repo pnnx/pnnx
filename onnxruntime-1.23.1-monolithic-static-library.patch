@@ -1,6 +1,6 @@
-diff -Nuarp onnxruntime-1.22.1.orig/cmake/bundle_static_library.cmake onnxruntime-1.22.1/cmake/bundle_static_library.cmake
---- onnxruntime-1.22.1.orig/cmake/bundle_static_library.cmake	1970-01-01 08:00:00.000000000 +0800
-+++ onnxruntime-1.22.1/cmake/bundle_static_library.cmake	2025-07-24 16:57:58.518064989 +0800
+diff -Nuarp onnxruntime-1.23.1.orig/cmake/bundle_static_library.cmake onnxruntime-1.23.1/cmake/bundle_static_library.cmake
+--- onnxruntime-1.23.1.orig/cmake/bundle_static_library.cmake	1970-01-01 08:00:00.000000000 +0800
++++ onnxruntime-1.23.1/cmake/bundle_static_library.cmake	2025-10-20 19:32:12.340994295 +0800
 @@ -0,0 +1,145 @@
 +# References:
 +# - https://github.com/microsoft/onnxruntime/blob/main/cmake/onnxruntime_webassembly.cmake
@@ -147,21 +147,23 @@ diff -Nuarp onnxruntime-1.22.1.orig/cmake/bundle_static_library.cmake onnxruntim
 +
 +    add_dependencies(${bundled_target_name} bundling_${bundled_target_name})
 +endfunction()
-diff -Nuarp onnxruntime-1.22.1.orig/cmake/CMakeLists.txt onnxruntime-1.22.1/cmake/CMakeLists.txt
---- onnxruntime-1.22.1.orig/cmake/CMakeLists.txt	2025-06-28 01:02:30.000000000 +0800
-+++ onnxruntime-1.22.1/cmake/CMakeLists.txt	2025-07-24 16:57:58.518376405 +0800
-@@ -1909,7 +1909,7 @@ if (onnxruntime_ENABLE_EXTERNAL_CUSTOM_O
+diff -Nuarp onnxruntime-1.23.1.orig/cmake/CMakeLists.txt onnxruntime-1.23.1/cmake/CMakeLists.txt
+--- onnxruntime-1.23.1.orig/cmake/CMakeLists.txt	2025-09-27 11:28:08.000000000 +0800
++++ onnxruntime-1.23.1/cmake/CMakeLists.txt	2025-10-20 19:33:02.897565247 +0800
+@@ -1730,9 +1730,7 @@ if (onnxruntime_ENABLE_EXTERNAL_CUSTOM_O
    )
  endif()
  
--if(TARGET onnxruntime)
+-if(NOT onnxruntime_BUILD_SHARED_LIB AND onnxruntime_USE_WEBGPU)
+-  message(WARNING "CMake target files will not be generated for static onnxruntime builds with webgpu support")
+-else()
 +if(FALSE)
- # Install
-   include(GNUInstallDirs)
+   # Install
    include(CMakePackageConfigHelpers)
-@@ -1948,3 +1948,19 @@ if(DEFINED BUILD_AS_ARM64X)
  
-   include("${CMAKE_CURRENT_SOURCE_DIR}/arm64x.cmake")
+@@ -1801,3 +1799,19 @@ else()
+     include("${CMAKE_CURRENT_SOURCE_DIR}/arm64x.cmake")
+   endif()
  endif()
 +
 +include(bundle_static_library.cmake)
@@ -179,10 +181,10 @@ diff -Nuarp onnxruntime-1.22.1.orig/cmake/CMakeLists.txt onnxruntime-1.22.1/cmak
 +    RENAME ${CMAKE_STATIC_LIBRARY_PREFIX}onnxruntime${CMAKE_STATIC_LIBRARY_SUFFIX}
 +    TYPE LIB
 +)
-diff -Nuarp onnxruntime-1.22.1.orig/cmake/onnxruntime.cmake onnxruntime-1.22.1/cmake/onnxruntime.cmake
---- onnxruntime-1.22.1.orig/cmake/onnxruntime.cmake	2025-06-28 01:02:30.000000000 +0800
-+++ onnxruntime-1.22.1/cmake/onnxruntime.cmake	2025-07-24 16:57:58.518603881 +0800
-@@ -283,13 +283,6 @@ else()
+diff -Nuarp onnxruntime-1.23.1.orig/cmake/onnxruntime.cmake onnxruntime-1.23.1/cmake/onnxruntime.cmake
+--- onnxruntime-1.23.1.orig/cmake/onnxruntime.cmake	2025-09-27 11:28:08.000000000 +0800
++++ onnxruntime-1.23.1/cmake/onnxruntime.cmake	2025-10-20 19:32:12.341356934 +0800
+@@ -306,13 +306,6 @@ else()
      VERSION ${ORT_VERSION}
      FOLDER "ONNXRuntime")
  endif()
@@ -196,10 +198,10 @@ diff -Nuarp onnxruntime-1.22.1.orig/cmake/onnxruntime.cmake onnxruntime-1.22.1/c
  
  
  if (WIN32 AND NOT CMAKE_CXX_STANDARD_LIBRARIES MATCHES kernel32.lib)
-diff -Nuarp onnxruntime-1.22.1.orig/cmake/onnxruntime_providers_cpu.cmake onnxruntime-1.22.1/cmake/onnxruntime_providers_cpu.cmake
---- onnxruntime-1.22.1.orig/cmake/onnxruntime_providers_cpu.cmake	2025-06-28 01:02:30.000000000 +0800
-+++ onnxruntime-1.22.1/cmake/onnxruntime_providers_cpu.cmake	2025-07-24 16:57:58.518732912 +0800
-@@ -259,11 +259,6 @@ if (NOT onnxruntime_MINIMAL_BUILD AND NO
+diff -Nuarp onnxruntime-1.23.1.orig/cmake/onnxruntime_providers_cpu.cmake onnxruntime-1.23.1/cmake/onnxruntime_providers_cpu.cmake
+--- onnxruntime-1.23.1.orig/cmake/onnxruntime_providers_cpu.cmake	2025-09-27 11:28:08.000000000 +0800
++++ onnxruntime-1.23.1/cmake/onnxruntime_providers_cpu.cmake	2025-10-20 19:32:12.341435020 +0800
+@@ -250,11 +250,6 @@ if (NOT onnxruntime_MINIMAL_BUILD AND NO
    message(FATAL_ERROR "onnxruntime_providers_shared unknown platform, need to specify shared library exports for it")
    endif()
  

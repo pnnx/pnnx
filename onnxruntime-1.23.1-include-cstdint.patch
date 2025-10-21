@@ -1,0 +1,36 @@
+From d6e712c5b7b6260a61e54d1fe40107cf5366ee77 Mon Sep 17 00:00:00 2001
+From: naetherm <naether.markus@gmail.com>
+Date: Fri, 22 Aug 2025 22:33:36 +0200
+Subject: [PATCH] Update semver.h to fix compilation error under linux (#25658)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+### Description
+Added the header `<cstdint>` to `semver.h`.
+
+
+### Motivation and Context
+Correcting compilation under linux systems, to prevent the error:
+```
+/xxx/onnxruntime/core/common/semver.h:18:3: error: »uint32_t« does not name a type
+   18 |   uint32_t major{};
+   19 |   uint32_t minor{};
+   20 |   uint32_t patch{};
+```
+---
+ onnxruntime/core/common/semver.h | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/onnxruntime/core/common/semver.h b/onnxruntime/core/common/semver.h
+index a07c24f016886..98bb6a2cef7e8 100644
+--- a/onnxruntime/core/common/semver.h
++++ b/onnxruntime/core/common/semver.h
+@@ -3,6 +3,7 @@
+ 
+ #pragma once
+ 
++#include <cstdint>
+ #include <optional>
+ #include <string_view>
+ 
