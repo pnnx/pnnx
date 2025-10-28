@@ -1,9 +1,5 @@
 name: release
-# on: [pull_request]
-on:
-  push:
-    tags:
-      - '*'
+on: workflow_dispatch
 
 env:
   LIBTORCH_VERSION: 2.9.0
@@ -25,7 +21,9 @@ jobs:
     steps:
     - name: get-version
       id: get_version
-      run: echo "VERSION=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_OUTPUT
+      run: |
+        DATE=`date +'%Y%m%d'`
+        echo "VERSION=${DATE}" >> $GITHUB_OUTPUT
 
   linux-deps:
     runs-on: ubuntu-latest
