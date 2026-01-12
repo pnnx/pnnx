@@ -289,7 +289,7 @@ jobs:
         output-dir: wheelhouse3
 
   macos-x64-deps:
-    runs-on: macos-13
+    runs-on: macos-15-intel
     steps:
     - uses: actions/setup-python@v6
       with:
@@ -386,7 +386,7 @@ jobs:
         cmake --build . -j 4 --target install/strip
 
   macos-arm64-deps:
-    runs-on: macos-14
+    runs-on: macos-15
     steps:
     - uses: actions/setup-python@v6
       with:
@@ -739,7 +739,7 @@ jobs:
 
   macos-x64:
     needs: [setup, macos-x64-deps]
-    runs-on: macos-13
+    runs-on: macos-15-intel
     env:
       PACKAGENAME: pnnx-${{ needs.setup.outputs.VERSION }}-macos-x64
     steps:
@@ -799,7 +799,7 @@ jobs:
 
   macos-arm64:
     needs: [setup, macos-arm64-deps]
-    runs-on: macos-14
+    runs-on: macos-15
     env:
       PACKAGENAME: pnnx-${{ needs.setup.outputs.VERSION }}-macos-arm64
     steps:
@@ -859,7 +859,7 @@ jobs:
 
   macos:
     needs: [setup, macos-x64, macos-arm64]
-    runs-on: macos-14
+    runs-on: macos-15-intel
     env:
       PACKAGENAME: pnnx-${{ needs.setup.outputs.VERSION }}-macos
     steps:
@@ -1032,7 +1032,7 @@ jobs:
 
   macos-python:
     needs: [setup, macos]
-    runs-on: macos-13
+    runs-on: macos-15-intel
     steps:
     - uses: actions/setup-python@v6
       with:
