@@ -658,7 +658,7 @@ jobs:
         cp /tmp/install/bin/pnnx ${{ env.PACKAGENAME }}
         zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
     - name: upload
-      uses: actions/upload-artifact@v6
+      uses: actions/upload-artifact@v7
       with:
         name: ${{ env.PACKAGENAME }}
         path: ${{ env.PACKAGENAME }}.zip
@@ -732,7 +732,7 @@ jobs:
         cp /tmp/install/bin/pnnx ${{ env.PACKAGENAME }}
         zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
     - name: upload
-      uses: actions/upload-artifact@v6
+      uses: actions/upload-artifact@v7
       with:
         name: ${{ env.PACKAGENAME }}
         path: ${{ env.PACKAGENAME }}.zip
@@ -792,7 +792,7 @@ jobs:
         cp ncnn/tools/pnnx/build/install/bin/pnnx ${{ env.PACKAGENAME }}
         zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
     - name: upload
-      uses: actions/upload-artifact@v6
+      uses: actions/upload-artifact@v7
       with:
         name: ${{ env.PACKAGENAME }}
         path: ${{ env.PACKAGENAME }}.zip
@@ -852,7 +852,7 @@ jobs:
         cp ncnn/tools/pnnx/build/install/bin/pnnx ${{ env.PACKAGENAME }}
         zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
     - name: upload
-      uses: actions/upload-artifact@v6
+      uses: actions/upload-artifact@v7
       with:
         name: ${{ env.PACKAGENAME }}
         path: ${{ env.PACKAGENAME }}.zip
@@ -890,7 +890,7 @@ jobs:
             -o ${{ env.PACKAGENAME }}/pnnx
         zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
     - name: upload
-      uses: actions/upload-artifact@v6
+      uses: actions/upload-artifact@v7
       with:
         name: ${{ env.PACKAGENAME }}
         path: ${{ env.PACKAGENAME }}.zip
@@ -951,7 +951,7 @@ jobs:
         Copy-Item -Verbose -Path "ncnn\tools\pnnx\build\install\bin\pnnx.exe" -Destination ${{ env.PACKAGENAME }}
         7z a -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
     - name: upload
-      uses: actions/upload-artifact@v6
+      uses: actions/upload-artifact@v7
       with:
         name: ${{ env.PACKAGENAME }}
         path: ${{ env.PACKAGENAME }}.zip
@@ -989,7 +989,7 @@ jobs:
         pytest tests
 
     - name: upload
-      uses: actions/upload-artifact@v6
+      uses: actions/upload-artifact@v7
       with:
         name: pnnx-${{ needs.setup.outputs.VERSION }}-linux-python
         path: ncnn/tools/pnnx/python/dist/*.whl
@@ -1025,7 +1025,7 @@ jobs:
         wheel tags --remove --platform-tag=manylinux_2_17_aarch64.manylinux2014_aarch64 dist/*.whl
 
     - name: upload
-      uses: actions/upload-artifact@v6
+      uses: actions/upload-artifact@v7
       with:
         name: pnnx-${{ needs.setup.outputs.VERSION }}-linux-aarch64-python
         path: ncnn/tools/pnnx/python/dist/*.whl
@@ -1063,7 +1063,7 @@ jobs:
         pytest tests
 
     - name: upload
-      uses: actions/upload-artifact@v6
+      uses: actions/upload-artifact@v7
       with:
         name: pnnx-${{ needs.setup.outputs.VERSION }}-macos-python
         path: ncnn/tools/pnnx/python/dist/*.whl
@@ -1103,7 +1103,7 @@ jobs:
         pytest tests
 
     - name: upload
-      uses: actions/upload-artifact@v6
+      uses: actions/upload-artifact@v7
       with:
         name: pnnx-${{ needs.setup.outputs.VERSION }}-windows-python
         path: ncnn/tools/pnnx/python/dist/*.whl
