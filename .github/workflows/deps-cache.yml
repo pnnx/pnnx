@@ -46,6 +46,8 @@ jobs:
         CIBW_BUILD_VERBOSITY: 1
         CIBW_REPAIR_WHEEL_COMMAND: ""
         CIBW_BEFORE_ALL: yum install wget zip -y &&
+          dnf install -y almalinux-release-scl && dnf search rh-python && dnf install -y rh-python311 rh-python311-python-devel &&
+          source scl_source enable rh-python311 &&
           wget -q https://github.com/pytorch/pytorch/releases/download/v${{ env.LIBTORCH_VERSION }}/pytorch-v${{ env.LIBTORCH_VERSION }}.tar.gz &&
           tar -xf pytorch-v${{ env.LIBTORCH_VERSION }}.tar.gz &&
           cd pytorch-v${{ env.LIBTORCH_VERSION }} &&
