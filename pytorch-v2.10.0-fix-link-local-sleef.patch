@@ -1,31 +1,29 @@
 diff -Nuarp pytorch-v2.10.0.orig/test/cpp/aoti_abi_check/CMakeLists.txt pytorch-v2.10.0/test/cpp/aoti_abi_check/CMakeLists.txt
 --- pytorch-v2.10.0.orig/test/cpp/aoti_abi_check/CMakeLists.txt	2026-01-22 01:08:59.000000000 +0800
-+++ pytorch-v2.10.0/test/cpp/aoti_abi_check/CMakeLists.txt	2026-03-06 19:40:07.955728754 +0800
-@@ -44,11 +44,12 @@ target_compile_definitions(test_aoti_abi
++++ pytorch-v2.10.0/test/cpp/aoti_abi_check/CMakeLists.txt	2026-03-06 19:50:54.622911155 +0800
+@@ -44,11 +44,8 @@ target_compile_definitions(test_aoti_abi
  
  # WARNING: DO NOT LINK torch!!!
  # The purpose is to check if the used aten/c10 headers are written in a header-only way
 -target_link_libraries(test_aoti_abi_check PRIVATE gtest_main sleef)
++target_link_libraries(test_aoti_abi_check PRIVATE gtest_main)
  target_include_directories(test_aoti_abi_check PRIVATE ${ATen_CPU_INCLUDE})
- if(NOT USE_SYSTEM_SLEEF)
-   target_include_directories(test_aoti_abi_check PRIVATE ${CMAKE_BINARY_DIR}/include)
-+  target_link_directories(test_aoti_abi_check PRIVATE ${CMAKE_BINARY_DIR}/sleef/lib)
- endif()
-+target_link_libraries(test_aoti_abi_check PRIVATE gtest_main sleef)
+-if(NOT USE_SYSTEM_SLEEF)
+-  target_include_directories(test_aoti_abi_check PRIVATE ${CMAKE_BINARY_DIR}/include)
+-endif()
  
  # Disable unused-variable warnings for variables that are only used to test compilation
  target_compile_options_if_supported(test_aoti_abi_check -Wno-unused-variable)
-@@ -66,11 +67,12 @@ foreach(test_src ${AOTI_ABI_CHECK_VEC_TE
+@@ -66,11 +63,8 @@ foreach(test_src ${AOTI_ABI_CHECK_VEC_TE
      separate_arguments(FLAGS UNIX_COMMAND "${FLAGS}")
      add_executable(${test_name}_${CPU_CAPABILITY} "${test_src}")
  
 -    target_link_libraries(${test_name}_${CPU_CAPABILITY} PRIVATE gtest_main sleef)
++    target_link_libraries(${test_name}_${CPU_CAPABILITY} PRIVATE gtest_main)
      target_include_directories(${test_name}_${CPU_CAPABILITY} PRIVATE ${ATen_CPU_INCLUDE})
-     if(NOT USE_SYSTEM_SLEEF)
-       target_include_directories(${test_name}_${CPU_CAPABILITY} PRIVATE ${CMAKE_BINARY_DIR}/include)
-+      target_link_directories(${test_name}_${CPU_CAPABILITY} PRIVATE ${CMAKE_BINARY_DIR}/sleef/lib)
-     endif()
-+    target_link_libraries(${test_name}_${CPU_CAPABILITY} PRIVATE gtest_main sleef)
+-    if(NOT USE_SYSTEM_SLEEF)
+-      target_include_directories(${test_name}_${CPU_CAPABILITY} PRIVATE ${CMAKE_BINARY_DIR}/include)
+-    endif()
  
      # Define CPU_CAPABILITY and CPU_CAPABILITY_XXX macros for conditional compilation
      target_compile_definitions(${test_name}_${CPU_CAPABILITY} PRIVATE CPU_CAPABILITY=${CPU_CAPABILITY} CPU_CAPABILITY_${CPU_CAPABILITY})
