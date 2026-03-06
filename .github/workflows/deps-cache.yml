@@ -52,6 +52,8 @@ jobs:
           pip install -r requirements.txt &&
           patch -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-mobile-build.patch &&
           patch -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-no-link-system-lib.patch &&
+          patch -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-set-python-executable.patch &&
+          patch -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-eigen-build.patch &&
           mkdir -p build && cd build &&
           cmake -DCMAKE_INSTALL_PREFIX="/host/tmp/libtorch" -DCMAKE_BUILD_TYPE=MinSizeRel -DBUILD_SHARED_LIBS=OFF
               -DCMAKE_POLICY_VERSION_MINIMUM=3.5
@@ -196,6 +198,7 @@ jobs:
           patch -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-mobile-build.patch &&
           patch -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-no-link-system-lib.patch &&
           patch -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-set-python-executable.patch &&
+          patch -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-eigen-build.patch &&
           patch -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-no-arm64-sleef.patch &&
           patch -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-no-arm64-sve.patch &&
           mkdir -p build && cd build &&
@@ -305,6 +308,7 @@ jobs:
         pip3 install -r requirements.txt
         patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-mobile-build.patch
         patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-no-link-system-lib.patch
+        patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-eigen-build.patch
         mkdir -p build; cd build
         cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/libtorch" -DCMAKE_BUILD_TYPE=MinSizeRel -DBUILD_SHARED_LIBS=OFF \
             -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
@@ -401,6 +405,7 @@ jobs:
         patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-mobile-build.patch
         patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-no-link-system-lib.patch
         patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-set-python-executable.patch
+        patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-eigen-build.patch
         patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-no-arm64-sleef.patch
         patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-no-arm64-sve.patch
         mkdir -p build; cd build
@@ -502,6 +507,7 @@ jobs:
         & "C:\Program Files\Git\usr\bin\patch.exe" -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\pytorch-v${{ env.LIBTORCH_VERSION }}-fix-mobile-build.patch
         & "C:\Program Files\Git\usr\bin\patch.exe" -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\pytorch-v${{ env.LIBTORCH_VERSION }}-no-link-system-lib.patch
         & "C:\Program Files\Git\usr\bin\patch.exe" -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\pytorch-v${{ env.LIBTORCH_VERSION }}-set-python-executable.patch
+        & "C:\Program Files\Git\usr\bin\patch.exe" -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\pytorch-v${{ env.LIBTORCH_VERSION }}-fix-eigen-build.patch
         & "C:\Program Files\Git\usr\bin\patch.exe" -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\pytorch-v${{ env.LIBTORCH_VERSION }}-no-mimalloc.patch
         mkdir -p build; cd build
         cmake -DCMAKE_INSTALL_PREFIX="$env:GITHUB_WORKSPACE/libtorch" -DCMAKE_BUILD_TYPE=MinSizeRel -DBUILD_SHARED_LIBS=OFF -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded `
