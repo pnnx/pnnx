@@ -79,6 +79,7 @@ jobs:
               -DUSE_OPENMP=OFF
               -DUSE_SOURCE_DEBUG_ON_MOBILE=OFF
               -DUSE_XNNPACK=OFF
+              -DBUILD_TEST=OFF
               -DATEN_NO_TEST=ON
               .. &&
           cmake --build . -j $(nproc) &&
@@ -228,6 +229,7 @@ jobs:
               -DUSE_OPENMP=OFF
               -DUSE_SOURCE_DEBUG_ON_MOBILE=OFF
               -DUSE_XNNPACK=OFF
+              -DBUILD_TEST=OFF
               -DATEN_NO_TEST=ON
               .. &&
           cmake --build . -j $(nproc) &&
@@ -338,6 +340,7 @@ jobs:
             -DUSE_OPENMP=OFF \
             -DUSE_SOURCE_DEBUG_ON_MOBILE=OFF \
             -DUSE_XNNPACK=OFF \
+            -DBUILD_TEST=OFF \
             -DATEN_NO_TEST=ON \
             ..
         cmake --build . -j 4
@@ -439,6 +442,7 @@ jobs:
             -DUSE_OPENMP=OFF \
             -DUSE_SOURCE_DEBUG_ON_MOBILE=OFF \
             -DUSE_XNNPACK=OFF \
+            -DBUILD_TEST=OFF \
             -DATEN_NO_TEST=ON \
             ..
         cmake --build . -j 3
@@ -542,6 +546,7 @@ jobs:
             -DUSE_OPENMP=OFF `
             -DUSE_SOURCE_DEBUG_ON_MOBILE=OFF `
             -DUSE_XNNPACK=OFF `
+            -DBUILD_TEST=OFF `
             -DATEN_NO_TEST=ON `
             -DMSVC_Z7_OVERRIDE=OFF `
             ..
