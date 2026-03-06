@@ -46,8 +46,6 @@ jobs:
         CIBW_BUILD_VERBOSITY: 1
         CIBW_REPAIR_WHEEL_COMMAND: ""
         CIBW_BEFORE_ALL: yum install wget zip -y &&
-          dnf install -y almalinux-release-scl && dnf search rh-python && dnf install -y rh-python311 rh-python311-python-devel &&
-          source scl_source enable rh-python311 &&
           wget -q https://github.com/pytorch/pytorch/releases/download/v${{ env.LIBTORCH_VERSION }}/pytorch-v${{ env.LIBTORCH_VERSION }}.tar.gz &&
           tar -xf pytorch-v${{ env.LIBTORCH_VERSION }}.tar.gz &&
           cd pytorch-v${{ env.LIBTORCH_VERSION }} &&
@@ -77,6 +75,7 @@ jobs:
               -DUSE_OPENMP=OFF
               -DUSE_SOURCE_DEBUG_ON_MOBILE=OFF
               -DUSE_XNNPACK=OFF
+              -DATEN_NO_TEST=ON
               .. &&
           cmake --build . -j $(nproc) &&
           cmake --build . -j $(nproc) --target install/strip
@@ -225,6 +224,7 @@ jobs:
               -DUSE_OPENMP=OFF
               -DUSE_SOURCE_DEBUG_ON_MOBILE=OFF
               -DUSE_XNNPACK=OFF
+              -DATEN_NO_TEST=ON
               .. &&
           cmake --build . -j $(nproc) &&
           cmake --build . -j $(nproc) --target install/strip
@@ -334,6 +334,7 @@ jobs:
             -DUSE_OPENMP=OFF \
             -DUSE_SOURCE_DEBUG_ON_MOBILE=OFF \
             -DUSE_XNNPACK=OFF \
+            -DATEN_NO_TEST=ON \
             ..
         cmake --build . -j 4
         cmake --build . -j 4 --target install/strip
@@ -434,6 +435,7 @@ jobs:
             -DUSE_OPENMP=OFF \
             -DUSE_SOURCE_DEBUG_ON_MOBILE=OFF \
             -DUSE_XNNPACK=OFF \
+            -DATEN_NO_TEST=ON \
             ..
         cmake --build . -j 3
         cmake --build . -j 3 --target install/strip
@@ -536,6 +538,7 @@ jobs:
             -DUSE_OPENMP=OFF `
             -DUSE_SOURCE_DEBUG_ON_MOBILE=OFF `
             -DUSE_XNNPACK=OFF `
+            -DATEN_NO_TEST=ON `
             -DMSVC_Z7_OVERRIDE=OFF `
             ..
         cmake --build . --config MinSizeRel -j 4

@@ -79,6 +79,7 @@ jobs:
               -DUSE_OPENMP=OFF
               -DUSE_SOURCE_DEBUG_ON_MOBILE=OFF
               -DUSE_XNNPACK=OFF
+              -DATEN_NO_TEST=ON
               .. &&
           cmake --build . -j $(nproc) &&
           cmake --build . -j $(nproc) --target install/strip
@@ -227,6 +228,7 @@ jobs:
               -DUSE_OPENMP=OFF
               -DUSE_SOURCE_DEBUG_ON_MOBILE=OFF
               -DUSE_XNNPACK=OFF
+              -DATEN_NO_TEST=ON
               .. &&
           cmake --build . -j $(nproc) &&
           cmake --build . -j $(nproc) --target install/strip
@@ -336,6 +338,7 @@ jobs:
             -DUSE_OPENMP=OFF \
             -DUSE_SOURCE_DEBUG_ON_MOBILE=OFF \
             -DUSE_XNNPACK=OFF \
+            -DATEN_NO_TEST=ON \
             ..
         cmake --build . -j 4
         cmake --build . -j 4 --target install/strip
@@ -436,6 +439,7 @@ jobs:
             -DUSE_OPENMP=OFF \
             -DUSE_SOURCE_DEBUG_ON_MOBILE=OFF \
             -DUSE_XNNPACK=OFF \
+            -DATEN_NO_TEST=ON \
             ..
         cmake --build . -j 3
         cmake --build . -j 3 --target install/strip
@@ -538,6 +542,7 @@ jobs:
             -DUSE_OPENMP=OFF `
             -DUSE_SOURCE_DEBUG_ON_MOBILE=OFF `
             -DUSE_XNNPACK=OFF `
+            -DATEN_NO_TEST=ON `
             -DMSVC_Z7_OVERRIDE=OFF `
             ..
         cmake --build . --config MinSizeRel -j 4
