@@ -45,8 +45,7 @@ jobs:
         CIBW_BUILD: 'cp310-manylinux_x86_64'
         CIBW_BUILD_VERBOSITY: 1
         CIBW_REPAIR_WHEEL_COMMAND: ""
-        CIBW_BEFORE_ALL: yum install wget zip -y &&
-          yum install python3.11 && alternatives --set python3 /usr/bin/python3.11 &&
+        CIBW_BEFORE_ALL: yum install wget zip cmake -y &&
           wget -q https://github.com/pytorch/pytorch/releases/download/v${{ env.LIBTORCH_VERSION }}/pytorch-v${{ env.LIBTORCH_VERSION }}.tar.gz &&
           tar -xf pytorch-v${{ env.LIBTORCH_VERSION }}.tar.gz &&
           cd pytorch-v${{ env.LIBTORCH_VERSION }} &&
@@ -65,6 +64,7 @@ jobs:
               -DINTERN_BUILD_MOBILE=ON
               -DINTERN_DISABLE_AUTOGRAD=ON
               -DINTERN_DISABLE_ONNX=ON
+              -DPython_EXECUTABLE=python3.11
               -DUSE_CUDA=OFF
               -DUSE_DISTRIBUTED=OFF
               -DUSE_ITT=OFF
