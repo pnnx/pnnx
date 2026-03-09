@@ -1,0 +1,86 @@
+diff -Nuarp pytorch-v2.10.0.orig/torch/csrc/api/include/torch/nativert/ModelRunnerHandle.h pytorch-v2.10.0/torch/csrc/api/include/torch/nativert/ModelRunnerHandle.h
+--- pytorch-v2.10.0.orig/torch/csrc/api/include/torch/nativert/ModelRunnerHandle.h	2026-01-22 01:09:02.000000000 +0800
++++ pytorch-v2.10.0/torch/csrc/api/include/torch/nativert/ModelRunnerHandle.h	1970-01-01 08:00:00.000000000 +0800
+@@ -1,46 +0,0 @@
+-#pragma once
+-
+-#include <memory>
+-#include <string>
+-#include <unordered_map>
+-#include <vector>
+-
+-#include <ATen/core/ivalue.h>
+-#include <c10/macros/Export.h>
+-
+-namespace torch::nativert {
+-
+-// We don't want to forward declare in general but including ModelRunner will
+-// pollute the public API namespace too much. Therefore, we just use pimpl an
+-// incomplete ModelRunner here.
+-class ModelRunner;
+-
+-class TORCH_API ModelRunnerHandle {
+- public:
+-  ModelRunnerHandle(
+-      const std::string& packagePath,
+-      const std::string& modelName);
+-
+-  ModelRunnerHandle(ModelRunnerHandle&&) = default;
+-  ModelRunnerHandle& operator=(ModelRunnerHandle&&) = default;
+-  ModelRunnerHandle(const ModelRunnerHandle&) = delete;
+-  ModelRunnerHandle& operator=(const ModelRunnerHandle&) = delete;
+-  ~ModelRunnerHandle();
+-
+-  c10::IValue run(
+-      const std::vector<c10::IValue>& args,
+-      const std::unordered_map<std::string, c10::IValue>& kwargs);
+-
+-  /**
+-   * A low level API which expects user to always pass in flattened inputs.
+-   * The ownership of the entire input list must be transferred to the
+-   * executor via std::move or in-place construction.
+-   */
+-  std::vector<c10::IValue> runWithFlatInputsAndOutputs(
+-      std::vector<c10::IValue> flatInputs);
+-
+- private:
+-  std::unique_ptr<ModelRunner> impl_;
+-};
+-
+-} // namespace torch::nativert
+diff -Nuarp pytorch-v2.10.0.orig/torch/nativert/ModelRunner.cpp pytorch-v2.10.0/torch/nativert/ModelRunner.cpp
+--- pytorch-v2.10.0.orig/torch/nativert/ModelRunner.cpp	2026-01-22 01:09:02.000000000 +0800
++++ pytorch-v2.10.0/torch/nativert/ModelRunner.cpp	2026-03-09 14:50:45.135713296 +0800
+@@ -157,21 +157,4 @@ uint64_t ModelRunner::numOutputs() const
+   return executor_->graphSignature().userOutputs().size();
+ }
+ 
+-ModelRunnerHandle::ModelRunnerHandle(
+-    const std::string& packagePath,
+-    const std::string& modelName)
+-    : impl_(std::make_unique<ModelRunner>(packagePath, modelName)) {}
+-ModelRunnerHandle::~ModelRunnerHandle() = default;
+-
+-c10::IValue ModelRunnerHandle::run(
+-    const std::vector<c10::IValue>& args,
+-    const std::unordered_map<std::string, c10::IValue>& kwargs) {
+-  return impl_->run(args, kwargs);
+-}
+-
+-std::vector<c10::IValue> ModelRunnerHandle::runWithFlatInputsAndOutputs(
+-    std::vector<c10::IValue> flatInputs) {
+-  return impl_->runWithFlatInputsAndOutputs(std::move(flatInputs));
+-}
+-
+ } // namespace torch::nativert
+diff -Nuarp pytorch-v2.10.0.orig/torch/nativert/ModelRunner.h pytorch-v2.10.0/torch/nativert/ModelRunner.h
+--- pytorch-v2.10.0.orig/torch/nativert/ModelRunner.h	2026-01-22 01:09:02.000000000 +0800
++++ pytorch-v2.10.0/torch/nativert/ModelRunner.h	2026-03-09 14:50:45.135777756 +0800
+@@ -4,7 +4,6 @@
+ 
+ #include <c10/macros/Export.h>
+ #include <torch/csrc/utils/generated_serialization_types.h>
+-#include <torch/nativert/ModelRunnerHandle.h>
+ #include <torch/nativert/detail/ITree.h>
+ #include <torch/nativert/executor/Executor.h>
+ #include <torch/nativert/executor/Placement.h>
