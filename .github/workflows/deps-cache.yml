@@ -232,7 +232,7 @@ jobs:
               -DUSE_XNNPACK=OFF
               -DBUILD_TEST=OFF
               -DATEN_NO_TEST=ON
-              -DUSE_PRIORITIZED_TEXT_DEFAULT=OFF
+              -DUSE_PRIORITIZED_TEXT_FOR_LD=OFF
               .. &&
           cmake --build . -j $(nproc) &&
           cmake --build . -j $(nproc) --target install/strip
