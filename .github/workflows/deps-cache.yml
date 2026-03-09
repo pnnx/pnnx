@@ -50,7 +50,6 @@ jobs:
           tar -xf pytorch-v${{ env.LIBTORCH_VERSION }}.tar.gz &&
           cd pytorch-v${{ env.LIBTORCH_VERSION }} &&
           export PATH=/opt/python/cp310-cp310/bin:$PATH &&
-          pip install -U cmake &&
           pip install -r requirements.txt &&
           patch -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-mobile-build.patch &&
           patch -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-no-link-system-lib.patch &&
@@ -153,147 +152,148 @@ jobs:
       with:
         package-dir: pnnx-patches
         output-dir: wheelhouse3
-  #
-  # # libtorch builds very slow even on self-hosted runner
-  # linux-aarch64-deps:
-  #   # runs-on: self-hosted
-  #   # runs-on: ubuntu-latest
-  #   runs-on: ubuntu-24.04-arm
-  #   timeout-minutes: 1800
-  #   steps:
-  #   - uses: actions/setup-python@v6
-  #     with:
-  #       python-version: '3.11'
-  #   - name: pnnx-patches
-  #     uses: actions/checkout@v6
-  #     with:
-  #       path: pnnx-patches
-  #   - name: cache-libtorch
-  #     id: cache-libtorch
-  #     uses: actions/cache@v5.0.3
-  #     with:
-  #       path: "/tmp/libtorch"
-  #       key: libtorch-${{ env.LIBTORCH_VERSION }}-linux-aarch64-${{ env.CACHE_DATE }}
-  #
-  #   - name: cache-torchvision
-  #     id: cache-torchvision
-  #     uses: actions/cache@v5.0.3
-  #     with:
-  #       path: "/tmp/torchvision"
-  #       key: torchvision-${{ env.TORCHVISION_VERSION }}-linux-aarch64-${{ env.CACHE_DATE }}
-  #
-  #   - name: cache-onnxruntime
-  #     id: cache-onnxruntime
-  #     uses: actions/cache@v5.0.3
-  #     with:
-  #       path: "/tmp/onnxruntime"
-  #       key: onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-linux-aarch64-${{ env.CACHE_DATE }}
-  #
-  #   - name: libtorch
-  #     if: steps.cache-libtorch.outputs.cache-hit != 'true'
-  #     uses: pypa/cibuildwheel@v3.4.0
-  #     env:
-  #       CIBW_ARCHS_LINUX: "aarch64"
-  #       CIBW_BUILD: 'cp310-manylinux_aarch64'
-  #       CIBW_BUILD_VERBOSITY: 1
-  #       CIBW_REPAIR_WHEEL_COMMAND: ""
-  #       CIBW_BEFORE_ALL: yum install wget zip -y &&
-  #         wget -q https://github.com/pytorch/pytorch/releases/download/v${{ env.LIBTORCH_VERSION }}/pytorch-v${{ env.LIBTORCH_VERSION }}.tar.gz &&
-  #         tar -xf pytorch-v${{ env.LIBTORCH_VERSION }}.tar.gz &&
-  #         cd pytorch-v${{ env.LIBTORCH_VERSION }} &&
-  #         pip install -r requirements.txt &&
-  #         patch -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-mobile-build.patch &&
-  #         patch -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-no-link-system-lib.patch &&
-  #         patch -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-set-python-executable.patch &&
-  #         patch -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-eigen-build.patch &&
-  #         patch -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-link-local-sleef.patch &&
-  #         patch -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-revert-nativert-api.patch &&
-  #         patch -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-no-arm64-sleef.patch &&
-  #         patch -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-no-arm64-sve.patch &&
-  #         mkdir -p build && cd build &&
-  #         cmake -DCMAKE_INSTALL_PREFIX="/host/tmp/libtorch" -DCMAKE_BUILD_TYPE=MinSizeRel -DBUILD_SHARED_LIBS=OFF
-  #             -DCMAKE_POLICY_VERSION_MINIMUM=3.5
-  #             -DBUILD_CUSTOM_PROTOBUF=OFF
-  #             -DBUILD_LITE_INTERPRETER=OFF
-  #             -DBUILD_PYTHON=OFF
-  #             -DINTERN_BUILD_MOBILE=ON
-  #             -DINTERN_DISABLE_AUTOGRAD=ON
-  #             -DINTERN_DISABLE_ONNX=ON
-  #             -DUSE_CUDA=OFF
-  #             -DUSE_DISTRIBUTED=OFF
-  #             -DUSE_ITT=OFF
-  #             -DUSE_KINETO=OFF
-  #             -DUSE_LITE_INTERPRETER_PROFILER=OFF
-  #             -DUSE_MKLDNN=OFF
-  #             -DUSE_MPS=OFF
-  #             -DUSE_NUMPY=OFF
-  #             -DUSE_OPENMP=OFF
-  #             -DUSE_SOURCE_DEBUG_ON_MOBILE=OFF
-  #             -DUSE_XNNPACK=OFF
-  #             -DBUILD_TEST=OFF
-  #             -DATEN_NO_TEST=ON
-  #             .. &&
-  #         cmake --build . -j $(nproc) &&
-  #         cmake --build . -j $(nproc) --target install/strip
-  #     with:
-  #       package-dir: pnnx-patches
-  #       output-dir: wheelhouse1
-  #
-  #   - name: torchvision
-  #     if: steps.cache-torchvision.outputs.cache-hit != 'true'
-  #     uses: pypa/cibuildwheel@v3.4.0
-  #     env:
-  #       CIBW_ARCHS_LINUX: "aarch64"
-  #       CIBW_BUILD: 'cp310-manylinux_aarch64'
-  #       CIBW_BUILD_VERBOSITY: 1
-  #       CIBW_REPAIR_WHEEL_COMMAND: ""
-  #       CIBW_BEFORE_ALL: yum install wget zip -y &&
-  #         wget -q https://github.com/pytorch/vision/archive/refs/tags/v${{ env.TORCHVISION_VERSION }}.zip -O vision-${{ env.TORCHVISION_VERSION }}.zip &&
-  #         unzip -q vision-${{ env.TORCHVISION_VERSION }}.zip &&
-  #         cd vision-${{ env.TORCHVISION_VERSION }} &&
-  #         patch -p1 -i /project/pnnx-patches/vision-${{ env.TORCHVISION_VERSION }}-ops-only.patch  &&
-  #         patch -p1 -i /project/pnnx-patches/vision-${{ env.TORCHVISION_VERSION }}-no-cuda-version.patch  &&
-  #         mkdir -p build && cd build  &&
-  #         cmake -DCMAKE_INSTALL_PREFIX="/host/tmp/torchvision"
-  #         -DTorch_DIR="/host/tmp/libtorch/share/cmake/Torch"
-  #         -DCMAKE_BUILD_TYPE=MinSizeRel -DWITH_PNG=OFF -DWITH_JPEG=OFF ..  &&
-  #         cmake --build . -j $(nproc)  &&
-  #         cmake --build . -j $(nproc) --target install/strip
-  #     with:
-  #       package-dir: pnnx-patches
-  #       output-dir: wheelhouse2
-  #
-  #   - name: onnxruntime
-  #     if: steps.cache-onnxruntime.outputs.cache-hit != 'true'
-  #     uses: pypa/cibuildwheel@v3.4.0
-  #     env:
-  #       CIBW_ARCHS_LINUX: "aarch64"
-  #       CIBW_BUILD: 'cp310-manylinux_aarch64'
-  #       CIBW_BUILD_VERBOSITY: 1
-  #       CIBW_REPAIR_WHEEL_COMMAND: ""
-  #       CIBW_BEFORE_ALL: yum install wget zip -y &&
-  #         wget -q https://github.com/protocolbuffers/protobuf/archive/v${{ env.PROTOBUF_VERSION }}.zip -O protobuf-${{ env.PROTOBUF_VERSION }}.zip &&
-  #         unzip -q protobuf-${{ env.PROTOBUF_VERSION }}.zip &&
-  #         cd protobuf-${{ env.PROTOBUF_VERSION }} &&
-  #         mkdir -p build2 && cd build2 &&
-  #         cmake -DCMAKE_INSTALL_PREFIX="/host/tmp/onnxruntime" -Dprotobuf_BUILD_TESTS=OFF -DCMAKE_BUILD_TYPE=MinSizeRel -DCMAKE_POSITION_INDEPENDENT_CODE=ON .. &&
-  #         cmake --build . -j $(nproc) &&
-  #         cmake --build . -j $(nproc) --target install/strip &&
-  #         cd ../../ &&
-  #         wget -q https://github.com/microsoft/onnxruntime/archive/v${{ env.ONNXRUNTIME_VERSION }}.zip -O onnxruntime-${{ env.ONNXRUNTIME_VERSION }}.zip &&
-  #         unzip -q onnxruntime-${{ env.ONNXRUNTIME_VERSION }}.zip &&
-  #         cd onnxruntime-${{ env.ONNXRUNTIME_VERSION }} &&
-  #         patch -p1 -i /project/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-less-mlas-features.patch &&
-  #         patch -p1 -i /project/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-monolithic-static-library.patch &&
-  #         patch -p1 -i /project/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-use-clog.patch &&
-  #         mkdir -p build2 && cd build2 &&
-  #         cmake -DCMAKE_INSTALL_PREFIX="/host/tmp/onnxruntime" -DCMAKE_BUILD_TYPE=MinSizeRel -Donnxruntime_USE_FULL_PROTOBUF=ON -Donnxruntime_BUILD_SHARED_LIB=ON -Donnxruntime_BUILD_UNIT_TESTS=OFF -Donnxruntime_ENABLE_CPUINFO=OFF -Donnxruntime_DISABLE_CONTRIB_OPS=ON -Donnxruntime_DISABLE_ML_OPS=ON -Donnxruntime_DISABLE_SPARSE_TENSORS=ON --compile-no-warning-as-error -DCMAKE_POSITION_INDEPENDENT_CODE=ON ../cmake &&
-  #         cmake --build . -j $(nproc) &&
-  #         cmake --build . -j $(nproc) --target install/strip
-  #     with:
-  #       package-dir: pnnx-patches
-  #       output-dir: wheelhouse3
-  #
+
+  # libtorch builds very slow even on self-hosted runner
+  linux-aarch64-deps:
+    # runs-on: self-hosted
+    # runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 1800
+    steps:
+    - uses: actions/setup-python@v6
+      with:
+        python-version: '3.11'
+    - name: pnnx-patches
+      uses: actions/checkout@v6
+      with:
+        path: pnnx-patches
+    - name: cache-libtorch
+      id: cache-libtorch
+      uses: actions/cache@v5.0.3
+      with:
+        path: "/tmp/libtorch"
+        key: libtorch-${{ env.LIBTORCH_VERSION }}-linux-aarch64-${{ env.CACHE_DATE }}
+
+    - name: cache-torchvision
+      id: cache-torchvision
+      uses: actions/cache@v5.0.3
+      with:
+        path: "/tmp/torchvision"
+        key: torchvision-${{ env.TORCHVISION_VERSION }}-linux-aarch64-${{ env.CACHE_DATE }}
+
+    - name: cache-onnxruntime
+      id: cache-onnxruntime
+      uses: actions/cache@v5.0.3
+      with:
+        path: "/tmp/onnxruntime"
+        key: onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-linux-aarch64-${{ env.CACHE_DATE }}
+
+    - name: libtorch
+      if: steps.cache-libtorch.outputs.cache-hit != 'true'
+      uses: pypa/cibuildwheel@v3.4.0
+      env:
+        CIBW_ARCHS_LINUX: "aarch64"
+        CIBW_BUILD: 'cp310-manylinux_aarch64'
+        CIBW_BUILD_VERBOSITY: 1
+        CIBW_REPAIR_WHEEL_COMMAND: ""
+        CIBW_BEFORE_ALL: yum install wget zip -y &&
+          wget -q https://github.com/pytorch/pytorch/releases/download/v${{ env.LIBTORCH_VERSION }}/pytorch-v${{ env.LIBTORCH_VERSION }}.tar.gz &&
+          tar -xf pytorch-v${{ env.LIBTORCH_VERSION }}.tar.gz &&
+          cd pytorch-v${{ env.LIBTORCH_VERSION }} &&
+          export PATH=/opt/python/cp310-cp310/bin:$PATH &&
+          pip install -r requirements.txt &&
+          patch -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-mobile-build.patch &&
+          patch -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-no-link-system-lib.patch &&
+          patch -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-set-python-executable.patch &&
+          patch -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-eigen-build.patch &&
+          patch -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-link-local-sleef.patch &&
+          patch -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-revert-nativert-api.patch &&
+          patch -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-no-arm64-sleef.patch &&
+          patch -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-no-arm64-sve.patch &&
+          mkdir -p build && cd build &&
+          cmake -DCMAKE_INSTALL_PREFIX="/host/tmp/libtorch" -DCMAKE_BUILD_TYPE=MinSizeRel -DBUILD_SHARED_LIBS=OFF
+              -DCMAKE_POLICY_VERSION_MINIMUM=3.5
+              -DBUILD_CUSTOM_PROTOBUF=OFF
+              -DBUILD_LITE_INTERPRETER=OFF
+              -DBUILD_PYTHON=OFF
+              -DINTERN_BUILD_MOBILE=ON
+              -DINTERN_DISABLE_AUTOGRAD=ON
+              -DINTERN_DISABLE_ONNX=ON
+              -DUSE_CUDA=OFF
+              -DUSE_DISTRIBUTED=OFF
+              -DUSE_ITT=OFF
+              -DUSE_KINETO=OFF
+              -DUSE_LITE_INTERPRETER_PROFILER=OFF
+              -DUSE_MKLDNN=OFF
+              -DUSE_MPS=OFF
+              -DUSE_NUMPY=OFF
+              -DUSE_OPENMP=OFF
+              -DUSE_SOURCE_DEBUG_ON_MOBILE=OFF
+              -DUSE_XNNPACK=OFF
+              -DBUILD_TEST=OFF
+              -DATEN_NO_TEST=ON
+              .. &&
+          cmake --build . -j $(nproc) &&
+          cmake --build . -j $(nproc) --target install/strip
+      with:
+        package-dir: pnnx-patches
+        output-dir: wheelhouse1
+
+    - name: torchvision
+      if: steps.cache-torchvision.outputs.cache-hit != 'true'
+      uses: pypa/cibuildwheel@v3.4.0
+      env:
+        CIBW_ARCHS_LINUX: "aarch64"
+        CIBW_BUILD: 'cp310-manylinux_aarch64'
+        CIBW_BUILD_VERBOSITY: 1
+        CIBW_REPAIR_WHEEL_COMMAND: ""
+        CIBW_BEFORE_ALL: yum install wget zip -y &&
+          wget -q https://github.com/pytorch/vision/archive/refs/tags/v${{ env.TORCHVISION_VERSION }}.zip -O vision-${{ env.TORCHVISION_VERSION }}.zip &&
+          unzip -q vision-${{ env.TORCHVISION_VERSION }}.zip &&
+          cd vision-${{ env.TORCHVISION_VERSION }} &&
+          patch -p1 -i /project/pnnx-patches/vision-${{ env.TORCHVISION_VERSION }}-ops-only.patch  &&
+          patch -p1 -i /project/pnnx-patches/vision-${{ env.TORCHVISION_VERSION }}-no-cuda-version.patch  &&
+          mkdir -p build && cd build  &&
+          cmake -DCMAKE_INSTALL_PREFIX="/host/tmp/torchvision"
+          -DTorch_DIR="/host/tmp/libtorch/share/cmake/Torch"
+          -DCMAKE_BUILD_TYPE=MinSizeRel -DWITH_PNG=OFF -DWITH_JPEG=OFF ..  &&
+          cmake --build . -j $(nproc)  &&
+          cmake --build . -j $(nproc) --target install/strip
+      with:
+        package-dir: pnnx-patches
+        output-dir: wheelhouse2
+
+    - name: onnxruntime
+      if: steps.cache-onnxruntime.outputs.cache-hit != 'true'
+      uses: pypa/cibuildwheel@v3.4.0
+      env:
+        CIBW_ARCHS_LINUX: "aarch64"
+        CIBW_BUILD: 'cp310-manylinux_aarch64'
+        CIBW_BUILD_VERBOSITY: 1
+        CIBW_REPAIR_WHEEL_COMMAND: ""
+        CIBW_BEFORE_ALL: yum install wget zip -y &&
+          wget -q https://github.com/protocolbuffers/protobuf/archive/v${{ env.PROTOBUF_VERSION }}.zip -O protobuf-${{ env.PROTOBUF_VERSION }}.zip &&
+          unzip -q protobuf-${{ env.PROTOBUF_VERSION }}.zip &&
+          cd protobuf-${{ env.PROTOBUF_VERSION }} &&
+          mkdir -p build2 && cd build2 &&
+          cmake -DCMAKE_INSTALL_PREFIX="/host/tmp/onnxruntime" -Dprotobuf_BUILD_TESTS=OFF -DCMAKE_BUILD_TYPE=MinSizeRel -DCMAKE_POSITION_INDEPENDENT_CODE=ON .. &&
+          cmake --build . -j $(nproc) &&
+          cmake --build . -j $(nproc) --target install/strip &&
+          cd ../../ &&
+          wget -q https://github.com/microsoft/onnxruntime/archive/v${{ env.ONNXRUNTIME_VERSION }}.zip -O onnxruntime-${{ env.ONNXRUNTIME_VERSION }}.zip &&
+          unzip -q onnxruntime-${{ env.ONNXRUNTIME_VERSION }}.zip &&
+          cd onnxruntime-${{ env.ONNXRUNTIME_VERSION }} &&
+          patch -p1 -i /project/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-less-mlas-features.patch &&
+          patch -p1 -i /project/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-monolithic-static-library.patch &&
+          patch -p1 -i /project/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-use-clog.patch &&
+          mkdir -p build2 && cd build2 &&
+          cmake -DCMAKE_INSTALL_PREFIX="/host/tmp/onnxruntime" -DCMAKE_BUILD_TYPE=MinSizeRel -Donnxruntime_USE_FULL_PROTOBUF=ON -Donnxruntime_BUILD_SHARED_LIB=ON -Donnxruntime_BUILD_UNIT_TESTS=OFF -Donnxruntime_ENABLE_CPUINFO=OFF -Donnxruntime_DISABLE_CONTRIB_OPS=ON -Donnxruntime_DISABLE_ML_OPS=ON -Donnxruntime_DISABLE_SPARSE_TENSORS=ON --compile-no-warning-as-error -DCMAKE_POSITION_INDEPENDENT_CODE=ON ../cmake &&
+          cmake --build . -j $(nproc) &&
+          cmake --build . -j $(nproc) --target install/strip
+      with:
+        package-dir: pnnx-patches
+        output-dir: wheelhouse3
+
   # macos-x64-deps:
   #   runs-on: macos-15-intel
   #   steps:
