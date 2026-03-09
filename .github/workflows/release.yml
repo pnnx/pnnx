@@ -53,6 +53,7 @@ jobs:
           wget -q https://github.com/pytorch/pytorch/releases/download/v${{ env.LIBTORCH_VERSION }}/pytorch-v${{ env.LIBTORCH_VERSION }}.tar.gz &&
           tar -xf pytorch-v${{ env.LIBTORCH_VERSION }}.tar.gz &&
           cd pytorch-v${{ env.LIBTORCH_VERSION }} &&
+          export PATH=/opt/python/cp310-cp310/bin:$PATH &&
           pip install -r requirements.txt &&
           patch -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-mobile-build.patch &&
           patch -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-no-link-system-lib.patch &&
@@ -202,6 +203,7 @@ jobs:
           wget -q https://github.com/pytorch/pytorch/releases/download/v${{ env.LIBTORCH_VERSION }}/pytorch-v${{ env.LIBTORCH_VERSION }}.tar.gz &&
           tar -xf pytorch-v${{ env.LIBTORCH_VERSION }}.tar.gz &&
           cd pytorch-v${{ env.LIBTORCH_VERSION }} &&
+          export PATH=/opt/python/cp310-cp310/bin:$PATH &&
           pip install -r requirements.txt &&
           patch -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-mobile-build.patch &&
           patch -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-no-link-system-lib.patch &&
@@ -233,6 +235,7 @@ jobs:
               -DUSE_XNNPACK=OFF
               -DBUILD_TEST=OFF
               -DATEN_NO_TEST=ON
+              -DUSE_PRIORITIZED_TEXT_DEFAULT=OFF
               .. &&
           cmake --build . -j $(nproc) &&
           cmake --build . -j $(nproc) --target install/strip
