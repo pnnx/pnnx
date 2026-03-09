@@ -66,7 +66,6 @@ jobs:
               -DINTERN_BUILD_MOBILE=ON
               -DINTERN_DISABLE_AUTOGRAD=ON
               -DINTERN_DISABLE_ONNX=ON
-              -DPython_EXECUTABLE=python3.11
               -DUSE_CUDA=OFF
               -DUSE_DISTRIBUTED=OFF
               -DUSE_ITT=OFF
