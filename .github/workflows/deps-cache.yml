@@ -39,7 +39,7 @@ jobs:
         key: libtorch-${{ env.LIBTORCH_VERSION }}-linux-${{ env.CACHE_DATE }}
     - name: libtorch
       if: steps.cache-libtorch.outputs.cache-hit != 'true'
-      uses: pypa/cibuildwheel@v3.4.0
+      uses: pypa/cibuildwheel@v3.4.1
       env:
         CIBW_ARCHS_LINUX: "x86_64"
         CIBW_BUILD: 'cp310-manylinux_x86_64'
@@ -93,7 +93,7 @@ jobs:
         key: torchvision-${{ env.TORCHVISION_VERSION }}-linux-${{ env.CACHE_DATE }}
     - name: torchvision
       if: steps.cache-torchvision.outputs.cache-hit != 'true'
-      uses: pypa/cibuildwheel@v3.4.0
+      uses: pypa/cibuildwheel@v3.4.1
       env:
         CIBW_ARCHS_LINUX: "x86_64"
         CIBW_BUILD: 'cp310-manylinux_x86_64'
@@ -123,7 +123,7 @@ jobs:
         key: onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-linux-${{ env.CACHE_DATE }}
     - name: onnxruntime
       if: steps.cache-onnxruntime.outputs.cache-hit != 'true'
-      uses: pypa/cibuildwheel@v3.4.0
+      uses: pypa/cibuildwheel@v3.4.1
       env:
         CIBW_ARCHS_LINUX: "x86_64"
         CIBW_BUILD: 'cp310-manylinux_x86_64'
@@ -189,7 +189,7 @@ jobs:
 
     - name: libtorch
       if: steps.cache-libtorch.outputs.cache-hit != 'true'
-      uses: pypa/cibuildwheel@v3.4.0
+      uses: pypa/cibuildwheel@v3.4.1
       env:
         CIBW_ARCHS_LINUX: "aarch64"
         CIBW_BUILD: 'cp310-manylinux_aarch64'
@@ -241,7 +241,7 @@ jobs:
 
     - name: torchvision
       if: steps.cache-torchvision.outputs.cache-hit != 'true'
-      uses: pypa/cibuildwheel@v3.4.0
+      uses: pypa/cibuildwheel@v3.4.1
       env:
         CIBW_ARCHS_LINUX: "aarch64"
         CIBW_BUILD: 'cp310-manylinux_aarch64'
@@ -265,7 +265,7 @@ jobs:
 
     - name: onnxruntime
       if: steps.cache-onnxruntime.outputs.cache-hit != 'true'
-      uses: pypa/cibuildwheel@v3.4.0
+      uses: pypa/cibuildwheel@v3.4.1
       env:
         CIBW_ARCHS_LINUX: "aarch64"
         CIBW_BUILD: 'cp310-manylinux_aarch64'
