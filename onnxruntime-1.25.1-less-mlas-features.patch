@@ -1,6 +1,6 @@
 diff -Nuarp onnxruntime-1.25.1.orig/cmake/onnxruntime_mlas.cmake onnxruntime-1.25.1/cmake/onnxruntime_mlas.cmake
 --- onnxruntime-1.25.1.orig/cmake/onnxruntime_mlas.cmake	2026-04-27 21:08:39.000000000 +0800
-+++ onnxruntime-1.25.1/cmake/onnxruntime_mlas.cmake	2026-05-06 14:49:33.811122734 +0800
++++ onnxruntime-1.25.1/cmake/onnxruntime_mlas.cmake	2026-05-06 15:49:26.227835124 +0800
 @@ -526,7 +526,7 @@ else()
          set_source_files_properties(${MLAS_SRC_DIR}/sqnbitgemm_kernel_neon_int8_i8mm.cpp
  				    PROPERTIES COMPILE_FLAGS " -march=armv8.2-a+i8mm ")
@@ -12,7 +12,7 @@ diff -Nuarp onnxruntime-1.25.1.orig/cmake/onnxruntime_mlas.cmake onnxruntime-1.2
              ${MLAS_SRC_DIR}/aarch64/HalfGemmKernelNeon.S
 diff -Nuarp onnxruntime-1.25.1.orig/onnxruntime/core/mlas/inc/mlas.h onnxruntime-1.25.1/onnxruntime/core/mlas/inc/mlas.h
 --- onnxruntime-1.25.1.orig/onnxruntime/core/mlas/inc/mlas.h	2026-04-27 21:08:39.000000000 +0800
-+++ onnxruntime-1.25.1/onnxruntime/core/mlas/inc/mlas.h	2026-05-06 14:49:33.811431300 +0800
++++ onnxruntime-1.25.1/onnxruntime/core/mlas/inc/mlas.h	2026-05-06 15:49:26.228062299 +0800
 @@ -84,7 +84,7 @@ Abstract:
  //
  
@@ -42,7 +42,7 @@ diff -Nuarp onnxruntime-1.25.1.orig/onnxruntime/core/mlas/inc/mlas.h onnxruntime
   */
 diff -Nuarp onnxruntime-1.25.1.orig/onnxruntime/core/mlas/lib/mlasi.h onnxruntime-1.25.1/onnxruntime/core/mlas/lib/mlasi.h
 --- onnxruntime-1.25.1.orig/onnxruntime/core/mlas/lib/mlasi.h	2026-04-27 21:08:39.000000000 +0800
-+++ onnxruntime-1.25.1/onnxruntime/core/mlas/lib/mlasi.h	2026-05-06 14:49:33.811555021 +0800
++++ onnxruntime-1.25.1/onnxruntime/core/mlas/lib/mlasi.h	2026-05-06 15:50:21.223637864 +0800
 @@ -402,7 +402,7 @@ size_t
  
  #else
@@ -52,6 +52,15 @@ diff -Nuarp onnxruntime-1.25.1.orig/onnxruntime/core/mlas/lib/mlasi.h onnxruntim
  typedef size_t(MLASCALL MLAS_SBGEMM_FLOAT_KERNEL)(
      const float* A,
      const bfloat16_t* B,
+@@ -906,7 +906,7 @@ void
+     const float* Bias,
+     void* PackedB);
+ 
+-#if defined(__aarch64__) && defined(__linux__)
++#if 0//defined(__aarch64__) && defined(__linux__)
+ typedef
+ bool
+ (MLASCALL MLAS_SBGEMM_BATCH_OVERRIDE)(
 @@ -996,7 +996,7 @@ extern "C" {
  #else
      MLAS_GEMM_FLOAT_KERNEL MlasSgemmKernelZero;
@@ -61,6 +70,15 @@ diff -Nuarp onnxruntime-1.25.1.orig/onnxruntime/core/mlas/lib/mlasi.h onnxruntim
      MLAS_SBGEMM_FLOAT_KERNEL MlasSbgemmKernelZero;
      MLAS_SBGEMM_FLOAT_KERNEL MlasSbgemmKernelAdd;
  #endif
+@@ -1024,7 +1024,7 @@ extern "C" {
+     // AArch64 assembly micro-kernel for pointwise NCHWc convolution
+     MLAS_CONV_POINTWISE_FLOAT_KERNEL MlasConvPointwiseFloatKernelNeonAsm;
+ #endif
+-#if defined(__aarch64__) && defined(__linux__)
++#if 0//defined(__aarch64__) && defined(__linux__)
+     MLAS_CONV_POINTWISE_FLOAT_KERNEL MlasConvPointwiseBf16KernelNeon;
+ #endif
+     MLAS_POOL_FLOAT_KERNEL MlasPoolMaximumFloatKernelNeon;
 @@ -1184,7 +1184,7 @@ extern "C" {
  #define MLAS_QGEMM_THREAD_COMPLEXITY                65536
  #define MLAS_HGEMM_THREAD_COMPLEXITY                65536
@@ -70,9 +88,36 @@ diff -Nuarp onnxruntime-1.25.1.orig/onnxruntime/core/mlas/lib/mlasi.h onnxruntim
  #define MLAS_SBGEMM_THREAD_COMPLEXITY (size_t(64) * size_t(1024))
  #endif
  
+@@ -1405,7 +1405,7 @@ struct MLAS_PLATFORM {
+     // MLAS Conv overrides
+     MLAS_CONV_PREPARE_FLOAT_OVERRIDE* MlasConvPrepareOverride = nullptr;
+     MLAS_CONV_FLOAT_OVERRIDE* MlasConvOverride = nullptr;
+-#if defined(__aarch64__) && defined(__linux__)
++#if 0//defined(__aarch64__) && defined(__linux__)
+     // SBGemm overrides
+     MLAS_SBGEMM_BATCH_OVERRIDE* MlasSBGemmBatchOverride = nullptr;
+     MLAS_SBGEMM_PACK_B_SIZE_OVERRIDE* MlasSBGemmPackBSizeOverride = nullptr;
+@@ -1448,7 +1448,7 @@ struct MLAS_PLATFORM {
+     MLAS_CONV_FLOAT_KERNEL* ConvNchwcFloatKernel;
+     MLAS_CONV_DEPTHWISE_FLOAT_KERNEL* ConvDepthwiseFloatKernel;
+     MLAS_CONV_POINTWISE_FLOAT_KERNEL* ConvPointwiseFloatKernel;
+-#if defined(__aarch64__) && defined(__linux__)
++#if 0//defined(__aarch64__) && defined(__linux__)
+     MLAS_CONV_POINTWISE_FLOAT_KERNEL* ConvPointwiseBf16Kernel;
+ #endif
+     MLAS_POOL_FLOAT_KERNEL* PoolFloatKernel[MlasPoolingKindCount];
 diff -Nuarp onnxruntime-1.25.1.orig/onnxruntime/core/mlas/lib/platform.cpp onnxruntime-1.25.1/onnxruntime/core/mlas/lib/platform.cpp
 --- onnxruntime-1.25.1.orig/onnxruntime/core/mlas/lib/platform.cpp	2026-04-27 21:08:39.000000000 +0800
-+++ onnxruntime-1.25.1/onnxruntime/core/mlas/lib/platform.cpp	2026-05-06 14:49:33.811677130 +0800
++++ onnxruntime-1.25.1/onnxruntime/core/mlas/lib/platform.cpp	2026-05-06 15:50:47.262720390 +0800
+@@ -583,7 +583,7 @@ Return Value:
+     this->ConvNchwcFloatKernel = MlasConvNchwcFloatKernelNeon;
+     this->ConvDepthwiseFloatKernel = MlasConvDepthwiseFloatKernelNeon;
+     this->ConvPointwiseFloatKernel = MlasConvPointwiseFloatKernelNeon;
+-#if defined(__aarch64__) && defined(__linux__)
++#if 0//defined(__aarch64__) && defined(__linux__)
+     this->ConvPointwiseBf16Kernel = MlasConvPointwiseBf16KernelNeon;
+ #endif
+     this->PoolFloatKernel[MlasMaximumPooling] = MlasPoolMaximumFloatKernelNeon;
 @@ -662,7 +662,7 @@ Return Value:
  
      const bool HasI8MMInstructions = MLAS_CPUIDINFO::GetCPUIDInfo().HasArmNeon_I8MM();
@@ -84,7 +129,7 @@ diff -Nuarp onnxruntime-1.25.1.orig/onnxruntime/core/mlas/lib/platform.cpp onnxr
          this->GemmU8S8Dispatch = &MlasGemmU8X8DispatchUmmla;
 diff -Nuarp onnxruntime-1.25.1.orig/onnxruntime/core/mlas/lib/sbgemm.h onnxruntime-1.25.1/onnxruntime/core/mlas/lib/sbgemm.h
 --- onnxruntime-1.25.1.orig/onnxruntime/core/mlas/lib/sbgemm.h	2026-04-27 21:08:39.000000000 +0800
-+++ onnxruntime-1.25.1/onnxruntime/core/mlas/lib/sbgemm.h	2026-05-06 14:49:33.811758291 +0800
++++ onnxruntime-1.25.1/onnxruntime/core/mlas/lib/sbgemm.h	2026-05-06 15:49:26.228437221 +0800
 @@ -30,7 +30,7 @@ Abstract:
          MLAS_SBGEMM_STRIDES Strides{128, 128, 256};
  --*/
@@ -96,7 +141,7 @@ diff -Nuarp onnxruntime-1.25.1.orig/onnxruntime/core/mlas/lib/sbgemm.h onnxrunti
  
 diff -Nuarp onnxruntime-1.25.1.orig/onnxruntime/core/mlas/lib/sbgemm_kernel_neon.cpp onnxruntime-1.25.1/onnxruntime/core/mlas/lib/sbgemm_kernel_neon.cpp
 --- onnxruntime-1.25.1.orig/onnxruntime/core/mlas/lib/sbgemm_kernel_neon.cpp	2026-04-27 21:08:39.000000000 +0800
-+++ onnxruntime-1.25.1/onnxruntime/core/mlas/lib/sbgemm_kernel_neon.cpp	2026-05-06 14:49:33.811844122 +0800
++++ onnxruntime-1.25.1/onnxruntime/core/mlas/lib/sbgemm_kernel_neon.cpp	2026-05-06 15:49:26.228492144 +0800
 @@ -15,7 +15,7 @@ Abstract:
  
  --*/
@@ -106,9 +151,21 @@ diff -Nuarp onnxruntime-1.25.1.orig/onnxruntime/core/mlas/lib/sbgemm_kernel_neon
  
  #include "arm_neon.h"
  #include "mlasi.h"
+diff -Nuarp onnxruntime-1.25.1.orig/onnxruntime/core/mlas/lib/snchwc.cpp onnxruntime-1.25.1/onnxruntime/core/mlas/lib/snchwc.cpp
+--- onnxruntime-1.25.1.orig/onnxruntime/core/mlas/lib/snchwc.cpp	2026-04-27 21:08:39.000000000 +0800
++++ onnxruntime-1.25.1/onnxruntime/core/mlas/lib/snchwc.cpp	2026-05-06 15:52:09.785699392 +0800
+@@ -895,7 +895,7 @@ struct MLAS_NCHWC_CONV_POINTWISE_ALGORIT
+         // output positions at once and significantly reduces memory traffic.
+         MLAS_CONV_POINTWISE_FLOAT_KERNEL* const KernelFast = MlasConvPointwiseFloatKernelNeonAsm;
+ #endif
+-#if defined(__aarch64__) && defined(__linux__)
++#if 0//defined(__aarch64__) && defined(__linux__)
+         if (WorkBlock->UseBf16) {
+             Kernel = GetMlasPlatform().ConvPointwiseBf16Kernel;
+         }
 diff -Nuarp onnxruntime-1.25.1.orig/onnxruntime/core/providers/cpu/math/matmul.cc onnxruntime-1.25.1/onnxruntime/core/providers/cpu/math/matmul.cc
 --- onnxruntime-1.25.1.orig/onnxruntime/core/providers/cpu/math/matmul.cc	2026-04-27 21:08:39.000000000 +0800
-+++ onnxruntime-1.25.1/onnxruntime/core/providers/cpu/math/matmul.cc	2026-05-06 14:50:24.843557837 +0800
++++ onnxruntime-1.25.1/onnxruntime/core/providers/cpu/math/matmul.cc	2026-05-06 15:49:26.228559350 +0800
 @@ -134,7 +134,7 @@ Status MatMul<T>::Compute(OpKernelContex
  
    return Status::OK();
@@ -138,7 +195,7 @@ diff -Nuarp onnxruntime-1.25.1.orig/onnxruntime/core/providers/cpu/math/matmul.c
      for (size_t i = 0; i < max_len; i++) {
 diff -Nuarp onnxruntime-1.25.1.orig/onnxruntime/core/providers/cpu/math/matmul.h onnxruntime-1.25.1/onnxruntime/core/providers/cpu/math/matmul.h
 --- onnxruntime-1.25.1.orig/onnxruntime/core/providers/cpu/math/matmul.h	2026-04-27 21:08:39.000000000 +0800
-+++ onnxruntime-1.25.1/onnxruntime/core/providers/cpu/math/matmul.h	2026-05-06 14:49:33.811981990 +0800
++++ onnxruntime-1.25.1/onnxruntime/core/providers/cpu/math/matmul.h	2026-05-06 15:49:26.228607430 +0800
 @@ -35,7 +35,7 @@ class MatMul<float> final : public OpKer
      trans_batch_a_ = trans_batch_a_attr != 0;
      trans_batch_b_ = trans_batch_b_attr != 0;
