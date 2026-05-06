@@ -1,12 +1,17 @@
-diff -Nuarp pytorch-v2.10.0.orig/CMakeLists.txt pytorch-v2.10.0/CMakeLists.txt
---- pytorch-v2.10.0.orig/CMakeLists.txt	2026-01-22 01:08:59.000000000 +0800
-+++ pytorch-v2.10.0/CMakeLists.txt	2026-03-06 18:39:24.633808039 +0800
-@@ -403,15 +403,6 @@ option(USE_MIMALLOC "Use mimalloc" OFF)
+diff -Nuarp pytorch-v2.11.0.orig/CMakeLists.txt pytorch-v2.11.0/CMakeLists.txt
+--- pytorch-v2.11.0.orig/CMakeLists.txt	2026-03-24 02:40:42.000000000 +0800
++++ pytorch-v2.11.0/CMakeLists.txt	2026-05-06 14:46:34.205157718 +0800
+@@ -403,20 +403,6 @@ option(USE_MIMALLOC "Use mimalloc" OFF)
  # Enable third party mimalloc library to improve memory allocation performance
  # on Windows and AArch64.
  option(USE_MIMALLOC_ON_MKL "Use mimalloc on MKL" OFF)
 -if(WIN32 OR (CPU_AARCH64 AND NOT APPLE))
 -  set(USE_MIMALLOC ON)
+-  # Disable OPT flags for mimalloc on aarch64 as it breaks ARMv8.0
+-  # See https://github.com/pytorch/pytorch/issues/174344
+-  if(CPU_AARCH64)
+-    set(MI_NO_OPT_ARCH ON)
+-  endif()
 -
 -  # Not enable USE_MIMALLOC_ON_MKL due to it caused issue:
 -  # https://github.com/pytorch/pytorch/issues/138994

@@ -1,0 +1,216 @@
+diff -Nuarp onnxruntime-1.25.1.orig/cmake/onnxruntime_mlas.cmake onnxruntime-1.25.1/cmake/onnxruntime_mlas.cmake
+--- onnxruntime-1.25.1.orig/cmake/onnxruntime_mlas.cmake	2026-04-27 21:08:39.000000000 +0800
++++ onnxruntime-1.25.1/cmake/onnxruntime_mlas.cmake	2026-05-06 15:49:26.227835124 +0800
+@@ -526,7 +526,7 @@ else()
+         set_source_files_properties(${MLAS_SRC_DIR}/sqnbitgemm_kernel_neon_int8_i8mm.cpp
+ 				    PROPERTIES COMPILE_FLAGS " -march=armv8.2-a+i8mm ")
+ 
+-        if (NOT APPLE)
++        if (FALSE)
+           set(mlas_platform_srcs
+             ${mlas_platform_srcs}
+             ${MLAS_SRC_DIR}/aarch64/HalfGemmKernelNeon.S
+diff -Nuarp onnxruntime-1.25.1.orig/onnxruntime/core/mlas/inc/mlas.h onnxruntime-1.25.1/onnxruntime/core/mlas/inc/mlas.h
+--- onnxruntime-1.25.1.orig/onnxruntime/core/mlas/inc/mlas.h	2026-04-27 21:08:39.000000000 +0800
++++ onnxruntime-1.25.1/onnxruntime/core/mlas/inc/mlas.h	2026-05-06 15:49:26.228062299 +0800
+@@ -84,7 +84,7 @@ Abstract:
+ //
+ 
+ #if defined(MLAS_TARGET_AMD64) || defined (MLAS_TARGET_POWER) || defined (MLAS_TARGET_ZVECTOR)
+-#define MLAS_SUPPORTS_GEMM_DOUBLE
++// #define MLAS_SUPPORTS_GEMM_DOUBLE
+ #endif
+ 
+ #if (!defined(_MSC_VER)) || (_MSC_VER >= 1930)
+@@ -95,7 +95,7 @@ Abstract:
+ // When building an universial binary for APPLE, this flag would
+ // cause trouble for x64 target.
+ 
+-#define MLAS_F16VEC_INTRINSICS_SUPPORTED
++// #define MLAS_F16VEC_INTRINSICS_SUPPORTED
+ 
+ #endif //
+ #endif // ARM64
+@@ -1962,7 +1962,7 @@ MlasHalfGemmConvertPackB(
+     void* PackedB
+     );
+ 
+-#if defined(__aarch64__) && defined(__linux__)
++#if 0//defined(__aarch64__) && defined(__linux__)
+ /**
+  * @brief Whether current CPU supports Bfloat16(bf16) acceleration.
+  */
+diff -Nuarp onnxruntime-1.25.1.orig/onnxruntime/core/mlas/lib/mlasi.h onnxruntime-1.25.1/onnxruntime/core/mlas/lib/mlasi.h
+--- onnxruntime-1.25.1.orig/onnxruntime/core/mlas/lib/mlasi.h	2026-04-27 21:08:39.000000000 +0800
++++ onnxruntime-1.25.1/onnxruntime/core/mlas/lib/mlasi.h	2026-05-06 15:50:21.223637864 +0800
+@@ -402,7 +402,7 @@ size_t
+ 
+ #else
+ 
+-#if defined(__aarch64__) && defined(__linux__)
++#if 0//defined(__aarch64__) && defined(__linux__)
+ typedef size_t(MLASCALL MLAS_SBGEMM_FLOAT_KERNEL)(
+     const float* A,
+     const bfloat16_t* B,
+@@ -906,7 +906,7 @@ void
+     const float* Bias,
+     void* PackedB);
+ 
+-#if defined(__aarch64__) && defined(__linux__)
++#if 0//defined(__aarch64__) && defined(__linux__)
+ typedef
+ bool
+ (MLASCALL MLAS_SBGEMM_BATCH_OVERRIDE)(
+@@ -996,7 +996,7 @@ extern "C" {
+ #else
+     MLAS_GEMM_FLOAT_KERNEL MlasSgemmKernelZero;
+     MLAS_GEMM_FLOAT_KERNEL MlasSgemmKernelAdd;
+-#if defined(__aarch64__) && defined(__linux__)
++#if 0//defined(__aarch64__) && defined(__linux__)
+     MLAS_SBGEMM_FLOAT_KERNEL MlasSbgemmKernelZero;
+     MLAS_SBGEMM_FLOAT_KERNEL MlasSbgemmKernelAdd;
+ #endif
+@@ -1024,7 +1024,7 @@ extern "C" {
+     // AArch64 assembly micro-kernel for pointwise NCHWc convolution
+     MLAS_CONV_POINTWISE_FLOAT_KERNEL MlasConvPointwiseFloatKernelNeonAsm;
+ #endif
+-#if defined(__aarch64__) && defined(__linux__)
++#if 0//defined(__aarch64__) && defined(__linux__)
+     MLAS_CONV_POINTWISE_FLOAT_KERNEL MlasConvPointwiseBf16KernelNeon;
+ #endif
+     MLAS_POOL_FLOAT_KERNEL MlasPoolMaximumFloatKernelNeon;
+@@ -1184,7 +1184,7 @@ extern "C" {
+ #define MLAS_QGEMM_THREAD_COMPLEXITY                65536
+ #define MLAS_HGEMM_THREAD_COMPLEXITY                65536
+ 
+-#if defined(__aarch64__) && defined(__linux__)
++#if 0//defined(__aarch64__) && defined(__linux__)
+ #define MLAS_SBGEMM_THREAD_COMPLEXITY (size_t(64) * size_t(1024))
+ #endif
+ 
+@@ -1405,7 +1405,7 @@ struct MLAS_PLATFORM {
+     // MLAS Conv overrides
+     MLAS_CONV_PREPARE_FLOAT_OVERRIDE* MlasConvPrepareOverride = nullptr;
+     MLAS_CONV_FLOAT_OVERRIDE* MlasConvOverride = nullptr;
+-#if defined(__aarch64__) && defined(__linux__)
++#if 0//defined(__aarch64__) && defined(__linux__)
+     // SBGemm overrides
+     MLAS_SBGEMM_BATCH_OVERRIDE* MlasSBGemmBatchOverride = nullptr;
+     MLAS_SBGEMM_PACK_B_SIZE_OVERRIDE* MlasSBGemmPackBSizeOverride = nullptr;
+@@ -1448,7 +1448,7 @@ struct MLAS_PLATFORM {
+     MLAS_CONV_FLOAT_KERNEL* ConvNchwcFloatKernel;
+     MLAS_CONV_DEPTHWISE_FLOAT_KERNEL* ConvDepthwiseFloatKernel;
+     MLAS_CONV_POINTWISE_FLOAT_KERNEL* ConvPointwiseFloatKernel;
+-#if defined(__aarch64__) && defined(__linux__)
++#if 0//defined(__aarch64__) && defined(__linux__)
+     MLAS_CONV_POINTWISE_FLOAT_KERNEL* ConvPointwiseBf16Kernel;
+ #endif
+     MLAS_POOL_FLOAT_KERNEL* PoolFloatKernel[MlasPoolingKindCount];
+diff -Nuarp onnxruntime-1.25.1.orig/onnxruntime/core/mlas/lib/platform.cpp onnxruntime-1.25.1/onnxruntime/core/mlas/lib/platform.cpp
+--- onnxruntime-1.25.1.orig/onnxruntime/core/mlas/lib/platform.cpp	2026-04-27 21:08:39.000000000 +0800
++++ onnxruntime-1.25.1/onnxruntime/core/mlas/lib/platform.cpp	2026-05-06 15:50:47.262720390 +0800
+@@ -583,7 +583,7 @@ Return Value:
+     this->ConvNchwcFloatKernel = MlasConvNchwcFloatKernelNeon;
+     this->ConvDepthwiseFloatKernel = MlasConvDepthwiseFloatKernelNeon;
+     this->ConvPointwiseFloatKernel = MlasConvPointwiseFloatKernelNeon;
+-#if defined(__aarch64__) && defined(__linux__)
++#if 0//defined(__aarch64__) && defined(__linux__)
+     this->ConvPointwiseBf16Kernel = MlasConvPointwiseBf16KernelNeon;
+ #endif
+     this->PoolFloatKernel[MlasMaximumPooling] = MlasPoolMaximumFloatKernelNeon;
+@@ -662,7 +662,7 @@ Return Value:
+ 
+     const bool HasI8MMInstructions = MLAS_CPUIDINFO::GetCPUIDInfo().HasArmNeon_I8MM();
+     if (HasI8MMInstructions) {
+-#if defined(__linux__)
++#if 0//defined(__linux__)
+ 
+         this->GemmU8U8Dispatch = &MlasGemmU8X8DispatchUmmla;
+         this->GemmU8S8Dispatch = &MlasGemmU8X8DispatchUmmla;
+diff -Nuarp onnxruntime-1.25.1.orig/onnxruntime/core/mlas/lib/sbgemm.h onnxruntime-1.25.1/onnxruntime/core/mlas/lib/sbgemm.h
+--- onnxruntime-1.25.1.orig/onnxruntime/core/mlas/lib/sbgemm.h	2026-04-27 21:08:39.000000000 +0800
++++ onnxruntime-1.25.1/onnxruntime/core/mlas/lib/sbgemm.h	2026-05-06 15:49:26.228437221 +0800
+@@ -30,7 +30,7 @@ Abstract:
+         MLAS_SBGEMM_STRIDES Strides{128, 128, 256};
+ --*/
+ 
+-#if defined(__aarch64__) && defined(__linux__)
++#if 0//defined(__aarch64__) && defined(__linux__)
+ 
+ #pragma once
+ 
+diff -Nuarp onnxruntime-1.25.1.orig/onnxruntime/core/mlas/lib/sbgemm_kernel_neon.cpp onnxruntime-1.25.1/onnxruntime/core/mlas/lib/sbgemm_kernel_neon.cpp
+--- onnxruntime-1.25.1.orig/onnxruntime/core/mlas/lib/sbgemm_kernel_neon.cpp	2026-04-27 21:08:39.000000000 +0800
++++ onnxruntime-1.25.1/onnxruntime/core/mlas/lib/sbgemm_kernel_neon.cpp	2026-05-06 15:49:26.228492144 +0800
+@@ -15,7 +15,7 @@ Abstract:
+ 
+ --*/
+ 
+-#if defined(__aarch64__) && defined(__linux__)
++#if 0//defined(__aarch64__) && defined(__linux__)
+ 
+ #include "arm_neon.h"
+ #include "mlasi.h"
+diff -Nuarp onnxruntime-1.25.1.orig/onnxruntime/core/mlas/lib/snchwc.cpp onnxruntime-1.25.1/onnxruntime/core/mlas/lib/snchwc.cpp
+--- onnxruntime-1.25.1.orig/onnxruntime/core/mlas/lib/snchwc.cpp	2026-04-27 21:08:39.000000000 +0800
++++ onnxruntime-1.25.1/onnxruntime/core/mlas/lib/snchwc.cpp	2026-05-06 15:52:09.785699392 +0800
+@@ -895,7 +895,7 @@ struct MLAS_NCHWC_CONV_POINTWISE_ALGORIT
+         // output positions at once and significantly reduces memory traffic.
+         MLAS_CONV_POINTWISE_FLOAT_KERNEL* const KernelFast = MlasConvPointwiseFloatKernelNeonAsm;
+ #endif
+-#if defined(__aarch64__) && defined(__linux__)
++#if 0//defined(__aarch64__) && defined(__linux__)
+         if (WorkBlock->UseBf16) {
+             Kernel = GetMlasPlatform().ConvPointwiseBf16Kernel;
+         }
+diff -Nuarp onnxruntime-1.25.1.orig/onnxruntime/core/providers/cpu/math/matmul.cc onnxruntime-1.25.1/onnxruntime/core/providers/cpu/math/matmul.cc
+--- onnxruntime-1.25.1.orig/onnxruntime/core/providers/cpu/math/matmul.cc	2026-04-27 21:08:39.000000000 +0800
++++ onnxruntime-1.25.1/onnxruntime/core/providers/cpu/math/matmul.cc	2026-05-06 15:49:26.228559350 +0800
+@@ -134,7 +134,7 @@ Status MatMul<T>::Compute(OpKernelContex
+ 
+   return Status::OK();
+ }
+-#if defined(__aarch64__) && defined(__linux__)
++#if 0//defined(__aarch64__) && defined(__linux__)
+ bool GemmPackBBfloat16(AllocatorPtr& alloc,
+                        const Tensor& tensor_b,
+                        bool trans_a,
+@@ -192,7 +192,7 @@ Status MatMul<float>::PrePack(const Tens
+   // only pack Matrix B
+   if (input_idx == 1) {
+     size_t packed_b_size;
+-#if defined(__aarch64__) && defined(__linux__)
++#if 0//defined(__aarch64__) && defined(__linux__)
+     size_t dim1 = 0;
+     size_t dim2 = 0;
+     TensorShape b_shape = tensor.Shape();
+@@ -271,7 +271,7 @@ Status MatMul<float>::Compute(OpKernelCo
+   const size_t K = static_cast<size_t>(helper.K());
+   const size_t lda = helper.Lda(trans_a);
+   const size_t ldb = helper.Ldb(trans_b);
+-#if defined(__aarch64__) && defined(__linux__)
++#if 0//defined(__aarch64__) && defined(__linux__)
+   if (use_fastmath_mode_ && !trans_a && !trans_b && ((N * K) >= kFastMathModeKernelsizeThreshold)) {
+     std::vector<MLAS_SBGEMM_DATA_PARAMS> data(max_len);
+     for (size_t i = 0; i < max_len; i++) {
+diff -Nuarp onnxruntime-1.25.1.orig/onnxruntime/core/providers/cpu/math/matmul.h onnxruntime-1.25.1/onnxruntime/core/providers/cpu/math/matmul.h
+--- onnxruntime-1.25.1.orig/onnxruntime/core/providers/cpu/math/matmul.h	2026-04-27 21:08:39.000000000 +0800
++++ onnxruntime-1.25.1/onnxruntime/core/providers/cpu/math/matmul.h	2026-05-06 15:49:26.228607430 +0800
+@@ -35,7 +35,7 @@ class MatMul<float> final : public OpKer
+     trans_batch_a_ = trans_batch_a_attr != 0;
+     trans_batch_b_ = trans_batch_b_attr != 0;
+ 
+-#if defined(__aarch64__) && defined(__linux__)
++#if 0//defined(__aarch64__) && defined(__linux__)
+     auto config_ops = info.GetConfigOptions().GetConfigEntry(kOrtSessionOptionsMlasGemmFastMathArm64Bfloat16);
+     use_fastmath_mode_ = (config_ops == "1") && MlasBf16AccelerationSupported();
+ #endif
+@@ -67,7 +67,7 @@ class MatMul<float> final : public OpKer
+ 
+   MLAS_BACKEND_KERNEL_SELECTOR_CONFIG mlas_backend_kernel_selector_config_;
+ 
+-#if defined(__aarch64__) && defined(__linux__)
++#if 0//defined(__aarch64__) && defined(__linux__)
+   // fastmath mode state
+   bool use_fastmath_mode_;
+   // sbgemm kernel is implemented as 8x8 blocks with weights pre-packed to 4 blocks of 4x2

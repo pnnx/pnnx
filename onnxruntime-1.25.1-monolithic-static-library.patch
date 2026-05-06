@@ -1,6 +1,6 @@
-diff -Nuarp onnxruntime-1.24.3.orig/cmake/bundle_static_library.cmake onnxruntime-1.24.3/cmake/bundle_static_library.cmake
---- onnxruntime-1.24.3.orig/cmake/bundle_static_library.cmake	1970-01-01 08:00:00.000000000 +0800
-+++ onnxruntime-1.24.3/cmake/bundle_static_library.cmake	2026-03-06 18:47:07.217442049 +0800
+diff -Nuarp onnxruntime-1.25.1.orig/cmake/bundle_static_library.cmake onnxruntime-1.25.1/cmake/bundle_static_library.cmake
+--- onnxruntime-1.25.1.orig/cmake/bundle_static_library.cmake	1970-01-01 08:00:00.000000000 +0800
++++ onnxruntime-1.25.1/cmake/bundle_static_library.cmake	2026-05-06 14:52:40.984082266 +0800
 @@ -0,0 +1,145 @@
 +# References:
 +# - https://github.com/microsoft/onnxruntime/blob/main/cmake/onnxruntime_webassembly.cmake
@@ -147,21 +147,24 @@ diff -Nuarp onnxruntime-1.24.3.orig/cmake/bundle_static_library.cmake onnxruntim
 +
 +    add_dependencies(${bundled_target_name} bundling_${bundled_target_name})
 +endfunction()
-diff -Nuarp onnxruntime-1.24.3.orig/cmake/CMakeLists.txt onnxruntime-1.24.3/cmake/CMakeLists.txt
---- onnxruntime-1.24.3.orig/cmake/CMakeLists.txt	2026-03-05 12:48:10.000000000 +0800
-+++ onnxruntime-1.24.3/cmake/CMakeLists.txt	2026-03-06 18:47:07.217541585 +0800
-@@ -1801,9 +1801,7 @@ if (onnxruntime_ENABLE_EXTERNAL_CUSTOM_O
+diff -Nuarp onnxruntime-1.25.1.orig/cmake/CMakeLists.txt onnxruntime-1.25.1/cmake/CMakeLists.txt
+--- onnxruntime-1.25.1.orig/cmake/CMakeLists.txt	2026-04-27 21:08:39.000000000 +0800
++++ onnxruntime-1.25.1/cmake/CMakeLists.txt	2026-05-06 14:53:35.583539072 +0800
+@@ -1828,12 +1828,7 @@ if (onnxruntime_ENABLE_EXTERNAL_CUSTOM_O
    )
  endif()
  
--if(NOT onnxruntime_BUILD_SHARED_LIB AND onnxruntime_USE_WEBGPU)
--  message(WARNING "CMake target files will not be generated for static onnxruntime builds with webgpu support")
+-if (NOT onnxruntime_BUILD_SHARED_LIB AND
+-    (onnxruntime_USE_WEBGPU OR (CMAKE_SYSTEM_NAME STREQUAL "Emscripten" AND onnxruntime_USE_XNNPACK)))
+-  message(WARNING
+-    "CMake target files will not be generated for static onnxruntime builds "
+-    "with WebGPU or Emscripten+XNNPACK support")
 -else()
 +if(FALSE)
    # Install
    include(CMakePackageConfigHelpers)
  
-@@ -1881,3 +1879,19 @@ endif()
+@@ -1911,3 +1906,19 @@ endif()
  if(TARGET onnxruntime_providers)
    include("${CMAKE_CURRENT_SOURCE_DIR}/onnxruntime_providers_pch.cmake")
  endif()
@@ -181,10 +184,10 @@ diff -Nuarp onnxruntime-1.24.3.orig/cmake/CMakeLists.txt onnxruntime-1.24.3/cmak
 +    RENAME ${CMAKE_STATIC_LIBRARY_PREFIX}onnxruntime${CMAKE_STATIC_LIBRARY_SUFFIX}
 +    TYPE LIB
 +)
-diff -Nuarp onnxruntime-1.24.3.orig/cmake/onnxruntime.cmake onnxruntime-1.24.3/cmake/onnxruntime.cmake
---- onnxruntime-1.24.3.orig/cmake/onnxruntime.cmake	2026-03-05 12:48:10.000000000 +0800
-+++ onnxruntime-1.24.3/cmake/onnxruntime.cmake	2026-03-06 18:47:07.217707595 +0800
-@@ -310,13 +310,6 @@ else()
+diff -Nuarp onnxruntime-1.25.1.orig/cmake/onnxruntime.cmake onnxruntime-1.25.1/cmake/onnxruntime.cmake
+--- onnxruntime-1.25.1.orig/cmake/onnxruntime.cmake	2026-04-27 21:08:39.000000000 +0800
++++ onnxruntime-1.25.1/cmake/onnxruntime.cmake	2026-05-06 14:52:40.984418144 +0800
+@@ -309,13 +309,6 @@ else()
      VERSION ${ORT_VERSION}
      FOLDER "ONNXRuntime")
  endif()
@@ -198,10 +201,10 @@ diff -Nuarp onnxruntime-1.24.3.orig/cmake/onnxruntime.cmake onnxruntime-1.24.3/c
  
  
  if (WIN32 AND NOT CMAKE_CXX_STANDARD_LIBRARIES MATCHES kernel32.lib)
-diff -Nuarp onnxruntime-1.24.3.orig/cmake/onnxruntime_providers_cpu.cmake onnxruntime-1.24.3/cmake/onnxruntime_providers_cpu.cmake
---- onnxruntime-1.24.3.orig/cmake/onnxruntime_providers_cpu.cmake	2026-03-05 12:48:10.000000000 +0800
-+++ onnxruntime-1.24.3/cmake/onnxruntime_providers_cpu.cmake	2026-03-06 18:47:07.217776474 +0800
-@@ -260,11 +260,6 @@ if (NOT onnxruntime_MINIMAL_BUILD AND NO
+diff -Nuarp onnxruntime-1.25.1.orig/cmake/onnxruntime_providers_cpu.cmake onnxruntime-1.25.1/cmake/onnxruntime_providers_cpu.cmake
+--- onnxruntime-1.25.1.orig/cmake/onnxruntime_providers_cpu.cmake	2026-04-27 21:08:39.000000000 +0800
++++ onnxruntime-1.25.1/cmake/onnxruntime_providers_cpu.cmake	2026-05-06 14:52:40.984485831 +0800
+@@ -258,11 +258,6 @@ if (NOT onnxruntime_MINIMAL_BUILD AND NO
    message(FATAL_ERROR "onnxruntime_providers_shared unknown platform, need to specify shared library exports for it")
    endif()
  
