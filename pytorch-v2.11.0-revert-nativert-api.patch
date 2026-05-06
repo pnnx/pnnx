@@ -1,6 +1,6 @@
-diff -Nuarp pytorch-v2.10.0.orig/torch/csrc/api/include/torch/nativert/ModelRunnerHandle.h pytorch-v2.10.0/torch/csrc/api/include/torch/nativert/ModelRunnerHandle.h
---- pytorch-v2.10.0.orig/torch/csrc/api/include/torch/nativert/ModelRunnerHandle.h	2026-01-22 01:09:02.000000000 +0800
-+++ pytorch-v2.10.0/torch/csrc/api/include/torch/nativert/ModelRunnerHandle.h	1970-01-01 08:00:00.000000000 +0800
+diff -Nuarp pytorch-v2.11.0.orig/torch/csrc/api/include/torch/nativert/ModelRunnerHandle.h pytorch-v2.11.0/torch/csrc/api/include/torch/nativert/ModelRunnerHandle.h
+--- pytorch-v2.11.0.orig/torch/csrc/api/include/torch/nativert/ModelRunnerHandle.h	2026-03-24 02:40:49.000000000 +0800
++++ pytorch-v2.11.0/torch/csrc/api/include/torch/nativert/ModelRunnerHandle.h	1970-01-01 08:00:00.000000000 +0800
 @@ -1,46 +0,0 @@
 -#pragma once
 -
@@ -48,9 +48,9 @@ diff -Nuarp pytorch-v2.10.0.orig/torch/csrc/api/include/torch/nativert/ModelRunn
 -};
 -
 -} // namespace torch::nativert
-diff -Nuarp pytorch-v2.10.0.orig/torch/nativert/ModelRunner.cpp pytorch-v2.10.0/torch/nativert/ModelRunner.cpp
---- pytorch-v2.10.0.orig/torch/nativert/ModelRunner.cpp	2026-01-22 01:09:02.000000000 +0800
-+++ pytorch-v2.10.0/torch/nativert/ModelRunner.cpp	2026-03-09 14:50:45.135713296 +0800
+diff -Nuarp pytorch-v2.11.0.orig/torch/nativert/ModelRunner.cpp pytorch-v2.11.0/torch/nativert/ModelRunner.cpp
+--- pytorch-v2.11.0.orig/torch/nativert/ModelRunner.cpp	2026-03-24 02:40:49.000000000 +0800
++++ pytorch-v2.11.0/torch/nativert/ModelRunner.cpp	2026-05-06 14:48:19.303825544 +0800
 @@ -157,21 +157,4 @@ uint64_t ModelRunner::numOutputs() const
    return executor_->graphSignature().userOutputs().size();
  }
@@ -73,9 +73,9 @@ diff -Nuarp pytorch-v2.10.0.orig/torch/nativert/ModelRunner.cpp pytorch-v2.10.0/
 -}
 -
  } // namespace torch::nativert
-diff -Nuarp pytorch-v2.10.0.orig/torch/nativert/ModelRunner.h pytorch-v2.10.0/torch/nativert/ModelRunner.h
---- pytorch-v2.10.0.orig/torch/nativert/ModelRunner.h	2026-01-22 01:09:02.000000000 +0800
-+++ pytorch-v2.10.0/torch/nativert/ModelRunner.h	2026-03-09 14:50:45.135777756 +0800
+diff -Nuarp pytorch-v2.11.0.orig/torch/nativert/ModelRunner.h pytorch-v2.11.0/torch/nativert/ModelRunner.h
+--- pytorch-v2.11.0.orig/torch/nativert/ModelRunner.h	2026-03-24 02:40:49.000000000 +0800
++++ pytorch-v2.11.0/torch/nativert/ModelRunner.h	2026-05-06 14:48:19.303948795 +0800
 @@ -4,7 +4,6 @@
  
  #include <c10/macros/Export.h>
