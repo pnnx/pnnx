@@ -32,7 +32,7 @@ jobs:
       with:
         python-version: '3.11'
     - name: pnnx-patches
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
       with:
         path: pnnx-patches
     - name: cache-libtorch
@@ -167,7 +167,7 @@ jobs:
       with:
         python-version: '3.11'
     - name: pnnx-patches
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
       with:
         path: pnnx-patches
     - name: cache-libtorch
@@ -306,7 +306,7 @@ jobs:
       with:
         python-version: '3.11'
     - name: pnnx-patches
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
       with:
         path: pnnx-patches
     - name: cache-libtorch
@@ -406,7 +406,7 @@ jobs:
       with:
         python-version: '3.11'
     - name: pnnx-patches
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
       with:
         path: pnnx-patches
     - name: cache-libtorch
@@ -511,7 +511,7 @@ jobs:
       with:
         python-version: '3.11'
     - name: pnnx-patches
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
       with:
         path: pnnx-patches
     - name: cache-libtorch
@@ -620,7 +620,7 @@ jobs:
       with:
         python-version: '3.11'
     - name: pnnx-patches
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
       with:
         path: pnnx-patches
     - name: cache-libtorch
@@ -642,7 +642,7 @@ jobs:
         path: "/tmp/onnxruntime"
         key: onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-linux-${{ env.CACHE_DATE }}
     - name: ncnn
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
       with:
         repository: Tencent/ncnn
         path: ncnn
@@ -694,7 +694,7 @@ jobs:
       with:
         python-version: '3.11'
     - name: pnnx-patches
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
       with:
         path: pnnx-patches
     - name: cache-libtorch
@@ -716,7 +716,7 @@ jobs:
         path: "/tmp/onnxruntime"
         key: onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-linux-aarch64-${{ env.CACHE_DATE }}
     - name: ncnn
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
       with:
         repository: Tencent/ncnn
         path: ncnn
@@ -767,7 +767,7 @@ jobs:
       with:
         python-version: '3.11'
     - name: checkout
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
     - name: cache-libtorch
       id: cache-libtorch
       uses: actions/cache@v5.0.5
@@ -787,7 +787,7 @@ jobs:
         path: "onnxruntime"
         key: onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-macos-x64-${{ env.CACHE_DATE }}
     - name: ncnn
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
       with:
         repository: Tencent/ncnn
         path: ncnn
@@ -827,7 +827,7 @@ jobs:
       with:
         python-version: '3.11'
     - name: checkout
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
     - name: cache-libtorch
       id: cache-libtorch
       uses: actions/cache@v5.0.5
@@ -847,7 +847,7 @@ jobs:
         path: "onnxruntime"
         key: onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-macos-arm64-${{ env.CACHE_DATE }}
     - name: ncnn
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
       with:
         repository: Tencent/ncnn
         path: ncnn
@@ -887,7 +887,7 @@ jobs:
       with:
         python-version: '3.11'
     - name: checkout
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
     - name: download-macos-x64
       uses: actions/download-artifact@v8
       with:
@@ -926,7 +926,7 @@ jobs:
       with:
         python-version: '3.11'
     - name: checkout
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
     - name: cache-libtorch
       id: cache-libtorch
       uses: actions/cache@v5.0.5
@@ -946,7 +946,7 @@ jobs:
         path: "onnxruntime"
         key: onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-vs2019-${{ env.CACHE_DATE }}
     - name: ncnn
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
       with:
         repository: Tencent/ncnn
         path: ncnn
@@ -990,7 +990,7 @@ jobs:
         name: pnnx-${{ needs.setup.outputs.VERSION }}-linux
 
     - name: ncnn
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
       with:
         repository: Tencent/ncnn
         path: ncnn
@@ -1028,7 +1028,7 @@ jobs:
         name: pnnx-${{ needs.setup.outputs.VERSION }}-linux-aarch64
 
     - name: ncnn
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
       with:
         repository: Tencent/ncnn
         path: ncnn
@@ -1064,7 +1064,7 @@ jobs:
         name: pnnx-${{ needs.setup.outputs.VERSION }}-macos
 
     - name: ncnn
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
       with:
         repository: Tencent/ncnn
         path: ncnn
@@ -1104,7 +1104,7 @@ jobs:
         name: pnnx-${{ needs.setup.outputs.VERSION }}-windows
 
     - name: ncnn
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
       with:
         repository: Tencent/ncnn
         path: ncnn

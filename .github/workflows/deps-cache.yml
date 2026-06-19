@@ -28,7 +28,7 @@ jobs:
       with:
         python-version: '3.11'
     - name: pnnx-patches
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
       with:
         path: pnnx-patches
     - name: cache-libtorch
@@ -163,7 +163,7 @@ jobs:
       with:
         python-version: '3.11'
     - name: pnnx-patches
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
       with:
         path: pnnx-patches
     - name: cache-libtorch
@@ -302,7 +302,7 @@ jobs:
       with:
         python-version: '3.11'
     - name: pnnx-patches
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
       with:
         path: pnnx-patches
     - name: cache-libtorch
@@ -402,7 +402,7 @@ jobs:
       with:
         python-version: '3.11'
     - name: pnnx-patches
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
       with:
         path: pnnx-patches
     - name: cache-libtorch
@@ -507,7 +507,7 @@ jobs:
       with:
         python-version: '3.11'
     - name: pnnx-patches
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
       with:
         path: pnnx-patches
     - name: cache-libtorch
