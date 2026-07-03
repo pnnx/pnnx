@@ -1,6 +1,43 @@
-diff -Nuarp onnxruntime-1.25.1.orig/cmake/bundle_static_library.cmake onnxruntime-1.25.1/cmake/bundle_static_library.cmake
---- onnxruntime-1.25.1.orig/cmake/bundle_static_library.cmake	1970-01-01 08:00:00.000000000 +0800
-+++ onnxruntime-1.25.1/cmake/bundle_static_library.cmake	2026-05-06 14:52:40.984082266 +0800
+diff -Nuarp onnxruntime-1.27.0.orig/cmake/CMakeLists.txt onnxruntime-1.27.0/cmake/CMakeLists.txt
+--- onnxruntime-1.27.0.orig/cmake/CMakeLists.txt	2026-07-03 15:13:27.913000000 +0800
++++ onnxruntime-1.27.0/cmake/CMakeLists.txt	2026-07-03 15:15:33.202000000 +0800
+@@ -1846,12 +1846,7 @@ if (onnxruntime_ENABLE_EXTERNAL_CUSTOM_O
+   )
+ endif()
+ 
+-if (NOT onnxruntime_BUILD_SHARED_LIB AND
+-    (onnxruntime_USE_WEBGPU OR (CMAKE_SYSTEM_NAME STREQUAL "Emscripten" AND onnxruntime_USE_XNNPACK)))
+-  message(WARNING
+-    "CMake target files will not be generated for static onnxruntime builds "
+-    "with WebGPU or Emscripten+XNNPACK support")
+-else()
++if(FALSE)
+   # Install
+   include(CMakePackageConfigHelpers)
+ 
+@@ -1929,3 +1924,19 @@ endif()
+ if(TARGET onnxruntime_providers)
+   include("${CMAKE_CURRENT_SOURCE_DIR}/onnxruntime_providers_pch.cmake")
+ endif()
++
++include(bundle_static_library.cmake)
++bundle_static_library(onnxruntime_static_lib onnxruntime)
++
++install(
++    DIRECTORY ${REPO_ROOT}/include/onnxruntime/core/session/
++    DESTINATION include/
++    FILES_MATCHING
++    PATTERN "*.h"
++)
++
++install(
++    FILES ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_STATIC_LIBRARY_PREFIX}onnxruntime_static_lib${CMAKE_STATIC_LIBRARY_SUFFIX}
++    RENAME ${CMAKE_STATIC_LIBRARY_PREFIX}onnxruntime${CMAKE_STATIC_LIBRARY_SUFFIX}
++    TYPE LIB
++)
+diff -Nuarp onnxruntime-1.27.0.orig/cmake/bundle_static_library.cmake onnxruntime-1.27.0/cmake/bundle_static_library.cmake
+--- onnxruntime-1.27.0.orig/cmake/bundle_static_library.cmake	1970-01-01 07:30:00.000000000 +0730
++++ onnxruntime-1.27.0/cmake/bundle_static_library.cmake	2026-07-03 15:14:19.462000000 +0800
 @@ -0,0 +1,145 @@
 +# References:
 +# - https://github.com/microsoft/onnxruntime/blob/main/cmake/onnxruntime_webassembly.cmake
@@ -147,47 +184,10 @@ diff -Nuarp onnxruntime-1.25.1.orig/cmake/bundle_static_library.cmake onnxruntim
 +
 +    add_dependencies(${bundled_target_name} bundling_${bundled_target_name})
 +endfunction()
-diff -Nuarp onnxruntime-1.25.1.orig/cmake/CMakeLists.txt onnxruntime-1.25.1/cmake/CMakeLists.txt
---- onnxruntime-1.25.1.orig/cmake/CMakeLists.txt	2026-04-27 21:08:39.000000000 +0800
-+++ onnxruntime-1.25.1/cmake/CMakeLists.txt	2026-05-06 14:53:35.583539072 +0800
-@@ -1828,12 +1828,7 @@ if (onnxruntime_ENABLE_EXTERNAL_CUSTOM_O
-   )
- endif()
- 
--if (NOT onnxruntime_BUILD_SHARED_LIB AND
--    (onnxruntime_USE_WEBGPU OR (CMAKE_SYSTEM_NAME STREQUAL "Emscripten" AND onnxruntime_USE_XNNPACK)))
--  message(WARNING
--    "CMake target files will not be generated for static onnxruntime builds "
--    "with WebGPU or Emscripten+XNNPACK support")
--else()
-+if(FALSE)
-   # Install
-   include(CMakePackageConfigHelpers)
- 
-@@ -1911,3 +1906,19 @@ endif()
- if(TARGET onnxruntime_providers)
-   include("${CMAKE_CURRENT_SOURCE_DIR}/onnxruntime_providers_pch.cmake")
- endif()
-+
-+include(bundle_static_library.cmake)
-+bundle_static_library(onnxruntime_static_lib onnxruntime)
-+
-+install(
-+    DIRECTORY ${REPO_ROOT}/include/onnxruntime/core/session/
-+    DESTINATION include/
-+    FILES_MATCHING
-+    PATTERN "*.h"
-+)
-+
-+install(
-+    FILES ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_STATIC_LIBRARY_PREFIX}onnxruntime_static_lib${CMAKE_STATIC_LIBRARY_SUFFIX}
-+    RENAME ${CMAKE_STATIC_LIBRARY_PREFIX}onnxruntime${CMAKE_STATIC_LIBRARY_SUFFIX}
-+    TYPE LIB
-+)
-diff -Nuarp onnxruntime-1.25.1.orig/cmake/onnxruntime.cmake onnxruntime-1.25.1/cmake/onnxruntime.cmake
---- onnxruntime-1.25.1.orig/cmake/onnxruntime.cmake	2026-04-27 21:08:39.000000000 +0800
-+++ onnxruntime-1.25.1/cmake/onnxruntime.cmake	2026-05-06 14:52:40.984418144 +0800
-@@ -309,13 +309,6 @@ else()
+diff -Nuarp onnxruntime-1.27.0.orig/cmake/onnxruntime.cmake onnxruntime-1.27.0/cmake/onnxruntime.cmake
+--- onnxruntime-1.27.0.orig/cmake/onnxruntime.cmake	2026-07-03 15:13:27.920000000 +0800
++++ onnxruntime-1.27.0/cmake/onnxruntime.cmake	2026-07-03 15:15:33.203000000 +0800
+@@ -296,15 +296,6 @@ else()
      VERSION ${ORT_VERSION}
      FOLDER "ONNXRuntime")
  endif()
@@ -198,13 +198,15 @@ diff -Nuarp onnxruntime-1.25.1.orig/cmake/onnxruntime.cmake onnxruntime-1.25.1/c
 -        LIBRARY   DESTINATION ${CMAKE_INSTALL_LIBDIR}
 -        RUNTIME   DESTINATION ${CMAKE_INSTALL_BINDIR}
 -        FRAMEWORK DESTINATION ${CMAKE_INSTALL_BINDIR})
- 
- 
+-
+-
  if (WIN32 AND NOT CMAKE_CXX_STANDARD_LIBRARIES MATCHES kernel32.lib)
-diff -Nuarp onnxruntime-1.25.1.orig/cmake/onnxruntime_providers_cpu.cmake onnxruntime-1.25.1/cmake/onnxruntime_providers_cpu.cmake
---- onnxruntime-1.25.1.orig/cmake/onnxruntime_providers_cpu.cmake	2026-04-27 21:08:39.000000000 +0800
-+++ onnxruntime-1.25.1/cmake/onnxruntime_providers_cpu.cmake	2026-05-06 14:52:40.984485831 +0800
-@@ -258,11 +258,6 @@ if (NOT onnxruntime_MINIMAL_BUILD AND NO
+   # Workaround STL bug https://github.com/microsoft/STL/issues/434#issuecomment-921321254
+   # Note that the workaround makes std::system_error crash before Windows 10
+diff -Nuarp onnxruntime-1.27.0.orig/cmake/onnxruntime_providers_cpu.cmake onnxruntime-1.27.0/cmake/onnxruntime_providers_cpu.cmake
+--- onnxruntime-1.27.0.orig/cmake/onnxruntime_providers_cpu.cmake	2026-07-03 15:13:27.928000000 +0800
++++ onnxruntime-1.27.0/cmake/onnxruntime_providers_cpu.cmake	2026-07-03 15:15:33.203000000 +0800
+@@ -239,11 +239,6 @@ if (NOT onnxruntime_MINIMAL_BUILD AND NO
    message(FATAL_ERROR "onnxruntime_providers_shared unknown platform, need to specify shared library exports for it")
    endif()
  
