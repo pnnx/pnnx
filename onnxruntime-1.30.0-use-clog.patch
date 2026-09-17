@@ -1,7 +1,7 @@
-diff -Nuarp onnxruntime-1.27.0.orig/cmake/onnxruntime_common.cmake onnxruntime-1.27.0/cmake/onnxruntime_common.cmake
---- onnxruntime-1.27.0.orig/cmake/onnxruntime_common.cmake	2026-07-03 15:13:27.935000000 +0800
-+++ onnxruntime-1.27.0/cmake/onnxruntime_common.cmake	2026-07-03 15:15:40.421000000 +0800
-@@ -62,20 +62,6 @@ else()
+diff -Nuarp onnxruntime-1.30.0.orig/cmake/onnxruntime_common.cmake onnxruntime-1.30.0/cmake/onnxruntime_common.cmake
+--- onnxruntime-1.30.0.orig/cmake/onnxruntime_common.cmake	2026-09-17 11:04:29.136801009 +0800
++++ onnxruntime-1.30.0/cmake/onnxruntime_common.cmake	2026-09-17 11:04:29.136843458 +0800
+@@ -77,20 +77,6 @@ else()
              "${ONNXRUNTIME_ROOT}/core/platform/posix/logging/*.cc"
          )
      endif()
@@ -22,9 +22,9 @@ diff -Nuarp onnxruntime-1.27.0.orig/cmake/onnxruntime_common.cmake onnxruntime-1
  endif()
  
  # platform-specific device discovery files
-diff -Nuarp onnxruntime-1.27.0.orig/onnxruntime/core/platform/logging/make_platform_default_log_sink.cc onnxruntime-1.27.0/onnxruntime/core/platform/logging/make_platform_default_log_sink.cc
---- onnxruntime-1.27.0.orig/onnxruntime/core/platform/logging/make_platform_default_log_sink.cc	2026-07-03 15:13:27.942000000 +0800
-+++ onnxruntime-1.27.0/onnxruntime/core/platform/logging/make_platform_default_log_sink.cc	2026-07-03 15:15:40.421000000 +0800
+diff -Nuarp onnxruntime-1.30.0.orig/onnxruntime/core/platform/logging/make_platform_default_log_sink.cc onnxruntime-1.30.0/onnxruntime/core/platform/logging/make_platform_default_log_sink.cc
+--- onnxruntime-1.30.0.orig/onnxruntime/core/platform/logging/make_platform_default_log_sink.cc	2026-09-17 11:04:29.137022664 +0800
++++ onnxruntime-1.30.0/onnxruntime/core/platform/logging/make_platform_default_log_sink.cc	2026-09-17 11:04:29.137089670 +0800
 @@ -3,25 +3,13 @@
  
  #include "core/platform/logging/make_platform_default_log_sink.h"

@@ -1,6 +1,6 @@
-diff -Nuarp pytorch-v2.12.1.orig/cmake/TorchConfig.cmake.in pytorch-v2.12.1/cmake/TorchConfig.cmake.in
---- pytorch-v2.12.1.orig/cmake/TorchConfig.cmake.in	2026-07-03 15:12:01.833806514 +0800
-+++ pytorch-v2.12.1/cmake/TorchConfig.cmake.in	2026-07-03 15:12:30.210000000 +0800
+diff -Nuarp pytorch-v2.14.0.orig/cmake/TorchConfig.cmake.in pytorch-v2.14.0/cmake/TorchConfig.cmake.in
+--- pytorch-v2.14.0.orig/cmake/TorchConfig.cmake.in	2026-09-17 11:04:29.110688091 +0800
++++ pytorch-v2.14.0/cmake/TorchConfig.cmake.in	2026-09-17 11:04:29.110724429 +0800
 @@ -15,7 +15,7 @@
  #   torch
  macro(append_torchlib_if_found)
@@ -44,5 +44,5 @@ diff -Nuarp pytorch-v2.12.1.orig/cmake/TorchConfig.cmake.in pytorch-v2.12.1/cmak
 -find_library(TORCH_LIBRARY torch PATHS "${TORCH_INSTALL_PREFIX}/lib")
 +find_library(TORCH_LIBRARY torch PATHS "${TORCH_INSTALL_PREFIX}/lib" NO_DEFAULT_PATH)
  # the statements below changes target properties on
- # - the imported target from Caffe2Targets.cmake in shared library mode (see the find_package above)
+ # - the imported target from Caffe2Targets.cmake in shared library mode (see the find_dependency above)
  #    - this is untested whether it is the correct (or desired) methodology in CMake

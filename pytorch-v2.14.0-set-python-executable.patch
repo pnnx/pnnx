@@ -1,7 +1,7 @@
-diff -Nuarp pytorch-v2.12.1.orig/CMakeLists.txt pytorch-v2.12.1/CMakeLists.txt
---- pytorch-v2.12.1.orig/CMakeLists.txt	2026-07-03 15:12:01.839794177 +0800
-+++ pytorch-v2.12.1/CMakeLists.txt	2026-07-03 15:12:30.211000000 +0800
-@@ -29,6 +29,8 @@ project(Torch CXX C)
+diff -Nuarp pytorch-v2.14.0.orig/CMakeLists.txt pytorch-v2.14.0/CMakeLists.txt
+--- pytorch-v2.14.0.orig/CMakeLists.txt	2026-09-17 11:04:29.112584117 +0800
++++ pytorch-v2.14.0/CMakeLists.txt	2026-09-17 11:04:29.112632989 +0800
+@@ -48,6 +48,8 @@ project(${SKBUILD_PROJECT_NAME}
  
  # When built via scikit-build-core, Python_EXECUTABLE is already set.
  # For standalone cmake invocations, find it via find_package.

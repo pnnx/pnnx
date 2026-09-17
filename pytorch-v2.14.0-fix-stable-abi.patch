@@ -1,0 +1,22 @@
+diff -Nuarp pytorch-v2.14.0.orig/caffe2/CMakeLists.txt pytorch-v2.14.0/caffe2/CMakeLists.txt
+--- pytorch-v2.14.0.orig/caffe2/CMakeLists.txt	2026-09-17 11:17:59.394949248 +0800
++++ pytorch-v2.14.0/caffe2/CMakeLists.txt	2026-09-17 11:17:59.395094911 +0800
+@@ -251,11 +251,17 @@ set(GENERATED_CXX_TORCH
+   "${TORCH_SRC_DIR}/csrc/autograd/generated/ViewFuncs.cpp"
+   )
+ 
++# torchvision's stable operators need these ATen shims even without autograd.
++if(NOT BUILD_LITE_INTERPRETER)
++  list(APPEND GENERATED_CXX_TORCH
++    "${TORCH_SRC_DIR}/csrc/inductor/aoti_torch/generated/c_shim_aten.cpp"
++  )
++endif()
++
+ if(NOT INTERN_DISABLE_AUTOGRAD AND NOT BUILD_LITE_INTERPRETER)
+   append_filelist("libtorch_generated_sources('{}', only_type_vars=True)" GENERATED_CXX_TORCH)
+   list(APPEND GENERATED_CXX_TORCH
+     "${TORCH_SRC_DIR}/csrc/inductor/aoti_torch/generated/c_shim_cpu.cpp"
+-    "${TORCH_SRC_DIR}/csrc/inductor/aoti_torch/generated/c_shim_aten.cpp"
+   )
+   if(BUILD_LAZY_TS_BACKEND)
+     list(APPEND GENERATED_CXX_TORCH

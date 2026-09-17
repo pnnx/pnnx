@@ -1,6 +1,6 @@
-diff -Nuarp pytorch-v2.12.1.orig/torch/csrc/jit/serialization/pickle.cpp pytorch-v2.12.1/torch/csrc/jit/serialization/pickle.cpp
---- pytorch-v2.12.1.orig/torch/csrc/jit/serialization/pickle.cpp	2026-07-03 15:12:01.821083687 +0800
-+++ pytorch-v2.12.1/torch/csrc/jit/serialization/pickle.cpp	2026-07-03 15:12:30.210000000 +0800
+diff -Nuarp pytorch-v2.14.0.orig/torch/csrc/jit/serialization/pickle.cpp pytorch-v2.14.0/torch/csrc/jit/serialization/pickle.cpp
+--- pytorch-v2.14.0.orig/torch/csrc/jit/serialization/pickle.cpp	2026-09-17 11:04:29.108000000 +0800
++++ pytorch-v2.14.0/torch/csrc/jit/serialization/pickle.cpp	2026-09-17 11:04:29.109279710 +0800
 @@ -66,7 +66,7 @@ std::vector<char> pickle(
  // This has to live here instead of the C++ API to mirror torch.save since the
  // mobile build excludes the C++ API
@@ -37,9 +37,9 @@ diff -Nuarp pytorch-v2.12.1.orig/torch/csrc/jit/serialization/pickle.cpp pytorch
    caffe2::serialize::PyTorchStreamReader reader(
        std::make_unique<torch::jit::StringViewReader>(data));
    return torch::jit::readArchiveAndTensors(
-diff -Nuarp pytorch-v2.12.1.orig/torch/csrc/jit/serialization/pickle.h pytorch-v2.12.1/torch/csrc/jit/serialization/pickle.h
---- pytorch-v2.12.1.orig/torch/csrc/jit/serialization/pickle.h	2026-07-03 15:12:01.827592376 +0800
-+++ pytorch-v2.12.1/torch/csrc/jit/serialization/pickle.h	2026-07-03 15:12:30.210000000 +0800
+diff -Nuarp pytorch-v2.14.0.orig/torch/csrc/jit/serialization/pickle.h pytorch-v2.14.0/torch/csrc/jit/serialization/pickle.h
+--- pytorch-v2.14.0.orig/torch/csrc/jit/serialization/pickle.h	2026-09-17 11:04:29.109480998 +0800
++++ pytorch-v2.14.0/torch/csrc/jit/serialization/pickle.h	2026-09-17 11:04:29.109555447 +0800
 @@ -106,7 +106,7 @@ TORCH_API IValue unpickle(
      c10::TypePtr (*type_parser)(const std::string&) =
          Unpickler::defaultTypeParser);

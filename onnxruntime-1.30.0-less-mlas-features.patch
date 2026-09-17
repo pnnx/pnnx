@@ -1,0 +1,134 @@
+diff -Nuarp onnxruntime-1.30.0.orig/cmake/onnxruntime_mlas.cmake onnxruntime-1.30.0/cmake/onnxruntime_mlas.cmake
+--- onnxruntime-1.30.0.orig/cmake/onnxruntime_mlas.cmake	2026-09-17 11:04:29.128848793 +0800
++++ onnxruntime-1.30.0/cmake/onnxruntime_mlas.cmake	2026-09-17 11:04:29.128898446 +0800
+@@ -655,7 +655,7 @@ else()
+         set_source_files_properties(${MLAS_SRC_DIR}/sqnbitgemm_kernel_neon_int8_i8mm.cpp
+ 				    PROPERTIES COMPILE_FLAGS " -march=armv8.2-a+i8mm ")
+ 
+-        if ((NOT APPLE) OR (CMAKE_SYSTEM_NAME STREQUAL "Darwin"))
++        if (FALSE) # SBGEMM is disabled for the portable pnnx build
+           list(APPEND mlas_platform_srcs
+             ${MLAS_SRC_DIR}/aarch64/SbgemmKernelNeon.S
+             ${MLAS_SRC_DIR}/sbgemm_kernel_neon.cpp
+@@ -667,7 +667,7 @@ else()
+           )
+         endif()
+ 
+-        if (NOT APPLE)
++        if (FALSE) # Disable the FP16/BF16 and I8MM assembly kernels below
+           set(mlas_platform_srcs
+             ${mlas_platform_srcs}
+             ${MLAS_SRC_DIR}/aarch64/HalfGemmKernelNeon.S
+diff -Nuarp onnxruntime-1.30.0.orig/onnxruntime/core/mlas/inc/mlas.h onnxruntime-1.30.0/onnxruntime/core/mlas/inc/mlas.h
+--- onnxruntime-1.30.0.orig/onnxruntime/core/mlas/inc/mlas.h	2026-09-17 11:04:29.129260635 +0800
++++ onnxruntime-1.30.0/onnxruntime/core/mlas/inc/mlas.h	2026-09-17 11:04:29.129344723 +0800
+@@ -91,16 +91,16 @@ Abstract:
+ //
+ 
+ #if defined(MLAS_TARGET_AMD64) || defined (MLAS_TARGET_POWER) || defined (MLAS_TARGET_ZVECTOR)
+-#define MLAS_SUPPORTS_GEMM_DOUBLE
++// Disabled for the portable pnnx build: MLAS_SUPPORTS_GEMM_DOUBLE
+ #endif
+ 
+ // Runtime BF16 and SME2 capabilities are checked separately before selecting
+ // an accelerated SBGEMM path.
+ #if defined(MLAS_TARGET_ARM64) && defined(__linux__)
+-#define MLAS_SBGEMM_AVAILABLE
++// Disabled for the portable pnnx build: MLAS_SBGEMM_AVAILABLE
+ #elif defined(__APPLE__)
+ #if defined(MLAS_TARGET_ARM64) && TARGET_OS_OSX
+-#define MLAS_SBGEMM_AVAILABLE
++// Disabled for the portable pnnx build: MLAS_SBGEMM_AVAILABLE
+ #endif
+ #endif
+ 
+@@ -112,7 +112,7 @@ Abstract:
+ // When building an universial binary for APPLE, this flag would
+ // cause trouble for x64 target.
+ 
+-#define MLAS_F16VEC_INTRINSICS_SUPPORTED
++// Disabled for the portable pnnx build: MLAS_F16VEC_INTRINSICS_SUPPORTED
+ 
+ #endif //
+ #endif // ARM64
+diff -Nuarp onnxruntime-1.30.0.orig/onnxruntime/core/mlas/lib/mlasi.h onnxruntime-1.30.0/onnxruntime/core/mlas/lib/mlasi.h
+--- onnxruntime-1.30.0.orig/onnxruntime/core/mlas/lib/mlasi.h	2026-09-17 11:04:29.129931113 +0800
++++ onnxruntime-1.30.0/onnxruntime/core/mlas/lib/mlasi.h	2026-09-17 11:04:29.130064093 +0800
+@@ -1306,7 +1306,7 @@ extern "C" {
+     // AArch64 assembly micro-kernel for pointwise NCHWc convolution
+     MLAS_CONV_POINTWISE_FLOAT_KERNEL MlasConvPointwiseFloatKernelNeonAsm;
+ #endif
+-#if defined(__linux__)
++#if 0 // BF16 assembly kernels are disabled for pnnx
+     // AArch64 assembly fast-math micro-kernels
+     MLAS_CONV_FLOAT_KERNEL MlasConvNchwBf16KernelNeon;
+     MLAS_CONV_DEPTHWISE_FLOAT_KERNEL MlasConvDepthwiseBf16KernelNeon;
+@@ -1837,7 +1837,7 @@ struct MLAS_PLATFORM {
+     MLAS_CONV_FLOAT_KERNEL* ConvNchwcFloatKernel;
+     MLAS_CONV_DEPTHWISE_FLOAT_KERNEL* ConvDepthwiseFloatKernel;
+     MLAS_CONV_POINTWISE_FLOAT_KERNEL* ConvPointwiseFloatKernel;
+-#if defined(__linux__)
++#if 0 // BF16 assembly kernels are disabled for pnnx
+     MLAS_CONV_FLOAT_KERNEL* ConvNchwBf16Kernel;
+     MLAS_CONV_DEPTHWISE_FLOAT_KERNEL* ConvDepthwiseBf16Kernel;
+     MLAS_CONV_POINTWISE_FLOAT_KERNEL* ConvPointwiseBf16Kernel;
+diff -Nuarp onnxruntime-1.30.0.orig/onnxruntime/core/mlas/lib/platform.cpp onnxruntime-1.30.0/onnxruntime/core/mlas/lib/platform.cpp
+--- onnxruntime-1.30.0.orig/onnxruntime/core/mlas/lib/platform.cpp	2026-09-17 11:04:29.130336153 +0800
++++ onnxruntime-1.30.0/onnxruntime/core/mlas/lib/platform.cpp	2026-09-17 11:04:29.130373263 +0800
+@@ -754,7 +754,7 @@ Return Value:
+     this->ConvNchwcFloatKernel = MlasConvNchwcFloatKernelNeon;
+     this->ConvDepthwiseFloatKernel = MlasConvDepthwiseFloatKernelNeon;
+     this->ConvPointwiseFloatKernel = MlasConvPointwiseFloatKernelNeon;
+-#if defined(__linux__)
++#if 0 // BF16 assembly kernels are disabled for pnnx
+     this->ConvNchwBf16Kernel = MlasConvNchwBf16KernelNeon;
+     this->ConvDepthwiseBf16Kernel = MlasConvDepthwiseBf16KernelNeon;
+     this->ConvPointwiseBf16Kernel = MlasConvPointwiseBf16KernelNeon;
+@@ -888,7 +888,7 @@ Return Value:
+ 
+     const bool HasI8MMInstructions = MLAS_CPUIDINFO::GetCPUIDInfo().HasArmNeon_I8MM();
+     if (HasI8MMInstructions) {
+-#if defined(__linux__)
++#if 0 // I8MM assembly kernels are disabled for pnnx
+         //
+         // Hand-written GAS assembly (aarch64/Qgemm{S8S8KernelSmmla,
+         // U8X8KernelUmmla}.S): GAS-only, because armasm64 cannot encode i8mm
+diff -Nuarp onnxruntime-1.30.0.orig/onnxruntime/core/mlas/lib/snchwc.cpp onnxruntime-1.30.0/onnxruntime/core/mlas/lib/snchwc.cpp
+--- onnxruntime-1.30.0.orig/onnxruntime/core/mlas/lib/snchwc.cpp	2026-09-17 11:04:29.130639562 +0800
++++ onnxruntime-1.30.0/onnxruntime/core/mlas/lib/snchwc.cpp	2026-09-17 11:04:29.130679167 +0800
+@@ -853,7 +853,7 @@ struct MLAS_NCHWC_CONV_NCHW_ALGORITHM :
+ 
+ #if defined(MLAS_TARGET_AMD64) || defined(MLAS_TARGET_LARCH64) || (defined(MLAS_TARGET_ARM64) && defined(MLAS_USE_ARM_NEON_NCHWC)) || (defined(MLAS_TARGET_RISCV64) && defined(MLAS_USE_RVV))
+         MLAS_CONV_FLOAT_KERNEL* Kernel = GetMlasPlatform().ConvNchwFloatKernel;
+-#if defined(MLAS_USE_ARM_NEON_NCHWC) && defined(__linux__)
++#if 0 // BF16 assembly kernels are disabled for pnnx
+         MLAS_CONV_FLOAT_KERNEL* const KernelFloat = GetMlasPlatform().ConvNchwFloatKernel;
+         if (WorkBlock->UseBf16) {
+             Kernel = GetMlasPlatform().ConvNchwBf16Kernel;
+@@ -878,7 +878,7 @@ struct MLAS_NCHWC_CONV_NCHW_ALGORITHM :
+                 &EffectiveKernelHeight);
+ 
+             MLAS_CONV_FLOAT_KERNEL* KernelToUse = Kernel;
+-#if defined(MLAS_USE_ARM_NEON_NCHWC) && defined(__linux__)
++#if 0 // BF16 assembly kernels are disabled for pnnx
+             if (WorkBlock->UseBf16 &&
+                 EffectiveKernelHeight == 3 &&
+                 KernelWidth == 3) {
+@@ -998,7 +998,7 @@ struct MLAS_NCHWC_CONV_POINTWISE_ALGORIT
+         // output positions at once and significantly reduces memory traffic.
+         MLAS_CONV_POINTWISE_FLOAT_KERNEL* const KernelFast = MlasConvPointwiseFloatKernelNeonAsm;
+ #endif
+-#if defined(MLAS_USE_ARM_NEON_NCHWC) && defined(__linux__)
++#if 0 // BF16 assembly kernels are disabled for pnnx
+         if (WorkBlock->UseBf16) {
+             Kernel = GetMlasPlatform().ConvPointwiseBf16Kernel;
+         }
+@@ -1145,7 +1145,7 @@ struct MLAS_NCHWC_CONV_DEPTHWISE_ALGORIT
+ #if defined(MLAS_TARGET_ARM64) && defined(MLAS_USE_ARM_NEON_NCHWC) && !defined(_WIN32)
+         MLAS_CONV_DEPTHWISE_FLOAT_KERNEL* const KernelFast = MlasConvDepthwiseFloatKernelNeonAsm;
+ #endif
+-#if defined(MLAS_USE_ARM_NEON_NCHWC) && defined(__linux__)
++#if 0 // BF16 assembly kernels are disabled for pnnx
+         if (WorkBlock->UseBf16) {
+             Kernel = GetMlasPlatform().ConvDepthwiseBf16Kernel;
+         }

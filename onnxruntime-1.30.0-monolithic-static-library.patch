@@ -1,7 +1,7 @@
-diff -Nuarp onnxruntime-1.27.0.orig/cmake/CMakeLists.txt onnxruntime-1.27.0/cmake/CMakeLists.txt
---- onnxruntime-1.27.0.orig/cmake/CMakeLists.txt	2026-07-03 15:13:27.913000000 +0800
-+++ onnxruntime-1.27.0/cmake/CMakeLists.txt	2026-07-03 15:15:33.202000000 +0800
-@@ -1846,12 +1846,7 @@ if (onnxruntime_ENABLE_EXTERNAL_CUSTOM_O
+diff -Nuarp onnxruntime-1.30.0.orig/cmake/CMakeLists.txt onnxruntime-1.30.0/cmake/CMakeLists.txt
+--- onnxruntime-1.30.0.orig/cmake/CMakeLists.txt	2026-09-17 11:04:29.133644778 +0800
++++ onnxruntime-1.30.0/cmake/CMakeLists.txt	2026-09-17 11:16:30.490821170 +0800
+@@ -1943,12 +1943,7 @@ if (onnxruntime_ENABLE_EXTERNAL_CUSTOM_O
    )
  endif()
  
@@ -11,12 +11,12 @@ diff -Nuarp onnxruntime-1.27.0.orig/cmake/CMakeLists.txt onnxruntime-1.27.0/cmak
 -    "CMake target files will not be generated for static onnxruntime builds "
 -    "with WebGPU or Emscripten+XNNPACK support")
 -else()
-+if(FALSE)
++if(FALSE) # The pnnx package installs a bundled archive below.
    # Install
    include(CMakePackageConfigHelpers)
  
-@@ -1929,3 +1924,19 @@ endif()
- if(TARGET onnxruntime_providers)
+@@ -2048,3 +2043,19 @@ endif()
+ if(TARGET ${onnxruntime_providers_target})
    include("${CMAKE_CURRENT_SOURCE_DIR}/onnxruntime_providers_pch.cmake")
  endif()
 +
@@ -31,14 +31,14 @@ diff -Nuarp onnxruntime-1.27.0.orig/cmake/CMakeLists.txt onnxruntime-1.27.0/cmak
 +)
 +
 +install(
-+    FILES ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_STATIC_LIBRARY_PREFIX}onnxruntime_static_lib${CMAKE_STATIC_LIBRARY_SUFFIX}
++    FILES ${onnxruntime_static_lib_FILE}
 +    RENAME ${CMAKE_STATIC_LIBRARY_PREFIX}onnxruntime${CMAKE_STATIC_LIBRARY_SUFFIX}
 +    TYPE LIB
 +)
-diff -Nuarp onnxruntime-1.27.0.orig/cmake/bundle_static_library.cmake onnxruntime-1.27.0/cmake/bundle_static_library.cmake
---- onnxruntime-1.27.0.orig/cmake/bundle_static_library.cmake	1970-01-01 07:30:00.000000000 +0730
-+++ onnxruntime-1.27.0/cmake/bundle_static_library.cmake	2026-07-03 15:14:19.462000000 +0800
-@@ -0,0 +1,145 @@
+diff -Nuarp onnxruntime-1.30.0.orig/cmake/bundle_static_library.cmake onnxruntime-1.30.0/cmake/bundle_static_library.cmake
+--- onnxruntime-1.30.0.orig/cmake/bundle_static_library.cmake	1970-01-01 07:30:00.000000000 +0730
++++ onnxruntime-1.30.0/cmake/bundle_static_library.cmake	2026-09-17 11:16:30.490933351 +0800
+@@ -0,0 +1,171 @@
 +# References:
 +# - https://github.com/microsoft/onnxruntime/blob/main/cmake/onnxruntime_webassembly.cmake
 +# - https://cristianadam.eu/20190501/bundling-together-static-libraries-with-cmake
@@ -52,6 +52,10 @@ diff -Nuarp onnxruntime-1.27.0.orig/cmake/bundle_static_library.cmake onnxruntim
 +    )
 +
 +    function(recursively_collect_dependencies input_target)
++        # Static imported targets commonly wrap private dependencies in LINK_ONLY.
++        if(input_target MATCHES "^\\$<LINK_ONLY:(.*)>$")
++            set(input_target "${CMAKE_MATCH_1}")
++        endif()
 +        if(NOT TARGET ${input_target})
 +            if(EXISTS ${input_target})
 +                get_filename_component(extension "${input_target}" EXT)
@@ -84,6 +88,10 @@ diff -Nuarp onnxruntime-1.27.0.orig/cmake/bundle_static_library.cmake onnxruntim
 +        if(${input_type} STREQUAL "STATIC_LIBRARY")
 +            list(APPEND static_libs "$<TARGET_FILE:${input_target}>")
 +            get_target_property(dependencies ${input_target} LINK_LIBRARIES)
++            get_target_property(interface_dependencies ${input_target} INTERFACE_LINK_LIBRARIES)
++            if(interface_dependencies)
++                list(APPEND dependencies ${interface_dependencies})
++            endif()
 +        elseif(${input_type} STREQUAL "INTERFACE_LIBRARY")
 +            get_target_property(dependencies ${input_target} INTERFACE_LINK_LIBRARIES)
 +        else()
@@ -113,24 +121,33 @@ diff -Nuarp onnxruntime-1.27.0.orig/cmake/bundle_static_library.cmake onnxruntim
 +    endforeach()
 +
 +    file(GENERATE
-+        OUTPUT static_libs.txt
++        OUTPUT static_libs-$<CONFIG>.txt
 +        INPUT ${CMAKE_CURRENT_BINARY_DIR}/static_libs.txt.in)
 +
++    set(bundled_target_directory ${CMAKE_CURRENT_BINARY_DIR})
++    if(CMAKE_CONFIGURATION_TYPES)
++        string(APPEND bundled_target_directory "/$<CONFIG>")
++    endif()
 +    set(bundled_target_full_name
-+        ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_STATIC_LIBRARY_PREFIX}${bundled_target_name}${CMAKE_STATIC_LIBRARY_SUFFIX})
++        ${bundled_target_directory}/${CMAKE_STATIC_LIBRARY_PREFIX}${bundled_target_name}${CMAKE_STATIC_LIBRARY_SUFFIX})
++    set(${bundled_target_name}_FILE "${bundled_target_full_name}" PARENT_SCOPE)
 +
 +    if(MSVC)
 +        set(lib ${CMAKE_AR})
 +        add_custom_command(
++            COMMAND ${CMAKE_COMMAND} -E make_directory "${bundled_target_directory}"
 +            COMMAND ${lib} /NOLOGO /OUT:${bundled_target_full_name} ${static_libs}
 +            OUTPUT ${bundled_target_full_name}
++            DEPENDS ${static_libs}
 +            COMMENT "Bundling ${bundled_target_name}"
 +            VERBATIM)
 +    elseif(APPLE)
 +        find_program(libtool libtool)
 +        add_custom_command(
++            COMMAND ${CMAKE_COMMAND} -E make_directory "${bundled_target_directory}"
 +            COMMAND ${libtool} -static -o ${bundled_target_full_name} ${static_libs}
 +            OUTPUT ${bundled_target_full_name}
++            DEPENDS ${static_libs}
 +            COMMENT "Bundling ${bundled_target_name}"
 +            VERBATIM)
 +    else()
@@ -146,7 +163,7 @@ diff -Nuarp onnxruntime-1.27.0.orig/cmake/bundle_static_library.cmake onnxruntim
 +        file(APPEND ${CMAKE_CURRENT_BINARY_DIR}/${bundled_target_name}.ar.in "END\n")
 +
 +        file(GENERATE
-+            OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${bundled_target_name}.ar
++            OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${bundled_target_name}-$<CONFIG>.ar
 +            INPUT ${CMAKE_CURRENT_BINARY_DIR}/${bundled_target_name}.ar.in)
 +
 +        set(ar ${CMAKE_AR})
@@ -156,8 +173,10 @@ diff -Nuarp onnxruntime-1.27.0.orig/cmake/bundle_static_library.cmake onnxruntim
 +        endif()
 +
 +        add_custom_command(
-+            COMMAND ${ar} -M < ${CMAKE_CURRENT_BINARY_DIR}/${bundled_target_name}.ar
++            COMMAND ${CMAKE_COMMAND} -E make_directory "${bundled_target_directory}"
++            COMMAND ${ar} -M < ${CMAKE_CURRENT_BINARY_DIR}/${bundled_target_name}-$<CONFIG>.ar
 +            OUTPUT ${bundled_target_full_name}
++            DEPENDS ${static_libs}
 +            COMMENT "Bundling ${bundled_target_name}"
 +            VERBATIM)
 +    endif()
@@ -171,9 +190,16 @@ diff -Nuarp onnxruntime-1.27.0.orig/cmake/bundle_static_library.cmake onnxruntim
 +    endforeach()
 +
 +    add_library(${bundled_target_name} STATIC IMPORTED GLOBAL)
-+    set_target_properties(${bundled_target_name}
-+        PROPERTIES
-+        IMPORTED_LOCATION ${bundled_target_full_name})
++    if(CMAKE_CONFIGURATION_TYPES)
++        set_property(TARGET ${bundled_target_name} PROPERTY IMPORTED_CONFIGURATIONS "${CMAKE_CONFIGURATION_TYPES}")
++        foreach(config IN LISTS CMAKE_CONFIGURATION_TYPES)
++            string(TOUPPER "${config}" config_upper)
++            set_property(TARGET ${bundled_target_name} PROPERTY IMPORTED_LOCATION_${config_upper}
++                "${CMAKE_CURRENT_BINARY_DIR}/${config}/${CMAKE_STATIC_LIBRARY_PREFIX}${bundled_target_name}${CMAKE_STATIC_LIBRARY_SUFFIX}")
++        endforeach()
++    else()
++        set_target_properties(${bundled_target_name} PROPERTIES IMPORTED_LOCATION ${bundled_target_full_name})
++    endif()
 +
 +    foreach(target_name IN ITEMS ${ARGN})
 +        set_property(TARGET ${bundled_target_name} APPEND
@@ -184,10 +210,10 @@ diff -Nuarp onnxruntime-1.27.0.orig/cmake/bundle_static_library.cmake onnxruntim
 +
 +    add_dependencies(${bundled_target_name} bundling_${bundled_target_name})
 +endfunction()
-diff -Nuarp onnxruntime-1.27.0.orig/cmake/onnxruntime.cmake onnxruntime-1.27.0/cmake/onnxruntime.cmake
---- onnxruntime-1.27.0.orig/cmake/onnxruntime.cmake	2026-07-03 15:13:27.920000000 +0800
-+++ onnxruntime-1.27.0/cmake/onnxruntime.cmake	2026-07-03 15:15:33.203000000 +0800
-@@ -296,15 +296,6 @@ else()
+diff -Nuarp onnxruntime-1.30.0.orig/cmake/onnxruntime.cmake onnxruntime-1.30.0/cmake/onnxruntime.cmake
+--- onnxruntime-1.30.0.orig/cmake/onnxruntime.cmake	2026-09-17 11:04:29.134097298 +0800
++++ onnxruntime-1.30.0/cmake/onnxruntime.cmake	2026-09-17 11:04:29.134122284 +0800
+@@ -335,13 +335,7 @@ else()
      VERSION ${ORT_VERSION}
      FOLDER "ONNXRuntime")
  endif()
@@ -198,15 +224,14 @@ diff -Nuarp onnxruntime-1.27.0.orig/cmake/onnxruntime.cmake onnxruntime-1.27.0/c
 -        LIBRARY   DESTINATION ${CMAKE_INSTALL_LIBDIR}
 -        RUNTIME   DESTINATION ${CMAKE_INSTALL_BINDIR}
 -        FRAMEWORK DESTINATION ${CMAKE_INSTALL_BINDIR})
--
--
++
+ 
+ 
  if (WIN32 AND NOT CMAKE_CXX_STANDARD_LIBRARIES MATCHES kernel32.lib)
-   # Workaround STL bug https://github.com/microsoft/STL/issues/434#issuecomment-921321254
-   # Note that the workaround makes std::system_error crash before Windows 10
-diff -Nuarp onnxruntime-1.27.0.orig/cmake/onnxruntime_providers_cpu.cmake onnxruntime-1.27.0/cmake/onnxruntime_providers_cpu.cmake
---- onnxruntime-1.27.0.orig/cmake/onnxruntime_providers_cpu.cmake	2026-07-03 15:13:27.928000000 +0800
-+++ onnxruntime-1.27.0/cmake/onnxruntime_providers_cpu.cmake	2026-07-03 15:15:33.203000000 +0800
-@@ -239,11 +239,6 @@ if (NOT onnxruntime_MINIMAL_BUILD AND NO
+diff -Nuarp onnxruntime-1.30.0.orig/cmake/onnxruntime_providers_cpu.cmake onnxruntime-1.30.0/cmake/onnxruntime_providers_cpu.cmake
+--- onnxruntime-1.30.0.orig/cmake/onnxruntime_providers_cpu.cmake	2026-09-17 11:04:29.134330816 +0800
++++ onnxruntime-1.30.0/cmake/onnxruntime_providers_cpu.cmake	2026-09-17 11:04:29.134357355 +0800
+@@ -257,11 +257,7 @@ if (NOT onnxruntime_MINIMAL_BUILD AND NO
    message(FATAL_ERROR "onnxruntime_providers_shared unknown platform, need to specify shared library exports for it")
    endif()
  
@@ -215,6 +240,7 @@ diff -Nuarp onnxruntime-1.27.0.orig/cmake/onnxruntime_providers_cpu.cmake onnxru
 -          LIBRARY  DESTINATION ${CMAKE_INSTALL_LIBDIR}
 -          RUNTIME  DESTINATION ${CMAKE_INSTALL_BINDIR}
 -  )
++  
  endif()
  
  if (NOT onnxruntime_BUILD_SHARED_LIB)
