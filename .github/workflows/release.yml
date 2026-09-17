@@ -2,11 +2,11 @@ name: release
 on: workflow_dispatch
 
 env:
-  LIBTORCH_VERSION: 2.12.1
-  TORCHVISION_VERSION: 0.27.1
-  PROTOBUF_VERSION: 21.12
-  ONNXRUNTIME_VERSION: 1.27.0
-  CACHE_DATE: 20260703
+  LIBTORCH_VERSION: 2.14.0
+  TORCHVISION_VERSION: 0.29.0
+  PROTOBUF_VERSION: 33.6
+  ONNXRUNTIME_VERSION: 1.30.0
+  CACHE_DATE: 20260917
 
 permissions:
   contents: read
@@ -40,7 +40,7 @@ jobs:
       uses: actions/cache@v6.1.0
       with:
         path: "/tmp/libtorch"
-        key: libtorch-${{ env.LIBTORCH_VERSION }}-linux-${{ env.CACHE_DATE }}
+        key: libtorch-${{ env.LIBTORCH_VERSION }}-linux-${{ env.CACHE_DATE }}-${{ hashFiles('pnnx-patches/*.patch', '*.patch') }}
     - name: libtorch
       if: steps.cache-libtorch.outputs.cache-hit != 'true'
       uses: pypa/cibuildwheel@v4.2.1
@@ -49,18 +49,19 @@ jobs:
         CIBW_BUILD: 'cp310-manylinux_x86_64'
         CIBW_BUILD_VERBOSITY: 1
         CIBW_REPAIR_WHEEL_COMMAND: ""
-        CIBW_BEFORE_ALL: yum install wget zip -y &&
+        CIBW_BEFORE_ALL: yum install wget zip cmake -y &&
           wget -q https://github.com/pytorch/pytorch/releases/download/v${{ env.LIBTORCH_VERSION }}/pytorch-v${{ env.LIBTORCH_VERSION }}.tar.gz &&
           tar -xf pytorch-v${{ env.LIBTORCH_VERSION }}.tar.gz &&
           cd pytorch-v${{ env.LIBTORCH_VERSION }} &&
           export PATH=/opt/python/cp310-cp310/bin:$PATH &&
           pip install -r requirements.txt &&
-          patch -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-mobile-build.patch &&
-          patch -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-no-link-system-lib.patch &&
-          patch -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-set-python-executable.patch &&
-          patch -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-eigen-build.patch &&
-          patch -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-link-local-sleef.patch &&
-          patch -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-revert-nativert-api.patch &&
+          patch --batch --fuzz=0 -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-mobile-build.patch &&
+          patch --batch --fuzz=0 -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-stable-abi.patch &&
+          patch --batch --fuzz=0 -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-no-link-system-lib.patch &&
+          patch --batch --fuzz=0 -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-set-python-executable.patch &&
+          patch --batch --fuzz=0 -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-eigen-build.patch &&
+          patch --batch --fuzz=0 -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-link-local-sleef.patch &&
+          patch --batch --fuzz=0 -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-revert-nativert-api.patch &&
           mkdir -p build && cd build &&
           cmake -DCMAKE_INSTALL_PREFIX="/host/tmp/libtorch" -DCMAKE_BUILD_TYPE=MinSizeRel -DBUILD_SHARED_LIBS=OFF
               -DCMAKE_POLICY_VERSION_MINIMUM=3.5
@@ -94,7 +95,7 @@ jobs:
       uses: actions/cache@v6.1.0
       with:
         path: "/tmp/torchvision"
-        key: torchvision-${{ env.TORCHVISION_VERSION }}-linux-${{ env.CACHE_DATE }}
+        key: torchvision-${{ env.TORCHVISION_VERSION }}-linux-torch-${{ env.LIBTORCH_VERSION }}-${{ env.CACHE_DATE }}-${{ hashFiles('pnnx-patches/*.patch', '*.patch') }}
     - name: torchvision
       if: steps.cache-torchvision.outputs.cache-hit != 'true'
       uses: pypa/cibuildwheel@v4.2.1
@@ -107,8 +108,8 @@ jobs:
           wget -q https://github.com/pytorch/vision/archive/refs/tags/v${{ env.TORCHVISION_VERSION }}.zip -O vision-${{ env.TORCHVISION_VERSION }}.zip &&
           unzip -q vision-${{ env.TORCHVISION_VERSION }}.zip &&
           cd vision-${{ env.TORCHVISION_VERSION }} &&
-          patch -p1 -i /project/pnnx-patches/vision-${{ env.TORCHVISION_VERSION }}-ops-only.patch  &&
-          patch -p1 -i /project/pnnx-patches/vision-${{ env.TORCHVISION_VERSION }}-no-cuda-version.patch  &&
+          patch --batch --fuzz=0 -p1 -i /project/pnnx-patches/vision-${{ env.TORCHVISION_VERSION }}-ops-only.patch  &&
+          patch --batch --fuzz=0 -p1 -i /project/pnnx-patches/vision-${{ env.TORCHVISION_VERSION }}-no-cuda-version.patch  &&
           mkdir -p build && cd build  &&
           cmake -DCMAKE_INSTALL_PREFIX="/host/tmp/torchvision"
           -DTorch_DIR="/host/tmp/libtorch/share/cmake/Torch"
@@ -124,7 +125,7 @@ jobs:
       uses: actions/cache@v6.1.0
       with:
         path: "/tmp/onnxruntime"
-        key: onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-linux-${{ env.CACHE_DATE }}
+        key: onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-linux-protobuf-${{ env.PROTOBUF_VERSION }}-${{ env.CACHE_DATE }}-${{ hashFiles('pnnx-patches/*.patch', '*.patch') }}
     - name: onnxruntime
       if: steps.cache-onnxruntime.outputs.cache-hit != 'true'
       uses: pypa/cibuildwheel@v4.2.1
@@ -137,19 +138,20 @@ jobs:
           wget -q https://github.com/protocolbuffers/protobuf/archive/v${{ env.PROTOBUF_VERSION }}.zip -O protobuf-${{ env.PROTOBUF_VERSION }}.zip &&
           unzip -q protobuf-${{ env.PROTOBUF_VERSION }}.zip &&
           cd protobuf-${{ env.PROTOBUF_VERSION }} &&
+          patch --batch --fuzz=0 -p1 -i /project/pnnx-patches/protobuf-${{ env.PROTOBUF_VERSION }}-align-abseil.patch &&
           mkdir -p build2 && cd build2 &&
-          cmake -DCMAKE_INSTALL_PREFIX="/host/tmp/onnxruntime" -Dprotobuf_BUILD_TESTS=OFF -DCMAKE_BUILD_TYPE=MinSizeRel -DCMAKE_POSITION_INDEPENDENT_CODE=ON .. &&
+          cmake -DCMAKE_INSTALL_PREFIX="/host/tmp/onnxruntime" -Dprotobuf_BUILD_TESTS=OFF -DCMAKE_BUILD_TYPE=MinSizeRel -DCMAKE_POSITION_INDEPENDENT_CODE=ON -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_CXX_STANDARD=20 -Dprotobuf_BUILD_SHARED_LIBS=OFF -Dprotobuf_WITH_ZLIB=OFF .. &&
           cmake --build . -j $(nproc) &&
           cmake --build . -j $(nproc) --target install/strip &&
           cd ../../ &&
           wget -q https://github.com/microsoft/onnxruntime/archive/v${{ env.ONNXRUNTIME_VERSION }}.zip -O onnxruntime-${{ env.ONNXRUNTIME_VERSION }}.zip &&
           unzip -q onnxruntime-${{ env.ONNXRUNTIME_VERSION }}.zip &&
           cd onnxruntime-${{ env.ONNXRUNTIME_VERSION }} &&
-          patch -p1 -i /project/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-less-mlas-features.patch &&
-          patch -p1 -i /project/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-monolithic-static-library.patch &&
-          patch -p1 -i /project/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-use-clog.patch &&
+          patch --batch --fuzz=0 -p1 -i /project/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-less-mlas-features.patch &&
+          patch --batch --fuzz=0 -p1 -i /project/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-monolithic-static-library.patch &&
+          patch --batch --fuzz=0 -p1 -i /project/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-use-clog.patch &&
           mkdir -p build2 && cd build2 &&
-          cmake -DCMAKE_INSTALL_PREFIX="/host/tmp/onnxruntime" -DCMAKE_BUILD_TYPE=MinSizeRel -Donnxruntime_USE_FULL_PROTOBUF=ON -Donnxruntime_BUILD_SHARED_LIB=ON -Donnxruntime_BUILD_UNIT_TESTS=OFF -Donnxruntime_ENABLE_CPUINFO=OFF -Donnxruntime_DISABLE_CONTRIB_OPS=ON -Donnxruntime_DISABLE_ML_OPS=ON -Donnxruntime_DISABLE_SPARSE_TENSORS=ON --compile-no-warning-as-error -DCMAKE_POSITION_INDEPENDENT_CODE=ON ../cmake &&
+          cmake -DCMAKE_INSTALL_PREFIX="/host/tmp/onnxruntime" -DCMAKE_BUILD_TYPE=MinSizeRel -Donnxruntime_USE_FULL_PROTOBUF=ON -Donnxruntime_BUILD_SHARED_LIB=ON -Donnxruntime_BUILD_UNIT_TESTS=OFF -Donnxruntime_ENABLE_CPUINFO=OFF -Donnxruntime_DISABLE_CONTRIB_OPS=ON -Donnxruntime_DISABLE_ML_OPS=ON -Donnxruntime_DISABLE_SPARSE_TENSORS=ON --compile-no-warning-as-error -DCMAKE_POSITION_INDEPENDENT_CODE=ON -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_PREFIX_PATH="/host/tmp/onnxruntime" -DCMAKE_FIND_PACKAGE_PREFER_CONFIG=ON -DONNX_CUSTOM_PROTOC_EXECUTABLE="/host/tmp/onnxruntime/bin/protoc" ../cmake &&
           cmake --build . -j $(nproc) &&
           cmake --build . -j $(nproc) --target install/strip
       with:
@@ -175,21 +177,21 @@ jobs:
       uses: actions/cache@v6.1.0
       with:
         path: "/tmp/libtorch"
-        key: libtorch-${{ env.LIBTORCH_VERSION }}-linux-aarch64-${{ env.CACHE_DATE }}
+        key: libtorch-${{ env.LIBTORCH_VERSION }}-linux-aarch64-${{ env.CACHE_DATE }}-${{ hashFiles('pnnx-patches/*.patch', '*.patch') }}
 
     - name: cache-torchvision
       id: cache-torchvision
       uses: actions/cache@v6.1.0
       with:
         path: "/tmp/torchvision"
-        key: torchvision-${{ env.TORCHVISION_VERSION }}-linux-aarch64-${{ env.CACHE_DATE }}
+        key: torchvision-${{ env.TORCHVISION_VERSION }}-linux-aarch64-torch-${{ env.LIBTORCH_VERSION }}-${{ env.CACHE_DATE }}-${{ hashFiles('pnnx-patches/*.patch', '*.patch') }}
 
     - name: cache-onnxruntime
       id: cache-onnxruntime
       uses: actions/cache@v6.1.0
       with:
         path: "/tmp/onnxruntime"
-        key: onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-linux-aarch64-${{ env.CACHE_DATE }}
+        key: onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-linux-aarch64-protobuf-${{ env.PROTOBUF_VERSION }}-${{ env.CACHE_DATE }}-${{ hashFiles('pnnx-patches/*.patch', '*.patch') }}
 
     - name: libtorch
       if: steps.cache-libtorch.outputs.cache-hit != 'true'
@@ -205,15 +207,16 @@ jobs:
           cd pytorch-v${{ env.LIBTORCH_VERSION }} &&
           export PATH=/opt/python/cp310-cp310/bin:$PATH &&
           pip install -r requirements.txt &&
-          patch -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-mobile-build.patch &&
-          patch -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-no-link-system-lib.patch &&
-          patch -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-set-python-executable.patch &&
-          patch -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-eigen-build.patch &&
-          patch -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-link-local-sleef.patch &&
-          patch -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-revert-nativert-api.patch &&
-          patch -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-no-arm64-sleef.patch &&
-          patch -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-no-arm64-sve.patch &&
-          patch -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-no-mimalloc.patch &&
+          patch --batch --fuzz=0 -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-mobile-build.patch &&
+          patch --batch --fuzz=0 -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-stable-abi.patch &&
+          patch --batch --fuzz=0 -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-no-link-system-lib.patch &&
+          patch --batch --fuzz=0 -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-set-python-executable.patch &&
+          patch --batch --fuzz=0 -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-eigen-build.patch &&
+          patch --batch --fuzz=0 -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-link-local-sleef.patch &&
+          patch --batch --fuzz=0 -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-revert-nativert-api.patch &&
+          patch --batch --fuzz=0 -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-no-arm64-sleef.patch &&
+          patch --batch --fuzz=0 -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-no-arm64-sve.patch &&
+          patch --batch --fuzz=0 -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-no-mimalloc.patch &&
           mkdir -p build && cd build &&
           cmake -DCMAKE_INSTALL_PREFIX="/host/tmp/libtorch" -DCMAKE_BUILD_TYPE=MinSizeRel -DBUILD_SHARED_LIBS=OFF
               -DCMAKE_POLICY_VERSION_MINIMUM=3.5
@@ -256,8 +259,8 @@ jobs:
           wget -q https://github.com/pytorch/vision/archive/refs/tags/v${{ env.TORCHVISION_VERSION }}.zip -O vision-${{ env.TORCHVISION_VERSION }}.zip &&
           unzip -q vision-${{ env.TORCHVISION_VERSION }}.zip &&
           cd vision-${{ env.TORCHVISION_VERSION }} &&
-          patch -p1 -i /project/pnnx-patches/vision-${{ env.TORCHVISION_VERSION }}-ops-only.patch  &&
-          patch -p1 -i /project/pnnx-patches/vision-${{ env.TORCHVISION_VERSION }}-no-cuda-version.patch  &&
+          patch --batch --fuzz=0 -p1 -i /project/pnnx-patches/vision-${{ env.TORCHVISION_VERSION }}-ops-only.patch  &&
+          patch --batch --fuzz=0 -p1 -i /project/pnnx-patches/vision-${{ env.TORCHVISION_VERSION }}-no-cuda-version.patch  &&
           mkdir -p build && cd build  &&
           cmake -DCMAKE_INSTALL_PREFIX="/host/tmp/torchvision"
           -DTorch_DIR="/host/tmp/libtorch/share/cmake/Torch"
@@ -280,19 +283,20 @@ jobs:
           wget -q https://github.com/protocolbuffers/protobuf/archive/v${{ env.PROTOBUF_VERSION }}.zip -O protobuf-${{ env.PROTOBUF_VERSION }}.zip &&
           unzip -q protobuf-${{ env.PROTOBUF_VERSION }}.zip &&
           cd protobuf-${{ env.PROTOBUF_VERSION }} &&
+          patch --batch --fuzz=0 -p1 -i /project/pnnx-patches/protobuf-${{ env.PROTOBUF_VERSION }}-align-abseil.patch &&
           mkdir -p build2 && cd build2 &&
-          cmake -DCMAKE_INSTALL_PREFIX="/host/tmp/onnxruntime" -Dprotobuf_BUILD_TESTS=OFF -DCMAKE_BUILD_TYPE=MinSizeRel -DCMAKE_POSITION_INDEPENDENT_CODE=ON .. &&
+          cmake -DCMAKE_INSTALL_PREFIX="/host/tmp/onnxruntime" -Dprotobuf_BUILD_TESTS=OFF -DCMAKE_BUILD_TYPE=MinSizeRel -DCMAKE_POSITION_INDEPENDENT_CODE=ON -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_CXX_STANDARD=20 -Dprotobuf_BUILD_SHARED_LIBS=OFF -Dprotobuf_WITH_ZLIB=OFF .. &&
           cmake --build . -j $(nproc) &&
           cmake --build . -j $(nproc) --target install/strip &&
           cd ../../ &&
           wget -q https://github.com/microsoft/onnxruntime/archive/v${{ env.ONNXRUNTIME_VERSION }}.zip -O onnxruntime-${{ env.ONNXRUNTIME_VERSION }}.zip &&
           unzip -q onnxruntime-${{ env.ONNXRUNTIME_VERSION }}.zip &&
           cd onnxruntime-${{ env.ONNXRUNTIME_VERSION }} &&
-          patch -p1 -i /project/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-less-mlas-features.patch &&
-          patch -p1 -i /project/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-monolithic-static-library.patch &&
-          patch -p1 -i /project/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-use-clog.patch &&
+          patch --batch --fuzz=0 -p1 -i /project/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-less-mlas-features.patch &&
+          patch --batch --fuzz=0 -p1 -i /project/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-monolithic-static-library.patch &&
+          patch --batch --fuzz=0 -p1 -i /project/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-use-clog.patch &&
           mkdir -p build2 && cd build2 &&
-          cmake -DCMAKE_INSTALL_PREFIX="/host/tmp/onnxruntime" -DCMAKE_BUILD_TYPE=MinSizeRel -Donnxruntime_USE_FULL_PROTOBUF=ON -Donnxruntime_BUILD_SHARED_LIB=ON -Donnxruntime_BUILD_UNIT_TESTS=OFF -Donnxruntime_ENABLE_CPUINFO=OFF -Donnxruntime_DISABLE_CONTRIB_OPS=ON -Donnxruntime_DISABLE_ML_OPS=ON -Donnxruntime_DISABLE_SPARSE_TENSORS=ON --compile-no-warning-as-error -DCMAKE_POSITION_INDEPENDENT_CODE=ON ../cmake &&
+          cmake -DCMAKE_INSTALL_PREFIX="/host/tmp/onnxruntime" -DCMAKE_BUILD_TYPE=MinSizeRel -Donnxruntime_USE_FULL_PROTOBUF=ON -Donnxruntime_BUILD_SHARED_LIB=ON -Donnxruntime_BUILD_UNIT_TESTS=OFF -Donnxruntime_ENABLE_CPUINFO=OFF -Donnxruntime_DISABLE_CONTRIB_OPS=ON -Donnxruntime_DISABLE_ML_OPS=ON -Donnxruntime_DISABLE_SPARSE_TENSORS=ON --compile-no-warning-as-error -DCMAKE_POSITION_INDEPENDENT_CODE=ON -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_PREFIX_PATH="/host/tmp/onnxruntime" -DCMAKE_FIND_PACKAGE_PREFER_CONFIG=ON -DONNX_CUSTOM_PROTOC_EXECUTABLE="/host/tmp/onnxruntime/bin/protoc" ../cmake &&
           cmake --build . -j $(nproc) &&
           cmake --build . -j $(nproc) --target install/strip
       with:
@@ -314,7 +318,7 @@ jobs:
       uses: actions/cache@v6.1.0
       with:
         path: "libtorch"
-        key: libtorch-${{ env.LIBTORCH_VERSION }}-macos-x64-${{ env.CACHE_DATE }}
+        key: libtorch-${{ env.LIBTORCH_VERSION }}-macos-x64-${{ env.CACHE_DATE }}-${{ hashFiles('pnnx-patches/*.patch', '*.patch') }}
     - name: libtorch
       if: steps.cache-libtorch.outputs.cache-hit != 'true'
       run: |
@@ -322,11 +326,12 @@ jobs:
         tar -xf pytorch-v${{ env.LIBTORCH_VERSION }}.tar.gz
         cd pytorch-v${{ env.LIBTORCH_VERSION }}
         pip3 install -r requirements.txt
-        patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-mobile-build.patch
-        patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-no-link-system-lib.patch
-        patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-eigen-build.patch
-        patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-link-local-sleef.patch
-        patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-revert-nativert-api.patch
+        patch --batch --fuzz=0 -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-mobile-build.patch
+        patch --batch --fuzz=0 -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-stable-abi.patch
+        patch --batch --fuzz=0 -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-no-link-system-lib.patch
+        patch --batch --fuzz=0 -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-eigen-build.patch
+        patch --batch --fuzz=0 -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-link-local-sleef.patch
+        patch --batch --fuzz=0 -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-revert-nativert-api.patch
         mkdir -p build; cd build
         cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/libtorch" -DCMAKE_BUILD_TYPE=MinSizeRel -DBUILD_SHARED_LIBS=OFF \
             -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
@@ -357,15 +362,15 @@ jobs:
       uses: actions/cache@v6.1.0
       with:
         path: "torchvision"
-        key: torchvision-${{ env.TORCHVISION_VERSION }}-macos-x64-${{ env.CACHE_DATE }}
+        key: torchvision-${{ env.TORCHVISION_VERSION }}-macos-x64-torch-${{ env.LIBTORCH_VERSION }}-${{ env.CACHE_DATE }}-${{ hashFiles('pnnx-patches/*.patch', '*.patch') }}
     - name: torchvision
       if: steps.cache-torchvision.outputs.cache-hit != 'true'
       run: |
         wget -q https://github.com/pytorch/vision/archive/refs/tags/v${{ env.TORCHVISION_VERSION }}.zip -O vision-${{ env.TORCHVISION_VERSION }}.zip
         unzip -q vision-${{ env.TORCHVISION_VERSION }}.zip
         cd vision-${{ env.TORCHVISION_VERSION }}
-        patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/vision-${{ env.TORCHVISION_VERSION }}-ops-only.patch
-        patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/vision-${{ env.TORCHVISION_VERSION }}-no-cuda-version.patch
+        patch --batch --fuzz=0 -p1 -i $GITHUB_WORKSPACE/pnnx-patches/vision-${{ env.TORCHVISION_VERSION }}-ops-only.patch
+        patch --batch --fuzz=0 -p1 -i $GITHUB_WORKSPACE/pnnx-patches/vision-${{ env.TORCHVISION_VERSION }}-no-cuda-version.patch
         mkdir -p build; cd build
         cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/torchvision" -DTorch_DIR="$GITHUB_WORKSPACE/libtorch/share/cmake/Torch" -DCMAKE_BUILD_TYPE=MinSizeRel -DWITH_PNG=OFF -DWITH_JPEG=OFF ..
         cmake --build . -j 4
@@ -376,26 +381,27 @@ jobs:
       uses: actions/cache@v6.1.0
       with:
         path: "onnxruntime"
-        key: onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-macos-x64-${{ env.CACHE_DATE }}
+        key: onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-macos-x64-protobuf-${{ env.PROTOBUF_VERSION }}-${{ env.CACHE_DATE }}-${{ hashFiles('pnnx-patches/*.patch', '*.patch') }}
     - name: onnxruntime
       if: steps.cache-onnxruntime.outputs.cache-hit != 'true'
       run: |
         wget -q https://github.com/protocolbuffers/protobuf/archive/v${{ env.PROTOBUF_VERSION }}.zip -O protobuf-${{ env.PROTOBUF_VERSION }}.zip
         unzip -q protobuf-${{ env.PROTOBUF_VERSION }}.zip
         cd protobuf-${{ env.PROTOBUF_VERSION }}
+        patch --batch --fuzz=0 -p1 -i $GITHUB_WORKSPACE/pnnx-patches/protobuf-${{ env.PROTOBUF_VERSION }}-align-abseil.patch
         mkdir -p build2; cd build2;
-        cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/onnxruntime" -Dprotobuf_BUILD_TESTS=OFF -DCMAKE_BUILD_TYPE=MinSizeRel -DCMAKE_POSITION_INDEPENDENT_CODE=ON ..
+        cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/onnxruntime" -Dprotobuf_BUILD_TESTS=OFF -DCMAKE_BUILD_TYPE=MinSizeRel -DCMAKE_POSITION_INDEPENDENT_CODE=ON -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_CXX_STANDARD=20 -Dprotobuf_BUILD_SHARED_LIBS=OFF -Dprotobuf_WITH_ZLIB=OFF ..
         cmake --build . -j 4
         cmake --build . -j 4 --target install/strip
         cd ../../
         wget -q https://github.com/microsoft/onnxruntime/archive/v${{ env.ONNXRUNTIME_VERSION }}.zip -O onnxruntime-${{ env.ONNXRUNTIME_VERSION }}.zip
         ditto -V -x -k --sequesterRsrc --rsrc onnxruntime-${{ env.ONNXRUNTIME_VERSION }}.zip ./
         cd onnxruntime-${{ env.ONNXRUNTIME_VERSION }}
-        patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-less-mlas-features.patch
-        patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-monolithic-static-library.patch
-        patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-use-clog.patch
+        patch --batch --fuzz=0 -p1 -i $GITHUB_WORKSPACE/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-less-mlas-features.patch
+        patch --batch --fuzz=0 -p1 -i $GITHUB_WORKSPACE/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-monolithic-static-library.patch
+        patch --batch --fuzz=0 -p1 -i $GITHUB_WORKSPACE/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-use-clog.patch
         mkdir -p build2; cd build2;
-        cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/onnxruntime" -DCMAKE_BUILD_TYPE=MinSizeRel -Donnxruntime_USE_FULL_PROTOBUF=ON -Donnxruntime_BUILD_SHARED_LIB=ON -Donnxruntime_BUILD_UNIT_TESTS=OFF -Donnxruntime_ENABLE_CPUINFO=OFF -Donnxruntime_DISABLE_CONTRIB_OPS=ON -Donnxruntime_DISABLE_SPARSE_TENSORS=ON --compile-no-warning-as-error -DCMAKE_POSITION_INDEPENDENT_CODE=ON ../cmake
+        cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/onnxruntime" -DCMAKE_BUILD_TYPE=MinSizeRel -Donnxruntime_USE_FULL_PROTOBUF=ON -Donnxruntime_BUILD_SHARED_LIB=ON -Donnxruntime_BUILD_UNIT_TESTS=OFF -Donnxruntime_ENABLE_CPUINFO=OFF -Donnxruntime_DISABLE_CONTRIB_OPS=ON -Donnxruntime_DISABLE_SPARSE_TENSORS=ON --compile-no-warning-as-error -DCMAKE_POSITION_INDEPENDENT_CODE=ON -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_PREFIX_PATH="$GITHUB_WORKSPACE/onnxruntime" -DCMAKE_FIND_PACKAGE_PREFER_CONFIG=ON -DONNX_CUSTOM_PROTOC_EXECUTABLE="$GITHUB_WORKSPACE/onnxruntime/bin/protoc" ../cmake
         cmake --build . -j 4
         cmake --build . -j 4 --target install/strip
 
@@ -414,7 +420,7 @@ jobs:
       uses: actions/cache@v6.1.0
       with:
         path: "libtorch"
-        key: libtorch-${{ env.LIBTORCH_VERSION }}-macos-arm64-${{ env.CACHE_DATE }}
+        key: libtorch-${{ env.LIBTORCH_VERSION }}-macos-arm64-${{ env.CACHE_DATE }}-${{ hashFiles('pnnx-patches/*.patch', '*.patch') }}
     - name: libtorch
       if: steps.cache-libtorch.outputs.cache-hit != 'true'
       run: |
@@ -422,14 +428,15 @@ jobs:
         tar -xf pytorch-v${{ env.LIBTORCH_VERSION }}.tar.gz
         cd pytorch-v${{ env.LIBTORCH_VERSION }}
         pip3 install -r requirements.txt
-        patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-mobile-build.patch
-        patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-no-link-system-lib.patch
-        patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-set-python-executable.patch
-        patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-eigen-build.patch
-        patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-link-local-sleef.patch
-        patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-revert-nativert-api.patch
-        patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-no-arm64-sleef.patch
-        patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-no-arm64-sve.patch
+        patch --batch --fuzz=0 -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-mobile-build.patch
+        patch --batch --fuzz=0 -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-stable-abi.patch
+        patch --batch --fuzz=0 -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-no-link-system-lib.patch
+        patch --batch --fuzz=0 -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-set-python-executable.patch
+        patch --batch --fuzz=0 -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-eigen-build.patch
+        patch --batch --fuzz=0 -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-link-local-sleef.patch
+        patch --batch --fuzz=0 -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-revert-nativert-api.patch
+        patch --batch --fuzz=0 -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-no-arm64-sleef.patch
+        patch --batch --fuzz=0 -p1 -i $GITHUB_WORKSPACE/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-no-arm64-sve.patch
         mkdir -p build; cd build
         cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/libtorch" -DCMAKE_BUILD_TYPE=MinSizeRel -DBUILD_SHARED_LIBS=OFF \
             -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
@@ -460,15 +467,15 @@ jobs:
       uses: actions/cache@v6.1.0
       with:
         path: "torchvision"
-        key: torchvision-${{ env.TORCHVISION_VERSION }}-macos-arm64-${{ env.CACHE_DATE }}
+        key: torchvision-${{ env.TORCHVISION_VERSION }}-macos-arm64-torch-${{ env.LIBTORCH_VERSION }}-${{ env.CACHE_DATE }}-${{ hashFiles('pnnx-patches/*.patch', '*.patch') }}
     - name: torchvision
       if: steps.cache-torchvision.outputs.cache-hit != 'true'
       run: |
         wget -q https://github.com/pytorch/vision/archive/refs/tags/v${{ env.TORCHVISION_VERSION }}.zip -O vision-${{ env.TORCHVISION_VERSION }}.zip
         unzip -q vision-${{ env.TORCHVISION_VERSION }}.zip
         cd vision-${{ env.TORCHVISION_VERSION }}
-        patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/vision-${{ env.TORCHVISION_VERSION }}-ops-only.patch
-        patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/vision-${{ env.TORCHVISION_VERSION }}-no-cuda-version.patch
+        patch --batch --fuzz=0 -p1 -i $GITHUB_WORKSPACE/pnnx-patches/vision-${{ env.TORCHVISION_VERSION }}-ops-only.patch
+        patch --batch --fuzz=0 -p1 -i $GITHUB_WORKSPACE/pnnx-patches/vision-${{ env.TORCHVISION_VERSION }}-no-cuda-version.patch
         mkdir -p build; cd build
         cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/torchvision" -DTorch_DIR="$GITHUB_WORKSPACE/libtorch/share/cmake/Torch" -DCMAKE_BUILD_TYPE=MinSizeRel -DWITH_PNG=OFF -DWITH_JPEG=OFF ..
         cmake --build . -j 3
@@ -479,26 +486,27 @@ jobs:
       uses: actions/cache@v6.1.0
       with:
         path: "onnxruntime"
-        key: onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-macos-arm64-${{ env.CACHE_DATE }}
+        key: onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-macos-arm64-protobuf-${{ env.PROTOBUF_VERSION }}-${{ env.CACHE_DATE }}-${{ hashFiles('pnnx-patches/*.patch', '*.patch') }}
     - name: onnxruntime
       if: steps.cache-onnxruntime.outputs.cache-hit != 'true'
       run: |
         wget -q https://github.com/protocolbuffers/protobuf/archive/v${{ env.PROTOBUF_VERSION }}.zip -O protobuf-${{ env.PROTOBUF_VERSION }}.zip
         unzip -q protobuf-${{ env.PROTOBUF_VERSION }}.zip
         cd protobuf-${{ env.PROTOBUF_VERSION }}
+        patch --batch --fuzz=0 -p1 -i $GITHUB_WORKSPACE/pnnx-patches/protobuf-${{ env.PROTOBUF_VERSION }}-align-abseil.patch
         mkdir -p build2; cd build2;
-        cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/onnxruntime" -Dprotobuf_BUILD_TESTS=OFF -DCMAKE_BUILD_TYPE=MinSizeRel -DCMAKE_POSITION_INDEPENDENT_CODE=ON ..
+        cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/onnxruntime" -Dprotobuf_BUILD_TESTS=OFF -DCMAKE_BUILD_TYPE=MinSizeRel -DCMAKE_POSITION_INDEPENDENT_CODE=ON -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_CXX_STANDARD=20 -Dprotobuf_BUILD_SHARED_LIBS=OFF -Dprotobuf_WITH_ZLIB=OFF ..
         cmake --build . -j 3
         cmake --build . -j 3 --target install/strip
         cd ../../
         wget -q https://github.com/microsoft/onnxruntime/archive/v${{ env.ONNXRUNTIME_VERSION }}.zip -O onnxruntime-${{ env.ONNXRUNTIME_VERSION }}.zip
         ditto -V -x -k --sequesterRsrc --rsrc onnxruntime-${{ env.ONNXRUNTIME_VERSION }}.zip ./
         cd onnxruntime-${{ env.ONNXRUNTIME_VERSION }}
-        patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-less-mlas-features.patch
-        patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-monolithic-static-library.patch
-        patch -p1 -i $GITHUB_WORKSPACE/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-use-clog.patch
+        patch --batch --fuzz=0 -p1 -i $GITHUB_WORKSPACE/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-less-mlas-features.patch
+        patch --batch --fuzz=0 -p1 -i $GITHUB_WORKSPACE/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-monolithic-static-library.patch
+        patch --batch --fuzz=0 -p1 -i $GITHUB_WORKSPACE/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-use-clog.patch
         mkdir -p build2; cd build2;
-        cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/onnxruntime" -DCMAKE_BUILD_TYPE=MinSizeRel -Donnxruntime_USE_FULL_PROTOBUF=ON -Donnxruntime_BUILD_SHARED_LIB=ON -Donnxruntime_BUILD_UNIT_TESTS=OFF -Donnxruntime_ENABLE_CPUINFO=OFF -Donnxruntime_DISABLE_CONTRIB_OPS=ON -Donnxruntime_DISABLE_SPARSE_TENSORS=ON --compile-no-warning-as-error -DCMAKE_POSITION_INDEPENDENT_CODE=ON ../cmake
+        cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/onnxruntime" -DCMAKE_BUILD_TYPE=MinSizeRel -Donnxruntime_USE_FULL_PROTOBUF=ON -Donnxruntime_BUILD_SHARED_LIB=ON -Donnxruntime_BUILD_UNIT_TESTS=OFF -Donnxruntime_ENABLE_CPUINFO=OFF -Donnxruntime_DISABLE_CONTRIB_OPS=ON -Donnxruntime_DISABLE_SPARSE_TENSORS=ON --compile-no-warning-as-error -DCMAKE_POSITION_INDEPENDENT_CODE=ON -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_PREFIX_PATH="$GITHUB_WORKSPACE/onnxruntime" -DCMAKE_FIND_PACKAGE_PREFER_CONFIG=ON -DONNX_CUSTOM_PROTOC_EXECUTABLE="$GITHUB_WORKSPACE/onnxruntime/bin/protoc" ../cmake
         cmake --build . -j 3
         cmake --build . -j 3 --target install/strip
 
@@ -519,7 +527,7 @@ jobs:
       uses: actions/cache@v6.1.0
       with:
         path: "libtorch"
-        key: libtorch-${{ env.LIBTORCH_VERSION }}-vs2019-${{ env.CACHE_DATE }}
+        key: libtorch-${{ env.LIBTORCH_VERSION }}-vs2019-${{ env.CACHE_DATE }}-${{ hashFiles('pnnx-patches/*.patch', '*.patch') }}
     - name: libtorch
       if: steps.cache-libtorch.outputs.cache-hit != 'true'
       run: |
@@ -528,13 +536,22 @@ jobs:
         7z x pytorch-v${{ env.LIBTORCH_VERSION }}.tar
         cd pytorch-v${{ env.LIBTORCH_VERSION }}
         pip3 install -r requirements.txt
-        & "C:\Program Files\Git\usr\bin\patch.exe" -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\pytorch-v${{ env.LIBTORCH_VERSION }}-fix-mobile-build.patch
-        & "C:\Program Files\Git\usr\bin\patch.exe" -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\pytorch-v${{ env.LIBTORCH_VERSION }}-no-link-system-lib.patch
-        & "C:\Program Files\Git\usr\bin\patch.exe" -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\pytorch-v${{ env.LIBTORCH_VERSION }}-set-python-executable.patch
-        & "C:\Program Files\Git\usr\bin\patch.exe" -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\pytorch-v${{ env.LIBTORCH_VERSION }}-fix-eigen-build.patch
-        & "C:\Program Files\Git\usr\bin\patch.exe" -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\pytorch-v${{ env.LIBTORCH_VERSION }}-fix-link-local-sleef.patch
-        & "C:\Program Files\Git\usr\bin\patch.exe" -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\pytorch-v${{ env.LIBTORCH_VERSION }}-revert-nativert-api.patch
-        & "C:\Program Files\Git\usr\bin\patch.exe" -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\pytorch-v${{ env.LIBTORCH_VERSION }}-no-mimalloc.patch
+        & "C:\Program Files\Git\usr\bin\patch.exe" --batch --fuzz=0 -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\pytorch-v${{ env.LIBTORCH_VERSION }}-fix-mobile-build.patch
+        if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+        & "C:\Program Files\Git\usr\bin\patch.exe" --batch --fuzz=0 -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\pytorch-v${{ env.LIBTORCH_VERSION }}-fix-stable-abi.patch
+        if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+        & "C:\Program Files\Git\usr\bin\patch.exe" --batch --fuzz=0 -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\pytorch-v${{ env.LIBTORCH_VERSION }}-no-link-system-lib.patch
+        if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+        & "C:\Program Files\Git\usr\bin\patch.exe" --batch --fuzz=0 -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\pytorch-v${{ env.LIBTORCH_VERSION }}-set-python-executable.patch
+        if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+        & "C:\Program Files\Git\usr\bin\patch.exe" --batch --fuzz=0 -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\pytorch-v${{ env.LIBTORCH_VERSION }}-fix-eigen-build.patch
+        if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+        & "C:\Program Files\Git\usr\bin\patch.exe" --batch --fuzz=0 -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\pytorch-v${{ env.LIBTORCH_VERSION }}-fix-link-local-sleef.patch
+        if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+        & "C:\Program Files\Git\usr\bin\patch.exe" --batch --fuzz=0 -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\pytorch-v${{ env.LIBTORCH_VERSION }}-revert-nativert-api.patch
+        if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+        & "C:\Program Files\Git\usr\bin\patch.exe" --batch --fuzz=0 -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\pytorch-v${{ env.LIBTORCH_VERSION }}-no-mimalloc.patch
+        if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
         mkdir -p build; cd build
         cmake -DCMAKE_INSTALL_PREFIX="$env:GITHUB_WORKSPACE/libtorch" -DCMAKE_BUILD_TYPE=MinSizeRel -DBUILD_SHARED_LIBS=OFF -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded `
             "-DCMAKE_POLICY_VERSION_MINIMUM=3.5" `
@@ -566,16 +583,19 @@ jobs:
       uses: actions/cache@v6.1.0
       with:
         path: "torchvision"
-        key: torchvision-${{ env.TORCHVISION_VERSION }}-vs2019-${{ env.CACHE_DATE }}
+        key: torchvision-${{ env.TORCHVISION_VERSION }}-vs2019-torch-${{ env.LIBTORCH_VERSION }}-${{ env.CACHE_DATE }}-${{ hashFiles('pnnx-patches/*.patch', '*.patch') }}
     - name: torchvision
       if: steps.cache-torchvision.outputs.cache-hit != 'true'
       run: |
         Invoke-WebRequest -Uri https://github.com/pytorch/vision/archive/refs/tags/v${{ env.TORCHVISION_VERSION }}.zip -OutFile vision-${{ env.TORCHVISION_VERSION }}.zip
         7z x vision-${{ env.TORCHVISION_VERSION }}.zip
         cd vision-${{ env.TORCHVISION_VERSION }}
-        & "C:\Program Files\Git\usr\bin\patch.exe" -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\vision-${{ env.TORCHVISION_VERSION }}-ops-only.patch
-        & "C:\Program Files\Git\usr\bin\patch.exe" -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\vision-${{ env.TORCHVISION_VERSION }}-no-cuda-version.patch
-        & "C:\Program Files\Git\usr\bin\patch.exe" -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\vision-${{ env.TORCHVISION_VERSION }}-no-dll-export.patch
+        & "C:\Program Files\Git\usr\bin\patch.exe" --batch --fuzz=0 -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\vision-${{ env.TORCHVISION_VERSION }}-ops-only.patch
+        if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+        & "C:\Program Files\Git\usr\bin\patch.exe" --batch --fuzz=0 -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\vision-${{ env.TORCHVISION_VERSION }}-no-cuda-version.patch
+        if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+        & "C:\Program Files\Git\usr\bin\patch.exe" --batch --fuzz=0 -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\vision-${{ env.TORCHVISION_VERSION }}-no-dll-export.patch
+        if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
         mkdir -p build; cd build
         cmake -DCMAKE_INSTALL_PREFIX="$env:GITHUB_WORKSPACE/torchvision" -DTorch_DIR="$env:GITHUB_WORKSPACE/libtorch/share/cmake/Torch" -DCMAKE_BUILD_TYPE=MinSizeRel -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded -DWITH_PNG=OFF -DWITH_JPEG=OFF ..
         cmake --build . --config MinSizeRel -j 4
@@ -586,26 +606,31 @@ jobs:
       uses: actions/cache@v6.1.0
       with:
         path: "onnxruntime"
-        key: onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-vs2019-${{ env.CACHE_DATE }}
+        key: onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-vs2019-protobuf-${{ env.PROTOBUF_VERSION }}-${{ env.CACHE_DATE }}-${{ hashFiles('pnnx-patches/*.patch', '*.patch') }}
     - name: onnxruntime
       if: steps.cache-onnxruntime.outputs.cache-hit != 'true'
       run: |
         Invoke-WebRequest -Uri https://github.com/protocolbuffers/protobuf/archive/v${{ env.PROTOBUF_VERSION }}.zip -OutFile protobuf-${{ env.PROTOBUF_VERSION }}.zip
         7z x ./protobuf-${{ env.PROTOBUF_VERSION }}.zip
         cd protobuf-${{ env.PROTOBUF_VERSION }}
+        & "C:\Program Files\Git\usr\bin\patch.exe" --batch --fuzz=0 -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\protobuf-${{ env.PROTOBUF_VERSION }}-align-abseil.patch
+        if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
         mkdir -p build2; cd build2;
-        cmake -DCMAKE_INSTALL_PREFIX="$env:GITHUB_WORKSPACE/onnxruntime" -DCMAKE_BUILD_TYPE=MinSizeRel -Dprotobuf_BUILD_TESTS=OFF -Dprotobuf_MSVC_STATIC_RUNTIME=ON -DABSL_MSVC_STATIC_RUNTIME=ON -DCMAKE_POSITION_INDEPENDENT_CODE=ON -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded ..
+        cmake -DCMAKE_INSTALL_PREFIX="$env:GITHUB_WORKSPACE/onnxruntime" -DCMAKE_BUILD_TYPE=MinSizeRel -Dprotobuf_BUILD_TESTS=OFF -Dprotobuf_MSVC_STATIC_RUNTIME=ON -DABSL_MSVC_STATIC_RUNTIME=ON -DCMAKE_POSITION_INDEPENDENT_CODE=ON -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_CXX_STANDARD=20 -Dprotobuf_BUILD_SHARED_LIBS=OFF -Dprotobuf_WITH_ZLIB=OFF ..
         cmake --build . --config MinSizeRel -j 4
         cmake --build . --config MinSizeRel -j 4 --target install
         cd ../../
         Invoke-WebRequest -Uri https://github.com/microsoft/onnxruntime/archive/v${{ env.ONNXRUNTIME_VERSION }}.zip -OutFile onnxruntime-${{ env.ONNXRUNTIME_VERSION }}.zip
         7z x ./onnxruntime-${{ env.ONNXRUNTIME_VERSION }}.zip
         cd onnxruntime-${{ env.ONNXRUNTIME_VERSION }}
-        & "C:\Program Files\Git\usr\bin\patch.exe" -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-less-mlas-features.patch
-        & "C:\Program Files\Git\usr\bin\patch.exe" -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-monolithic-static-library.patch
-        & "C:\Program Files\Git\usr\bin\patch.exe" -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-use-clog.patch
+        & "C:\Program Files\Git\usr\bin\patch.exe" --batch --fuzz=0 -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-less-mlas-features.patch
+        if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+        & "C:\Program Files\Git\usr\bin\patch.exe" --batch --fuzz=0 -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-monolithic-static-library.patch
+        if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+        & "C:\Program Files\Git\usr\bin\patch.exe" --batch --fuzz=0 -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-use-clog.patch
+        if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
         mkdir -p build2; cd build2;
-        cmake -DCMAKE_INSTALL_PREFIX="$env:GITHUB_WORKSPACE/onnxruntime" -DCMAKE_BUILD_TYPE=MinSizeRel -Donnxruntime_USE_FULL_PROTOBUF=ON -Donnxruntime_BUILD_SHARED_LIB=ON -Donnxruntime_BUILD_UNIT_TESTS=OFF -Donnxruntime_ENABLE_CPUINFO=OFF -Donnxruntime_DISABLE_CONTRIB_OPS=ON -Donnxruntime_DISABLE_SPARSE_TENSORS=ON --compile-no-warning-as-error -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded -DONNX_USE_MSVC_STATIC_RUNTIME=ON -Dprotobuf_MSVC_STATIC_RUNTIME=ON -DABSL_MSVC_STATIC_RUNTIME=ON -DCMAKE_POSITION_INDEPENDENT_CODE=ON ../cmake
+        cmake -DCMAKE_INSTALL_PREFIX="$env:GITHUB_WORKSPACE/onnxruntime" -DCMAKE_BUILD_TYPE=MinSizeRel -Donnxruntime_USE_FULL_PROTOBUF=ON -Donnxruntime_BUILD_SHARED_LIB=ON -Donnxruntime_BUILD_UNIT_TESTS=OFF -Donnxruntime_ENABLE_CPUINFO=OFF -Donnxruntime_DISABLE_CONTRIB_OPS=ON -Donnxruntime_DISABLE_SPARSE_TENSORS=ON --compile-no-warning-as-error -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded -DONNX_USE_MSVC_STATIC_RUNTIME=ON -Dprotobuf_MSVC_STATIC_RUNTIME=ON -DABSL_MSVC_STATIC_RUNTIME=ON -DCMAKE_POSITION_INDEPENDENT_CODE=ON -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_PREFIX_PATH="$env:GITHUB_WORKSPACE/onnxruntime" -DCMAKE_FIND_PACKAGE_PREFER_CONFIG=ON -DONNX_CUSTOM_PROTOC_EXECUTABLE="$env:GITHUB_WORKSPACE/onnxruntime/bin/protoc.exe" ../cmake
         cmake --build . --config MinSizeRel -j 4
         cmake --build . --config MinSizeRel -j 4 --target install
 
@@ -628,19 +653,19 @@ jobs:
       uses: actions/cache@v6.1.0
       with:
         path: "/tmp/libtorch"
-        key: libtorch-${{ env.LIBTORCH_VERSION }}-linux-${{ env.CACHE_DATE }}
+        key: libtorch-${{ env.LIBTORCH_VERSION }}-linux-${{ env.CACHE_DATE }}-${{ hashFiles('pnnx-patches/*.patch', '*.patch') }}
     - name: cache-torchvision
       id: cache-torchvision
       uses: actions/cache@v6.1.0
       with:
         path: "/tmp/torchvision"
-        key: torchvision-${{ env.TORCHVISION_VERSION }}-linux-${{ env.CACHE_DATE }}
+        key: torchvision-${{ env.TORCHVISION_VERSION }}-linux-torch-${{ env.LIBTORCH_VERSION }}-${{ env.CACHE_DATE }}-${{ hashFiles('pnnx-patches/*.patch', '*.patch') }}
     - name: cache-onnxruntime
       id: cache-onnxruntime
       uses: actions/cache@v6.1.0
       with:
         path: "/tmp/onnxruntime"
-        key: onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-linux-${{ env.CACHE_DATE }}
+        key: onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-linux-protobuf-${{ env.PROTOBUF_VERSION }}-${{ env.CACHE_DATE }}-${{ hashFiles('pnnx-patches/*.patch', '*.patch') }}
     - name: ncnn
       uses: actions/checkout@v7
       with:
@@ -661,9 +686,8 @@ jobs:
             -DTorch_INSTALL_DIR="/host/tmp/libtorch"
             -DTorchVision_INSTALL_DIR="/host/tmp/torchvision"
             -Donnxruntime_INSTALL_DIR="/host/tmp/onnxruntime"
-            -DProtobuf_INCLUDE_DIR="/host/tmp/onnxruntime/include"
-            -DProtobuf_LIBRARIES="/host/tmp/onnxruntime/lib64/libprotobuf.a"
-            -DProtobuf_PROTOC_EXECUTABLE="/host/tmp/onnxruntime/bin/protoc"
+            -DCMAKE_PREFIX_PATH="/host/tmp/onnxruntime"
+            -Dprotobuf_DIR="/host/tmp/onnxruntime/lib/cmake/protobuf"
             .. &&
           cmake --build . -j $(nproc) &&
           cmake --build . --target install/strip
@@ -702,19 +726,19 @@ jobs:
       uses: actions/cache@v6.1.0
       with:
         path: "/tmp/libtorch"
-        key: libtorch-${{ env.LIBTORCH_VERSION }}-linux-aarch64-${{ env.CACHE_DATE }}
+        key: libtorch-${{ env.LIBTORCH_VERSION }}-linux-aarch64-${{ env.CACHE_DATE }}-${{ hashFiles('pnnx-patches/*.patch', '*.patch') }}
     - name: cache-torchvision
       id: cache-torchvision
       uses: actions/cache@v6.1.0
       with:
         path: "/tmp/torchvision"
-        key: torchvision-${{ env.TORCHVISION_VERSION }}-linux-aarch64-${{ env.CACHE_DATE }}
+        key: torchvision-${{ env.TORCHVISION_VERSION }}-linux-aarch64-torch-${{ env.LIBTORCH_VERSION }}-${{ env.CACHE_DATE }}-${{ hashFiles('pnnx-patches/*.patch', '*.patch') }}
     - name: cache-onnxruntime
       id: cache-onnxruntime
       uses: actions/cache@v6.1.0
       with:
         path: "/tmp/onnxruntime"
-        key: onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-linux-aarch64-${{ env.CACHE_DATE }}
+        key: onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-linux-aarch64-protobuf-${{ env.PROTOBUF_VERSION }}-${{ env.CACHE_DATE }}-${{ hashFiles('pnnx-patches/*.patch', '*.patch') }}
     - name: ncnn
       uses: actions/checkout@v7
       with:
@@ -735,9 +759,8 @@ jobs:
             -DTorch_INSTALL_DIR="/host/tmp/libtorch"
             -DTorchVision_INSTALL_DIR="/host/tmp/torchvision"
             -Donnxruntime_INSTALL_DIR="/host/tmp/onnxruntime"
-            -DProtobuf_INCLUDE_DIR="/host/tmp/onnxruntime/include"
-            -DProtobuf_LIBRARIES="/host/tmp/onnxruntime/lib64/libprotobuf.a"
-            -DProtobuf_PROTOC_EXECUTABLE="/host/tmp/onnxruntime/bin/protoc"
+            -DCMAKE_PREFIX_PATH="/host/tmp/onnxruntime"
+            -Dprotobuf_DIR="/host/tmp/onnxruntime/lib/cmake/protobuf"
             .. &&
           cmake --build . -j $(nproc) &&
           cmake --build . --target install/strip
@@ -773,19 +796,19 @@ jobs:
       uses: actions/cache@v6.1.0
       with:
         path: "libtorch"
-        key: libtorch-${{ env.LIBTORCH_VERSION }}-macos-x64-${{ env.CACHE_DATE }}
+        key: libtorch-${{ env.LIBTORCH_VERSION }}-macos-x64-${{ env.CACHE_DATE }}-${{ hashFiles('pnnx-patches/*.patch', '*.patch') }}
     - name: cache-torchvision
       id: cache-torchvision
       uses: actions/cache@v6.1.0
       with:
         path: "torchvision"
-        key: torchvision-${{ env.TORCHVISION_VERSION }}-macos-x64-${{ env.CACHE_DATE }}
+        key: torchvision-${{ env.TORCHVISION_VERSION }}-macos-x64-torch-${{ env.LIBTORCH_VERSION }}-${{ env.CACHE_DATE }}-${{ hashFiles('pnnx-patches/*.patch', '*.patch') }}
     - name: cache-onnxruntime
       id: cache-onnxruntime
       uses: actions/cache@v6.1.0
       with:
         path: "onnxruntime"
-        key: onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-macos-x64-${{ env.CACHE_DATE }}
+        key: onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-macos-x64-protobuf-${{ env.PROTOBUF_VERSION }}-${{ env.CACHE_DATE }}-${{ hashFiles('pnnx-patches/*.patch', '*.patch') }}
     - name: ncnn
       uses: actions/checkout@v7
       with:
@@ -799,9 +822,8 @@ jobs:
             -DTorch_INSTALL_DIR="$GITHUB_WORKSPACE/libtorch" \
             -DTorchVision_INSTALL_DIR="$GITHUB_WORKSPACE/torchvision" \
             -Donnxruntime_INSTALL_DIR="$GITHUB_WORKSPACE/onnxruntime" \
-            -DProtobuf_INCLUDE_DIR="$GITHUB_WORKSPACE/onnxruntime/include" \
-            -DProtobuf_LIBRARIES="$GITHUB_WORKSPACE/onnxruntime/lib/libprotobuf.a" \
-            -DProtobuf_PROTOC_EXECUTABLE="$GITHUB_WORKSPACE/onnxruntime/bin/protoc" \
+            -DCMAKE_PREFIX_PATH="$GITHUB_WORKSPACE/onnxruntime" \
+            -Dprotobuf_DIR="$GITHUB_WORKSPACE/onnxruntime/lib/cmake/protobuf" \
             ..
         cmake --build . -j 4
         cmake --build . --target install/strip
@@ -833,19 +855,19 @@ jobs:
       uses: actions/cache@v6.1.0
       with:
         path: "libtorch"
-        key: libtorch-${{ env.LIBTORCH_VERSION }}-macos-arm64-${{ env.CACHE_DATE }}
+        key: libtorch-${{ env.LIBTORCH_VERSION }}-macos-arm64-${{ env.CACHE_DATE }}-${{ hashFiles('pnnx-patches/*.patch', '*.patch') }}
     - name: cache-torchvision
       id: cache-torchvision
       uses: actions/cache@v6.1.0
       with:
         path: "torchvision"
-        key: torchvision-${{ env.TORCHVISION_VERSION }}-macos-arm64-${{ env.CACHE_DATE }}
+        key: torchvision-${{ env.TORCHVISION_VERSION }}-macos-arm64-torch-${{ env.LIBTORCH_VERSION }}-${{ env.CACHE_DATE }}-${{ hashFiles('pnnx-patches/*.patch', '*.patch') }}
     - name: cache-onnxruntime
       id: cache-onnxruntime
       uses: actions/cache@v6.1.0
       with:
         path: "onnxruntime"
-        key: onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-macos-arm64-${{ env.CACHE_DATE }}
+        key: onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-macos-arm64-protobuf-${{ env.PROTOBUF_VERSION }}-${{ env.CACHE_DATE }}-${{ hashFiles('pnnx-patches/*.patch', '*.patch') }}
     - name: ncnn
       uses: actions/checkout@v7
       with:
@@ -859,9 +881,8 @@ jobs:
             -DTorch_INSTALL_DIR="$GITHUB_WORKSPACE/libtorch" \
             -DTorchVision_INSTALL_DIR="$GITHUB_WORKSPACE/torchvision" \
             -Donnxruntime_INSTALL_DIR="$GITHUB_WORKSPACE/onnxruntime" \
-            -DProtobuf_INCLUDE_DIR="$GITHUB_WORKSPACE/onnxruntime/include" \
-            -DProtobuf_LIBRARIES="$GITHUB_WORKSPACE/onnxruntime/lib/libprotobuf.a" \
-            -DProtobuf_PROTOC_EXECUTABLE="$GITHUB_WORKSPACE/onnxruntime/bin/protoc" \
+            -DCMAKE_PREFIX_PATH="$GITHUB_WORKSPACE/onnxruntime" \
+            -Dprotobuf_DIR="$GITHUB_WORKSPACE/onnxruntime/lib/cmake/protobuf" \
             ..
         cmake --build . -j 3
         cmake --build . --target install/strip
@@ -932,19 +953,19 @@ jobs:
       uses: actions/cache@v6.1.0
       with:
         path: "libtorch"
-        key: libtorch-${{ env.LIBTORCH_VERSION }}-vs2019-${{ env.CACHE_DATE }}
+        key: libtorch-${{ env.LIBTORCH_VERSION }}-vs2019-${{ env.CACHE_DATE }}-${{ hashFiles('pnnx-patches/*.patch', '*.patch') }}
     - name: cache-torchvision
       id: cache-torchvision
       uses: actions/cache@v6.1.0
       with:
         path: "torchvision"
-        key: torchvision-${{ env.TORCHVISION_VERSION }}-vs2019-${{ env.CACHE_DATE }}
+        key: torchvision-${{ env.TORCHVISION_VERSION }}-vs2019-torch-${{ env.LIBTORCH_VERSION }}-${{ env.CACHE_DATE }}-${{ hashFiles('pnnx-patches/*.patch', '*.patch') }}
     - name: cache-onnxruntime
       id: cache-onnxruntime
       uses: actions/cache@v6.1.0
       with:
         path: "onnxruntime"
-        key: onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-vs2019-${{ env.CACHE_DATE }}
+        key: onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-vs2019-protobuf-${{ env.PROTOBUF_VERSION }}-${{ env.CACHE_DATE }}-${{ hashFiles('pnnx-patches/*.patch', '*.patch') }}
     - name: ncnn
       uses: actions/checkout@v7
       with:
@@ -958,9 +979,8 @@ jobs:
             -DTorch_INSTALL_DIR="$env:GITHUB_WORKSPACE/libtorch" `
             -DTorchVision_INSTALL_DIR="$env:GITHUB_WORKSPACE/torchvision" `
             -Donnxruntime_INSTALL_DIR="$env:GITHUB_WORKSPACE/onnxruntime" `
-            -DProtobuf_INCLUDE_DIR="$env:GITHUB_WORKSPACE/onnxruntime/include" `
-            -DProtobuf_LIBRARIES="$env:GITHUB_WORKSPACE/onnxruntime/lib/libprotobuf.lib" `
-            -DProtobuf_PROTOC_EXECUTABLE="$env:GITHUB_WORKSPACE/onnxruntime/bin/protoc.exe" `
+            -DCMAKE_PREFIX_PATH="$env:GITHUB_WORKSPACE/onnxruntime" `
+            -Dprotobuf_DIR="$env:GITHUB_WORKSPACE/onnxruntime/lib/cmake/protobuf" `
             ..
         cmake --build . --config MinSizeRel -j 4
         cmake --build . --config MinSizeRel --target install

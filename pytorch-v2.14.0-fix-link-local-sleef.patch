@@ -1,12 +1,15 @@
-diff -Nuarp pytorch-v2.12.1.orig/test/cpp/aoti_abi_check/CMakeLists.txt pytorch-v2.12.1/test/cpp/aoti_abi_check/CMakeLists.txt
---- pytorch-v2.12.1.orig/test/cpp/aoti_abi_check/CMakeLists.txt	2026-07-03 15:12:01.852265954 +0800
-+++ pytorch-v2.12.1/test/cpp/aoti_abi_check/CMakeLists.txt	2026-07-03 15:12:30.212000000 +0800
-@@ -44,11 +44,8 @@ target_compile_definitions(test_aoti_abi
+diff -Nuarp pytorch-v2.14.0.orig/test/cpp/aoti_abi_check/CMakeLists.txt pytorch-v2.14.0/test/cpp/aoti_abi_check/CMakeLists.txt
+--- pytorch-v2.14.0.orig/test/cpp/aoti_abi_check/CMakeLists.txt	2026-09-17 11:04:29.115611886 +0800
++++ pytorch-v2.14.0/test/cpp/aoti_abi_check/CMakeLists.txt	2026-09-17 11:04:29.115693950 +0800
+@@ -50,14 +50,11 @@ target_compile_definitions(test_aoti_abi
  
  # WARNING: DO NOT LINK torch!!!
  # The purpose is to check if the used aten/c10 headers are written in a header-only way
 -target_link_libraries(test_aoti_abi_check PRIVATE gtest_main sleef)
 +target_link_libraries(test_aoti_abi_check PRIVATE gtest_main)
+ if(USE_CUDA)
+   target_link_libraries(test_aoti_abi_check PRIVATE torch::cudart)
+ endif()
  target_include_directories(test_aoti_abi_check PRIVATE ${ATen_CPU_INCLUDE})
 -if(NOT USE_SYSTEM_SLEEF)
 -  target_include_directories(test_aoti_abi_check PRIVATE ${CMAKE_BINARY_DIR}/include)
@@ -14,7 +17,7 @@ diff -Nuarp pytorch-v2.12.1.orig/test/cpp/aoti_abi_check/CMakeLists.txt pytorch-
  
  # Disable unused-variable warnings for variables that are only used to test compilation
  target_compile_options_if_supported(test_aoti_abi_check -Wno-unused-variable)
-@@ -66,11 +63,8 @@ foreach(test_src ${AOTI_ABI_CHECK_VEC_TE
+@@ -75,11 +72,8 @@ foreach(test_src ${AOTI_ABI_CHECK_VEC_TE
      separate_arguments(FLAGS UNIX_COMMAND "${FLAGS}")
      add_executable(${test_name}_${CPU_CAPABILITY} "${test_src}")
  

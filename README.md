@@ -57,9 +57,7 @@ flowchart TD
     onnxzeromodel["onnx-zero model<br>resnet18.pnnx.onnx"]
 
     subgraph pnnx
-        optmodel
-        ncnnmodel
-        onnxzeromodel
+        optmodel ~~~ ncnnmodel ~~~ onnxzeromodel
     end
 
     torchmodel -->|"mod = torch.jit.trace(model, x)<br>mod.save('resnet18.pt')"| torchscript
