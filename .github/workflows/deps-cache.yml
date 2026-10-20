@@ -604,7 +604,7 @@ jobs:
       uses: actions/cache@v6.1.0
       with:
         path: "onnxruntime"
-        key: onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-vs2019-protobuf-${{ env.PROTOBUF_VERSION }}-${{ env.CACHE_DATE }}-${{ hashFiles('pnnx-patches/*.patch', '*.patch') }}
+        key: onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-vs2019-static-v1-protobuf-${{ env.PROTOBUF_VERSION }}-${{ env.CACHE_DATE }}-${{ hashFiles('pnnx-patches/*.patch', '*.patch') }}
     - name: onnxruntime
       if: steps.cache-onnxruntime.outputs.cache-hit != 'true'
       run: |
@@ -628,6 +628,6 @@ jobs:
         & "C:\Program Files\Git\usr\bin\patch.exe" --batch --fuzz=0 -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-use-clog.patch
         if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
         mkdir -p build2; cd build2;
-        cmake -DCMAKE_INSTALL_PREFIX="$env:GITHUB_WORKSPACE/onnxruntime" -DCMAKE_BUILD_TYPE=MinSizeRel -Donnxruntime_USE_FULL_PROTOBUF=ON -Donnxruntime_BUILD_SHARED_LIB=ON -Donnxruntime_BUILD_UNIT_TESTS=OFF -Donnxruntime_ENABLE_CPUINFO=OFF -Donnxruntime_DISABLE_CONTRIB_OPS=ON -Donnxruntime_DISABLE_SPARSE_TENSORS=ON --compile-no-warning-as-error -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded -DONNX_USE_MSVC_STATIC_RUNTIME=ON -Dprotobuf_MSVC_STATIC_RUNTIME=ON -DABSL_MSVC_STATIC_RUNTIME=ON -DCMAKE_POSITION_INDEPENDENT_CODE=ON -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_PREFIX_PATH="$env:GITHUB_WORKSPACE/onnxruntime" -DCMAKE_FIND_PACKAGE_PREFER_CONFIG=ON -DONNX_CUSTOM_PROTOC_EXECUTABLE="$env:GITHUB_WORKSPACE/onnxruntime/bin/protoc.exe" ../cmake
+        cmake -DCMAKE_INSTALL_PREFIX="$env:GITHUB_WORKSPACE/onnxruntime" -DCMAKE_BUILD_TYPE=MinSizeRel -Donnxruntime_USE_FULL_PROTOBUF=ON -Donnxruntime_BUILD_SHARED_LIB=OFF -Donnxruntime_BUILD_UNIT_TESTS=OFF -Donnxruntime_ENABLE_CPUINFO=OFF -Donnxruntime_DISABLE_CONTRIB_OPS=ON -Donnxruntime_DISABLE_SPARSE_TENSORS=ON --compile-no-warning-as-error -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded -DONNX_USE_MSVC_STATIC_RUNTIME=ON -Dprotobuf_MSVC_STATIC_RUNTIME=ON -DABSL_MSVC_STATIC_RUNTIME=ON -DCMAKE_POSITION_INDEPENDENT_CODE=ON -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_PREFIX_PATH="$env:GITHUB_WORKSPACE/onnxruntime" -DCMAKE_FIND_PACKAGE_PREFER_CONFIG=ON -DONNX_CUSTOM_PROTOC_EXECUTABLE="$env:GITHUB_WORKSPACE/onnxruntime/bin/protoc.exe" ../cmake
         cmake --build . --config MinSizeRel -j 4
         cmake --build . --config MinSizeRel -j 4 --target install
