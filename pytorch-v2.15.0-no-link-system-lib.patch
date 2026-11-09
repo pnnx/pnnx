@@ -1,6 +1,6 @@
-diff -Nuarp pytorch-v2.14.0.orig/cmake/TorchConfig.cmake.in pytorch-v2.14.0/cmake/TorchConfig.cmake.in
---- pytorch-v2.14.0.orig/cmake/TorchConfig.cmake.in	2026-09-17 11:04:29.110688091 +0800
-+++ pytorch-v2.14.0/cmake/TorchConfig.cmake.in	2026-09-17 11:04:29.110724429 +0800
+diff -Nuarp pytorch-v2.15.0.orig/cmake/TorchConfig.cmake.in pytorch-v2.15.0/cmake/TorchConfig.cmake.in
+--- pytorch-v2.15.0.orig/cmake/TorchConfig.cmake.in
++++ pytorch-v2.15.0/cmake/TorchConfig.cmake.in
 @@ -15,7 +15,7 @@
  #   torch
  macro(append_torchlib_if_found)
@@ -10,7 +10,7 @@ diff -Nuarp pytorch-v2.14.0.orig/cmake/TorchConfig.cmake.in pytorch-v2.14.0/cmak
      if(${_arg}_LIBRARY)
        list(APPEND TORCH_LIBRARIES ${${_arg}_LIBRARY})
      else()
-@@ -26,7 +26,7 @@ endmacro()
+@@ -26,7 +26,7 @@
  
  macro(append_wholearchive_lib_if_found)
    foreach (_arg ${ARGN})
@@ -19,7 +19,7 @@ diff -Nuarp pytorch-v2.14.0.orig/cmake/TorchConfig.cmake.in pytorch-v2.14.0/cmak
      if(${_arg}_LIBRARY)
        if(APPLE)
          list(APPEND TORCH_LIBRARIES "-Wl,-force_load,${${_arg}_LIBRARY}")
-@@ -121,7 +121,7 @@ endif()
+@@ -121,7 +121,7 @@
  
  if(@USE_CUDA@)
    if(MSVC)
@@ -28,7 +28,7 @@ diff -Nuarp pytorch-v2.14.0.orig/cmake/TorchConfig.cmake.in pytorch-v2.14.0/cmak
      list(APPEND TORCH_CUDA_LIBRARIES ${CAFFE2_NVRTC_LIBRARY})
    else()
      set(TORCH_CUDA_LIBRARIES ${CUDA_NVRTC_LIB})
-@@ -131,7 +131,7 @@ if(@USE_CUDA@)
+@@ -131,7 +131,7 @@
    endif()
  
    if(@BUILD_SHARED_LIBS@)
@@ -37,7 +37,7 @@ diff -Nuarp pytorch-v2.14.0.orig/cmake/TorchConfig.cmake.in pytorch-v2.14.0/cmak
      list(APPEND TORCH_CUDA_LIBRARIES ${C10_CUDA_LIBRARY} ${Caffe2_PUBLIC_CUDA_DEPENDENCY_LIBS})
    endif()
    list(APPEND TORCH_LIBRARIES ${TORCH_CUDA_LIBRARIES})
-@@ -141,7 +141,7 @@ if(@USE_XPU@ AND @BUILD_SHARED_LIBS@)
+@@ -141,7 +141,7 @@
      append_torchlib_if_found(c10_xpu torch_xpu)
  endif()
  

@@ -1,6 +1,6 @@
-diff -Nuarp pytorch-v2.14.0.orig/cmake/Modules/FindARM.cmake pytorch-v2.14.0/cmake/Modules/FindARM.cmake
---- pytorch-v2.14.0.orig/cmake/Modules/FindARM.cmake	2026-09-17 11:04:29.120820025 +0800
-+++ pytorch-v2.14.0/cmake/Modules/FindARM.cmake	2026-09-17 11:04:29.120872152 +0800
+diff -Nuarp pytorch-v2.15.0.orig/cmake/Modules/FindARM.cmake pytorch-v2.15.0/cmake/Modules/FindARM.cmake
+--- pytorch-v2.15.0.orig/cmake/Modules/FindARM.cmake
++++ pytorch-v2.15.0/cmake/Modules/FindARM.cmake
 @@ -1,39 +1,6 @@
 -# Check ARM feature availability for SVE compile-time support.
 -IF(CMAKE_SYSTEM_NAME MATCHES "Linux")

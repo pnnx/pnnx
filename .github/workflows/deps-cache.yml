@@ -16,10 +16,10 @@ on:
     - cron: '0 12 * * *'
 
 env:
-  LIBTORCH_VERSION: 2.14.0
-  TORCHVISION_VERSION: 0.29.0
+  LIBTORCH_VERSION: 2.15.0
+  TORCHVISION_VERSION: 0.29.2
   PROTOBUF_VERSION: 33.6
-  ONNXRUNTIME_VERSION: 1.30.0
+  ONNXRUNTIME_VERSION: 1.31.1
   CACHE_DATE: 20260917
 
 jobs:
@@ -44,14 +44,14 @@ jobs:
       uses: pypa/cibuildwheel@v4.3.5
       env:
         CIBW_ARCHS_LINUX: "x86_64"
-        CIBW_BUILD: 'cp310-manylinux_x86_64'
+        CIBW_BUILD: 'cp311-manylinux_x86_64'
         CIBW_BUILD_VERBOSITY: 1
         CIBW_REPAIR_WHEEL_COMMAND: ""
         CIBW_BEFORE_ALL: yum install wget zip cmake -y &&
           wget -q https://github.com/pytorch/pytorch/releases/download/v${{ env.LIBTORCH_VERSION }}/pytorch-v${{ env.LIBTORCH_VERSION }}.tar.gz &&
           tar -xf pytorch-v${{ env.LIBTORCH_VERSION }}.tar.gz &&
           cd pytorch-v${{ env.LIBTORCH_VERSION }} &&
-          export PATH=/opt/python/cp310-cp310/bin:$PATH &&
+          export PATH=/opt/python/cp311-cp311/bin:$PATH &&
           pip install -r requirements.txt &&
           patch --batch --fuzz=0 -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-mobile-build.patch &&
           patch --batch --fuzz=0 -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-stable-abi.patch &&
@@ -99,7 +99,7 @@ jobs:
       uses: pypa/cibuildwheel@v4.3.5
       env:
         CIBW_ARCHS_LINUX: "x86_64"
-        CIBW_BUILD: 'cp310-manylinux_x86_64'
+        CIBW_BUILD: 'cp311-manylinux_x86_64'
         CIBW_BUILD_VERBOSITY: 1
         CIBW_REPAIR_WHEEL_COMMAND: ""
         CIBW_BEFORE_ALL: yum install wget zip -y &&
@@ -129,7 +129,7 @@ jobs:
       uses: pypa/cibuildwheel@v4.3.5
       env:
         CIBW_ARCHS_LINUX: "x86_64"
-        CIBW_BUILD: 'cp310-manylinux_x86_64'
+        CIBW_BUILD: 'cp311-manylinux_x86_64'
         CIBW_BUILD_VERBOSITY: 1
         CIBW_REPAIR_WHEEL_COMMAND: ""
         CIBW_BEFORE_ALL: yum install wget zip -y &&
@@ -196,14 +196,14 @@ jobs:
       uses: pypa/cibuildwheel@v4.3.5
       env:
         CIBW_ARCHS_LINUX: "aarch64"
-        CIBW_BUILD: 'cp310-manylinux_aarch64'
+        CIBW_BUILD: 'cp311-manylinux_aarch64'
         CIBW_BUILD_VERBOSITY: 1
         CIBW_REPAIR_WHEEL_COMMAND: ""
         CIBW_BEFORE_ALL: yum install wget zip -y &&
           wget -q https://github.com/pytorch/pytorch/releases/download/v${{ env.LIBTORCH_VERSION }}/pytorch-v${{ env.LIBTORCH_VERSION }}.tar.gz &&
           tar -xf pytorch-v${{ env.LIBTORCH_VERSION }}.tar.gz &&
           cd pytorch-v${{ env.LIBTORCH_VERSION }} &&
-          export PATH=/opt/python/cp310-cp310/bin:$PATH &&
+          export PATH=/opt/python/cp311-cp311/bin:$PATH &&
           pip install -r requirements.txt &&
           patch --batch --fuzz=0 -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-mobile-build.patch &&
           patch --batch --fuzz=0 -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-stable-abi.patch &&
@@ -250,7 +250,7 @@ jobs:
       uses: pypa/cibuildwheel@v4.3.5
       env:
         CIBW_ARCHS_LINUX: "aarch64"
-        CIBW_BUILD: 'cp310-manylinux_aarch64'
+        CIBW_BUILD: 'cp311-manylinux_aarch64'
         CIBW_BUILD_VERBOSITY: 1
         CIBW_REPAIR_WHEEL_COMMAND: ""
         CIBW_BEFORE_ALL: yum install wget zip -y &&
@@ -274,7 +274,7 @@ jobs:
       uses: pypa/cibuildwheel@v4.3.5
       env:
         CIBW_ARCHS_LINUX: "aarch64"
-        CIBW_BUILD: 'cp310-manylinux_aarch64'
+        CIBW_BUILD: 'cp311-manylinux_aarch64'
         CIBW_BUILD_VERBOSITY: 1
         CIBW_REPAIR_WHEEL_COMMAND: ""
         CIBW_BEFORE_ALL: yum install wget zip -y &&
