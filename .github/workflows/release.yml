@@ -5,6 +5,7 @@ on:
     paths:
     - '.github/workflows/release.yml'
     - '.github/dependency_smoke.py'
+    - '.github/target_version_fixtures.py'
     - '*.patch'
 
 env:
@@ -30,6 +31,22 @@ jobs:
       run: |
         DATE=`date +'%Y%m%d'`
         echo "VERSION=${DATE}" >> $GITHUB_OUTPUT
+
+  target-version-fixtures:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v7
+    - uses: actions/setup-python@v7
+      with:
+        python-version: '3.11'
+    - name: generate-target-fixtures
+      run: |
+        python -m pip install torch==2.15.0 torchvision==0.29.2 --index-url https://download.pytorch.org/whl/cpu
+        python .github/target_version_fixtures.py generate --fixtures target-fixtures
+    - uses: actions/upload-artifact@v7
+      with:
+        name: target-version-fixtures
+        path: target-fixtures
 
   linux-deps:
     runs-on: ubuntu-latest
@@ -156,6 +173,7 @@ jobs:
           patch --batch --fuzz=0 -p1 -i /project/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-less-mlas-features.patch &&
           patch --batch --fuzz=0 -p1 -i /project/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-monolithic-static-library.patch &&
           patch --batch --fuzz=0 -p1 -i /project/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-use-clog.patch &&
+          patch --batch --fuzz=0 -p1 -i /project/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-fix-onnx-build.patch &&
           mkdir -p build2 && cd build2 &&
           cmake -DCMAKE_INSTALL_PREFIX="/host/tmp/onnxruntime" -DCMAKE_BUILD_TYPE=MinSizeRel -Donnxruntime_USE_FULL_PROTOBUF=ON -Donnxruntime_BUILD_SHARED_LIB=ON -Donnxruntime_BUILD_UNIT_TESTS=OFF -Donnxruntime_ENABLE_CPUINFO=OFF -Donnxruntime_DISABLE_CONTRIB_OPS=ON -Donnxruntime_DISABLE_ML_OPS=ON -Donnxruntime_DISABLE_SPARSE_TENSORS=ON --compile-no-warning-as-error -DCMAKE_POSITION_INDEPENDENT_CODE=ON -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_PREFIX_PATH="/host/tmp/onnxruntime" -DCMAKE_FIND_PACKAGE_PREFER_CONFIG=ON -DONNX_CUSTOM_PROTOC_EXECUTABLE="/host/tmp/onnxruntime/bin/protoc" ../cmake &&
           cmake --build . -j $(nproc) &&
@@ -301,6 +319,7 @@ jobs:
           patch --batch --fuzz=0 -p1 -i /project/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-less-mlas-features.patch &&
           patch --batch --fuzz=0 -p1 -i /project/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-monolithic-static-library.patch &&
           patch --batch --fuzz=0 -p1 -i /project/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-use-clog.patch &&
+          patch --batch --fuzz=0 -p1 -i /project/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-fix-onnx-build.patch &&
           mkdir -p build2 && cd build2 &&
           cmake -DCMAKE_INSTALL_PREFIX="/host/tmp/onnxruntime" -DCMAKE_BUILD_TYPE=MinSizeRel -Donnxruntime_USE_FULL_PROTOBUF=ON -Donnxruntime_BUILD_SHARED_LIB=ON -Donnxruntime_BUILD_UNIT_TESTS=OFF -Donnxruntime_ENABLE_CPUINFO=OFF -Donnxruntime_DISABLE_CONTRIB_OPS=ON -Donnxruntime_DISABLE_ML_OPS=ON -Donnxruntime_DISABLE_SPARSE_TENSORS=ON --compile-no-warning-as-error -DCMAKE_POSITION_INDEPENDENT_CODE=ON -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_PREFIX_PATH="/host/tmp/onnxruntime" -DCMAKE_FIND_PACKAGE_PREFER_CONFIG=ON -DONNX_CUSTOM_PROTOC_EXECUTABLE="/host/tmp/onnxruntime/bin/protoc" ../cmake &&
           cmake --build . -j $(nproc) &&
@@ -406,6 +425,7 @@ jobs:
         patch --batch --fuzz=0 -p1 -i $GITHUB_WORKSPACE/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-less-mlas-features.patch
         patch --batch --fuzz=0 -p1 -i $GITHUB_WORKSPACE/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-monolithic-static-library.patch
         patch --batch --fuzz=0 -p1 -i $GITHUB_WORKSPACE/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-use-clog.patch
+        patch --batch --fuzz=0 -p1 -i $GITHUB_WORKSPACE/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-fix-onnx-build.patch
         mkdir -p build2; cd build2;
         cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/onnxruntime" -DCMAKE_BUILD_TYPE=MinSizeRel -Donnxruntime_USE_FULL_PROTOBUF=ON -Donnxruntime_BUILD_SHARED_LIB=ON -Donnxruntime_BUILD_UNIT_TESTS=OFF -Donnxruntime_ENABLE_CPUINFO=OFF -Donnxruntime_DISABLE_CONTRIB_OPS=ON -Donnxruntime_DISABLE_SPARSE_TENSORS=ON --compile-no-warning-as-error -DCMAKE_POSITION_INDEPENDENT_CODE=ON -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_PREFIX_PATH="$GITHUB_WORKSPACE/onnxruntime" -DCMAKE_FIND_PACKAGE_PREFER_CONFIG=ON -DONNX_CUSTOM_PROTOC_EXECUTABLE="$GITHUB_WORKSPACE/onnxruntime/bin/protoc" ../cmake
         cmake --build . -j 4
@@ -511,6 +531,7 @@ jobs:
         patch --batch --fuzz=0 -p1 -i $GITHUB_WORKSPACE/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-less-mlas-features.patch
         patch --batch --fuzz=0 -p1 -i $GITHUB_WORKSPACE/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-monolithic-static-library.patch
         patch --batch --fuzz=0 -p1 -i $GITHUB_WORKSPACE/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-use-clog.patch
+        patch --batch --fuzz=0 -p1 -i $GITHUB_WORKSPACE/pnnx-patches/onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-fix-onnx-build.patch
         mkdir -p build2; cd build2;
         cmake -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/onnxruntime" -DCMAKE_BUILD_TYPE=MinSizeRel -Donnxruntime_USE_FULL_PROTOBUF=ON -Donnxruntime_BUILD_SHARED_LIB=ON -Donnxruntime_BUILD_UNIT_TESTS=OFF -Donnxruntime_ENABLE_CPUINFO=OFF -Donnxruntime_DISABLE_CONTRIB_OPS=ON -Donnxruntime_DISABLE_SPARSE_TENSORS=ON --compile-no-warning-as-error -DCMAKE_POSITION_INDEPENDENT_CODE=ON -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_PREFIX_PATH="$GITHUB_WORKSPACE/onnxruntime" -DCMAKE_FIND_PACKAGE_PREFER_CONFIG=ON -DONNX_CUSTOM_PROTOC_EXECUTABLE="$GITHUB_WORKSPACE/onnxruntime/bin/protoc" ../cmake
         cmake --build . -j 3
@@ -634,6 +655,8 @@ jobs:
         & "C:\Program Files\Git\usr\bin\patch.exe" --batch --fuzz=0 -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-monolithic-static-library.patch
         if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
         & "C:\Program Files\Git\usr\bin\patch.exe" --batch --fuzz=0 -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-use-clog.patch
+        if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+        & "C:\Program Files\Git\usr\bin\patch.exe" --batch --fuzz=0 -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-fix-onnx-build.patch
         if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
         mkdir -p build2; cd build2;
         cmake -DCMAKE_INSTALL_PREFIX="$env:GITHUB_WORKSPACE/onnxruntime" -DCMAKE_BUILD_TYPE=MinSizeRel -Donnxruntime_USE_FULL_PROTOBUF=ON -Donnxruntime_BUILD_SHARED_LIB=OFF -Donnxruntime_BUILD_UNIT_TESTS=OFF -Donnxruntime_ENABLE_CPUINFO=OFF -Donnxruntime_DISABLE_CONTRIB_OPS=ON -Donnxruntime_DISABLE_SPARSE_TENSORS=ON --compile-no-warning-as-error -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded -DONNX_USE_MSVC_STATIC_RUNTIME=ON -Dprotobuf_MSVC_STATIC_RUNTIME=ON -DABSL_MSVC_STATIC_RUNTIME=ON -DCMAKE_POSITION_INDEPENDENT_CODE=ON -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_PREFIX_PATH="$env:GITHUB_WORKSPACE/onnxruntime" -DCMAKE_FIND_PACKAGE_PREFER_CONFIG=ON -DONNX_CUSTOM_PROTOC_EXECUTABLE="$env:GITHUB_WORKSPACE/onnxruntime/bin/protoc.exe" ../cmake
@@ -1031,7 +1054,8 @@ jobs:
         PNNX_WHEEL_WITHOUT_BUILD: ON
       run: |
         unzip -q pnnx-${{ needs.setup.outputs.VERSION }}-linux.zip
-        pip install -U pytest numpy onnx torch==2.15.0 torchvision==0.29.2 build wheel setuptools
+        pip install -U pytest numpy onnx build wheel setuptools
+        pip install torch==2.15.0 torchvision==0.29.2 --index-url https://download.pytorch.org/whl/cpu
         cp pnnx-${{ needs.setup.outputs.VERSION }}-linux/pnnx ncnn/tools/pnnx/python/pnnx/
         cd ncnn/tools/pnnx/python
         cp "$GITHUB_WORKSPACE/pnnx-patches/.github/dependency_smoke.py" tests/test_dependency_smoke.py
@@ -1076,7 +1100,8 @@ jobs:
         PNNX_WHEEL_WITHOUT_BUILD: ON
       run: |
         unzip -q pnnx-${{ needs.setup.outputs.VERSION }}-linux-aarch64.zip
-        pip install -U pytest numpy onnx torch==2.15.0 torchvision==0.29.2 build wheel setuptools
+        pip install -U pytest numpy onnx build wheel setuptools
+        pip install torch==2.15.0 torchvision==0.29.2 --index-url https://download.pytorch.org/whl/cpu
         cp pnnx-${{ needs.setup.outputs.VERSION }}-linux-aarch64/pnnx ncnn/tools/pnnx/python/pnnx/
         cd ncnn/tools/pnnx/python
         cp "$GITHUB_WORKSPACE/pnnx-patches/.github/dependency_smoke.py" tests/test_dependency_smoke.py
@@ -1093,7 +1118,7 @@ jobs:
         path: ncnn/tools/pnnx/python/dist/*.whl
 
   macos-python:
-    needs: [setup, macos]
+    needs: [setup, macos, target-version-fixtures]
     runs-on: macos-15-intel
     steps:
     - uses: actions/setup-python@v7
@@ -1104,6 +1129,12 @@ jobs:
       uses: actions/download-artifact@v8
       with:
         name: pnnx-${{ needs.setup.outputs.VERSION }}-macos
+
+    - name: target-version-fixtures
+      uses: actions/download-artifact@v8
+      with:
+        name: target-version-fixtures
+        path: target-fixtures
 
     - name: pnnx-patches
       uses: actions/checkout@v7
@@ -1121,7 +1152,10 @@ jobs:
         PNNX_WHEEL_WITHOUT_BUILD: ON
       run: |
         unzip -q pnnx-${{ needs.setup.outputs.VERSION }}-macos.zip
-        pip install -U pytest numpy onnx torch torchvision build wheel setuptools
+        pip install -U pytest "numpy<2" onnx torch==2.2.2 torchvision==0.17.2 build wheel setuptools
+        lipo -thin x86_64 pnnx-${{ needs.setup.outputs.VERSION }}-macos/pnnx -output pnnx-intel-target-fixture
+        test "$(lipo -archs pnnx-intel-target-fixture)" = x86_64
+        python pnnx-patches/.github/target_version_fixtures.py verify --fixtures target-fixtures --binary pnnx-intel-target-fixture --work converted-target-fixture
         cp pnnx-${{ needs.setup.outputs.VERSION }}-macos/pnnx ncnn/tools/pnnx/python/pnnx/
         cd ncnn/tools/pnnx/python
         cp "$GITHUB_WORKSPACE/pnnx-patches/.github/dependency_smoke.py" tests/test_dependency_smoke.py

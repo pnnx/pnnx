@@ -1,0 +1,171 @@
+diff -Nuarp onnxruntime-1.31.1.orig/cmake/patches/onnx/onnx.patch onnxruntime-1.31.1/cmake/patches/onnx/onnx.patch
+--- onnxruntime-1.31.1.orig/cmake/patches/onnx/onnx.patch
++++ onnxruntime-1.31.1/cmake/patches/onnx/onnx.patch
+@@ -1,8 +1,7 @@
+ diff --git a/CMakeLists.txt b/CMakeLists.txt
+-index 791e24b..5f861a1 100644
+ --- a/CMakeLists.txt
+ +++ b/CMakeLists.txt
+-@@ -46,6 +46,7 @@ option(ONNX_DISABLE_EXCEPTIONS "Disable exception handling." OFF)
++@@ -46,6 +46,7 @@
+  option(ONNX_DISABLE_STATIC_REGISTRATION "Disable static registration for ONNX operator schemas." OFF)
+  option(ONNX_USE_UNITY_BUILD "Enable Unity (Jumbo) build for" OFF)
+  option(ONNX_PYODIDE_BUILD "Build ONNX for Pyodide/Emscripten (wasm32)." OFF)
+@@ -10,7 +9,7 @@
+  option(ONNX_INSTALL "Install ONNX targets, headers, and CMake config files" ON)
+  if(WIN32)
+    option(ONNX_USE_MSVC_STATIC_RUNTIME "Build with MSVC static runtime. Ignored if CMAKE_MSVC_RUNTIME_LIBRARY is defined." OFF)
+-@@ -515,7 +516,22 @@ add_dependencies(onnx_proto onnx_proto_gen)
++@@ -515,7 +516,22 @@
+  # Core library. Hand-written sources come from target_sources(onnx ...) in the
+  # subdirectories; the protobuf objects are pulled in from onnx_proto.
+  add_library(onnx $<TARGET_OBJECTS:onnx_proto>)
+@@ -35,10 +34,9 @@
+  set_target_properties(onnx PROPERTIES CXX_VISIBILITY_PRESET hidden)
+  add_onnx_global_defines(onnx)
+ diff --git a/onnx/defs/nn/old.cc b/onnx/defs/nn/old.cc
+-index 3887169..8432613 100644
+ --- a/onnx/defs/nn/old.cc
+ +++ b/onnx/defs/nn/old.cc
+-@@ -4078,7 +4078,6 @@ ONNX_OPERATOR_SET_SCHEMA(
++@@ -4078,7 +4078,6 @@
+      GroupNormalization,
+      18,
+      OpSchema()
+@@ -47,18 +45,17 @@
+          .Attr("epsilon", "The epsilon value to use to avoid division by zero.", AttributeProto::FLOAT, 1e-5f)
+          .Attr(
+ diff --git a/onnx/defs/nn/defs.cc b/onnx/defs/nn/defs.cc
+-index 0c271d5..6d64da7 100644
+ --- a/onnx/defs/nn/defs.cc
+ +++ b/onnx/defs/nn/defs.cc
+-@@ -2670,7 +2670,7 @@ ONNX_OPERATOR_SET_SCHEMA(
+-                               // positive value.
+-                               axis += input_ndim;
+-                          }
++@@ -2662,7 +2662,7 @@
++             // positive value.
++             axis += input_ndim;
++           }
+ -          if (axis < 0) {
+ +          if (axis < 0 || axis >= input_ndim) {
+-                               fail_shape_inference(
+-                                         "Unexpected axis value (",
+-                                         axis,
++             fail_shape_inference(
++                 "Unexpected axis value (",
++                 axis,
+ diff --git a/onnx/common/assertions.h b/onnx/common/assertions.h
+ --- a/onnx/common/assertions.h
+ +++ b/onnx/common/assertions.h
+@@ -78,42 +75,45 @@
+ --- a/onnx/common/assertions.cc
+ +++ b/onnx/common/assertions.cc
+ @@ -42,11 +42,11 @@
++   return std::string(msg.data());
+  }
+
+ -void throw_assert_error(std::string& msg) {
+ +void throw_assert_error(const std::string& msg) {
+-     ONNX_THROW_EX(assert_error(msg));
++   ONNX_THROW_EX(assert_error(msg));
+  }
+
+ -void throw_tensor_error(std::string& msg) {
+ +void throw_tensor_error(const std::string& msg) {
+-     ONNX_THROW_EX(tensor_error(msg));
++   ONNX_THROW_EX(tensor_error(msg));
+  }
+
+- } // namespace ONNX_NAMESPACE
+ diff --git a/onnx/common/tensor.h b/onnx/common/tensor.h
+ --- a/onnx/common/tensor.h
+ +++ b/onnx/common/tensor.h
+-@@ -51,13 +51,13 @@
+-     /// size_from_dim() cannot handle this case, while elem_num() handles it correctly
+-     int64_t elem_num() const {
++@@ -51,14 +51,14 @@
++   /// if tensor is a scalar, the sizes is empty, but the element number is actually 1.
++   /// size_from_dim() cannot handle this case, while elem_num() handles it correctly
++   int64_t elem_num() const {
+ -    return safe_dim_product(sizes_, [](const char* msg) { throw tensor_error(msg); });
+ +    return safe_dim_product(sizes_, [](const char* msg) { throw_tensor_error(msg); });
++   }
++   int64_t size_from_dim(int dim) const {
++     if (dim < 0) {
++       dim += static_cast<int>(sizes_.size());
+      }
+-     int64_t size_from_dim(int dim) const {
+-       if (dim < 0) {
+-           dim += static_cast<int>(sizes_.size());
+-       }
+-       ONNX_ASSERT(dim >= 0 && (size_t)dim < sizes_.size())
++     ONNX_ASSERT(dim >= 0 && (size_t)dim < sizes_.size())
+ -    return safe_dim_product(sizes_.begin() + dim, sizes_.end(), [](const char* msg) { throw tensor_error(msg); });
+ +    return safe_dim_product(sizes_.begin() + dim, sizes_.end(), [](const char* msg) { throw_tensor_error(msg); });
+-     }
++   }
+
+-     int32_t elem_type() const {
++   int32_t elem_type() const {
+ diff --git a/onnx/common/scoped_resource.h b/onnx/common/scoped_resource.h
+ --- a/onnx/common/scoped_resource.h
+ +++ b/onnx/common/scoped_resource.h
+-@@ -25,18 +25,18 @@
++@@ -23,19 +23,19 @@
++ // a free-function closer.  Non-copyable, non-movable.
++ //
+  // Usage:
+ -//   using ScopedFd = ScopedResource<-1, close_fd>;
+ -//   ScopedFd guard(fd);          // destructor calls close_fd(fd)
+@@ -125,29 +125,30 @@
+  class ScopedResource {
+ -  using T = decltype(Invalid);
+ +  using T = typename Traits::type;
+-     T val_;
++   T val_;
+
+   public:
+-     explicit ScopedResource(T v) : val_(v) {}
+-     ~ScopedResource() {
++   explicit ScopedResource(T v) : val_(v) {}
++   ~ScopedResource() {
+ -    if (val_ != Invalid) {
+ -      Close(val_);
+ +    if (val_ != Traits::invalid()) {
+ +      Traits::close(val_);
+-       }
+      }
+-     T get() const {
+-       return val_;
+-@@ -44,7 +44,7 @@
+-     }
+-     T release() {
+-       T tmp = val_;
++   }
++   T get() const {
++@@ -43,7 +43,7 @@
++   }
++   T release() {
++     T tmp = val_;
+ -    val_ = Invalid;
+ +    val_ = Traits::invalid();
+-       return tmp;
+-     }
+-     ScopedResource(const ScopedResource&) = delete;
+-@@ -55,20 +55,32 @@
++     return tmp;
++   }
++   ScopedResource(const ScopedResource&) = delete;
++@@ -53,20 +53,32 @@
++ // Platform-specific type aliases.
++
+  #ifdef _WIN32
+ -inline void close_handle(HANDLE h) {
+ -  CloseHandle(h);
+@@ -187,5 +188,3 @@
+
+  // RAII guard that invokes a callable on destruction (scope exit).
+  template <typename F>
+- class ScopeExit {
+-     F fn_;

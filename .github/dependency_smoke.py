@@ -43,7 +43,9 @@ def test_torchvision_roi_align(tmp_path, monkeypatch):
     x = torch.rand(1, 12, 64, 64)
     with torch.no_grad():
         expected = model(x)
-        torch.jit.trace(model, x).save("vision_roi_align.pt")
+        traced = torch.jit.trace(model, x)
+        assert "torchvision::roi_align" in str(traced.inlined_graph)
+        traced.save("vision_roi_align.pt")
         actual = convert_model("vision_roi_align.pt", "[1,12,64,64]")(x)
     torch.testing.assert_close(actual, expected, rtol=1e-5, atol=1e-6)
 
