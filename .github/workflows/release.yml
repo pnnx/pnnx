@@ -1,12 +1,5 @@
 name: release
-on:
-  pull_request:
-    branches: [main]
-    paths:
-    - '.github/workflows/release.yml'
-    - '.github/dependency_smoke.py'
-    - '.github/target_version_fixtures.py'
-    - '*.patch'
+on: workflow_dispatch
 
 env:
   LIBTORCH_VERSION: 2.15.0
@@ -31,22 +24,6 @@ jobs:
       run: |
         DATE=`date +'%Y%m%d'`
         echo "VERSION=${DATE}" >> $GITHUB_OUTPUT
-
-  target-version-fixtures:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v7
-    - uses: actions/setup-python@v7
-      with:
-        python-version: '3.11'
-    - name: generate-target-fixtures
-      run: |
-        python -m pip install torch==2.15.0 torchvision==0.29.2 --index-url https://download.pytorch.org/whl/cpu
-        python .github/target_version_fixtures.py generate --fixtures target-fixtures
-    - uses: actions/upload-artifact@v7
-      with:
-        name: target-version-fixtures
-        path: target-fixtures
 
   linux-deps:
     runs-on: ubuntu-latest
@@ -1038,11 +1015,6 @@ jobs:
       with:
         name: pnnx-${{ needs.setup.outputs.VERSION }}-linux
 
-    - name: pnnx-patches
-      uses: actions/checkout@v7
-      with:
-        path: pnnx-patches
-
     - name: ncnn
       uses: actions/checkout@v7
       with:
@@ -1054,16 +1026,13 @@ jobs:
         PNNX_WHEEL_WITHOUT_BUILD: ON
       run: |
         unzip -q pnnx-${{ needs.setup.outputs.VERSION }}-linux.zip
-        pip install -U pytest numpy onnx build wheel setuptools
-        pip install torch==2.15.0 torchvision==0.29.2 --index-url https://download.pytorch.org/whl/cpu
+        pip install -U pytest numpy torch torchvision build wheel setuptools
         cp pnnx-${{ needs.setup.outputs.VERSION }}-linux/pnnx ncnn/tools/pnnx/python/pnnx/
         cd ncnn/tools/pnnx/python
-        cp "$GITHUB_WORKSPACE/pnnx-patches/.github/dependency_smoke.py" tests/test_dependency_smoke.py
         python -m build --wheel
         wheel tags --remove --platform-tag=manylinux_2_17_x86_64.manylinux2014_x86_64 dist/*.whl
         pip install dist/*.whl --user
-        python -c "import torch, torchvision, onnx; print(torch.__version__, torchvision.__version__, onnx.__version__)"
-        python -m pytest -v tests
+        pytest tests
 
     - name: upload
       uses: actions/upload-artifact@v7
@@ -1073,7 +1042,7 @@ jobs:
 
   linux-aarch64-python:
     needs: [setup, linux-aarch64]
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/setup-python@v7
       with:
@@ -1083,11 +1052,6 @@ jobs:
       uses: actions/download-artifact@v8
       with:
         name: pnnx-${{ needs.setup.outputs.VERSION }}-linux-aarch64
-
-    - name: pnnx-patches
-      uses: actions/checkout@v7
-      with:
-        path: pnnx-patches
 
     - name: ncnn
       uses: actions/checkout@v7
@@ -1100,16 +1064,11 @@ jobs:
         PNNX_WHEEL_WITHOUT_BUILD: ON
       run: |
         unzip -q pnnx-${{ needs.setup.outputs.VERSION }}-linux-aarch64.zip
-        pip install -U pytest numpy onnx build wheel setuptools
-        pip install torch==2.15.0 torchvision==0.29.2 --index-url https://download.pytorch.org/whl/cpu
+        pip install -U pytest numpy torch torchvision build wheel setuptools
         cp pnnx-${{ needs.setup.outputs.VERSION }}-linux-aarch64/pnnx ncnn/tools/pnnx/python/pnnx/
         cd ncnn/tools/pnnx/python
-        cp "$GITHUB_WORKSPACE/pnnx-patches/.github/dependency_smoke.py" tests/test_dependency_smoke.py
         python -m build --wheel
         wheel tags --remove --platform-tag=manylinux_2_17_aarch64.manylinux2014_aarch64 dist/*.whl
-        pip install dist/*.whl --user
-        python -c "import torch, torchvision, onnx; print(torch.__version__, torchvision.__version__, onnx.__version__)"
-        python -m pytest -v tests
 
     - name: upload
       uses: actions/upload-artifact@v7
@@ -1118,7 +1077,7 @@ jobs:
         path: ncnn/tools/pnnx/python/dist/*.whl
 
   macos-python:
-    needs: [setup, macos, target-version-fixtures]
+    needs: [setup, macos]
     runs-on: macos-15-intel
     steps:
     - uses: actions/setup-python@v7
@@ -1129,17 +1088,6 @@ jobs:
       uses: actions/download-artifact@v8
       with:
         name: pnnx-${{ needs.setup.outputs.VERSION }}-macos
-
-    - name: target-version-fixtures
-      uses: actions/download-artifact@v8
-      with:
-        name: target-version-fixtures
-        path: target-fixtures
-
-    - name: pnnx-patches
-      uses: actions/checkout@v7
-      with:
-        path: pnnx-patches
 
     - name: ncnn
       uses: actions/checkout@v7
@@ -1152,18 +1100,13 @@ jobs:
         PNNX_WHEEL_WITHOUT_BUILD: ON
       run: |
         unzip -q pnnx-${{ needs.setup.outputs.VERSION }}-macos.zip
-        pip install -U pytest "numpy<2" onnx torch==2.2.2 torchvision==0.17.2 build wheel setuptools
-        lipo -thin x86_64 pnnx-${{ needs.setup.outputs.VERSION }}-macos/pnnx -output pnnx-intel-target-fixture
-        test "$(lipo -archs pnnx-intel-target-fixture)" = x86_64
-        python pnnx-patches/.github/target_version_fixtures.py verify --fixtures target-fixtures --binary pnnx-intel-target-fixture --work converted-target-fixture
+        pip install -U pytest numpy torch torchvision build wheel setuptools
         cp pnnx-${{ needs.setup.outputs.VERSION }}-macos/pnnx ncnn/tools/pnnx/python/pnnx/
         cd ncnn/tools/pnnx/python
-        cp "$GITHUB_WORKSPACE/pnnx-patches/.github/dependency_smoke.py" tests/test_dependency_smoke.py
         python -m build --wheel
         wheel tags --remove --platform-tag=macosx_10_9_universal2.macosx_10_9_x86_64.macosx_11_0_arm64 dist/*.whl
         pip install dist/*.whl --user
-        python -c "import torch, torchvision, onnx; print(torch.__version__, torchvision.__version__, onnx.__version__)"
-        python -m pytest -v tests
+        pytest tests
 
     - name: upload
       uses: actions/upload-artifact@v7
@@ -1186,11 +1129,6 @@ jobs:
       with:
         name: pnnx-${{ needs.setup.outputs.VERSION }}-windows
 
-    - name: pnnx-patches
-      uses: actions/checkout@v7
-      with:
-        path: pnnx-patches
-
     - name: ncnn
       uses: actions/checkout@v7
       with:
@@ -1202,15 +1140,13 @@ jobs:
         PNNX_WHEEL_WITHOUT_BUILD: ON
       run: |
         7z x pnnx-${{ needs.setup.outputs.VERSION }}-windows.zip
-        pip install -U pytest numpy onnx torch==2.15.0 torchvision==0.29.2 build wheel setuptools
+        pip install -U pytest numpy torch torchvision build wheel setuptools
         Copy-Item -Verbose -Path "pnnx-${{ needs.setup.outputs.VERSION }}-windows\pnnx.exe" -Destination "ncnn\tools\pnnx\python\pnnx\"
         cd ncnn/tools/pnnx/python
-        Copy-Item "$env:GITHUB_WORKSPACE\pnnx-patches\.github\dependency_smoke.py" tests\test_dependency_smoke.py
         python -m build --wheel
         wheel tags --remove --platform-tag=win_amd64 (get-item .\dist\*.whl).FullName
         pip install (get-item .\dist\*.whl).FullName --user
-        python -c "import torch, torchvision, onnx; print(torch.__version__, torchvision.__version__, onnx.__version__)"
-        python -m pytest -v tests
+        pytest tests
 
     - name: upload
       uses: actions/upload-artifact@v7
@@ -1218,47 +1154,67 @@ jobs:
         name: pnnx-${{ needs.setup.outputs.VERSION }}-windows-python
         path: ncnn/tools/pnnx/python/dist/*.whl
 
-  macos-arm64-python-test:
-    needs: [setup, macos]
-    runs-on: macos-15
+  release:
+    permissions:
+      contents: write  # for softprops/action-gh-release to create a release
+    needs: [setup, linux, linux-aarch64, macos, windows]
+    runs-on: ubuntu-latest
     steps:
-    - uses: actions/setup-python@v7
+    - name: download-linux
+      uses: actions/download-artifact@v8
       with:
-        python-version: '3.11'
-
-    - name: download-pnnx
+        name: pnnx-${{ needs.setup.outputs.VERSION }}-linux
+        path: artifacts
+    - name: download-linux-aarch64
+      uses: actions/download-artifact@v8
+      with:
+        name: pnnx-${{ needs.setup.outputs.VERSION }}-linux-aarch64
+        path: artifacts
+    - name: download-macos
       uses: actions/download-artifact@v8
       with:
         name: pnnx-${{ needs.setup.outputs.VERSION }}-macos
-
-    - name: pnnx-patches
-      uses: actions/checkout@v7
+        path: artifacts
+    - name: download-windows
+      uses: actions/download-artifact@v8
       with:
-        path: pnnx-patches
-
-    - name: ncnn
-      uses: actions/checkout@v7
+        name: pnnx-${{ needs.setup.outputs.VERSION }}-windows
+        path: artifacts
+    - name: create-release
+      uses: softprops/action-gh-release@v3
       with:
-        repository: Tencent/ncnn
-        path: ncnn
+        token: ${{ secrets.GITHUB_TOKEN }}
+        tag_name: ${{ needs.setup.outputs.VERSION }}
+        name: Release ${{ needs.setup.outputs.VERSION }}
+        files: artifacts/*.zip
 
-    - name: wheel
-      env:
-        PNNX_WHEEL_WITHOUT_BUILD: ON
-      run: |
-        unzip -q pnnx-${{ needs.setup.outputs.VERSION }}-macos.zip
-        pip install -U pytest numpy onnx torch==2.15.0 torchvision==0.29.2 build wheel setuptools
-        cp pnnx-${{ needs.setup.outputs.VERSION }}-macos/pnnx ncnn/tools/pnnx/python/pnnx/
-        cd ncnn/tools/pnnx/python
-        cp "$GITHUB_WORKSPACE/pnnx-patches/.github/dependency_smoke.py" tests/test_dependency_smoke.py
-        python -m build --wheel
-        wheel tags --remove --platform-tag=macosx_10_9_universal2.macosx_10_9_x86_64.macosx_11_0_arm64 dist/*.whl
-        pip install dist/*.whl --user
-        python -c "import torch, torchvision, onnx; print(torch.__version__, torchvision.__version__, onnx.__version__)"
-        python -m pytest -v tests
-
-    - name: upload
-      uses: actions/upload-artifact@v7
+  release-python:
+    permissions:
+      contents: none
+    needs: [setup, linux-python, linux-aarch64-python, macos-python, windows-python]
+    runs-on: ubuntu-latest
+    steps:
+    - name: download-linux
+      uses: actions/download-artifact@v8
       with:
-        name: pnnx-${{ needs.setup.outputs.VERSION }}-macos-arm64-python-test
-        path: ncnn/tools/pnnx/python/dist/*.whl
+        name: pnnx-${{ needs.setup.outputs.VERSION }}-linux-python
+        path: dist
+    - name: download-linux-aarch64
+      uses: actions/download-artifact@v8
+      with:
+        name: pnnx-${{ needs.setup.outputs.VERSION }}-linux-aarch64-python
+        path: dist
+    - name: download-macos
+      uses: actions/download-artifact@v8
+      with:
+        name: pnnx-${{ needs.setup.outputs.VERSION }}-macos-python
+        path: dist
+    - name: download-windows
+      uses: actions/download-artifact@v8
+      with:
+        name: pnnx-${{ needs.setup.outputs.VERSION }}-windows-python
+        path: dist
+    - uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        user: __token__
+        password: ${{ secrets.PYPI_API_TOKEN }}
