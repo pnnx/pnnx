@@ -1,7 +1,7 @@
-diff -Nuarp onnxruntime-1.30.0.orig/cmake/CMakeLists.txt onnxruntime-1.30.0/cmake/CMakeLists.txt
---- onnxruntime-1.30.0.orig/cmake/CMakeLists.txt	2026-09-17 11:04:29.133644778 +0800
-+++ onnxruntime-1.30.0/cmake/CMakeLists.txt	2026-09-17 11:16:30.490821170 +0800
-@@ -1943,12 +1943,7 @@ if (onnxruntime_ENABLE_EXTERNAL_CUSTOM_O
+diff -Nuarp onnxruntime-1.31.1.orig/cmake/CMakeLists.txt onnxruntime-1.31.1/cmake/CMakeLists.txt
+--- onnxruntime-1.31.1.orig/cmake/CMakeLists.txt
++++ onnxruntime-1.31.1/cmake/CMakeLists.txt
+@@ -2018,12 +2018,7 @@
    )
  endif()
  
@@ -15,7 +15,7 @@ diff -Nuarp onnxruntime-1.30.0.orig/cmake/CMakeLists.txt onnxruntime-1.30.0/cmak
    # Install
    include(CMakePackageConfigHelpers)
  
-@@ -2048,3 +2043,19 @@ endif()
+@@ -2102,3 +2097,20 @@
  if(TARGET ${onnxruntime_providers_target})
    include("${CMAKE_CURRENT_SOURCE_DIR}/onnxruntime_providers_pch.cmake")
  endif()
@@ -28,6 +28,7 @@ diff -Nuarp onnxruntime-1.30.0.orig/cmake/CMakeLists.txt onnxruntime-1.30.0/cmak
 +    DESTINATION include/
 +    FILES_MATCHING
 +    PATTERN "*.h"
++    PATTERN "*.inc"
 +)
 +
 +install(
@@ -35,10 +36,10 @@ diff -Nuarp onnxruntime-1.30.0.orig/cmake/CMakeLists.txt onnxruntime-1.30.0/cmak
 +    RENAME ${CMAKE_STATIC_LIBRARY_PREFIX}onnxruntime${CMAKE_STATIC_LIBRARY_SUFFIX}
 +    TYPE LIB
 +)
-diff -Nuarp onnxruntime-1.30.0.orig/cmake/bundle_static_library.cmake onnxruntime-1.30.0/cmake/bundle_static_library.cmake
---- onnxruntime-1.30.0.orig/cmake/bundle_static_library.cmake	1970-01-01 07:30:00.000000000 +0730
-+++ onnxruntime-1.30.0/cmake/bundle_static_library.cmake	2026-09-17 11:16:30.490933351 +0800
-@@ -0,0 +1,171 @@
+diff -Nuarp onnxruntime-1.31.1.orig/cmake/bundle_static_library.cmake onnxruntime-1.31.1/cmake/bundle_static_library.cmake
+--- onnxruntime-1.31.1.orig/cmake/bundle_static_library.cmake
++++ onnxruntime-1.31.1/cmake/bundle_static_library.cmake
+@@ -0,0 +1,174 @@
 +# References:
 +# - https://github.com/microsoft/onnxruntime/blob/main/cmake/onnxruntime_webassembly.cmake
 +# - https://cristianadam.eu/20190501/bundling-together-static-libraries-with-cmake
@@ -87,6 +88,7 @@ diff -Nuarp onnxruntime-1.30.0.orig/cmake/bundle_static_library.cmake onnxruntim
 +
 +        if(${input_type} STREQUAL "STATIC_LIBRARY")
 +            list(APPEND static_libs "$<TARGET_FILE:${input_target}>")
++            list(APPEND static_lib_targets ${input_target})
 +            get_target_property(dependencies ${input_target} LINK_LIBRARIES)
 +            get_target_property(interface_dependencies ${input_target} INTERFACE_LINK_LIBRARIES)
 +            if(interface_dependencies)
@@ -105,6 +107,7 @@ diff -Nuarp onnxruntime-1.30.0.orig/cmake/bundle_static_library.cmake onnxruntim
 +        endif()
 +
 +        set(static_libs ${static_libs} PARENT_SCOPE)
++        set(static_lib_targets ${static_lib_targets} PARENT_SCOPE)
 +    endfunction()
 +
 +    foreach(target_name IN ITEMS ${ARGN})
@@ -183,7 +186,8 @@ diff -Nuarp onnxruntime-1.30.0.orig/cmake/bundle_static_library.cmake onnxruntim
 +
 +    add_custom_target(bundling_${bundled_target_name} ALL DEPENDS ${bundled_target_full_name})
 +
-+    foreach(target_name IN ITEMS ${ARGN})
++    # An INTERFACE root does not build its linked archives by itself.
++    foreach(target_name IN ITEMS ${ARGN} ${static_lib_targets})
 +        if(TARGET ${target_name})
 +            add_dependencies(bundling_${bundled_target_name} ${target_name})
 +        endif()
@@ -210,10 +214,10 @@ diff -Nuarp onnxruntime-1.30.0.orig/cmake/bundle_static_library.cmake onnxruntim
 +
 +    add_dependencies(${bundled_target_name} bundling_${bundled_target_name})
 +endfunction()
-diff -Nuarp onnxruntime-1.30.0.orig/cmake/onnxruntime.cmake onnxruntime-1.30.0/cmake/onnxruntime.cmake
---- onnxruntime-1.30.0.orig/cmake/onnxruntime.cmake	2026-09-17 11:04:29.134097298 +0800
-+++ onnxruntime-1.30.0/cmake/onnxruntime.cmake	2026-09-17 11:04:29.134122284 +0800
-@@ -335,13 +335,7 @@ else()
+diff -Nuarp onnxruntime-1.31.1.orig/cmake/onnxruntime.cmake onnxruntime-1.31.1/cmake/onnxruntime.cmake
+--- onnxruntime-1.31.1.orig/cmake/onnxruntime.cmake
++++ onnxruntime-1.31.1/cmake/onnxruntime.cmake
+@@ -336,13 +336,7 @@
      VERSION ${ORT_VERSION}
      FOLDER "ONNXRuntime")
  endif()
@@ -228,10 +232,10 @@ diff -Nuarp onnxruntime-1.30.0.orig/cmake/onnxruntime.cmake onnxruntime-1.30.0/c
  
  
  if (WIN32 AND NOT CMAKE_CXX_STANDARD_LIBRARIES MATCHES kernel32.lib)
-diff -Nuarp onnxruntime-1.30.0.orig/cmake/onnxruntime_providers_cpu.cmake onnxruntime-1.30.0/cmake/onnxruntime_providers_cpu.cmake
---- onnxruntime-1.30.0.orig/cmake/onnxruntime_providers_cpu.cmake	2026-09-17 11:04:29.134330816 +0800
-+++ onnxruntime-1.30.0/cmake/onnxruntime_providers_cpu.cmake	2026-09-17 11:04:29.134357355 +0800
-@@ -257,11 +257,7 @@ if (NOT onnxruntime_MINIMAL_BUILD AND NO
+diff -Nuarp onnxruntime-1.31.1.orig/cmake/onnxruntime_providers_cpu.cmake onnxruntime-1.31.1/cmake/onnxruntime_providers_cpu.cmake
+--- onnxruntime-1.31.1.orig/cmake/onnxruntime_providers_cpu.cmake
++++ onnxruntime-1.31.1/cmake/onnxruntime_providers_cpu.cmake
+@@ -257,11 +257,6 @@
    message(FATAL_ERROR "onnxruntime_providers_shared unknown platform, need to specify shared library exports for it")
    endif()
  
@@ -240,7 +244,6 @@ diff -Nuarp onnxruntime-1.30.0.orig/cmake/onnxruntime_providers_cpu.cmake onnxru
 -          LIBRARY  DESTINATION ${CMAKE_INSTALL_LIBDIR}
 -          RUNTIME  DESTINATION ${CMAKE_INSTALL_BINDIR}
 -  )
-+  
  endif()
  
  if (NOT onnxruntime_BUILD_SHARED_LIB)

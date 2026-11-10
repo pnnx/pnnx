@@ -1,0 +1,12 @@
+diff -Nuarp pytorch-v2.15.0.orig/cmake/External/EigenBLAS.cmake pytorch-v2.15.0/cmake/External/EigenBLAS.cmake
+--- pytorch-v2.15.0.orig/cmake/External/EigenBLAS.cmake
++++ pytorch-v2.15.0/cmake/External/EigenBLAS.cmake
+@@ -38,8 +38,6 @@
+   ${EIGEN_BLAS_SRC_DIR}/f2c/stbmv.c
+   ${EIGEN_BLAS_SRC_DIR}/f2c/ctbmv.c
+   ${EIGEN_BLAS_SRC_DIR}/f2c/ztbmv.c
+-  ${EIGEN_BLAS_SRC_DIR}/f2c/d_cnjg.c
+-  ${EIGEN_BLAS_SRC_DIR}/f2c/r_cnjg.c
+   ${EIGEN_BLAS_SRC_DIR}/f2c/complexdots.c
+ )
+ 

@@ -1,11 +1,10 @@
-diff -Nuarp onnxruntime-1.30.0.orig/cmake/onnxruntime_common.cmake onnxruntime-1.30.0/cmake/onnxruntime_common.cmake
---- onnxruntime-1.30.0.orig/cmake/onnxruntime_common.cmake	2026-09-17 11:04:29.136801009 +0800
-+++ onnxruntime-1.30.0/cmake/onnxruntime_common.cmake	2026-09-17 11:04:29.136843458 +0800
-@@ -77,20 +77,6 @@ else()
-             "${ONNXRUNTIME_ROOT}/core/platform/posix/logging/*.cc"
+diff -Nuarp onnxruntime-1.31.1.orig/cmake/onnxruntime_common.cmake onnxruntime-1.31.1/cmake/onnxruntime_common.cmake
+--- onnxruntime-1.31.1.orig/cmake/onnxruntime_common.cmake
++++ onnxruntime-1.31.1/cmake/onnxruntime_common.cmake
+@@ -80,19 +80,6 @@
          )
      endif()
--
+ 
 -    if (ANDROID)
 -        list(APPEND onnxruntime_common_src_patterns
 -            "${ONNXRUNTIME_ROOT}/core/platform/android/logging/*.h"
@@ -21,10 +20,10 @@ diff -Nuarp onnxruntime-1.30.0.orig/cmake/onnxruntime_common.cmake onnxruntime-1
 -    endif()
  endif()
  
- # platform-specific device discovery files
-diff -Nuarp onnxruntime-1.30.0.orig/onnxruntime/core/platform/logging/make_platform_default_log_sink.cc onnxruntime-1.30.0/onnxruntime/core/platform/logging/make_platform_default_log_sink.cc
---- onnxruntime-1.30.0.orig/onnxruntime/core/platform/logging/make_platform_default_log_sink.cc	2026-09-17 11:04:29.137022664 +0800
-+++ onnxruntime-1.30.0/onnxruntime/core/platform/logging/make_platform_default_log_sink.cc	2026-09-17 11:04:29.137089670 +0800
+ if(onnxruntime_USE_1DS_TELEMETRY)
+diff -Nuarp onnxruntime-1.31.1.orig/onnxruntime/core/platform/logging/make_platform_default_log_sink.cc onnxruntime-1.31.1/onnxruntime/core/platform/logging/make_platform_default_log_sink.cc
+--- onnxruntime-1.31.1.orig/onnxruntime/core/platform/logging/make_platform_default_log_sink.cc
++++ onnxruntime-1.31.1/onnxruntime/core/platform/logging/make_platform_default_log_sink.cc
 @@ -3,25 +3,13 @@
  
  #include "core/platform/logging/make_platform_default_log_sink.h"

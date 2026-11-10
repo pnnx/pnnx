@@ -1,32 +1,32 @@
-diff -Nuarp pytorch-v2.14.0.orig/CMakeLists.txt pytorch-v2.14.0/CMakeLists.txt
---- pytorch-v2.14.0.orig/CMakeLists.txt	2026-09-17 11:04:29.119358623 +0800
-+++ pytorch-v2.14.0/CMakeLists.txt	2026-09-17 11:04:29.119395323 +0800
-@@ -1044,21 +1044,6 @@ if(USE_PYTORCH_QNNPACK)
+diff -Nuarp pytorch-v2.15.0.orig/CMakeLists.txt pytorch-v2.15.0/CMakeLists.txt
+--- pytorch-v2.15.0.orig/CMakeLists.txt
++++ pytorch-v2.15.0/CMakeLists.txt
+@@ -1215,21 +1215,6 @@
+ if(USE_PYTORCH_QNNPACK)
    string(APPEND CMAKE_CXX_FLAGS " -DUSE_PYTORCH_QNNPACK")
  endif()
- 
+-
 -# Enable sleef on macOS with Apple silicon by default
 -if((${CMAKE_SYSTEM_NAME} STREQUAL "Darwin") AND ("${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "arm64"))
 -  message(STATUS "Running on macOS with Apple silicon")
 -  string(APPEND CMAKE_CXX_FLAGS " -DAT_BUILD_ARM_VEC256_WITH_SLEEF")
--  add_definitions(-DAT_BUILD_ARM_VEC256_WITH_SLEEF)
+-  add_compile_definitions(AT_BUILD_ARM_VEC256_WITH_SLEEF)
 -endif()
 -
 -# Enable sleef on Arm(R) architecture by default (except Android)
 -if((NOT ${CMAKE_SYSTEM_NAME} STREQUAL "Android")
 -  AND("${CMAKE_SYSTEM_PROCESSOR}" MATCHES "aarch64"))
 -  string(APPEND CMAKE_CXX_FLAGS " -DAT_BUILD_ARM_VEC256_WITH_SLEEF")
--  add_definitions(-DAT_BUILD_ARM_VEC256_WITH_SLEEF)
+-  add_compile_definitions(AT_BUILD_ARM_VEC256_WITH_SLEEF)
 -endif()
 -
--
+ 
  if(USE_XNNPACK)
    string(APPEND CMAKE_CXX_FLAGS " -DUSE_XNNPACK")
- endif()
-diff -Nuarp pytorch-v2.14.0.orig/torch/_inductor/cpu_vec_isa.py pytorch-v2.14.0/torch/_inductor/cpu_vec_isa.py
---- pytorch-v2.14.0.orig/torch/_inductor/cpu_vec_isa.py	2026-09-17 11:04:29.119650822 +0800
-+++ pytorch-v2.14.0/torch/_inductor/cpu_vec_isa.py	2026-09-17 11:04:29.119695134 +0800
-@@ -245,7 +245,7 @@ except OSError:
+diff -Nuarp pytorch-v2.15.0.orig/torch/_inductor/cpu_vec_isa.py pytorch-v2.15.0/torch/_inductor/cpu_vec_isa.py
+--- pytorch-v2.15.0.orig/torch/_inductor/cpu_vec_isa.py
++++ pytorch-v2.15.0/torch/_inductor/cpu_vec_isa.py
+@@ -245,7 +245,7 @@
  @dataclasses.dataclass
  class VecNEON(VecISA):
      _bit_width = 128  # This is required to leverage the compute implemented in aten/src/ATen/cpu/vec/vec128/vec128_float_neon.h
@@ -35,7 +35,7 @@ diff -Nuarp pytorch-v2.14.0.orig/torch/_inductor/cpu_vec_isa.py pytorch-v2.14.0/
      _arch_flags = ""  # Unused
      _dtype_nelements = {torch.float: 4, torch.bfloat16: 8, torch.float16: 8}
  
-@@ -271,7 +271,6 @@ class VecSVE(VecISA):
+@@ -271,7 +271,6 @@
          self._macro = [
              "CPU_CAPABILITY_SVE",
              f"CPU_CAPABILITY_SVE{self._bit_width}",

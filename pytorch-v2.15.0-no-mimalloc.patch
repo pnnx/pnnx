@@ -1,0 +1,13 @@
+diff -Nuarp pytorch-v2.15.0.orig/CMakeLists.txt pytorch-v2.15.0/CMakeLists.txt
+--- pytorch-v2.15.0.orig/CMakeLists.txt
++++ pytorch-v2.15.0/CMakeLists.txt
+@@ -572,9 +572,6 @@
+ # Enable third party mimalloc library to improve memory allocation performance
+ # on Windows and AArch64.
+ set(USE_MIMALLOC_DEFAULT OFF)
+-if(WIN32 OR (CPU_AARCH64 AND NOT APPLE))
+-  set(USE_MIMALLOC_DEFAULT ON)
+-endif()
+ option(USE_MIMALLOC "Use mimalloc" "${USE_MIMALLOC_DEFAULT}")
+ option(USE_MIMALLOC_ON_MKL "Use mimalloc on MKL" OFF)
+ if(USE_MIMALLOC_DEFAULT)

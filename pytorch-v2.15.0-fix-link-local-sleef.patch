@@ -1,7 +1,7 @@
-diff -Nuarp pytorch-v2.14.0.orig/test/cpp/aoti_abi_check/CMakeLists.txt pytorch-v2.14.0/test/cpp/aoti_abi_check/CMakeLists.txt
---- pytorch-v2.14.0.orig/test/cpp/aoti_abi_check/CMakeLists.txt	2026-09-17 11:04:29.115611886 +0800
-+++ pytorch-v2.14.0/test/cpp/aoti_abi_check/CMakeLists.txt	2026-09-17 11:04:29.115693950 +0800
-@@ -50,14 +50,11 @@ target_compile_definitions(test_aoti_abi
+diff -Nuarp pytorch-v2.15.0.orig/test/cpp/aoti_abi_check/CMakeLists.txt pytorch-v2.15.0/test/cpp/aoti_abi_check/CMakeLists.txt
+--- pytorch-v2.15.0.orig/test/cpp/aoti_abi_check/CMakeLists.txt
++++ pytorch-v2.15.0/test/cpp/aoti_abi_check/CMakeLists.txt
+@@ -55,14 +55,11 @@
  
  # WARNING: DO NOT LINK torch!!!
  # The purpose is to check if the used aten/c10 headers are written in a header-only way
@@ -17,7 +17,7 @@ diff -Nuarp pytorch-v2.14.0.orig/test/cpp/aoti_abi_check/CMakeLists.txt pytorch-
  
  # Disable unused-variable warnings for variables that are only used to test compilation
  target_compile_options_if_supported(test_aoti_abi_check -Wno-unused-variable)
-@@ -75,11 +72,8 @@ foreach(test_src ${AOTI_ABI_CHECK_VEC_TE
+@@ -80,11 +77,8 @@
      separate_arguments(FLAGS UNIX_COMMAND "${FLAGS}")
      add_executable(${test_name}_${CPU_CAPABILITY} "${test_src}")
  

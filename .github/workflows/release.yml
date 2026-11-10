@@ -2,10 +2,10 @@ name: release
 on: workflow_dispatch
 
 env:
-  LIBTORCH_VERSION: 2.14.0
-  TORCHVISION_VERSION: 0.29.0
+  LIBTORCH_VERSION: 2.15.0
+  TORCHVISION_VERSION: 0.29.2
   PROTOBUF_VERSION: 33.6
-  ONNXRUNTIME_VERSION: 1.30.0
+  ONNXRUNTIME_VERSION: 1.31.1
   CACHE_DATE: 20260917
 
 permissions:
@@ -46,14 +46,14 @@ jobs:
       uses: pypa/cibuildwheel@v4.3.5
       env:
         CIBW_ARCHS_LINUX: "x86_64"
-        CIBW_BUILD: 'cp310-manylinux_x86_64'
+        CIBW_BUILD: 'cp311-manylinux_x86_64'
         CIBW_BUILD_VERBOSITY: 1
         CIBW_REPAIR_WHEEL_COMMAND: ""
         CIBW_BEFORE_ALL: yum install wget zip cmake -y &&
           wget -q https://github.com/pytorch/pytorch/releases/download/v${{ env.LIBTORCH_VERSION }}/pytorch-v${{ env.LIBTORCH_VERSION }}.tar.gz &&
           tar -xf pytorch-v${{ env.LIBTORCH_VERSION }}.tar.gz &&
           cd pytorch-v${{ env.LIBTORCH_VERSION }} &&
-          export PATH=/opt/python/cp310-cp310/bin:$PATH &&
+          export PATH=/opt/python/cp311-cp311/bin:$PATH &&
           pip install -r requirements.txt &&
           patch --batch --fuzz=0 -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-mobile-build.patch &&
           patch --batch --fuzz=0 -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-stable-abi.patch &&
@@ -101,7 +101,7 @@ jobs:
       uses: pypa/cibuildwheel@v4.3.5
       env:
         CIBW_ARCHS_LINUX: "x86_64"
-        CIBW_BUILD: 'cp310-manylinux_x86_64'
+        CIBW_BUILD: 'cp311-manylinux_x86_64'
         CIBW_BUILD_VERBOSITY: 1
         CIBW_REPAIR_WHEEL_COMMAND: ""
         CIBW_BEFORE_ALL: yum install wget zip -y &&
@@ -131,7 +131,7 @@ jobs:
       uses: pypa/cibuildwheel@v4.3.5
       env:
         CIBW_ARCHS_LINUX: "x86_64"
-        CIBW_BUILD: 'cp310-manylinux_x86_64'
+        CIBW_BUILD: 'cp311-manylinux_x86_64'
         CIBW_BUILD_VERBOSITY: 1
         CIBW_REPAIR_WHEEL_COMMAND: ""
         CIBW_BEFORE_ALL: yum install wget zip -y &&
@@ -198,14 +198,14 @@ jobs:
       uses: pypa/cibuildwheel@v4.3.5
       env:
         CIBW_ARCHS_LINUX: "aarch64"
-        CIBW_BUILD: 'cp310-manylinux_aarch64'
+        CIBW_BUILD: 'cp311-manylinux_aarch64'
         CIBW_BUILD_VERBOSITY: 1
         CIBW_REPAIR_WHEEL_COMMAND: ""
         CIBW_BEFORE_ALL: yum install wget zip -y &&
           wget -q https://github.com/pytorch/pytorch/releases/download/v${{ env.LIBTORCH_VERSION }}/pytorch-v${{ env.LIBTORCH_VERSION }}.tar.gz &&
           tar -xf pytorch-v${{ env.LIBTORCH_VERSION }}.tar.gz &&
           cd pytorch-v${{ env.LIBTORCH_VERSION }} &&
-          export PATH=/opt/python/cp310-cp310/bin:$PATH &&
+          export PATH=/opt/python/cp311-cp311/bin:$PATH &&
           pip install -r requirements.txt &&
           patch --batch --fuzz=0 -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-mobile-build.patch &&
           patch --batch --fuzz=0 -p1 -i /project/pnnx-patches/pytorch-v${{ env.LIBTORCH_VERSION }}-fix-stable-abi.patch &&
@@ -252,7 +252,7 @@ jobs:
       uses: pypa/cibuildwheel@v4.3.5
       env:
         CIBW_ARCHS_LINUX: "aarch64"
-        CIBW_BUILD: 'cp310-manylinux_aarch64'
+        CIBW_BUILD: 'cp311-manylinux_aarch64'
         CIBW_BUILD_VERBOSITY: 1
         CIBW_REPAIR_WHEEL_COMMAND: ""
         CIBW_BEFORE_ALL: yum install wget zip -y &&
@@ -276,7 +276,7 @@ jobs:
       uses: pypa/cibuildwheel@v4.3.5
       env:
         CIBW_ARCHS_LINUX: "aarch64"
-        CIBW_BUILD: 'cp310-manylinux_aarch64'
+        CIBW_BUILD: 'cp311-manylinux_aarch64'
         CIBW_BUILD_VERBOSITY: 1
         CIBW_REPAIR_WHEEL_COMMAND: ""
         CIBW_BEFORE_ALL: yum install wget zip -y &&
@@ -630,7 +630,7 @@ jobs:
         & "C:\Program Files\Git\usr\bin\patch.exe" --batch --fuzz=0 -p1 -i $env:GITHUB_WORKSPACE\pnnx-patches\onnxruntime-${{ env.ONNXRUNTIME_VERSION }}-use-clog.patch
         if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
         mkdir -p build2; cd build2;
-        cmake -DCMAKE_INSTALL_PREFIX="$env:GITHUB_WORKSPACE/onnxruntime" -DCMAKE_BUILD_TYPE=MinSizeRel -Donnxruntime_USE_FULL_PROTOBUF=ON -Donnxruntime_BUILD_SHARED_LIB=OFF -Donnxruntime_BUILD_UNIT_TESTS=OFF -Donnxruntime_ENABLE_CPUINFO=OFF -Donnxruntime_DISABLE_CONTRIB_OPS=ON -Donnxruntime_DISABLE_SPARSE_TENSORS=ON --compile-no-warning-as-error -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded -DONNX_USE_MSVC_STATIC_RUNTIME=ON -Dprotobuf_MSVC_STATIC_RUNTIME=ON -DABSL_MSVC_STATIC_RUNTIME=ON -DCMAKE_POSITION_INDEPENDENT_CODE=ON -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_PREFIX_PATH="$env:GITHUB_WORKSPACE/onnxruntime" -DCMAKE_FIND_PACKAGE_PREFER_CONFIG=ON -DONNX_CUSTOM_PROTOC_EXECUTABLE="$env:GITHUB_WORKSPACE/onnxruntime/bin/protoc.exe" ../cmake
+        cmake -DCMAKE_INSTALL_PREFIX="$env:GITHUB_WORKSPACE/onnxruntime" "-DPatch_EXECUTABLE=C:/Program Files/Git/usr/bin/patch.exe" -DCMAKE_BUILD_TYPE=MinSizeRel -Donnxruntime_USE_FULL_PROTOBUF=ON -Donnxruntime_BUILD_SHARED_LIB=OFF -Donnxruntime_BUILD_UNIT_TESTS=OFF -Donnxruntime_ENABLE_CPUINFO=OFF -Donnxruntime_DISABLE_CONTRIB_OPS=ON -Donnxruntime_DISABLE_SPARSE_TENSORS=ON --compile-no-warning-as-error -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded -DONNX_USE_MSVC_STATIC_RUNTIME=ON -Dprotobuf_MSVC_STATIC_RUNTIME=ON -DABSL_MSVC_STATIC_RUNTIME=ON -DCMAKE_POSITION_INDEPENDENT_CODE=ON -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_PREFIX_PATH="$env:GITHUB_WORKSPACE/onnxruntime" -DCMAKE_FIND_PACKAGE_PREFER_CONFIG=ON -DONNX_CUSTOM_PROTOC_EXECUTABLE="$env:GITHUB_WORKSPACE/onnxruntime/bin/protoc.exe" ../cmake
         cmake --build . --config MinSizeRel -j 4
         cmake --build . --config MinSizeRel -j 4 --target install
 
@@ -676,7 +676,7 @@ jobs:
       uses: pypa/cibuildwheel@v4.3.5
       env:
         CIBW_ARCHS_LINUX: "x86_64"
-        CIBW_BUILD: 'cp310-manylinux_x86_64'
+        CIBW_BUILD: 'cp311-manylinux_x86_64'
         CIBW_BUILD_VERBOSITY: 1
         CIBW_REPAIR_WHEEL_COMMAND: ""
         CIBW_BEFORE_ALL: yum install wget zip -y &&
@@ -749,7 +749,7 @@ jobs:
       uses: pypa/cibuildwheel@v4.3.5
       env:
         CIBW_ARCHS_LINUX: "aarch64"
-        CIBW_BUILD: 'cp310-manylinux_aarch64'
+        CIBW_BUILD: 'cp311-manylinux_aarch64'
         CIBW_BUILD_VERBOSITY: 1
         CIBW_REPAIR_WHEEL_COMMAND: ""
         CIBW_BEFORE_ALL: yum install wget zip -y &&
